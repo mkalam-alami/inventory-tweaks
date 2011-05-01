@@ -14,8 +14,11 @@ import org.lwjgl.input.Keyboard;
 
 /**
  * Allows to sort one's inventory with a single key.
- * @author Jimeo Wan (marwane.ka at gmail.com)
- *
+ * @author Jimeo Wan (jimeo.wan at gmail.com)
+ * @version 1.0-for-1.5_01
+ * Website: http://wan.ka.free.fr/?sortbutton
+ * Source code: https://github.com/jimeowan/minecraft-mod-sortbutton
+ * 
  */
 public class mod_SortButton extends BaseMod {
 	

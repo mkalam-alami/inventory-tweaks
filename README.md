@@ -8,7 +8,7 @@ For documentation about how to use or install the mod, see the [main page of Sor
 
 ## Changelog
 
-*1.0-1.5_01* (in debugging)
+*1.0-for-1.5_01* (in debugging)
 
 * Configurable rules (tile, column, row)
 * Configurable item tree

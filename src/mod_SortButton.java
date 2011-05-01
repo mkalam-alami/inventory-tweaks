@@ -30,9 +30,9 @@ public class mod_SortButton extends BaseMod {
     private static final String INGAME_LOG_PREFIX = "SortButton: ";
     private static final Level LOG_LEVEL = Level.FINE;
     private static final int INV_SIZE = 36;
+    private static final int HOT_RELOAD_DELAY = 1000;
 
     private SortButtonConfig config = null;
-    private SortButtonCategories categories;
     
     private long lastKeyPress = 0;
     private int keyPressDuration = 0;
@@ -48,8 +48,9 @@ public class mod_SortButton extends BaseMod {
 		config = new SortButtonConfig(CONFIG_FILE);
 		tryLoading(config, true);
     	
-		// Load categories
-		categories = new SortButtonCategories();
+		// Force categories & item names load
+		SortButtonCategories.initCategories();
+		SortButtonKeywords.initItems();
 		
     	log.info("Mod initialized");
     	
@@ -75,9 +76,9 @@ public class mod_SortButton extends BaseMod {
     	if (currentTime - lastKeyPress < 100) {
     		keyPressDuration += currentTime - lastKeyPress;
         	lastKeyPress = currentTime;
-    		if (keyPressDuration > 500 && keyPressDuration < 1000) {
+    		if (keyPressDuration > HOT_RELOAD_DELAY && keyPressDuration < 2*HOT_RELOAD_DELAY) {
     			tryLoading(config, false);
-    			keyPressDuration = 1000; // Prevent from load repetition
+    			keyPressDuration = 2*HOT_RELOAD_DELAY; // Prevent from load repetition
     		}
     		else {
     			return;
@@ -101,7 +102,9 @@ public class mod_SortButton extends BaseMod {
 		Vector<ItemStack> newlyOrderedStacks = new Vector<ItemStack>();
 		
 		for (int i = 0; i < oldInv.length; i++) {
-			remainingStacks.add(oldInv[i]);
+			if (oldInv[i] != null) {
+				remainingStacks.add(oldInv[i]);
+			}
 		}
 		
 		// TODO: Comment
@@ -115,10 +118,12 @@ public class mod_SortButton extends BaseMod {
 			stackIt = remainingStacks.iterator();
 			while (stackIt.hasNext()) {
 				stack = stackIt.next();
-				if (stack != null && categories.matches(stack.itemID, rule.getKeyword())) {
+				if (stack != null && SortButtonCategories.matches(
+						stack.itemID, rule.getKeyword())) {
 					int[] preferredPos = rule.getPreferedPositions();
 					for (int j = 0; j < preferredPos.length; j++) {
 						if (newInv[preferredPos[j]] == null) {
+							log.fine(rule.getKeyword()+" keyword put "+stack.itemID+" in "+j);
 							newInv[preferredPos[j]] = stack;
 							newlyOrderedStacks.add(stack);
 							break;
@@ -134,14 +139,16 @@ public class mod_SortButton extends BaseMod {
 		}
 		
 		// Stuff without a found spot
-		int index = INV_SIZE-1;
+		int index = 9;
 		stackIt = remainingStacks.iterator();
 		while (stackIt.hasNext()) {
-			while (index >= 0 && newInv[index] != null) {
-				index--;
+			while (index < INV_SIZE && newInv[index] != null) {
+				index++;
 			}
-			if (index >= 0) {
-				newInv[index--] = stackIt.next();
+			if (index < INV_SIZE) {
+				stack = stackIt.next();
+				log.fine("Remaining stuff rule put "+stack.itemID+" in "+index);
+				newInv[index++] = stack;
 			}
 			else {
 				log.severe("Aborting sort: some items could not be placed. The algorithm seems broken!");

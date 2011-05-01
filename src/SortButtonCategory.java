@@ -29,5 +29,20 @@ public class SortButtonCategory {
 		categories.add(category);
 		return this;
 	}
+
+	public int getKeywordDepth(String keyword) {
+		if (items.contains(keyword)) {
+			return 1;
+		}
+		else {
+			int result;
+			for (SortButtonCategory category : categories) {
+				result = category.getKeywordDepth(keyword);
+				if (result != -1)
+					return result + 1;
+			}
+			return -1;
+		}
+	}
 	
 }

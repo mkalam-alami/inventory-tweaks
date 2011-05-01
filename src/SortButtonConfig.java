@@ -3,9 +3,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Vector;
-
-import net.minecraft.src.SortButtonRule.RuleType;
 
 public class SortButtonConfig {
 
@@ -43,7 +42,6 @@ public class SortButtonConfig {
 		
 		// Parse and sort rules (specific tiles first, then in appearing order)
 		rules.clear();
-		Vector<SortButtonRule> pendingRules = new Vector<SortButtonRule>();
 		String lineText;
 		SortButtonRule newRule;
 		
@@ -56,17 +54,14 @@ public class SortButtonConfig {
 				String[] words = lineText.split(" ");
 				if (words.length == 2) {
 					newRule = new SortButtonRule(words[0], words[1]);
-					if (newRule.getType() == RuleType.TILE) {
 						rules.add(newRule);
-					}
-					else {
-						pendingRules.add(newRule);
-					}
 				}
 			}
 		}
 		
-		rules.addAll(pendingRules);
+		// Sort rules by priority (higher = greater)
+		Collections.reverseOrder();
+		
 	}
 
 }

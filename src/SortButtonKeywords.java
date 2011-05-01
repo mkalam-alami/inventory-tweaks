@@ -9,7 +9,10 @@ public class SortButtonKeywords {
 
 	public static final String SWORDS = "weapons";
 	public static final String WEAPONS = "weapons";
+	
 	public static final String ITEMS = "items";
+	public static final String BLOCKS = "items";
+	
 	public static final String STUFF = "stuff";
 	
 	public static Integer getItemValue(String name) {
@@ -19,7 +22,7 @@ public class SortButtonKeywords {
 		return items.get(name);
 	}
 	
-	private static void initItems() {
+	public static void initItems() {
 		
 		items.put("swordDiamond", Item.swordDiamond.shiftedIndex);
 		items.put("swordGold", Item.swordGold.shiftedIndex);

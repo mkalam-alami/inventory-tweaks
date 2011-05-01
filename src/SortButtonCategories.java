@@ -3,15 +3,13 @@ package net.minecraft.src;
 import static net.minecraft.src.SortButtonKeywords.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class SortButtonCategories {
 
-	private final Map<String, SortButtonCategory> categories =
+    private static final Logger log = Logger.getLogger(SortButtonCategories.class.getName());
+	private static final Map<String, SortButtonCategory> categories =
 		new HashMap<String, SortButtonCategory>();
-	
-	public SortButtonCategories() {
-		initCategories();
-	}
 	
 	/**
 	 * Checks it given item ID matches a given keyword
@@ -21,7 +19,11 @@ public class SortButtonCategories {
 	 * @param keyword
 	 * @return
 	 */
-	public final boolean matches(int itemID, String keyword) {
+	public static final boolean matches(int itemID, String keyword) {
+		
+		if (categories.isEmpty()) {
+			initCategories();
+		}
 		
 		Integer keywordItem = SortButtonKeywords.getItemValue(keyword);
 		
@@ -43,7 +45,7 @@ public class SortButtonCategories {
 		
 	}
 	
-	private void initCategories() {
+	public static void initCategories() {
 
 		categories.put(SWORDS, 
 				new SortButtonCategory(
@@ -60,7 +62,31 @@ public class SortButtonCategories {
 		categories.put(ITEMS,
 				new SortButtonCategory()
 				.addCategory(categories.get(WEAPONS)));
+		categories.put(BLOCKS,
+				new SortButtonCategory());
+
+		// Root category, should not be modified or removed
+		categories.put(STUFF,
+				new SortButtonCategory()
+				.addCategory(categories.get(ITEMS))
+				.addCategory(categories.get(BLOCKS)));
 		
+		
+	}
+	
+	public static int getKeywordDepth(String keyword) {
+		if (keyword.equals(STUFF)) {
+			return 0;
+		}
+		else {
+			try {
+				return categories.get(STUFF).getKeywordDepth(keyword);
+			}
+			catch (NullPointerException e) {
+				log.severe("The root category seems to be missing: " + e.getMessage());
+				return -1;
+			}
+		}
 	}
 	
 	

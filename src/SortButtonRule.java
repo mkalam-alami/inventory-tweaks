@@ -1,21 +1,32 @@
 package net.minecraft.src;
 
 
-public class SortButtonRule {
+public class SortButtonRule implements Comparable<SortButtonRule> {
 	
 	// A -> D = 65 -> 68 in ascii
 	// 1 -> 4 = 49 -> 57 in ascii
 	
 	public enum RuleType {
-		TILE,
-		ROW,
-		COLUMN
+		TILE(1),
+		COLUMN(2),
+		ROW(3);
+		
+		private int priority;
+
+		RuleType(int priority) {
+			this.priority = priority;
+		}
+
+		public int getPriority() {
+			return priority;
+		}
 	}
 
 	private String constraint;
 	private int[] preferredPositions;
 	private String keyword;
 	private RuleType type;
+	private int priority;
 	
 	public SortButtonRule(String constraint, String keyword) {
 
@@ -72,6 +83,12 @@ public class SortButtonRule {
 				index(1, column)
 			};
 		}
+		
+		/// Compute priority
+		
+		priority = type.priority*100 + 
+				SortButtonCategories.getKeywordDepth(keyword); 
+		
 	}
 	
 	public RuleType getType() {
@@ -102,6 +119,23 @@ public class SortButtonRule {
 	 */
 	private int index(int row, int column) {
 		return row*9+column;
+	}
+	
+	/**
+	 * Returns rule priority (for rule sorting)
+	 * @return
+	 */
+	public int getPriority() {
+		return priority;
+	}
+
+	/**
+	 * Compares rules priority : positive value
+	 * means 'this' is of greater priority than o
+	 */
+	@Override
+	public int compareTo(SortButtonRule o) {
+		return this.getPriority()-o.getPriority();
 	}
 
 }

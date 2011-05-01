@@ -1,0 +1,25 @@
+
+|=========================================================|
+| SORT BUTTON Mod - By Jimeo Wan (jimeo.wan at gmail.com) |
+| Tree configuration file                                 |
+|=========================================================|
+
+# Keyword tree
+# * You can swap items to change their priority for sorting
+# * You can create you own categories
+#   * Items can be put in several categories
+# * Use exactly the same syntax as what you see:
+#   * Two spaces of indentation for each category level
+#   * One space between the item name and its ID
+#   * Skip lines as you want
+
+stuff
+  items
+    weapons
+      swords
+        swordIron 267
+        swordDiamond 276
+        swordStone 272
+        swordGold 283
+        swordWood 268
+  blocks

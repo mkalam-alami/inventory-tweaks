@@ -84,10 +84,13 @@ public class SortButtonRule implements Comparable<SortButtonRule> {
 			};
 		}
 		
-		/// Compute priority
+		//// Compute priority
 		
-		priority = type.priority*100 + 
-				SortButtonCategories.getKeywordDepth(keyword); 
+		// 1st criteria : the rule type
+		// 2st criteria : the keyword category depth
+		// 3st criteria : the item order in a same category
+		priority = type.priority*10000 + 
+				SortButtonKeywords.getKeywordPriority(keyword); 
 		
 	}
 	

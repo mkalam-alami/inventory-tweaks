@@ -23,34 +23,32 @@ public class mod_SortButton extends BaseMod {
 	// 0 = bottom-left, 9 = bottom-right
 	// 10 = top-left, 35 = 3rd-row-right
 	
-    private static final Logger log = Logger.getLogger(mod_SortButton.class.getName());
+    private static final Logger log = Logger.getLogger("ModSortButton");
 
     private static final KeyBinding myKey = new KeyBinding("Sort inventory", Keyboard.KEY_S);
-    private static final String CONFIG_FILE = Minecraft.getMinecraftDir()+"/ModSortButton.txt";
-    private static final String INGAME_LOG_PREFIX = "SortButton: ";
-    private static final Level LOG_LEVEL = Level.FINE;
-    private static final int INV_SIZE = 36;
     private static final int HOT_RELOAD_DELAY = 1000;
+    
+    public static final String CONFIG_FILE = Minecraft.getMinecraftDir()+"/ModSortButtonConfig.txt";
+    public static final String CONFIG_TREE_FILE = Minecraft.getMinecraftDir()+"/ModSortButtonTree.txt";
+    public static final String INGAME_LOG_PREFIX = "SortButton: ";
+    public static final Level LOG_LEVEL = Level.FINE;
+    public static final int INV_SIZE = 36;
 
     private SortButtonConfig config = null;
     
     private long lastKeyPress = 0;
     private int keyPressDuration = 0;
+    private boolean configErrorsShown = false;
     
     public mod_SortButton() {
 
     	log.setLevel(LOG_LEVEL);
-
+    	
     	// Register customizable custom key
     	ModLoader.RegisterKey(this, myKey, true);
     	
-    	// Load config
-		config = new SortButtonConfig(CONFIG_FILE);
-		tryLoading(config, true);
-    	
-		// Force categories & item names load
-		SortButtonCategories.initCategories();
-		SortButtonKeywords.initItems();
+    	// Load config files
+		tryLoading(true);
 		
     	log.info("Mod initialized");
     	
@@ -58,7 +56,7 @@ public class mod_SortButton extends BaseMod {
     
 	@Override
 	public String Version() {
-		return "1.0";
+		return "1.0-1.5_01";
 	}
     
 	/**
@@ -77,7 +75,7 @@ public class mod_SortButton extends BaseMod {
     		keyPressDuration += currentTime - lastKeyPress;
         	lastKeyPress = currentTime;
     		if (keyPressDuration > HOT_RELOAD_DELAY && keyPressDuration < 2*HOT_RELOAD_DELAY) {
-    			tryLoading(config, false);
+    			tryLoading(false);
     			keyPressDuration = 2*HOT_RELOAD_DELAY; // Prevent from load repetition
     		}
     		else {
@@ -89,13 +87,19 @@ public class mod_SortButton extends BaseMod {
     		keyPressDuration = 0;
     	}
     	
+    	// Config keywords error message
+    	if (!configErrorsShown) {
+    		showConfigErrors(config);
+			configErrorsShown = true;
+    	}
     	
     	Minecraft mc = ModLoader.getMinecraftInstance();
 		
     	// Do nothing if the inventory is closed
     	// if (!mc.currentScreen instanceof GuiContainer)
     	//		return;
-    		
+    	
+    	// Sorting initialization
 		ItemStack[] oldInv = mc.thePlayer.inventory.mainInventory;    		
 		ItemStack[] newInv = new ItemStack[INV_SIZE];
 		Vector<ItemStack> remainingStacks = new Vector<ItemStack>();
@@ -107,7 +111,7 @@ public class mod_SortButton extends BaseMod {
 			}
 		}
 		
-		// TODO: Comment
+		// Sorting
 		Vector<SortButtonRule> rules = config.getRules();
 		Iterator<SortButtonRule> rulesIt = rules.iterator();
 		SortButtonRule rule;
@@ -116,14 +120,15 @@ public class mod_SortButton extends BaseMod {
 		while (rulesIt.hasNext()) {
 			rule = rulesIt.next();
 			stackIt = remainingStacks.iterator();
+			log.info(rule.getKeyword()+" rule has priority "+SortButtonKeywords.getKeywordPriority(rule.getKeyword()));
 			while (stackIt.hasNext()) {
 				stack = stackIt.next();
-				if (stack != null && SortButtonCategories.matches(
-						stack.itemID, rule.getKeyword())) {
+				if (stack != null && SortButtonKeywords.matches(
+						SortButtonTree.getItemName(stack.itemID), rule.getKeyword())) {
 					int[] preferredPos = rule.getPreferedPositions();
 					for (int j = 0; j < preferredPos.length; j++) {
 						if (newInv[preferredPos[j]] == null) {
-							log.fine(rule.getKeyword()+" keyword put "+stack.itemID+" in "+j);
+							log.info(rule.getKeyword()+" keyword put "+stack.itemID+" in "+j);
 							newInv[preferredPos[j]] = stack;
 							newlyOrderedStacks.add(stack);
 							break;
@@ -147,7 +152,7 @@ public class mod_SortButton extends BaseMod {
 			}
 			if (index < INV_SIZE) {
 				stack = stackIt.next();
-				log.fine("Remaining stuff rule put "+stack.itemID+" in "+index);
+				log.info("Remaining stuff rule put "+stack.itemID+" in "+index);
 				newInv[index++] = stack;
 			}
 			else {
@@ -165,17 +170,22 @@ public class mod_SortButton extends BaseMod {
      * Tries to load mod configuration from file, with error handling.
      * @param config
      */
-    private static boolean tryLoading(SortButtonConfig config, boolean silently) {
+    private boolean tryLoading(boolean silently) {
 		try {
+	    	SortButtonTree.loadTreeFromFile(CONFIG_TREE_FILE);
+	    	if (config == null) {
+	    		config = new SortButtonConfig(CONFIG_FILE);
+	    	}
 			config.load();
 			if (!silently) {
 				ModLoader.getMinecraftInstance().ingameGUI.
 						addChatMessage(INGAME_LOG_PREFIX + "Configuration reloaded");
+				showConfigErrors(config);
 			}
 	    	return true;
 		} catch (FileNotFoundException e) {
 			if (!silently) {
-				String error = "Config file "+CONFIG_FILE+" not found";
+				String error = "Config file not found";
 				ModLoader.getMinecraftInstance().ingameGUI.
 						addChatMessage(INGAME_LOG_PREFIX + error);
 				log.severe(error);
@@ -183,13 +193,26 @@ public class mod_SortButton extends BaseMod {
 	    	return false;
 		} catch (IOException e) {
 			if (!silently) {
-				String error = "Could not read config file "+CONFIG_FILE;
+				String error = "Could not read config file";
 				ModLoader.getMinecraftInstance().ingameGUI.
 						addChatMessage(INGAME_LOG_PREFIX + error);
 				log.severe(error + " : " + e.getMessage());
 			}
 	    	return false;
 		}
+    }
+    
+    private static void showConfigErrors(SortButtonConfig config) {
+    	Vector<String> invalid = config.getInvalidKeywords();
+    	if (invalid.size() > 0) {
+			String error = "Invalid keywords found (";
+			for (String keyword : config.getInvalidKeywords()) {
+				error += keyword+" ";
+			}
+			error.replaceFirst(" $", ")");
+			ModLoader.getMinecraftInstance().ingameGUI.
+					addChatMessage(INGAME_LOG_PREFIX + error);
+    	}
     }
     
 }

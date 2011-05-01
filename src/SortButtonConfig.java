@@ -10,6 +10,7 @@ public class SortButtonConfig {
 
 	private String file;
 	Vector<SortButtonRule> rules = new Vector<SortButtonRule>();
+	Vector<String> invalidKeywords = new Vector<String>();
 	
 	/**
 	 * Creates a new configuration holder.
@@ -21,6 +22,13 @@ public class SortButtonConfig {
 	
 	public Vector<SortButtonRule> getRules() {
 		return rules;
+	}
+	
+	/**
+	 * Returns all invalid keywords wrote in the config file.
+	 */
+	public Vector<String> getInvalidKeywords() {
+		return invalidKeywords;
 	}
 
 	/**
@@ -53,14 +61,20 @@ public class SortButtonConfig {
 			if (lineText.matches("^([A-D]|[1-9]|[r]){1,2} [\\w]*$")) {
 				String[] words = lineText.split(" ");
 				if (words.length == 2) {
-					newRule = new SortButtonRule(words[0], words[1]);
-						rules.add(newRule);
+					if (SortButtonKeywords.isValid(words[1])) {
+						newRule = new SortButtonRule(words[0], words[1]);
+							rules.add(newRule);
+					}
+					else {
+						invalidKeywords.add(words[1]);
+					}
 				}
 			}
 		}
 		
-		// Sort rules by priority (higher = greater)
-		Collections.reverseOrder();
+		// Sort rules by priority, highest first
+		Collections.sort(rules);
+		Collections.reverse(rules);
 		
 	}
 

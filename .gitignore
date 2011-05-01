@@ -1,0 +1,16 @@
+client/
+RenderBlocks*
+[A-L]*.java
+M[A-N]*.java
+Mode*.java
+ModL*.java
+ModT*.java
+Mou*.java
+Mov*.java
+M[P-Z]*.java
+[N-R]*.java
+S[A-N]*.java
+Sorter*.java
+Sound*.java
+S[P-Z]*.java
+[T-Z]*.java

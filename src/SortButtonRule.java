@@ -1,15 +1,23 @@
 package net.minecraft.src;
 
-public class SortButtonEntry {
+
+public class SortButtonRule {
 	
 	// A -> D = 65 -> 68 in ascii
 	// 1 -> 4 = 49 -> 57 in ascii
 	
+	public enum RuleType {
+		TILE,
+		ROW,
+		COLUMN
+	}
+
 	private String constraint;
 	private int[] preferredPositions;
 	private String keyword;
+	private RuleType type;
 	
-	public SortButtonEntry(String constraint, String keyword) {
+	public SortButtonRule(String constraint, String keyword) {
 
 		this.keyword = keyword;
 		this.constraint = constraint;
@@ -29,34 +37,47 @@ public class SortButtonEntry {
 				reverse = true;
 			}
 			else {
-				row = c-'A';
+				switch (c) {
+					case 'A': row = 1; break;
+					case 'B': row = 2; break;
+					case 'C': row = 3; break;
+					case 'D': row = 0;
+				}
 			}
 		}
 		
-		// Pattern: [row][column]
+		// Tile case
 		if (column != -1 && row != -1) {
+			type = RuleType.TILE;
 			preferredPositions = new int[]{
 					index(row, column)
 				};
 		}
-		// Pattern: [column]
-		else if (column != -1) {
-			preferredPositions = new int[4];
-			for (int i = 0; i < 4; i++) {
-				preferredPositions[i] = 
-					index(reverse ? 3-i : i, column);
-			}
-		}
-		// Pattern: [row]
-		else {
+		// Row case
+		else if (row != -1) {
+			type = RuleType.ROW;
 			preferredPositions = new int[9];
 			for (int i = 0; i < 9; i++) {
 				preferredPositions[i] = 
 					index(row, reverse ? 8-i : i);
 			}
 		}
+		// Column case
+		else {
+			type = RuleType.COLUMN;
+			preferredPositions = new int[]{
+				index(0, column),
+				index(3, column),
+				index(2, column),
+				index(1, column)
+			};
+		}
 	}
-
+	
+	public RuleType getType() {
+		return type;
+	}
+	
 	/**
 	 * An array of preferred positions (from the most to the less preferred).
 	 * @return
@@ -65,9 +86,6 @@ public class SortButtonEntry {
 		return preferredPositions;
 	}
 
-	/**
-	 * The entry keyword.
-	 */
 	public String getKeyword() {
 		return keyword;
 	}
@@ -80,7 +98,7 @@ public class SortButtonEntry {
 	}
 	
 	/**
-	 * Inventory index, given a row and column
+	 * Inventory index (from 0 to 35), given a row and column
 	 */
 	private int index(int row, int column) {
 		return row*9+column;

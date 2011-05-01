@@ -3,14 +3,32 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Vector;
+
+import net.minecraft.src.SortButtonRule.RuleType;
 
 public class SortButtonConfig {
 
-	private String[] config;
-	private int currentLine = 0;
+	private String file;
+	Vector<SortButtonRule> rules = new Vector<SortButtonRule>();
 	
-	public SortButtonConfig(String file) throws FileNotFoundException, IOException {
-		
+	/**
+	 * Creates a new configuration holder.
+	 * The configuration is not yet loaded.
+	 */
+	public SortButtonConfig(String file) {
+		this.file = file;
+	}
+	
+	public Vector<SortButtonRule> getRules() {
+		return rules;
+	}
+
+	/**
+	 * WARNING: Currently not thread-safe
+	 */
+	public void load() throws FileNotFoundException, IOException {
+
 		// Read file
 		File f = new File(file);
 		char[] bytes = new char[(int) f.length()];
@@ -18,30 +36,37 @@ public class SortButtonConfig {
 		reader.read(bytes);
 		
 		// Split lines into an array
-		config = String.valueOf(bytes)
+		String[] config = String.valueOf(bytes)
 				.replace("\r\n", "\n")
 				.replace('\r', '\n')
 				.split("\n");
-	}
-	
-	public SortButtonEntry nextEntry() {
 		
+		// Parse and sort rules (specific tiles first, then in appearing order)
+		rules.clear();
+		Vector<SortButtonRule> pendingRules = new Vector<SortButtonRule>();
 		String lineText;
+		SortButtonRule newRule;
 		
+		int currentLine = 0;
 		while (currentLine < config.length) {
-			
 			lineText = config[currentLine++];
 			
 			// Parse valid lines only
 			if (lineText.matches("^([A-D]|[1-9]|[r]){1,2} [\\w]*$")) {
 				String[] words = lineText.split(" ");
 				if (words.length == 2) {
-					return new SortButtonEntry(words[0], words[1]);
+					newRule = new SortButtonRule(words[0], words[1]);
+					if (newRule.getType() == RuleType.TILE) {
+						rules.add(newRule);
+					}
+					else {
+						pendingRules.add(newRule);
+					}
 				}
 			}
 		}
 		
-		return null;
+		rules.addAll(pendingRules);
 	}
 
 }

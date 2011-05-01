@@ -10,19 +10,7 @@ public class SortButtonCategories {
 		new HashMap<String, SortButtonCategory>();
 	
 	public SortButtonCategories() {
-		
-		categories.put(WEAPONS, 
-				new SortButtonCategory(
-						Item.swordDiamond.shiftedIndex,
-						Item.swordGold.shiftedIndex,
-						Item.swordSteel.shiftedIndex,
-						Item.swordStone.shiftedIndex,
-						Item.swordWood.shiftedIndex));
-
-		categories.put(ITEMS,
-				new SortButtonCategory()
-				.addCategory(categories.get(WEAPONS)));				
-		
+		initCategories();
 	}
 	
 	/**
@@ -44,8 +32,34 @@ public class SortButtonCategories {
 		
 		// The keyword is a category
 		else {
-			return keyword.equals(STUFF) ? true : categories.get(keyword).contains(itemID);
+			SortButtonCategory category = categories.get(keyword);
+			if (category != null) {
+				return category.contains(itemID);
+			}
+			else {
+				return keyword.equals(STUFF);
+			}
 		}
+		
+	}
+	
+	private void initCategories() {
+
+		categories.put(SWORDS, 
+				new SortButtonCategory(
+						Item.swordDiamond.shiftedIndex,
+						Item.swordGold.shiftedIndex,
+						Item.swordSteel.shiftedIndex,
+						Item.swordStone.shiftedIndex,
+						Item.swordWood.shiftedIndex));
+
+		categories.put(WEAPONS,
+				new SortButtonCategory()
+				.addCategory(categories.get(SWORDS)));		
+		
+		categories.put(ITEMS,
+				new SortButtonCategory()
+				.addCategory(categories.get(WEAPONS)));
 		
 	}
 	

@@ -7,6 +7,7 @@ public class SortButtonKeywords {
     
 	private static final Map<String, Integer> items = new HashMap<String, Integer>(); 
 
+	public static final String SWORDS = "weapons";
 	public static final String WEAPONS = "weapons";
 	public static final String ITEMS = "items";
 	public static final String STUFF = "stuff";

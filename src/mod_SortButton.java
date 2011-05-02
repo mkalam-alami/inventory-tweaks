@@ -145,7 +145,6 @@ public class mod_SortButton extends BaseMod {
 						
 						// If the slot is free, no problem
 						if (wantedSlotStack == null) {
-							log.info(rule.getKeyword()+" keyword put "+SortButtonTree.getItemName(stack.itemID)+" in "+preferredPos[j]);
 							newInv[preferredPos[j]] = stack; // Put the stack in the new inventory!
 							newlyOrderedStacks.put(preferredPos[j], stack);
 							break;
@@ -200,7 +199,6 @@ public class mod_SortButton extends BaseMod {
 			if (index < INV_SIZE) {
 				stack = stackIt.next();
 				newInv[index++] = stack;
-				log.info("Remaining stuff rule put "+SortButtonTree.getItemName(stack.itemID)+" in "+index);
 			}
 			else {
 				log.severe("Aborting sort: some items could not be placed. The algorithm seems broken!");

@@ -67,7 +67,15 @@ public class SortButtonConfig {
 				if (words.length == 2) {
 					if (SortButtonTree.isKeywordValid(words[1])) {
 						newRule = new SortButtonRule(words[0], words[1]);
-							rules.add(newRule);
+						rules.add(newRule);
+					}
+					else if (words[1].endsWith("s") // Tolerate plurals
+							&& SortButtonTree.isKeywordValid(
+									words[1].substring(0, words[1].length()-2))) {
+						newRule = new SortButtonRule(
+								words[0],
+								words[1].substring(0, words[1].length()-2));
+						rules.add(newRule);
 					}
 					else {
 						invalidKeywords.add(words[1]);

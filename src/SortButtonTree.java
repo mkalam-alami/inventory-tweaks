@@ -64,7 +64,7 @@ public class SortButtonTree {
 				
 				// Line parsing
 				level = (parts.length-1)/2;
-				label = parts[parts.length-1];
+				label = parts[parts.length-1].toLowerCase();
 				id = -1;
 				if (label.matches("^[0-9]*$")) {
 					if (parts.length >= 2) {

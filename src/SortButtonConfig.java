@@ -54,7 +54,7 @@ public class SortButtonConfig {
 		
 		// Parse and sort rules (specific tiles first, then in appearing order)
 		rules.clear();
-		String lineText;
+		String lineText, keyword;
 		SortButtonRule newRule;
 		
 		int currentLine = 0;
@@ -65,16 +65,17 @@ public class SortButtonConfig {
 			if (lineText.matches("^([A-D]|[1-9]|[r]){1,2} [\\w]*$")) {
 				String[] words = lineText.split(" ");
 				if (words.length == 2) {
-					if (SortButtonTree.isKeywordValid(words[1])) {
-						newRule = new SortButtonRule(words[0], words[1]);
+					keyword = words[1].toLowerCase();
+					if (SortButtonTree.isKeywordValid(keyword)) {
+						newRule = new SortButtonRule(words[0], keyword);
 						rules.add(newRule);
 					}
-					else if (words[1].endsWith("s") // Tolerate plurals
+					else if (keyword.endsWith("s") // Tolerate plurals
 							&& SortButtonTree.isKeywordValid(
-									words[1].substring(0, words[1].length()-2))) {
+									keyword.substring(0, keyword.length()-2))) {
 						newRule = new SortButtonRule(
 								words[0],
-								words[1].substring(0, words[1].length()-2));
+								keyword.substring(0, keyword.length()-2));
 						rules.add(newRule);
 					}
 					else {

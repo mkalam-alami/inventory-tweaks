@@ -5,8 +5,8 @@
 |=========================================================|
 
 # Keyword tree
-# * You can swap items to change their priority for sorting
 # * You can create you own categories
+# * [TODO] You can swap items to change their priority for sorting
 #   * Items can be put in several categories
 # * Use exactly the same syntax as what you see:
 #   * Two spaces of indentation for each category level
@@ -14,12 +14,185 @@
 #   * Skip lines as you want
 
 stuff
+
   items
-    weapons
-      swords
-        swordIron 267
-        swordDiamond 276
-        swordStone 272
-        swordGold 283
-        swordWood 268
+  
+    equipment
+    
+      weapons
+        swords
+          swordIron 267
+          swordDiamond 276
+          swordStone 272
+          swordGold 283
+          swordWood 268
+        arrow 262
+        bow 261
+        snowball 332
+
+      tools
+        pickaxes
+          pickaxeIron 257
+          pickaxeDiamond 278
+          pickaxeStone 274
+          pickaxeGold 285
+          pickaxeWood 270
+        shovels
+          shovelIron 256
+          shovelDiamond 277
+          shovelStone 273
+          shovelGold 284
+          shovelWood 269
+        axes
+          axeIron 258
+          axeDiamond 279
+          axeStone 275
+          axeGold 284
+          axeWood 271
+        hoes
+          hoeIron 291
+          hoeDiamond 293
+          hoeStone 292
+          hoeGold 294
+          hoeWood 290
+
+      armor
+        helmets
+          helmetChain 302
+          helmetDiamond 310
+          helmetIron 306
+          helmetGold 314
+          helmetLeather 298
+        chestplates
+          chestplateChain 303
+          chestplateDiamond 311
+          chestplateIron 307
+          chestplateGold 315
+          chestplateLeather 299
+        leggings
+          leggingsChain 304
+          leggingsDiamond 312
+          leggingsIron 308
+          leggingsGold 316
+          leggingsLeather 300
+        boots
+          bootsChain 305
+          bootsDiamond 313
+          bootsIron 309
+          bootsGold 317
+          bootsLeather 301
+
+    materials
+      miningMaterials
+        coal 263
+        charcoal 263
+        ingots
+          goldIngot 266
+          ironIngot 265
+        diamondGem 264
+        dusts 
+          redstoneDust 331
+          glowstoneDust 348
+        clayBrick 336
+        clay 337
+        flint 318
+        stick 280
+
+      huntingMaterials
+        bone 352
+        leather 334
+        string 287
+        feather 288
+        gunpowder 289
+        slimeball 341
+      farmingMaterials
+        paper 339
+        book 340
+    
+    vehicles
+      boat 333
+      minecarts
+        minecart 328
+        poweredMinecart 343
+        storageMinecart 342
+
+    food
+      edibleFood
+          porkchops
+            porkchopCooked 320
+            porkchopRaw 319
+        bread 297
+          fishes
+            fishCooked 350
+            fishRaw 349
+          mushroomStew 282
+          cookie 357
+          apples
+            appleGolden 322
+            appleRed 260
+      unedibleFood
+        cake 354
+        egg 344
+        wheat 296
+        milk 335
+        sugar 353
+
+    plants
+      flowers
+        flowerYellow 37
+        dandelion 37
+        flowerRed 38
+        rose 38
+      mushrooms
+        mushroomBrown 39
+        mushroomRed 40
+      sapling 6
+      seeds 59
+      seed 59
+      sugarCane 83
+      
+    decorations
+      bed 355
+      doors 
+        doorIron 71
+        doorWood 64
+      painting 321
+      painting 321
+      sign 323
+      musicDiscs
+        musicDiscGreen 2257
+        musicDiscGold 2256
+
+    dye 351
+    bowl 281
+    bucket 325
+    clock 347
+    compass 345
+    fishingRod 346
+    flintAndSteel 259
+    saddle 329
+    
+    
   blocks
+    
+    naturalBlocks
+      stones
+        cobblestone 4
+        stone 1
+        mossStone 48
+      dirt 3
+      sands
+        sand 12
+        sandStone 24
+      gravel 13
+      clayBlock 82
+      obsidian 49
+      bedrock 7
+      monsterSpawner 52
+      
+    liquids
+      water 8
+      water 9
+      lava 10
+      lava 11
+    

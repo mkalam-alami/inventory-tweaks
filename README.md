@@ -23,7 +23,7 @@ This repository doesn't include any third party code, so in order to compile thi
 *1.0-for-1.5_01*
 
 * Add missing blocks and block categories
-* Generate documentation if missing
+* Generate config files if missing
 * Extensive testing
 * Documentation
 

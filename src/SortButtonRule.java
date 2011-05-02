@@ -1,15 +1,18 @@
 package net.minecraft.src;
 
+import java.util.logging.Logger;
+
 
 public class SortButtonRule implements Comparable<SortButtonRule> {
 	
 	// A -> D = 65 -> 68 in ascii
 	// 1 -> 4 = 49 -> 57 in ascii
-	
+
 	public enum RuleType {
-		TILE(1),
-		COLUMN(2),
-		ROW(3);
+		
+		TILE(2),
+		COLUMN(1),
+		ROW(1);
 		
 		private int priority;
 
@@ -21,6 +24,9 @@ public class SortButtonRule implements Comparable<SortButtonRule> {
 			return priority;
 		}
 	}
+	
+	@SuppressWarnings("unused")
+	private static final Logger log = Logger.getLogger("ModSortButton SortButtonRule");
 
 	private String constraint;
 	private int[] preferredPositions;
@@ -90,7 +96,7 @@ public class SortButtonRule implements Comparable<SortButtonRule> {
 		// 2st criteria : the keyword category depth
 		// 3st criteria : the item order in a same category
 		priority = type.priority*10000 + 
-				SortButtonKeywords.getKeywordPriority(keyword); 
+			SortButtonTree.getKeywordPriority(keyword);
 		
 	}
 	
@@ -102,7 +108,7 @@ public class SortButtonRule implements Comparable<SortButtonRule> {
 	 * An array of preferred positions (from the most to the less preferred).
 	 * @return
 	 */
-	public int[] getPreferedPositions() {
+	public int[] getPreferredPositions() {
 		return preferredPositions;
 	}
 
@@ -138,7 +144,7 @@ public class SortButtonRule implements Comparable<SortButtonRule> {
 	 */
 	@Override
 	public int compareTo(SortButtonRule o) {
-		return this.getPriority()-o.getPriority();
+		return getPriority() - o.getPriority();
 	}
 
 }

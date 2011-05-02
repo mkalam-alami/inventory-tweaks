@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -15,8 +13,8 @@ public class SortButtonTree {
 	
     private static final Logger log = Logger.getLogger("ModSortButton SortButtonTree");
 
-    private static final int DEFAULT_ITEM_COUNT = 500; // TODO: Error handling
-    private static final int DEFAULT_LEVEL_DEPTH = 5; // TODO: Error handling
+    private static final int DEFAULT_ITEM_COUNT = 500;
+    private static final int DEFAULT_LEVEL_DEPTH = 5;
     
 	private static final Map<String, SortButtonCategory> categories =
 		new HashMap<String, SortButtonCategory>();
@@ -62,8 +60,7 @@ public class SortButtonTree {
 			lineText = config[currentLine++];
 			String[] parts = lineText.split(" ");
 			
-			if (parts.length >= 0
-					&& lineText.matches("[\\w ]*[\\w]")) {
+			if (parts.length >= 0 && lineText.matches("[\\w ]*[\\w]")) {
 				
 				// Line parsing
 				level = (parts.length-1)/2;
@@ -84,7 +81,7 @@ public class SortButtonTree {
 				if (id != -1) {
 					parentCat = context.get(level-1);
 					if (parentCat != null) {
-						parentCat.addItem(label, id);	
+						parentCat.addItem(label, id);
 					}
 					items.put(label, id);
 					itemsIds.put(id, label);
@@ -109,6 +106,67 @@ public class SortButtonTree {
 		}
 	}
 
+	/**
+	 * Checks if the given keyword is valid (i.e. represents either
+	 * a registered item or a registered category)
+	 * @param keyword
+	 * @return
+	 */
+	public static final boolean isKeywordValid(String keyword) {
+		// Is the keyword an item?
+		Integer keywordItem = SortButtonTree.getItemValue(keyword);
+		if (keywordItem != null) {
+			return true;
+		}
+		
+		// Or maybe a category ?
+		else {
+			SortButtonCategory category = SortButtonTree.getCategory(keyword);
+			return category != null;
+		}
+	}
+	
+	/**
+	 * Checks it given item ID matches a given keyword
+	 * (either the item's name is the keyword, or it is
+	 * in the keyword category)
+	 * @param itemID
+	 * @param keyword
+	 * @return
+	 */
+	public static final boolean matches(String item, String keyword) {
+
+		if (item == null)
+			return false;
+		
+		// The keyword is an item
+		if (item.equals(keyword)) {
+			return true;
+		}
+		
+		// The keyword is a category
+		else {
+			SortButtonCategory category = SortButtonTree.getCategory(keyword);
+			if (category != null) {
+				return category.contains(item);
+			}
+			else {
+				return false;
+			}
+		}
+		
+	}
+	
+	public static int getKeywordPriority(String keyword) {
+		try {
+			return SortButtonTree.getRootCategory().getKeywordPriority(keyword);
+		}
+		catch (NullPointerException e) {
+			log.severe("The root category is missing: " + e.getMessage());
+			return -1;
+		}
+	}
+	
 	public static SortButtonCategory getRootCategory() {
 		return categories.get(rootName);
 	}
@@ -124,7 +182,7 @@ public class SortButtonTree {
 		return categories.values();
 	}
 
-	public static boolean contains(String name) {
+	public static boolean containsItem(String name) {
 		return items.containsKey(name);
 	}
 
@@ -134,6 +192,29 @@ public class SortButtonTree {
 
 	public static String getItemName(int itemID) {
 		return itemsIds.get(itemID);
+	}	
+	
+	/**
+	 * For debug purposes.
+	 * Call log(getRootCategory(), 0) to log the whole tree.
+	 */
+	@SuppressWarnings("unused")
+	private static void log(SortButtonCategory category, int indentLevel) {
+		
+		String logIdent = "";
+		for (int i = 0; i < indentLevel; i++) {
+			logIdent += "  ";
+		}
+		log.info(logIdent + category.getName());
+		
+		for (SortButtonCategory subCategory : category.getSubCategories()) {
+			log(subCategory, indentLevel + 1);
+		}
+		
+		for (String item : category.getItems()) {
+			log.info(logIdent + "  " + item + " " + getItemValue(item));
+		}
+		
 	}
 	
 }

@@ -2,7 +2,9 @@ package net.minecraft.src;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -106,7 +108,13 @@ public class mod_SortButton extends BaseMod {
 		ItemStack[] oldInv = mc.thePlayer.inventory.mainInventory;    		
 		ItemStack[] newInv = new ItemStack[INV_SIZE];
 		Vector<ItemStack> remainingStacks = new Vector<ItemStack>();
-		Vector<ItemStack> newlyOrderedStacks = new Vector<ItemStack>();
+		Map<Integer, ItemStack> newlyOrderedStacks = new HashMap<Integer, ItemStack>();
+		Vector<SortButtonRule> rules = config.getRules();
+		Iterator<SortButtonRule> rulesIt = rules.iterator();
+		SortButtonRule rule;
+		Iterator<ItemStack> stackIt;
+		ItemStack stack, wantedSlotStack;
+		String itemName;
 		
 		for (int i = 0; i < oldInv.length; i++) {
 			if (oldInv[i] != null) {
@@ -114,39 +122,75 @@ public class mod_SortButton extends BaseMod {
 			}
 		}
 		
-		// Sorting
-		Vector<SortButtonRule> rules = config.getRules();
-		Iterator<SortButtonRule> rulesIt = rules.iterator();
-		SortButtonRule rule;
-		Iterator<ItemStack> stackIt;
-		ItemStack stack;
+		// Sort rule by rule, themselves being already sorted by decreasing priority
 		while (rulesIt.hasNext()) {
+			
 			rule = rulesIt.next();
 			stackIt = remainingStacks.iterator();
-			log.info(rule.getKeyword()+" rule has priority "+SortButtonKeywords.getKeywordPriority(rule.getKeyword()));
+			
+			// Look for item stacks that match the rule
 			while (stackIt.hasNext()) {
+				
 				stack = stackIt.next();
-				if (stack != null && SortButtonKeywords.matches(
-						SortButtonTree.getItemName(stack.itemID), rule.getKeyword())) {
-					int[] preferredPos = rule.getPreferedPositions();
+				itemName = SortButtonTree.getItemName(stack.itemID);
+				if (stack != null && SortButtonTree.matches(itemName, rule.getKeyword())) {
+					
+					// Try to put the matching item stack to a preferred position,
+					// theses positions being sorted by decreasing preference.
+					int[] preferredPos = rule.getPreferredPositions();
+					boolean checkedFilledPos = false;
 					for (int j = 0; j < preferredPos.length; j++) {
-						if (newInv[preferredPos[j]] == null) {
-							log.info(rule.getKeyword()+" keyword put "+stack.itemID+" in "+j);
-							newInv[preferredPos[j]] = stack;
-							newlyOrderedStacks.add(stack);
+						
+						wantedSlotStack = newInv[preferredPos[j]];
+						
+						// If the slot is free, no problem
+						if (wantedSlotStack == null) {
+							log.info(rule.getKeyword()+" keyword put "+SortButtonTree.getItemName(stack.itemID)+" in "+preferredPos[j]);
+							newInv[preferredPos[j]] = stack; // Put the stack in the new inventory!
+							newlyOrderedStacks.put(preferredPos[j], stack);
 							break;
+						}
+						
+						// If the slot is occupied, check (once) if the item
+						// can replace one of the already put items. This
+						// can be done if both constraints are respected:
+						// * The item to replace has been put using the same rule
+						// * The item to replace has a lower item priority
+						else if (!checkedFilledPos) {
+							
+							Integer stackToReplaceKey = null;
+							for (Integer stackKey : newlyOrderedStacks.keySet()) {
+								if (SortButtonTree.getKeywordPriority(
+										SortButtonTree.getItemName(newlyOrderedStacks.get(stackKey).itemID))
+									< SortButtonTree.getKeywordPriority(itemName)) {
+									stackToReplaceKey = stackKey;
+									break;
+								}
+							}
+							
+							// If an item can be replaced, the items are swapped.
+							// (we are now trying to find a slot for the replaced item)
+							if (stackToReplaceKey != null) {
+								newlyOrderedStacks.put(stackToReplaceKey, stack);
+								newInv[preferredPos[j]] = stack;
+								stack = wantedSlotStack;
+							}
+							else {
+								checkedFilledPos = true;
+							}
 						}
 					}
 				}
 			}
-			stackIt = newlyOrderedStacks.iterator();
-			while (stackIt.hasNext()) {
-				remainingStacks.remove(stackIt.next());
-			}
+			
+			// Remove stacks placed during this rule from items to sort
+			remainingStacks.removeAll(newlyOrderedStacks.values());
 			newlyOrderedStacks.clear();
 		}
 		
-		// Stuff without a found spot
+		// Put stuff without a found spot in any free spot,
+		// starting from top-left.
+		// TODO: Handle case where only < #9 spots are free
 		int index = 9;
 		stackIt = remainingStacks.iterator();
 		while (stackIt.hasNext()) {
@@ -155,8 +199,8 @@ public class mod_SortButton extends BaseMod {
 			}
 			if (index < INV_SIZE) {
 				stack = stackIt.next();
-				log.info("Remaining stuff rule put "+stack.itemID+" in "+index);
 				newInv[index++] = stack;
+				log.info("Remaining stuff rule put "+SortButtonTree.getItemName(stack.itemID)+" in "+index);
 			}
 			else {
 				log.severe("Aborting sort: some items could not be placed. The algorithm seems broken!");

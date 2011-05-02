@@ -5,9 +5,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 public class SortButtonConfig {
 
+	@SuppressWarnings("unused")
+	private static final Logger log = Logger.getLogger("ModSortButton SortButtonConfig");
+	
 	private String file;
 	Vector<SortButtonRule> rules = new Vector<SortButtonRule>();
 	Vector<String> invalidKeywords = new Vector<String>();
@@ -61,7 +65,7 @@ public class SortButtonConfig {
 			if (lineText.matches("^([A-D]|[1-9]|[r]){1,2} [\\w]*$")) {
 				String[] words = lineText.split(" ");
 				if (words.length == 2) {
-					if (SortButtonKeywords.isValid(words[1])) {
+					if (SortButtonTree.isKeywordValid(words[1])) {
 						newRule = new SortButtonRule(words[0], words[1]);
 							rules.add(newRule);
 					}
@@ -73,8 +77,11 @@ public class SortButtonConfig {
 		}
 		
 		// Sort rules by priority, highest first
-		Collections.sort(rules);
-		Collections.reverse(rules);
+		Collections.sort(rules, Collections.reverseOrder());
+		
+		/*for (SortButtonRule rule : rules) {
+			log.info(rule.getKeyword()+" "+rule.getPriority());
+		}*/
 		
 	}
 

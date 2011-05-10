@@ -23,8 +23,8 @@ import net.minecraft.client.Minecraft;
 public class SortButton {
 	
 	// (Note) In the inventory, indexes are :
-	// 0 = bottom-left, 9 = bottom-right
-	// 10 = top-left, 35 = 3rd-row-right
+	// 0 = bottom-left, 8 = bottom-right
+	// 9 = top-left, 35 = 3rd-row-right
 	
     private static final Logger log = Logger.getLogger("ModSortButton");
 
@@ -35,6 +35,7 @@ public class SortButton {
     public static final String INGAME_LOG_PREFIX = "SortButton: ";
     public static final Level LOG_LEVEL = Level.FINE;
     public static final int INV_SIZE = 36;
+	public static int[] ALL_SLOTS = new int[INV_SIZE];
 
     private SortButtonConfig config = null;
     
@@ -46,6 +47,10 @@ public class SortButton {
 
     	log.setLevel(LOG_LEVEL);
     	
+    	// Slot order init
+    	for (int i = 0; i < ALL_SLOTS.length; i++) {
+    		ALL_SLOTS[i] = (i + 9) % 36;
+    	}
     	
     	// Load config files
 		tryLoading(true);
@@ -93,49 +98,95 @@ public class SortButton {
     	// Do nothing if the inventory is closed
     	// if (!mc.currentScreen instanceof GuiContainer)
     	//		return;
-    	
-    	// Sorting initialization
-		ItemStack[] oldInv = mc.thePlayer.inventory.mainInventory;    		
+
+    	// Main initialization
+    	// (About oldInv: slots will be set to null as items are moved to
+    	// the new inventory)
+		ItemStack[] oldInv = mc.thePlayer.inventory.mainInventory.clone();
+		int[] lockedSlots = config.getLockedSlots();
+		ItemStack stack;
+		int i, j, search, sum;
+		
+		// Merge stacks
+		Vector<Integer> itemIDs = new Vector<Integer>();
+		ItemStack destinationStack;
+		
+		for (i = 0; i < oldInv.length; i++) {
+			
+			stack = oldInv[i];
+			if (stack != null && lockedSlots[i] == 0) {
+				search = 0;
+				while (stack != null &&
+						(j = itemIDs.indexOf(stack.itemID, search)) != -1) {
+					destinationStack = oldInv[j];
+					sum = stack.stackSize + destinationStack.stackSize;
+					if (sum <= destinationStack.getMaxStackSize()) {
+						destinationStack.stackSize = sum;
+						oldInv[i] = stack = null;
+					}
+					else {
+						itemIDs.set(j, -1);
+						destinationStack.stackSize = destinationStack.getMaxStackSize();
+						stack.stackSize = sum - destinationStack.getMaxStackSize();
+					}
+					search = j + 1;
+				}
+			}
+			
+			if (stack != null && lockedSlots[i] == 0) {
+				itemIDs.add(
+					(stack.stackSize < stack.getMaxStackSize())
+					? stack.itemID : -1);
+			}
+			else {
+				itemIDs.add(-1);
+			}
+		}
+		
+    	// Sorting initialization		
 		ItemStack[] newInv = new ItemStack[INV_SIZE];
-		Vector<ItemStack> remainingStacks = new Vector<ItemStack>();
 		Map<Integer, ItemStack> newlyOrderedStacks = new HashMap<Integer, ItemStack>();
 		Vector<SortButtonRule> rules = config.getRules();
 		Iterator<SortButtonRule> rulesIt = rules.iterator();
 		SortButtonRule rule;
-		Iterator<ItemStack> stackIt;
-		ItemStack stack, wantedSlotStack;
+		ItemStack wantedSlotStack;
 		String itemName;
-		
-		for (int i = 0; i < oldInv.length; i++) {
-			if (oldInv[i] != null) {
-				remainingStacks.add(oldInv[i]);
-			}
-		}
+		int rulePriority;
 		
 		// Sort rule by rule, themselves being already sorted by decreasing priority
 		while (rulesIt.hasNext()) {
 			
 			rule = rulesIt.next();
-			stackIt = remainingStacks.iterator();
+			rulePriority = rule.getPriority();
+			
+			log.info("Rule : "+rule.getKeyword());
 			
 			// Look for item stacks that match the rule
-			while (stackIt.hasNext()) {
+			for (i = 0; i < oldInv.length; i++) {
 				
-				stack = stackIt.next();
+				stack = oldInv[i];
+				if (stack == null || lockedSlots[i] > rulePriority)
+					continue;
+				
 				itemName = SortButtonTree.getItemName(stack.itemID);
-				if (stack != null && SortButtonTree.matches(itemName, rule.getKeyword())) {
+				if (stack != null && SortButtonTree.matches(itemName, rule.getKeyword())
+						&& lockedSlots[i] < rulePriority) {
 					
 					// Try to put the matching item stack to a preferred position,
 					// theses positions being sorted by decreasing preference.
 					int[] preferredPos = rule.getPreferredPositions();
 					boolean checkedFilledPos = false;
-					for (int j = 0; j < preferredPos.length; j++) {
+					
+					j = -1;
+					while ((j = getNextSlot(preferredPos, j+1, rulePriority)) != -1) {
 						
 						wantedSlotStack = newInv[preferredPos[j]];
 						
 						// If the slot is free, no problem
 						if (wantedSlotStack == null) {
 							newInv[preferredPos[j]] = stack; // Put the stack in the new inventory!
+							log.info(SortButtonTree.getItemName(stack.itemID)+" put in "+preferredPos[j]+", "+i+" OK");
+							oldInv[i] = null;
 							newlyOrderedStacks.put(preferredPos[j], stack);
 							break;
 						}
@@ -162,6 +213,9 @@ public class SortButton {
 							if (stackToReplaceKey != null) {
 								newlyOrderedStacks.put(stackToReplaceKey, stack);
 								newInv[preferredPos[j]] = stack;
+								oldInv[i] = wantedSlotStack;
+								log.info(i+" OK (replace)");
+								log.info(SortButtonTree.getItemName(stack.itemID)+" replaces "+SortButtonTree.getItemName(wantedSlotStack.itemID));
 								stack = wantedSlotStack;
 							}
 							else {
@@ -171,28 +225,53 @@ public class SortButton {
 					}
 				}
 			}
-			
-			// Remove stacks placed during this rule from items to sort
-			remainingStacks.removeAll(newlyOrderedStacks.values());
+
 			newlyOrderedStacks.clear();
 		}
 		
+		// Locked stacks don't move
+		for (i = 0; i < oldInv.length; i++) {
+			if (oldInv[i] != null && newInv[i] == null && lockedSlots[i] > 0) {
+				log.info(SortButtonTree.getItemName(oldInv[i].itemID)+" doesn't move");
+				newInv[i] = oldInv[i];
+				oldInv[i] = null;
+				log.info(i+" OK (Locked)");
+			}
+		}
+
+		if (oldInv[8] != null)
+			log.info("!!!!"+SortButtonTree.getItemName(oldInv[8].itemID));
+		
 		// Put stuff without a found spot in any free spot,
 		// starting from top-left.
-		// TODO: Handle case where only < #9 spots are free
-		int index = 9;
-		stackIt = remainingStacks.iterator();
-		while (stackIt.hasNext()) {
-			while (index < INV_SIZE && newInv[index] != null) {
-				index++;
-			}
-			if (index < INV_SIZE) {
-				stack = stackIt.next();
-				newInv[index++] = stack;
-			}
-			else {
-				log.severe("Aborting sort: some items could not be placed. The algorithm seems broken!");
-				return;
+		// In two steps: first by skipping locked spots,
+		// then whatever spot it is, to avoid item loss
+		int[] levels = new int[]{0, Integer.MAX_VALUE};
+		for (j = 0; j < levels.length; j++) {
+			
+			int index = getNextSlot(0, levels[j]);
+			for (i = 0; i < oldInv.length; i++) {
+				
+				stack = oldInv[i];
+				if (stack == null || lockedSlots[i] > levels[j])
+					continue;
+				
+				// Look for an empty spot
+				while (newInv[ALL_SLOTS[index]] != null) {
+					index = getNextSlot(index+1, levels[j]);
+				}
+				
+				if (index != -1) {
+					newInv[ALL_SLOTS[index]] = stack;
+					index = getNextSlot(index+1, levels[j]); // Next spot
+					oldInv[i] = null;
+					log.info(i+" OK (remaining)");
+					log.info("Remaining : "+ALL_SLOTS[index]+" for "+SortButtonTree.getItemName(stack.itemID));
+				}
+				else if (j == levels.length) {
+					log.severe("Aborting sort: some items could not be placed. The algorithm seems broken!");
+					return;
+				}
 			}
 		}
 		
@@ -235,6 +314,29 @@ public class SortButton {
 			}
 	    	return false;
 		}
+    }
+
+    /**
+     * Returns next slot index, or -1.
+     * Uses the whole inventory, from top-left to down-right.
+     * Given and return integers are ALL_SLOTS indexes.
+     */
+    private int getNextSlot(int index, int rulePriority) {
+    	return getNextSlot(ALL_SLOTS, index, rulePriority); // TODO: Not locked first?
+    }
+    
+    /**
+     * Returns next slot index, or -1.
+     */
+    private int getNextSlot(int[] preffered, int index,
+    		int rulePriority) {
+    	int[] locked = config.getLockedSlots();
+    	while (preffered.length > index) {
+    		if (locked[preffered[index]] <= rulePriority)
+    			return index;
+    		index++;
+    	}
+    	return -1;
     }
     
     private static void showConfigErrors(SortButtonConfig config) {

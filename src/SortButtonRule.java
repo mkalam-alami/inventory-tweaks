@@ -38,60 +38,10 @@ public class SortButtonRule implements Comparable<SortButtonRule> {
 
 		this.keyword = keyword;
 		this.constraint = constraint;
+		this.type = getRuleType(constraint);
+		this.preferredPositions = getRulePreferredPositions(constraint);
 		
-		//// Define preferred positions 
-		
-		// Default values
-		int column = -1, row = -1;
-		boolean reverse = false;
-		
-		// Extract chars
-		for (int i = 0; i < constraint.length(); i++) {
-			char c = constraint.charAt(i);
-			if (c <= '9')
-				column = c-'1';
-			else if (c == 'r') {
-				reverse = true;
-			}
-			else {
-				switch (c) {
-					case 'A': row = 1; break;
-					case 'B': row = 2; break;
-					case 'C': row = 3; break;
-					case 'D': row = 0;
-				}
-			}
-		}
-		
-		// Tile case
-		if (column != -1 && row != -1) {
-			type = RuleType.TILE;
-			preferredPositions = new int[]{
-					index(row, column)
-				};
-		}
-		// Row case
-		else if (row != -1) {
-			type = RuleType.ROW;
-			preferredPositions = new int[9];
-			for (int i = 0; i < 9; i++) {
-				preferredPositions[i] = 
-					index(row, reverse ? 8-i : i);
-			}
-		}
-		// Column case
-		else {
-			type = RuleType.COLUMN;
-			preferredPositions = new int[]{
-				index(0, column),
-				index(3, column),
-				index(2, column),
-				index(1, column)
-			};
-		}
-		
-		//// Compute priority
-		
+		// Compute priority
 		// 1st criteria : the rule type
 		// 2st criteria : the keyword category depth
 		// 3st criteria : the item order in a same category
@@ -124,13 +74,6 @@ public class SortButtonRule implements Comparable<SortButtonRule> {
 	}
 	
 	/**
-	 * Inventory index (from 0 to 35), given a row and column
-	 */
-	private int index(int row, int column) {
-		return row*9+column;
-	}
-	
-	/**
 	 * Returns rule priority (for rule sorting)
 	 * @return
 	 */
@@ -145,6 +88,83 @@ public class SortButtonRule implements Comparable<SortButtonRule> {
 	@Override
 	public int compareTo(SortButtonRule o) {
 		return getPriority() - o.getPriority();
+	}
+	
+	/**
+	 * Inventory index (from 0 to 35), given a row and column
+	 */
+	private static int index(int row, int column) {
+		return row*9+column;
+	}
+	
+	public static int[] getRulePreferredPositions(String constraint) {
+
+		// Default values
+		int[] result;
+		int column = -1, row = -1;
+		boolean reverse = false;
+		
+		// Extract chars
+		for (int i = 0; i < constraint.length(); i++) {
+			char c = constraint.charAt(i);
+			if (c <= '9')
+				column = c-'1';
+			else if (c == 'r') {
+				reverse = true;
+			}
+			else {
+				switch (c) {
+					case 'A': row = 1; break;
+					case 'B': row = 2; break;
+					case 'C': row = 3; break;
+					case 'D': row = 0;
+				}
+			}
+		}
+		
+		// Tile case
+		if (column != -1 && row != -1) {
+			result = new int[]{
+					index(row, column)
+				};
+		}
+		// Row case
+		else if (row != -1) {
+			result = new int[9];
+			for (int i = 0; i < 9; i++) {
+				result[i] = 
+					index(row, reverse ? 8-i : i);
+			}
+		}
+		// Column case
+		else {
+			result = new int[]{
+				index(0, column),
+				index(3, column),
+				index(2, column),
+				index(1, column)
+			};
+		}
+		
+		return result;
+	}
+	
+	public static RuleType getRuleType(String constraint) {
+		
+		RuleType result = RuleType.TILE;
+		
+		if (constraint.length() == 1 ||
+				(constraint.length() == 2 && constraint.contains("r"))) {
+			constraint = constraint.replace("r", "");
+			if (constraint.getBytes()[0] <= '9')
+				result = RuleType.COLUMN; 
+			else {
+				result = RuleType.ROW; 
+			}
+		}
+		
+		return result;
+		
 	}
 
 }

@@ -54,13 +54,14 @@ public class SortButtonTree {
 		int currentLine = 0, level, id;
 		Map<Integer, SortButtonCategory> context =
 			new HashMap<Integer, SortButtonCategory>(DEFAULT_LEVEL_DEPTH);
+		SortButtonCategory existingCategory = null;
 		
 		while (currentLine < config.length) {
 
 			lineText = config[currentLine++];
 			String[] parts = lineText.split(" ");
 			
-			if (parts.length >= 0 && lineText.matches("[\\w ]*[\\w]")) {
+			if (parts.length >= 0 && lineText.matches("[\\w ]*[\\w][: ]*")) {
 				
 				// Line parsing
 				level = (parts.length-1)/2;
@@ -79,9 +80,14 @@ public class SortButtonTree {
 				
 				// Add item
 				if (id != -1) {
-					parentCat = context.get(level-1);
-					if (parentCat != null) {
-						parentCat.addItem(label, id);
+					if (existingCategory != null) {
+						existingCategory.addItem(label, id);
+					}
+					else {
+						parentCat = context.get(level-1);
+						if (parentCat != null) {
+							parentCat.addItem(label, id);
+						}
 					}
 					items.put(label, id);
 					itemsIds.put(id, label);
@@ -89,21 +95,26 @@ public class SortButtonTree {
 				
 				// Add category
 				else {
-					newCat = new SortButtonCategory(label);
-					if (level == 0) {
-						rootName = label;
-					}
-					else {
-						parentCat = context.get(level-1);
-						if (parentCat != null) {
-							parentCat.addCategory(newCat);	
+					existingCategory = getCategory(label);
+					if (existingCategory == null) {
+						newCat = new SortButtonCategory(label);
+						if (level == 0) {
+							rootName = label;
 						}
+						else {
+							parentCat = context.get(level-1);
+							if (parentCat != null) {
+								parentCat.addCategory(newCat);	
+							}
+						}
+						context.put(level, newCat);
+						categories.put(label, newCat);
 					}
-					context.put(level, newCat);
-					categories.put(label, newCat);
 				}
 			}
 		}
+		
+		//log(getRootCategory(), 0);
 	}
 
 	/**
@@ -184,6 +195,10 @@ public class SortButtonTree {
 
 	public static boolean containsItem(String name) {
 		return items.containsKey(name);
+	}
+	
+	public static boolean containsCategory(String name) {
+		return categories.containsKey(name);
 	}
 
 	public static Integer getItemValue(String name) {

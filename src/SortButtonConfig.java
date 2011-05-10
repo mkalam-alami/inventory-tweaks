@@ -11,10 +11,12 @@ public class SortButtonConfig {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("ModSortButton SortButtonConfig");
+	private static final String LOCKED = "LOCKED";
 	
 	private String file;
-	Vector<SortButtonRule> rules = new Vector<SortButtonRule>();
-	Vector<String> invalidKeywords = new Vector<String>();
+	private int[] lockedSlots;
+	private Vector<SortButtonRule> rules = new Vector<SortButtonRule>();
+	private Vector<String> invalidKeywords = new Vector<String>();
 	
 	/**
 	 * Creates a new configuration holder.
@@ -22,6 +24,10 @@ public class SortButtonConfig {
 	 */
 	public SortButtonConfig(String file) {
 		this.file = file;
+		this.lockedSlots = new int[SortButton.INV_SIZE];
+		for (int i = 0; i < this.lockedSlots.length; i++) {
+			this.lockedSlots[i] = 0;
+		}
 	}
 	
 	public Vector<SortButtonRule> getRules() {
@@ -33,6 +39,14 @@ public class SortButtonConfig {
 	 */
 	public Vector<String> getInvalidKeywords() {
 		return invalidKeywords;
+	}
+	
+	/**
+	 * @return The locked slots array with locked priorities.
+	 * Not a copy.
+	 */
+	public int[] getLockedSlots() {
+		return lockedSlots;
 	}
 
 	/**
@@ -65,21 +79,35 @@ public class SortButtonConfig {
 			if (lineText.matches("^([A-D]|[1-9]|[r]){1,2} [\\w]*$")) {
 				String[] words = lineText.split(" ");
 				if (words.length == 2) {
-					keyword = words[1].toLowerCase();
-					if (SortButtonTree.isKeywordValid(keyword)) {
-						newRule = new SortButtonRule(words[0], keyword);
-						rules.add(newRule);
+					
+					// Locking rule
+					if (words[1].equals(LOCKED)) {
+						int[] newLockedSlots = SortButtonRule.
+								getRulePreferredPositions(words[0]);
+						int lockPriority = SortButtonRule.getRuleType(words[0]).getPriority();
+						for (int i = 0; i < newLockedSlots.length; i++) {
+							lockedSlots[i] = lockPriority;
+						}
 					}
-					else if (keyword.endsWith("s") // Tolerate plurals
-							&& SortButtonTree.isKeywordValid(
-									keyword.substring(0, keyword.length()-2))) {
-						newRule = new SortButtonRule(
-								words[0],
-								keyword.substring(0, keyword.length()-2));
-						rules.add(newRule);
-					}
+					
+					// Standard rule
 					else {
-						invalidKeywords.add(words[1]);
+						keyword = words[1].toLowerCase();
+						if (SortButtonTree.isKeywordValid(keyword)) {
+							newRule = new SortButtonRule(words[0], keyword);
+							rules.add(newRule);
+						}
+						else if (keyword.endsWith("s") // Tolerate plurals
+								&& SortButtonTree.isKeywordValid(
+										keyword.substring(0, keyword.length()-2))) {
+							newRule = new SortButtonRule(
+									words[0],
+									keyword.substring(0, keyword.length()-2));
+							rules.add(newRule);
+						}
+						else {
+							invalidKeywords.add(words[1]);
+						}
 					}
 				}
 			}

@@ -6,9 +6,7 @@
 
 ====== [ SETTINGS ] ======
 
-D1 swordStone
-1 swords
-A stuff
+D LOCKED
 
 ======== [ HELP ] ========
 
@@ -24,7 +22,10 @@ A stuff
 # You can use any of the keywords found in the ModSortButtonTree.txt file.
 
 # MODIFIERS
-# r = Reverse sort order for a row/column (ex: "Ar sword")
+
+# SPECIAL RULES
+# 'r' modifier = Reverse sort order for a row/column (ex: "Ar sword")
+# LOCKED keyword = Locks a part of the inventory so that stuff doesn't go there (ex: "D LOCKED"). Is overrided by more specific rules ("D LOCKED" is overrided by "D1 swords")
 
 # INVENTORY GRID
 #     1   2   3   4   5   6   7   8   9

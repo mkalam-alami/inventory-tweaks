@@ -2,7 +2,6 @@ package net.minecraft.src;
 
 import org.lwjgl.input.Keyboard;
 
-
 /**
  * Allows to sort one's inventory with a single key.
  * @author Jimeo Wan (jimeo.wan at gmail.com)

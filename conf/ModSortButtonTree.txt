@@ -18,50 +18,50 @@
 # ----------
 
 stuff
-  items
+  item
     equipment
-      weapons
-        swords
-      tools
-        pickaxes
-        shovels
-        axes
-        hoes
+      weapon
+        sword
+      tool
+        pickaxe
+        shovel
+        axe
+        hoe
       armor
-        helmets
-        chestplates
+        helmet
+        chestplate
         leggings
         boots
-    materials
-      miningMaterials
-        ingots
-        dusts
-      huntingMaterials
-      farmingMaterials
-    vehicles
-      minecarts
+    material
+      miningMaterial
+        ingot
+        dust
+      huntingMaterial
+      farmingMaterial
+    vehicle
+      minecart
     food
       edibleFood
-        porkchops
-        fishes
+        porkchop
+        fish
       unedibleFood
-    plants
-    decorations
-      doors
-  blocks
-    naturalBlocks
-      stones
-      sands
-      ores
+    plant
+    decoration
+      door
+  block
+    naturalBlock
+      stone
+      sand
+      ore
     utility
-    plants
-    oreBlocks
+    plant
+    oreBlock
     
 # --------------
 # BLOCKS & ITEMS
 # --------------    
   
-miningMaterials
+miningMaterial
   coal 263
   charcoal 263
   diamondGem 264
@@ -70,15 +70,15 @@ miningMaterials
   flint 318
   stick 280
 
-ingots
+ingot
   goldIngot 266
   ironIngot 265
 
-dusts 
+dust
   redstoneDust 331
   glowstoneDust 348
 
-huntingMaterials
+huntingMaterial
   bone 352
   leather 334
   string 287
@@ -86,14 +86,14 @@ huntingMaterials
   gunpowder 289
   slimeball 341
   
-farmingMaterials
+farmingMaterial
   paper 339
   book 340
 
-vehicles
+vehicle
   boat 333
       
-minecarts
+minecart
   minecart 328
   poweredMinecart 343
   storageMinecart 342
@@ -105,11 +105,11 @@ edibleFood
   appleGolden 322
   appleRed 260
 
-porkchops
+porkchop
   porkchopCooked 320
   porkchopRaw 319
   
-fishes
+fish
   fishCooked 350
   fishRaw 349
   
@@ -120,7 +120,7 @@ unedibleFood
   milk 335
   sugar 353
  
-plants
+plant
   flowerYellow 37
   dandelion 37
   flowerRed 38
@@ -131,8 +131,14 @@ plants
   seeds 59
   seed 59
   sugarCane 83
+  cactus 81
+  sugarCane 83
+  reed 83
+  pumpkin 86
+  sapling 6
+  leaves 18
   
-items
+item
   dye 351
   bowl 281
   bucket 325
@@ -142,7 +148,7 @@ items
   flintAndSteel 259
   saddle 329
       
-decorations
+decoration
   bed 355
   painting 321
   painting 321
@@ -150,11 +156,11 @@ decorations
   musicDiscGreen 2257
   musicDiscGold 2256
         
-doors 
+door
   doorIron 71
   doorWood 64
         
-naturalBlocks
+naturalBlock
   wood 
   dirt 3
   gravel 13
@@ -168,16 +174,16 @@ naturalBlocks
   lava 11
   air 0
       
-stones
+stone
   cobblestone 4
   stone 1
   mossStone 48
   
-sands
+sand
   sand 12
   sandStone 24
       
-ores
+ore
   oreIron 15
   oreGold 14
   oreCoal 16
@@ -195,26 +201,18 @@ utility
   jukebox 84
   tnt 46
 
-plants
-  cactus 81
-  sugarCane 83
-  reed 83
-  pumpkin 86
-  sapling 6
-  leaves 18
-
-oreBlocks
+oreBlock
   diamond 57
   gold 41
   iron 42
   lapisLazuli 22
       
-weapons
+weapon
   arrow 262
   bow 261
   snowball 332
 
-swords
+sword
   swordIron 267
   swordDiamond 276
   swordStone 272
@@ -224,42 +222,42 @@ swords
   bow 261
   snowball 332
 
-pickaxes
+pickaxe
   pickaxeIron 257
   pickaxeDiamond 278
   pickaxeStone 274
   pickaxeGold 285
   pickaxeWood 270
 
-shovels
+shovel
   shovelIron 256
   shovelDiamond 277
   shovelStone 273
   shovelGold 284
   shovelWood 269
 
-axes
+axe
   axeIron 258
   axeDiamond 279
   axeStone 275
   axeGold 284
   axeWood 271
 
-hoes
+hoe
   hoeIron 291
   hoeDiamond 293
   hoeStone 292
   hoeGold 294
   hoeWood 290
   
-helmets
+helmet
   helmetChain 302
   helmetDiamond 310
   helmetIron 306
   helmetGold 314
   helmetLeather 298
 
-chestplates
+chestplate
   chestplateChain 303
   chestplateDiamond 311
   chestplateIron 307

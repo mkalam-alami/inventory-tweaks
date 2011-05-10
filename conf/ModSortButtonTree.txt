@@ -180,19 +180,92 @@ stuff
         cobblestone 4
         stone 1
         mossStone 48
+      wood
       dirt 3
       sands
         sand 12
         sandStone 24
       gravel 13
+      ores
+        oreIron 15
+        oreGold 14
+        oreCoal 16
+        oreRedstone 73
+        oreRedstoneGlowing 74
+        oreLapisLazuli 21
+        oreDiamond
       clayBlock 82
       obsidian 49
-      bedrock 7
       monsterSpawner 52
-      
-    liquids
-      water 8
-      water 9
-      lava 10
-      lava 11
+      bedrock 7
+      liquids
+        water 8
+        water 9
+        lava 10
+        lava 11
+      air 0
     
+    utility
+      craftingTable 58
+      furnace 61
+      furnaceBurning 62
+      chest 54
+      bed 26
+      jukebox 84
+      tnt 46
+    
+    plants
+      cactus 81
+      sugarCane 83
+      reed 83
+      pumpkin 86
+      sapling 6
+      leaves 18
+
+    oreBlocks
+      diamond 57
+      gold 41
+      iron 42
+      lapisLazuli 22
+
+    woodenPlank
+    brick
+    brickBlock
+    glass
+    bookShelf
+    weel
+    snow
+    snowBlock
+    stairsWood
+    stairsStone
+    slabWood
+    slabSandstone
+    slabStone
+    slabCobblestone
+    ladder
+    fence
+    farmland
+    jackOLantern
+    rails
+    railsPowered
+    railsDetector
+    level
+    pressurePlateWood
+    pressurePlateStone
+    stoneButton
+    doorWood
+    doorIron
+    redstoneWire
+    redstoneTorch
+    redstoneRepeater
+    disenser
+    note
+    noteBlock
+    torch
+    sign
+    web
+    portal
+    glowstone
+    glowstoneBlock
+    netherrack
+    soulSand

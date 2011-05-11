@@ -168,6 +168,11 @@ public class SortButtonTree {
 		
 	}
 	
+	public static int getItemPriority(int id) {
+		String keyword = getItemName(id);
+		return (keyword == null) ? 0 : getKeywordPriority(getItemName(id));
+	}
+	
 	public static int getKeywordPriority(String keyword) {
 		try {
 			return SortButtonTree.getRootCategory().getKeywordPriority(keyword);

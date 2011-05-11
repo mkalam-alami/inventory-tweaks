@@ -161,7 +161,7 @@ door
   doorWood 64
         
 naturalBlock
-  wood 
+  wood 17
   dirt 3
   gravel 13
   clayBlock 82

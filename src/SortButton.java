@@ -41,7 +41,7 @@ public class SortButton {
     	
     	// Slot order init
     	for (int i = 0; i < ALL_SLOTS.length; i++) {
-    		ALL_SLOTS[i] = (i + 9) % 36;
+    		ALL_SLOTS[i] = (i + 9) % INV_SIZE;
     	}
 
 		// Get Minecraft instance
@@ -184,7 +184,7 @@ public class SortButton {
 											SortButtonTree.getItemName(oldInv[preferredPos[j]].itemID),
 											rule.getKeyword())))) {
 							newInv[preferredPos[j]] = stack; // Put the stack in the new inventory!
-							//log.info(SortButtonTree.getItemName(stack.itemID)+" put in "+preferredPos[j]+", "+i+" OK");
+							log.info(SortButtonTree.getItemName(stack.itemID)+i+" put in "+preferredPos[j]+", "+i+" OK");
 							oldInv[i] = null;
 							newlyOrderedStacks.put(preferredPos[j], stack);
 							break;
@@ -192,12 +192,20 @@ public class SortButton {
 						
 						else if (wantedSlotStack != null) {
 							
+							if (newInv[preferredPos[j]].itemID == stack.itemID
+									&& lockedSlots[i] == lockedSlots[preferredPos[j]]) {
+								mergeStacks(stack, newInv[preferredPos[j]]);
+								if (stack.stackSize == 0) {
+									oldInv[i] = stack = null;
+								}
+							}
+							
 							// If the slot is occupied, check (once) if the item
 							// can replace one of the already put items. This
 							// can be done if both constraints are respected:
 							// * The item to replace has been put using the same rule
 							// * The item to replace has a lower item priority
-							if (!checkedFilledPos) {
+							if (stack != null && !checkedFilledPos) {
 								
 								Integer stackToReplaceKey = null;
 								for (Integer stackKey : newlyOrderedStacks.keySet()) {
@@ -232,10 +240,18 @@ public class SortButton {
 		
 		// Locked stacks don't move
 		for (i = 0; i < oldInv.length; i++) {
-			if (oldInv[i] != null && newInv[i] == null && lockedSlots[i] > 0) {
-				//log.info(SortButtonTree.getItemName(oldInv[i].itemID)+" doesn't move");
-				newInv[i] = oldInv[i];
-				oldInv[i] = null;
+			if (oldInv[i] != null && lockedSlots[i] > 0) {
+				if (newInv[i] == null) {
+					log.info(SortButtonTree.getItemName(oldInv[i].itemID)+" doesn't move");
+					newInv[i] = oldInv[i];
+					oldInv[i] = null;
+				}
+				else if (newInv[i].itemID == oldInv[i].itemID) {
+					mergeStacks(oldInv[i], newInv[i]);
+					if (oldInv[i].stackSize == 0) {
+						oldInv[i] = null;
+					}
+				}
 			}
 		}
 
@@ -244,29 +260,65 @@ public class SortButton {
 		// In two steps: first by skipping locked spots,
 		// then whatever spot it is, to avoid item loss
 		
-		// TODO Sort by item priority order
+		int[] levels = new int[]{1, Integer.MAX_VALUE};
+		int stackPriority, index;
+		boolean emptySlotFound;
 		
-		int[] levels = new int[]{0, Integer.MAX_VALUE};
 		for (j = 0; j < levels.length; j++) {
 			
-			int index = getNextSlot(0, levels[j]);
 			for (i = 0; i < oldInv.length; i++) {
-				
+
 				stack = oldInv[i];
 				if (stack == null || lockedSlots[i] > levels[j])
 					continue;
+				stackPriority = SortButtonTree.getItemPriority(stack.itemID);
+				index = -1;
 				
 				// Look for an empty spot
-				while (newInv[ALL_SLOTS[index]] != null) {
+				emptySlotFound = false;
+				while (!emptySlotFound) {
 					index = getNextSlot(index+1, levels[j]);
+					if (newInv[ALL_SLOTS[index]] != null) {
+						
+						// Try to merge if same item
+						if (newInv[ALL_SLOTS[index]].itemID == stack.itemID &&
+								lockedSlots[i] == lockedSlots[ALL_SLOTS[index]]) {
+							mergeStacks(stack, newInv[ALL_SLOTS[index]]);
+							if (stack.stackSize == 0) {
+								log.info("Merged (" +lockedSlots[i]+"="+lockedSlots[ALL_SLOTS[index]]+") : "+SortButtonTree.getItemName(stack.itemID)+i+" to "+ALL_SLOTS[index]);
+								oldInv[i] = null;
+								stack = null;
+								break;
+							}
+						}
+						
+						wantedSlotStack = newInv[ALL_SLOTS[index]];
+						
+						// Swap items, then restart search
+						if (stackPriority > SortButtonTree.
+								getItemPriority(wantedSlotStack.itemID) &&
+								lockedSlots[i] == lockedSlots[ALL_SLOTS[index]]) {
+							log.info("Swapping : "+SortButtonTree.getItemName(stack.itemID)+i+" goes to "+ALL_SLOTS[index]);
+							newInv[ALL_SLOTS[index]] = stack;
+							oldInv[i] = wantedSlotStack;
+							
+							// TODO: Refactoring
+							stack = wantedSlotStack;
+							stackPriority = SortButtonTree.getItemPriority(stack.itemID);
+							index = -1;
+						}
+					}
+					else {
+						emptySlotFound = true;
+					}
 				}
 				
+				// Empty spot found
 				if (stack != null) {
 					if (index != -1) {
 						newInv[ALL_SLOTS[index]] = stack;
-						index = getNextSlot(index+1, levels[j]); // Next spot
 						oldInv[i] = null;
-						//log.info("Remaining : "+ALL_SLOTS[index]+" for "+SortButtonTree.getItemName(stack.itemID));
+						log.info("Remaining : "+ALL_SLOTS[index]+" for "+SortButtonTree.getItemName(stack.itemID));
 					}
 					else if (j == levels.length) {
 						log.severe("Aborting sort: some items could not be placed. The algorithm seems broken!");
@@ -290,12 +342,10 @@ public class SortButton {
     	
     	if (currentStackId != storedStackId) {
     		InventoryPlayer inventory = mc.thePlayer.inventory;
-    		log.info("hum?");
 	    	if (storedPosition != inventory.currentItem) { // Filter selection change
 	    		storedPosition = inventory.currentItem;
 	    	} else if (currentStackId == 0 &&
 	    			inventory.getItemStack() == null) { // Filter item pickup
-	    		log.info("AHA !!!");
 	    		ItemStack candidateStack;
 	    		for (int i = 0; i < INV_SIZE; i++) {
 	    			// Look only for an exactly matching ID

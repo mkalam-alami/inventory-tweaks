@@ -48,6 +48,10 @@ public class SortButtonConfig {
 	public int[] getLockedSlots() {
 		return lockedSlots;
 	}
+	
+	public boolean isAutoReplaceEnabled() {
+		return true; // TODO
+	}
 
 	/**
 	 * WARNING: Currently not thread-safe

@@ -29,10 +29,11 @@ public class SortButton {
 	public static int[] ALL_SLOTS = new int[INV_SIZE];
 
     private SortButtonConfig config = null;
-    
     private long lastKeyPress = 0;
     private int keyPressDuration = 0;
     private boolean configErrorsShown = false;
+	private int storedStackId = 0, storedPosition = -1;
+    private Minecraft mc;
     
     public SortButton() {
 
@@ -42,10 +43,13 @@ public class SortButton {
     	for (int i = 0; i < ALL_SLOTS.length; i++) {
     		ALL_SLOTS[i] = (i + 9) % 36;
     	}
+
+		// Get Minecraft instance
+    	mc = ModLoader.getMinecraftInstance();
     	
     	// Load config files
 		tryLoading(true);
-		
+    	
     	log.info("Mod initialized");
     	
     }
@@ -53,7 +57,7 @@ public class SortButton {
 	/**
 	 * Sort inventory
 	 */
-    public final void onButtonPressed()
+    public final void onSortButtonPressed()
     {
     	// Do nothing if config loading failed
     	if (config == null) {
@@ -84,8 +88,6 @@ public class SortButton {
 			configErrorsShown = true;
     	}
     	
-    	Minecraft mc = ModLoader.getMinecraftInstance();
-		
     	// Do nothing if the inventory is closed
     	// if (!mc.currentScreen instanceof GuiContainer)
     	//		return;
@@ -106,6 +108,7 @@ public class SortButton {
 			
 			stack = oldInv[i];
 			if (stack != null) {
+				
 				search = 0;
 				while (stack != null &&
 						(j = itemIDs.indexOf(stack.itemID, search)) != -1) {
@@ -276,6 +279,37 @@ public class SortButton {
 		// Done!
 		mc.thePlayer.inventory.mainInventory = newInv;
     		
+    }
+    
+    public void onTick() {
+
+		// Auto-replace item stack
+    	
+    	ItemStack currentStack = mc.thePlayer.getCurrentEquippedItem();
+    	int currentStackId = (currentStack == null) ? 0 : currentStack.itemID;
+    	
+    	if (currentStackId != storedStackId) {
+    		InventoryPlayer inventory = mc.thePlayer.inventory;
+    		log.info("hum?");
+	    	if (storedPosition != inventory.currentItem) { // Filter selection change
+	    		storedPosition = inventory.currentItem;
+	    	} else if (currentStackId == 0 &&
+	    			inventory.getItemStack() == null) { // Filter item pickup
+	    		log.info("AHA !!!");
+	    		ItemStack candidateStack;
+	    		for (int i = 0; i < INV_SIZE; i++) {
+	    			// Look only for an exactly matching ID
+	    			candidateStack = inventory.mainInventory[i];
+	    			if (candidateStack != null && candidateStack.itemID == storedStackId) {
+	    				inventory.mainInventory[i] = null;
+	    				inventory.mainInventory[inventory.currentItem] = candidateStack;
+	    				break;
+	    			}
+	    		}
+	    	}
+	    	storedStackId = currentStackId;
+    	}
+    	
     }
     
     /**

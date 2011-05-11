@@ -1,5 +1,7 @@
 package net.minecraft.src;
 
+import net.minecraft.client.Minecraft;
+
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -21,6 +23,9 @@ public class mod_SortButton extends BaseMod {
     	// Register customizable custom key
     	ModLoader.RegisterKey(this, myKey, true);
     	
+    	// Register OnTickInGame event
+    	ModLoader.SetInGameHook(this, true, true);
+    	
     	instance = new SortButton();
     }
     
@@ -34,7 +39,13 @@ public class mod_SortButton extends BaseMod {
 	 */
     public final void KeyboardEvent(KeyBinding keybinding)
     {
-    	instance.onButtonPressed();
+    	instance.onSortButtonPressed();
+    }
+    
+
+    public void OnTickInGame(Minecraft minecraft)
+    {
+    	instance.onTick();
     }
 
 }

@@ -99,10 +99,6 @@ public class InvTweaks {
     	catch (Exception e) {
     		log.severe("Sort failed: "+e.getMessage());
     	}
-    	
-    	// XXX Testing
-    	if (mc.thePlayer.isJumping)
-    		generateRandomInventory();
     		
     }
     
@@ -227,19 +223,5 @@ public class InvTweaks {
 			return false;
 		}
    	}
-    
-    /**
-     * For testing
-     */
-    private void generateRandomInventory() {
-    	Random r = new Random();
-    	ItemStack[] inv = mc.thePlayer.inventory.mainInventory;
-    	for (int i = 0; i < INV_SIZE; i++) {
-    		if (r.nextInt() % 2 > 0) {
-    			inv[i] = new ItemStack(r.nextInt() % 300, 1, 0);
-    			inv[i].stackSize = r.nextInt() % inv[i].getMaxStackSize();
-    		}
-    	}
-    }
     
 }

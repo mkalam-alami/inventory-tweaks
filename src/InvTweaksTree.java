@@ -10,18 +10,17 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class InvTweaksTree {
-	
-    private static final Logger log = Logger.getLogger("ModSortButton SortButtonTree");
 
-    private static final int DEFAULT_ITEM_COUNT = 500;
-    private static final int DEFAULT_LEVEL_DEPTH = 5;
+    public static final int MAX_LEVEL_DEPTH = 7;
+	
+    private static final Logger log = Logger.getLogger("InvTweaksTree");
     
 	private static final Map<String, InvTweaksCategory> categories =
 		new HashMap<String, InvTweaksCategory>();
-	private static final Map<String, Integer> items =
-		new HashMap<String, Integer>();
-	private static final Map<Integer, String> itemsIds = 
-		new HashMap<Integer, String>(DEFAULT_ITEM_COUNT);
+	private static final Map<String, InvTweaksItem> itemsByName =
+		new HashMap<String, InvTweaksItem>();
+	private static final Map<Integer, InvTweaksItem> itemsById = 
+		new HashMap<Integer, InvTweaksItem>(500);
 
 	private static String rootName;
 	
@@ -33,8 +32,8 @@ public class InvTweaksTree {
 		
 		// Reset tree
 		categories.clear();
-		items.clear();
-		itemsIds.clear();
+		itemsByName.clear();
+		itemsById.clear();
 		
 		// Read file
 		File f = new File(file);
@@ -51,71 +50,65 @@ public class InvTweaksTree {
 		// Init
 		InvTweaksCategory parentCat, newCat;
 		String lineText, label;
-		int currentLine = 0, level, id;
+		int level, id;
 		Map<Integer, InvTweaksCategory> context =
-			new HashMap<Integer, InvTweaksCategory>(DEFAULT_LEVEL_DEPTH);
-		InvTweaksCategory existingCategory = null;
+			new HashMap<Integer, InvTweaksCategory>(MAX_LEVEL_DEPTH);
 		
-		while (currentLine < config.length) {
-
-			lineText = config[currentLine++];
+		for (int currentLine = 0; currentLine < config.length; currentLine++) {
+			
+			lineText = config[currentLine];
 			String[] parts = lineText.split(" ");
 			
-			if (parts.length >= 0 && lineText.matches("[\\w ]*[\\w][: ]*")) {
+			if (parts.length >= 0 && lineText.matches("^[\\w ]*[\\w]$")) {
 				
-				// Line parsing
-				level = (parts.length-1)/2;
-				label = parts[parts.length-1].toLowerCase();
-				id = -1;
-				if (label.matches("^[0-9]*$")) {
+				// Item
+				if (parts[parts.length-1].matches("^[0-9]*$")) { 
+					
 					if (parts.length >= 2) {
+						// Parsing
 						label = parts[parts.length-2];
 						id = Integer.valueOf(parts[parts.length-1]);
 						level = (parts.length-2)/2;
+						
+						// Adding
+						parentCat = context.get(level-1);
+						if (parentCat != null) {
+							InvTweaksItem newItem = new InvTweaksItem(label, id, currentLine);
+							parentCat.addItem(newItem);
+							itemsByName.put(label, newItem);
+							itemsById.put(id, newItem);
+						}
 					}
-					else {
-						continue;
-					}
+					
 				}
 				
-				// Add item
-				if (id != -1) {
-					if (existingCategory != null) {
-						existingCategory.addItem(label, id);
+				// Category
+				else {
+					
+					// Parsing
+					level = (parts.length-1)/2;
+					label = parts[parts.length-1].toLowerCase();
+					id = -1;
+					
+					// Adding
+					newCat = new InvTweaksCategory(label);
+					if (level == 0 && rootName == null) {
+						rootName = label;
 					}
 					else {
 						parentCat = context.get(level-1);
 						if (parentCat != null) {
-							parentCat.addItem(label, id);
+							parentCat.addCategory(newCat);	
 						}
 					}
-					items.put(label, id);
-					itemsIds.put(id, label);
+					context.put(level, newCat);
+					categories.put(label, newCat);
 				}
 				
-				// Add category
-				else {
-					existingCategory = getCategory(label);
-					if (existingCategory == null) {
-						newCat = new InvTweaksCategory(label);
-						if (level == 0) {
-							rootName = label;
-						}
-						else {
-							parentCat = context.get(level-1);
-							if (parentCat != null) {
-								parentCat.addCategory(newCat);	
-							}
-						}
-						context.put(level, newCat);
-						categories.put(label, newCat);
-					}
-				}
 			}
 		}
-		
-		log(getRootCategory(), 0);
 	}
+	
 
 	/**
 	 * Checks if the given keyword is valid (i.e. represents either
@@ -125,8 +118,7 @@ public class InvTweaksTree {
 	 */
 	public static final boolean isKeywordValid(String keyword) {
 		// Is the keyword an item?
-		Integer keywordItem = InvTweaksTree.getItemValue(keyword);
-		if (keywordItem != null) {
+		if (containsItem(keyword)) {
 			return true;
 		}
 		
@@ -168,18 +160,18 @@ public class InvTweaksTree {
 		
 	}
 	
-	public static int getItemPriority(int id) {
-		String keyword = getItemName(id);
-		return (keyword == null) ? 0 : getKeywordPriority(getItemName(id));
-	}
-	
-	public static int getKeywordPriority(String keyword) {
-		try {
-			return InvTweaksTree.getRootCategory().getKeywordPriority(keyword);
-		}
-		catch (NullPointerException e) {
-			log.severe("The root category is missing: " + e.getMessage());
-			return -1;
+	public static int getKeywordOrder(String keyword) {
+		InvTweaksItem item = InvTweaksTree.getItem(keyword);
+		if (item != null)
+			return item.getOrder();
+		else {
+			try {
+				return InvTweaksTree.getRootCategory().findCategoryOrder(keyword);
+			}
+			catch (NullPointerException e) {
+				log.severe("The root category is missing: " + e.getMessage());
+				return -1;
+			}
 		}
 	}
 	
@@ -199,20 +191,20 @@ public class InvTweaksTree {
 	}
 
 	public static boolean containsItem(String name) {
-		return items.containsKey(name);
+		return itemsByName.containsKey(name);
 	}
 	
 	public static boolean containsCategory(String name) {
 		return categories.containsKey(name);
 	}
 
-	public static Integer getItemValue(String name) {
-		return items.get(name);
+	public static InvTweaksItem getItem(int id) {
+		return itemsById.get(id);
 	}
-
-	public static String getItemName(int itemID) {
-		return itemsIds.get(itemID);
-	}	
+	
+	public static InvTweaksItem getItem(String name) {
+		return itemsByName.get(name);
+	}
 	
 	/**
 	 * For debug purposes.
@@ -231,8 +223,8 @@ public class InvTweaksTree {
 			log(subCategory, indentLevel + 1);
 		}
 		
-		for (String item : category.getItems()) {
-			log.info(logIdent + "  " + item + " " + getItemValue(item));
+		for (InvTweaksItem item : category.getItems()) {
+			log.info(logIdent + "  " + item + " " + item.getId());
 		}
 		
 	}

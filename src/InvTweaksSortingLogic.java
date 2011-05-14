@@ -62,9 +62,10 @@ public class InvTweaksSortingLogic {
 
 		Vector<Integer> itemIDs = new Vector<Integer>();
 		ItemStack stack;
-		int search, i, j;
+		int search, i, j, k;
 		
-		for (i = 0; i < oldInv.length; i++) {
+		for (k = 0; k < oldInv.length; k++) {
+			i = ALL_SLOTS[k];
 			
 			stack = oldInv[i];
 			if (stack != null) {
@@ -100,7 +101,7 @@ public class InvTweaksSortingLogic {
 		ItemStack wantedSlotStack;
 		String itemName;
 		ItemStack stack;
-		int rulePriority, i, j;
+		int rulePriority, i, j, k;
 		
 		// Sort rule by rule, themselves being already sorted by decreasing priority
 		while (rulesIt.hasNext()) {
@@ -111,13 +112,14 @@ public class InvTweaksSortingLogic {
 				log.info("Rule : "+rule.getKeyword());
 			
 			// Look for item stacks that match the rule
-			for (i = 0; i < oldInv.length; i++) {
+			for (k = 0; k < oldInv.length; k++) {
+				i = ALL_SLOTS[k];
 				
 				stack = oldInv[i];
 				if (stack == null || lockedSlots[i] > rulePriority)
 					continue;
 				
-				itemName = InvTweaksTree.getItemName(stack.itemID);
+				itemName = InvTweaksTree.getItem(stack.itemID).getName();
 				if (stack != null && InvTweaksTree.matches(itemName, rule.getKeyword())
 						&& lockedSlots[i] < rulePriority) {
 					
@@ -137,11 +139,11 @@ public class InvTweaksSortingLogic {
 								&& (lockedSlots[i] > lockedSlots[preferredPos[j]]
 									|| oldInv[preferredPos[j]] == null
 									|| (InvTweaksTree.matches(
-											InvTweaksTree.getItemName(oldInv[preferredPos[j]].itemID),
+											InvTweaksTree.getItem(oldInv[preferredPos[j]].itemID).getName(),
 											rule.getKeyword())))) {
 							newInv[preferredPos[j]] = stack; // Put the stack in the new inventory!
 							if (logging)
-								log.info(InvTweaksTree.getItemName(stack.itemID)+i+" put in "+preferredPos[j]+", "+i+" OK");
+								log.info(InvTweaksTree.getItem(stack.itemID)+" ("+i+") put in "+preferredPos[j]+", "+i+" OK");
 							oldInv[i] = null;
 							newlyOrderedStacks.put(preferredPos[j], stack);
 							break;
@@ -162,9 +164,11 @@ public class InvTweaksSortingLogic {
 								
 								Integer stackToReplaceKey = null;
 								for (Integer stackKey : newlyOrderedStacks.keySet()) {
-									if (InvTweaksTree.getKeywordPriority(
-											InvTweaksTree.getItemName(newlyOrderedStacks.get(stackKey).itemID))
-										< InvTweaksTree.getKeywordPriority(itemName)) {
+									if (InvTweaksTree.getKeywordOrder(itemName) <
+										InvTweaksTree.getKeywordOrder(
+											InvTweaksTree.getItem(
+												newlyOrderedStacks.get(stackKey).itemID
+											).getName())) {
 										stackToReplaceKey = stackKey;
 										break;
 									}
@@ -177,7 +181,7 @@ public class InvTweaksSortingLogic {
 									newInv[preferredPos[j]] = stack;
 									oldInv[i] = wantedSlotStack;
 									if (logging)
-										log.info(InvTweaksTree.getItemName(stack.itemID)+" replaces "+InvTweaksTree.getItemName(wantedSlotStack.itemID));
+										log.info(InvTweaksTree.getItem(stack.itemID)+" replaces "+InvTweaksTree.getItem(wantedSlotStack.itemID));
 									stack = wantedSlotStack;
 								}
 								else {
@@ -202,7 +206,7 @@ public class InvTweaksSortingLogic {
 			if (oldInv[i] != null && lockedSlots[i] > 0) {
 				if (newInv[i] == null) {
 					if (logging)
-						log.info(InvTweaksTree.getItemName(oldInv[i].itemID)+" doesn't move");
+						log.info(InvTweaksTree.getItem(oldInv[i].itemID)+" doesn't move");
 					newInv[i] = oldInv[i];
 					oldInv[i] = null;
 				}
@@ -228,17 +232,18 @@ public class InvTweaksSortingLogic {
 		
 		ItemStack stack, wantedSlotStack;
 		int[] levels = new int[]{0, Integer.MAX_VALUE};
-		int stackPriority, index, i,j;
+		int stackOrder, index, i, j, k;
 		boolean emptySlotFound;
 		
 		for (j = 0; j < levels.length; j++) {
 			
-			for (i = 0; i < oldInv.length; i++) {
+			for (k = 0; k < oldInv.length; k++) {
+				i = ALL_SLOTS[k];
 
 				stack = oldInv[i];
 				if (stack == null || lockedSlots[i] > levels[j])
 					continue;
-				stackPriority = InvTweaksTree.getItemPriority(stack.itemID);
+				stackOrder = InvTweaksTree.getItem(stack.itemID).getOrder();
 				index = -1;
 				
 				// Look for an empty spot
@@ -251,7 +256,7 @@ public class InvTweaksSortingLogic {
 						if (mergeStacks(stack, i,
 								newInv[ALL_SLOTS[index]], ALL_SLOTS[index])) {
 							if (logging)
-								log.info("Merged (" +lockedSlots[i]+"="+lockedSlots[ALL_SLOTS[index]]+") : "+InvTweaksTree.getItemName(stack.itemID)+i+" to "+ALL_SLOTS[index]);
+								log.info("Merged (" +lockedSlots[i]+"="+lockedSlots[ALL_SLOTS[index]]+") : "+InvTweaksTree.getItem(stack.itemID)+i+" to "+ALL_SLOTS[index]);
 							oldInv[i] = stack = null;
 							break;
 						}
@@ -259,17 +264,17 @@ public class InvTweaksSortingLogic {
 						wantedSlotStack = newInv[ALL_SLOTS[index]];
 						
 						// Swap items, then restart search
-						if (stackPriority > InvTweaksTree.
-								getItemPriority(wantedSlotStack.itemID) &&
+						if (stackOrder < InvTweaksTree.
+								getItem(wantedSlotStack.itemID).getOrder() &&
 								lockedSlots[i] == lockedSlots[ALL_SLOTS[index]]) {
 							if (logging)
-								log.info("Swapping : "+InvTweaksTree.getItemName(stack.itemID)+i+" goes to "+ALL_SLOTS[index]);
+								log.info("Swapping : "+InvTweaksTree.getItem(stack.itemID)+i+" goes to "+ALL_SLOTS[index]);
 							newInv[ALL_SLOTS[index]] = stack;
 							oldInv[i] = wantedSlotStack;
 							
 							// TODO: Refactoring
 							stack = wantedSlotStack;
-							stackPriority = InvTweaksTree.getItemPriority(stack.itemID);
+							stackOrder = InvTweaksTree.getItem(stack.itemID).getOrder();
 							index = -1;
 						}
 					}
@@ -284,7 +289,7 @@ public class InvTweaksSortingLogic {
 						newInv[ALL_SLOTS[index]] = stack;
 						oldInv[i] = null;
 						if (logging)
-							log.info("Remaining : "+ALL_SLOTS[index]+" for "+InvTweaksTree.getItemName(stack.itemID));
+							log.info("Remaining : "+ALL_SLOTS[index]+" for "+InvTweaksTree.getItem(stack.itemID));
 					}
 					else if (j == levels.length) {
 						throw new Exception("Some items could not be placed. The algorithm seems broken!");

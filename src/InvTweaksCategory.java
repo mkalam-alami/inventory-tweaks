@@ -9,7 +9,7 @@ public class InvTweaksCategory {
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("ModSortButton SortButtonRule");
 	
-	private final Vector<String> items = new Vector<String>();
+	private final Vector<InvTweaksItem> items = new Vector<InvTweaksItem>();
 	private final Vector<InvTweaksCategory> subCategories = new Vector<InvTweaksCategory>();
 	private String name;
 	
@@ -33,24 +33,37 @@ public class InvTweaksCategory {
 		subCategories.add(category);
 	}
 	
-	public void addItem(String label, int id) {
-		items.add(label);
+	public void addItem(InvTweaksItem item) {
+		items.add(item);
 	}
 
-	public int getKeywordPriority(String keyword) {
-		if (keyword.equals(name)) {
-			return 0;
-		}
-		else if (items.contains(keyword)) {
-			return items.size()-items.indexOf(keyword);
+	public int getCategoryOrder() {
+
+		if (items.size() > 0) {
+			return items.get(0).getOrder();
 		}
 		else {
-			
+			int order;
+			for (InvTweaksCategory category : subCategories) {
+				order = category.getCategoryOrder();
+				if (order != -1)
+					return order;
+			}
+			return -1;
+		}
+	}
+	
+	public int findCategoryOrder(String keyword) {
+		if (keyword.equals(name)) {
+			return getCategoryOrder();
+		}
+		else {
 			int result;
 			for (InvTweaksCategory category : subCategories) {
-				result = category.getKeywordPriority(keyword);
-				if (result != -1)
-					return result + 100;
+				result = category.findCategoryOrder(keyword);
+				if (result != -1) {
+					return result;
+				}
 			}
 			return -1;
 		}
@@ -64,7 +77,7 @@ public class InvTweaksCategory {
 		return subCategories;
 	}
 	
-	public Collection<String> getItems() {
+	public Collection<InvTweaksItem> getItems() {
 		return items;
 	}
 

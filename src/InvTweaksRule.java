@@ -2,7 +2,6 @@ package net.minecraft.src;
 
 import java.util.logging.Logger;
 
-
 public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	
 	// A -> D = 65 -> 68 in ascii
@@ -45,8 +44,8 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 		// 1st criteria : the rule type
 		// 2st criteria : the keyword category depth
 		// 3st criteria : the item order in a same category
-		priority = type.priority*10000 + 
-			InvTweaksTree.getKeywordPriority(keyword);
+		priority = type.priority*Integer.MAX_VALUE/10 - 
+			InvTweaksTree.getKeywordOrder(keyword);
 		
 	}
 	

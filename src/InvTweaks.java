@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Random;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -183,11 +182,10 @@ public class InvTweaks {
     private static void showConfigErrors(InvTweaksConfig config) {
     	Vector<String> invalid = config.getInvalidKeywords();
     	if (invalid.size() > 0) {
-			String error = "Invalid keywords found (";
+			String error = "Invalid keywords found: ";
 			for (String keyword : config.getInvalidKeywords()) {
 				error += keyword+" ";
 			}
-			error.replaceFirst(" $", ")");
 			inGameLog(error);
     	}
     }

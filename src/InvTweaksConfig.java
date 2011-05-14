@@ -24,10 +24,7 @@ public class InvTweaksConfig {
 	 */
 	public InvTweaksConfig(String file) {
 		this.file = file;
-		this.lockedSlots = new int[InvTweaks.INV_SIZE];
-		for (int i = 0; i < this.lockedSlots.length; i++) {
-			this.lockedSlots[i] = 0;
-		}
+		init();
 	}
 	
 	public Vector<InvTweaksRule> getRules() {
@@ -58,6 +55,9 @@ public class InvTweaksConfig {
 	 */
 	public void load() throws FileNotFoundException, IOException {
 
+		// Reset all
+		init();
+		
 		// Read file
 		File f = new File(file);
 		char[] bytes = new char[(int) f.length()];
@@ -71,7 +71,6 @@ public class InvTweaksConfig {
 				.split("\n");
 		
 		// Parse and sort rules (specific tiles first, then in appearing order)
-		rules.clear();
 		String lineText, keyword;
 		InvTweaksRule newRule;
 		
@@ -124,6 +123,15 @@ public class InvTweaksConfig {
 			log.info(rule.getKeyword()+" "+rule.getPriority());
 		}*/
 		
+	}
+
+	private void init() {
+		this.lockedSlots = new int[InvTweaks.INV_SIZE];
+		for (int i = 0; i < this.lockedSlots.length; i++) {
+			this.lockedSlots[i] = 0;
+		}
+		rules.clear();
+		invalidKeywords.clear();
 	}
 
 }

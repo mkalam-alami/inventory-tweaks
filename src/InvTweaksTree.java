@@ -9,15 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class SortButtonTree {
+public class InvTweaksTree {
 	
     private static final Logger log = Logger.getLogger("ModSortButton SortButtonTree");
 
     private static final int DEFAULT_ITEM_COUNT = 500;
     private static final int DEFAULT_LEVEL_DEPTH = 5;
     
-	private static final Map<String, SortButtonCategory> categories =
-		new HashMap<String, SortButtonCategory>();
+	private static final Map<String, InvTweaksCategory> categories =
+		new HashMap<String, InvTweaksCategory>();
 	private static final Map<String, Integer> items =
 		new HashMap<String, Integer>();
 	private static final Map<Integer, String> itemsIds = 
@@ -49,12 +49,12 @@ public class SortButtonTree {
 				.split("\n");
 
 		// Init
-		SortButtonCategory parentCat, newCat;
+		InvTweaksCategory parentCat, newCat;
 		String lineText, label;
 		int currentLine = 0, level, id;
-		Map<Integer, SortButtonCategory> context =
-			new HashMap<Integer, SortButtonCategory>(DEFAULT_LEVEL_DEPTH);
-		SortButtonCategory existingCategory = null;
+		Map<Integer, InvTweaksCategory> context =
+			new HashMap<Integer, InvTweaksCategory>(DEFAULT_LEVEL_DEPTH);
+		InvTweaksCategory existingCategory = null;
 		
 		while (currentLine < config.length) {
 
@@ -97,7 +97,7 @@ public class SortButtonTree {
 				else {
 					existingCategory = getCategory(label);
 					if (existingCategory == null) {
-						newCat = new SortButtonCategory(label);
+						newCat = new InvTweaksCategory(label);
 						if (level == 0) {
 							rootName = label;
 						}
@@ -114,7 +114,7 @@ public class SortButtonTree {
 			}
 		}
 		
-		//log(getRootCategory(), 0);
+		log(getRootCategory(), 0);
 	}
 
 	/**
@@ -125,14 +125,14 @@ public class SortButtonTree {
 	 */
 	public static final boolean isKeywordValid(String keyword) {
 		// Is the keyword an item?
-		Integer keywordItem = SortButtonTree.getItemValue(keyword);
+		Integer keywordItem = InvTweaksTree.getItemValue(keyword);
 		if (keywordItem != null) {
 			return true;
 		}
 		
 		// Or maybe a category ?
 		else {
-			SortButtonCategory category = SortButtonTree.getCategory(keyword);
+			InvTweaksCategory category = InvTweaksTree.getCategory(keyword);
 			return category != null;
 		}
 	}
@@ -157,7 +157,7 @@ public class SortButtonTree {
 		
 		// The keyword is a category
 		else {
-			SortButtonCategory category = SortButtonTree.getCategory(keyword);
+			InvTweaksCategory category = InvTweaksTree.getCategory(keyword);
 			if (category != null) {
 				return category.contains(item);
 			}
@@ -175,7 +175,7 @@ public class SortButtonTree {
 	
 	public static int getKeywordPriority(String keyword) {
 		try {
-			return SortButtonTree.getRootCategory().getKeywordPriority(keyword);
+			return InvTweaksTree.getRootCategory().getKeywordPriority(keyword);
 		}
 		catch (NullPointerException e) {
 			log.severe("The root category is missing: " + e.getMessage());
@@ -183,18 +183,18 @@ public class SortButtonTree {
 		}
 	}
 	
-	public static SortButtonCategory getRootCategory() {
+	public static InvTweaksCategory getRootCategory() {
 		return categories.get(rootName);
 	}
 	
-	public static SortButtonCategory getCategory(String keyword) {
+	public static InvTweaksCategory getCategory(String keyword) {
 		return categories.get(keyword);
 	}
 
 	/**
 	 * Returns a reference to all categories.
 	 */
-	public static Collection<SortButtonCategory> getAllCategories() {
+	public static Collection<InvTweaksCategory> getAllCategories() {
 		return categories.values();
 	}
 
@@ -219,7 +219,7 @@ public class SortButtonTree {
 	 * Call log(getRootCategory(), 0) to log the whole tree.
 	 */
 	@SuppressWarnings("unused")
-	private static void log(SortButtonCategory category, int indentLevel) {
+	private static void log(InvTweaksCategory category, int indentLevel) {
 		
 		String logIdent = "";
 		for (int i = 0; i < indentLevel; i++) {
@@ -227,7 +227,7 @@ public class SortButtonTree {
 		}
 		log.info(logIdent + category.getName());
 		
-		for (SortButtonCategory subCategory : category.getSubCategories()) {
+		for (InvTweaksCategory subCategory : category.getSubCategories()) {
 			log(subCategory, indentLevel + 1);
 		}
 		

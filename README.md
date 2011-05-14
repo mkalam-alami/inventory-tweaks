@@ -24,3 +24,5 @@ This repository doesn't include any third party code, so in order to compile thi
 * Configurable item tree
 * Rules and keyword priorities
 * Hot reload
+* Automatic item replacement
+* Exclusion rule

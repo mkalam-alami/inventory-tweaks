@@ -3,7 +3,7 @@ package net.minecraft.src;
 import java.util.logging.Logger;
 
 
-public class SortButtonRule implements Comparable<SortButtonRule> {
+public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	
 	// A -> D = 65 -> 68 in ascii
 	// 1 -> 4 = 49 -> 57 in ascii
@@ -34,7 +34,7 @@ public class SortButtonRule implements Comparable<SortButtonRule> {
 	private RuleType type;
 	private int priority;
 	
-	public SortButtonRule(String constraint, String keyword) {
+	public InvTweaksRule(String constraint, String keyword) {
 
 		this.keyword = keyword;
 		this.constraint = constraint;
@@ -46,7 +46,7 @@ public class SortButtonRule implements Comparable<SortButtonRule> {
 		// 2st criteria : the keyword category depth
 		// 3st criteria : the item order in a same category
 		priority = type.priority*10000 + 
-			SortButtonTree.getKeywordPriority(keyword);
+			InvTweaksTree.getKeywordPriority(keyword);
 		
 	}
 	
@@ -86,7 +86,7 @@ public class SortButtonRule implements Comparable<SortButtonRule> {
 	 * means 'this' is of greater priority than o
 	 */
 	@Override
-	public int compareTo(SortButtonRule o) {
+	public int compareTo(InvTweaksRule o) {
 		return getPriority() - o.getPriority();
 	}
 	

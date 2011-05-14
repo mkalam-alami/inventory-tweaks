@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-public class SortButtonConfig {
+public class InvTweaksConfig {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("ModSortButton SortButtonConfig");
@@ -15,22 +15,22 @@ public class SortButtonConfig {
 	
 	private String file;
 	private int[] lockedSlots;
-	private Vector<SortButtonRule> rules = new Vector<SortButtonRule>();
+	private Vector<InvTweaksRule> rules = new Vector<InvTweaksRule>();
 	private Vector<String> invalidKeywords = new Vector<String>();
 	
 	/**
 	 * Creates a new configuration holder.
 	 * The configuration is not yet loaded.
 	 */
-	public SortButtonConfig(String file) {
+	public InvTweaksConfig(String file) {
 		this.file = file;
-		this.lockedSlots = new int[SortButton.INV_SIZE];
+		this.lockedSlots = new int[InvTweaks.INV_SIZE];
 		for (int i = 0; i < this.lockedSlots.length; i++) {
 			this.lockedSlots[i] = 0;
 		}
 	}
 	
-	public Vector<SortButtonRule> getRules() {
+	public Vector<InvTweaksRule> getRules() {
 		return rules;
 	}
 	
@@ -73,7 +73,7 @@ public class SortButtonConfig {
 		// Parse and sort rules (specific tiles first, then in appearing order)
 		rules.clear();
 		String lineText, keyword;
-		SortButtonRule newRule;
+		InvTweaksRule newRule;
 		
 		int currentLine = 0;
 		while (currentLine < config.length) {
@@ -86,9 +86,9 @@ public class SortButtonConfig {
 					
 					// Locking rule
 					if (words[1].equals(LOCKED)) {
-						int[] newLockedSlots = SortButtonRule.
+						int[] newLockedSlots = InvTweaksRule.
 								getRulePreferredPositions(words[0]);
-						int lockPriority = SortButtonRule.getRuleType(words[0]).getPriority();
+						int lockPriority = InvTweaksRule.getRuleType(words[0]).getPriority();
 						for (int i = 0; i < newLockedSlots.length; i++) {
 							lockedSlots[i] = lockPriority;
 						}
@@ -97,14 +97,14 @@ public class SortButtonConfig {
 					// Standard rule
 					else {
 						keyword = words[1].toLowerCase();
-						if (SortButtonTree.isKeywordValid(keyword)) {
-							newRule = new SortButtonRule(words[0], keyword);
+						if (InvTweaksTree.isKeywordValid(keyword)) {
+							newRule = new InvTweaksRule(words[0], keyword);
 							rules.add(newRule);
 						}
 						else if (keyword.endsWith("s") // Tolerate plurals
-								&& SortButtonTree.isKeywordValid(
+								&& InvTweaksTree.isKeywordValid(
 										keyword.substring(0, keyword.length()-2))) {
-							newRule = new SortButtonRule(
+							newRule = new InvTweaksRule(
 									words[0],
 									keyword.substring(0, keyword.length()-2));
 							rules.add(newRule);

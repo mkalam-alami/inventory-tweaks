@@ -4,16 +4,16 @@ import java.util.Collection;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-public class SortButtonCategory {
+public class InvTweaksCategory {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("ModSortButton SortButtonRule");
 	
 	private final Vector<String> items = new Vector<String>();
-	private final Vector<SortButtonCategory> subCategories = new Vector<SortButtonCategory>();
+	private final Vector<InvTweaksCategory> subCategories = new Vector<InvTweaksCategory>();
 	private String name;
 	
-    public SortButtonCategory(String name) {
+    public InvTweaksCategory(String name) {
     	this.name = name;
 	}
     
@@ -21,7 +21,7 @@ public class SortButtonCategory {
 		if (items.contains(item)) {
 			return true;
 		}
-		for (SortButtonCategory category : subCategories) {
+		for (InvTweaksCategory category : subCategories) {
 			if (category.contains(item)) {
 				return true;
 			}
@@ -29,7 +29,7 @@ public class SortButtonCategory {
 		return false;
 	}
 
-	public void addCategory(SortButtonCategory category) {
+	public void addCategory(InvTweaksCategory category) {
 		subCategories.add(category);
 	}
 	
@@ -47,7 +47,7 @@ public class SortButtonCategory {
 		else {
 			
 			int result;
-			for (SortButtonCategory category : subCategories) {
+			for (InvTweaksCategory category : subCategories) {
 				result = category.getKeywordPriority(keyword);
 				if (result != -1)
 					return result + 100;
@@ -60,7 +60,7 @@ public class SortButtonCategory {
 	 * Returns a references to all categories contained in this one.
 	 * @return
 	 */
-	public Collection<SortButtonCategory> getSubCategories() {
+	public Collection<InvTweaksCategory> getSubCategories() {
 		return subCategories;
 	}
 	

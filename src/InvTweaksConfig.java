@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class InvTweaksConfig {
 
 	@SuppressWarnings("unused")
-	private static final Logger log = Logger.getLogger("ModSortButton SortButtonConfig");
+	private static final Logger log = Logger.getLogger("InvTweaksSortingLogic");
 	private static final String LOCKED = "LOCKED";
 	
 	private String file;

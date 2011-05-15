@@ -18,7 +18,7 @@ public class InvTweaksTree {
 	private static final Map<String, InvTweaksCategory> categories =
 		new HashMap<String, InvTweaksCategory>();
 	private static final Map<String, InvTweaksItem> itemsByName =
-		new HashMap<String, InvTweaksItem>();
+		new HashMap<String, InvTweaksItem>(500);
 	private static final Map<Integer, InvTweaksItem> itemsById = 
 		new HashMap<Integer, InvTweaksItem>(500);
 
@@ -133,17 +133,17 @@ public class InvTweaksTree {
 	 * Checks it given item ID matches a given keyword
 	 * (either the item's name is the keyword, or it is
 	 * in the keyword category)
-	 * @param itemID
+	 * @param item
 	 * @param keyword
 	 * @return
 	 */
-	public static final boolean matches(String item, String keyword) {
+	public static final boolean matches(InvTweaksItem item, String keyword) {
 
 		if (item == null)
 			return false;
 		
 		// The keyword is an item
-		if (item.equals(keyword)) {
+		if (item.getName().equals(keyword)) {
 			return true;
 		}
 		
@@ -158,6 +158,16 @@ public class InvTweaksTree {
 			}
 		}
 		
+	}
+
+	public static int getKeywordDepth(String keyword) {
+		try {
+			return InvTweaksTree.getRootCategory().findKeywordDepth(keyword);
+		}
+		catch (NullPointerException e) {
+			log.severe("The root category is missing: " + e.getMessage());
+			return -1;
+		}
 	}
 	
 	public static int getKeywordOrder(String keyword) {

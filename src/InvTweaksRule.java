@@ -25,7 +25,7 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	}
 	
 	@SuppressWarnings("unused")
-	private static final Logger log = Logger.getLogger("ModSortButton SortButtonRule");
+	private static final Logger log = Logger.getLogger("InvTweaksSortingLogic");
 
 	private String constraint;
 	private int[] preferredPositions;
@@ -44,7 +44,8 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 		// 1st criteria : the rule type
 		// 2st criteria : the keyword category depth
 		// 3st criteria : the item order in a same category
-		priority = type.priority*Integer.MAX_VALUE/10 - 
+		priority = type.priority*1000000 + 
+			InvTweaksTree.getKeywordDepth(keyword)*10000 -
 			InvTweaksTree.getKeywordOrder(keyword);
 		
 	}

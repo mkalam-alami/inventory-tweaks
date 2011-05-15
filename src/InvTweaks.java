@@ -20,8 +20,8 @@ public class InvTweaks {
 	
     private static final Logger log = Logger.getLogger("InvTweaks");
 
-    public static final String CONFIG_FILE = Minecraft.getMinecraftDir()+"/ModSortButtonConfig.txt";
-    public static final String CONFIG_TREE_FILE = Minecraft.getMinecraftDir()+"/ModSortButtonTree.txt";
+    public static final String CONFIG_FILE = Minecraft.getMinecraftDir()+"/InvTweaksConfig.txt";
+    public static final String CONFIG_TREE_FILE = Minecraft.getMinecraftDir()+"/InvTweaksTree.txt";
     public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.txt";
     public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.txt";
     public static final String INGAME_LOG_PREFIX = "SortButton: ";
@@ -96,7 +96,7 @@ public class InvTweaks {
 	    			config.getRules(), config.getLockedSlots());
     	}
     	catch (Exception e) {
-    		log.severe("Sort failed: "+e.getMessage());
+    		log.log(Level.SEVERE, "Sort failed: "+e.getMessage(), e);
     	}
     		
     }

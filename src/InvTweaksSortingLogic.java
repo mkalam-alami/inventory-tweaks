@@ -12,7 +12,7 @@ public class InvTweaksSortingLogic {
 	// 0 = bottom-left, 8 = bottom-right
 	// 9 = top-left, 35 = 3rd-row-right
 	
-	private static final Logger log = Logger.getLogger("InvTweaksLogic");
+	private static final Logger log = Logger.getLogger("InvTweaksSortingLogic");
 
 	public static int[] ALL_SLOTS;
 	
@@ -99,7 +99,6 @@ public class InvTweaksSortingLogic {
 		Iterator<InvTweaksRule> rulesIt = rules.iterator();
 		InvTweaksRule rule;
 		ItemStack wantedSlotStack;
-		String itemName;
 		ItemStack stack;
 		int rulePriority, i, j, k;
 		
@@ -109,7 +108,7 @@ public class InvTweaksSortingLogic {
 			rule = rulesIt.next();
 			rulePriority = rule.getPriority();
 			if (logging)
-				log.info("Rule : "+rule.getKeyword());
+				log.info("Rule : "+rule.getKeyword()+"("+rule.getPriority()+")");
 			
 			// Look for item stacks that match the rule
 			for (k = 0; k < oldInv.length; k++) {
@@ -119,8 +118,8 @@ public class InvTweaksSortingLogic {
 				if (stack == null || lockedSlots[i] > rulePriority)
 					continue;
 				
-				itemName = InvTweaksTree.getItem(stack.itemID).getName();
-				if (stack != null && InvTweaksTree.matches(itemName, rule.getKeyword())
+				InvTweaksItem item = InvTweaksTree.getItem(stack.itemID);
+				if (stack != null && InvTweaksTree.matches(item, rule.getKeyword())
 						&& lockedSlots[i] < rulePriority) {
 					
 					// Try to put the matching item stack to a preferred position,
@@ -139,7 +138,7 @@ public class InvTweaksSortingLogic {
 								&& (lockedSlots[i] > lockedSlots[preferredPos[j]]
 									|| oldInv[preferredPos[j]] == null
 									|| (InvTweaksTree.matches(
-											InvTweaksTree.getItem(oldInv[preferredPos[j]].itemID).getName(),
+											InvTweaksTree.getItem(oldInv[preferredPos[j]].itemID),
 											rule.getKeyword())))) {
 							newInv[preferredPos[j]] = stack; // Put the stack in the new inventory!
 							if (logging)
@@ -164,7 +163,7 @@ public class InvTweaksSortingLogic {
 								
 								Integer stackToReplaceKey = null;
 								for (Integer stackKey : newlyOrderedStacks.keySet()) {
-									if (InvTweaksTree.getKeywordOrder(itemName) <
+									if (InvTweaksTree.getKeywordOrder(item.getName()) <
 										InvTweaksTree.getKeywordOrder(
 											InvTweaksTree.getItem(
 												newlyOrderedStacks.get(stackKey).itemID
@@ -310,7 +309,8 @@ public class InvTweaksSortingLogic {
     		ItemStack to, int toSlot) {
     	
     	// Check item IDs
-    	if (from.itemID == to.itemID
+    	if (from != null && to != null
+    			&& from.itemID == to.itemID
     			&& lockedSlots[fromSlot] == lockedSlots[toSlot]) {
 			int sum = from.stackSize + to.stackSize;
 			if (sum <= to.getMaxStackSize()) {

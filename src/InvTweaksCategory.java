@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 public class InvTweaksCategory {
 
 	@SuppressWarnings("unused")
-	private static final Logger log = Logger.getLogger("ModSortButton SortButtonRule");
+	private static final Logger log = Logger.getLogger("InvTweaksCategory");
 	
 	private final Vector<InvTweaksItem> items = new Vector<InvTweaksItem>();
 	private final Vector<InvTweaksCategory> subCategories = new Vector<InvTweaksCategory>();
@@ -17,7 +17,7 @@ public class InvTweaksCategory {
     	this.name = name;
 	}
     
-    public boolean contains(String item) {
+    public boolean contains(InvTweaksItem item) {
 		if (items.contains(item)) {
 			return true;
 		}
@@ -63,6 +63,22 @@ public class InvTweaksCategory {
 				result = category.findCategoryOrder(keyword);
 				if (result != -1) {
 					return result;
+				}
+			}
+			return -1;
+		}
+	}
+
+	public int findKeywordDepth(String keyword) {
+		if (name.equals(keyword)) {
+			return 0;
+		}
+		else {
+			int result;
+			for (InvTweaksCategory category : subCategories) {
+				result = category.findKeywordDepth(keyword);
+				if (result != -1) {
+					return result+1;
 				}
 			}
 			return -1;

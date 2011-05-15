@@ -33,6 +33,7 @@ public class InvTweaks {
     private long lastKeyPress = 0;
     private int keyPressDuration = 0;
     private boolean configErrorsShown = false;
+    private boolean selectedItemTookAwayBySorting = false;
 	private int storedStackId = 0, storedPosition = -1;
     private Minecraft mc;
     
@@ -88,12 +89,19 @@ public class InvTweaks {
     	// if (!mc.currentScreen instanceof GuiContainer)
     	//		return;
     	
-    	InvTweaksSortingLogic logic = new InvTweaksSortingLogic();
     	
     	try {
-	    	mc.thePlayer.inventory.mainInventory =
-	    		logic.sort(mc.thePlayer.inventory.mainInventory,
+    		InventoryPlayer inventory = mc.thePlayer.inventory;
+    		ItemStack selectedStack = inventory.mainInventory[inventory.currentItem];
+    		
+    		InvTweaksSortingLogic logic = new InvTweaksSortingLogic();
+	    	inventory.mainInventory = logic.sort(inventory.mainInventory,
 	    			config.getRules(), config.getLockedSlots());
+	    	
+	    	// This needs to be remembered so that the autoreplace tool doesn't trigger
+	    	if (selectedStack != null && 
+	    			inventory.mainInventory[inventory.currentItem] == null)
+	    		selectedItemTookAwayBySorting = true;
     	}
     	catch (Exception e) {
     		log.log(Level.SEVERE, "Sort failed: "+e.getMessage(), e);
@@ -113,17 +121,22 @@ public class InvTweaks {
 	    	if (storedPosition != inventory.currentItem) { // Filter selection change
 	    		storedPosition = inventory.currentItem;
 	    	}
-	    	else if (currentStackId == 0 &&
+	    	else {
+	    		
+	    		if (selectedItemTookAwayBySorting) // Filter inentory sorting
+	    			selectedItemTookAwayBySorting = false;
+	    		else if (currentStackId == 0 &&
 	    			inventory.getItemStack() == null) { // Filter item pickup from inv.
-	    		ItemStack candidateStack;
-	    		for (int i = 0; i < INV_SIZE; i++) {
-	    			// Look only for an exactly matching ID
-	    			candidateStack = inventory.mainInventory[i];
-	    			if (candidateStack != null && candidateStack.itemID == storedStackId) {
-	    				inventory.mainInventory[i] = null;
-	    				inventory.mainInventory[inventory.currentItem] = candidateStack;
-	    				break;
-	    			}
+		    		ItemStack candidateStack;
+		    		for (int i = 0; i < INV_SIZE; i++) {
+		    			// Look only for an exactly matching ID
+		    			candidateStack = inventory.mainInventory[i];
+		    			if (candidateStack != null && candidateStack.itemID == storedStackId) {
+		    				inventory.mainInventory[i] = null;
+		    				inventory.mainInventory[inventory.currentItem] = candidateStack;
+		    				break;
+		    			}
+		    		}
 	    		}
 	    	}
 	    	

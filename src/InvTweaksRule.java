@@ -25,7 +25,7 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	}
 	
 	@SuppressWarnings("unused")
-	private static final Logger log = Logger.getLogger("InvTweaksSortingLogic");
+	private static final Logger log = Logger.getLogger("InvTweaksRule");
 
 	private String constraint;
 	private int[] preferredPositions;
@@ -138,12 +138,22 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 		}
 		// Column case
 		else {
-			result = new int[]{
-				index(0, column),
-				index(3, column),
-				index(2, column),
-				index(1, column)
-			};
+			if (reverse) {
+				result = new int[]{
+					index(1, column),
+					index(2, column),
+					index(3, column),
+					index(0, column)
+				};
+			}
+			else {
+				result = new int[]{
+					index(0, column),
+					index(3, column),
+					index(2, column),
+					index(1, column)
+				};
+			}
 		}
 		
 		return result;

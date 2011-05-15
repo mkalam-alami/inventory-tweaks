@@ -14,162 +14,72 @@
 
 stuff
 
-  item
+  equipment
   
-    equipment
-    
-      weapon
-        sword
-          swordIron 267
-          swordDiamond 276
-          swordStone 272
-          swordGold 283
-          swordWood 268
-        arrow 262
-        bow 261
-        snowball 332
-      tool
-        pickaxe
-          pickaxeIron 257
-          pickaxeDiamond 278
-          pickaxeStone 274
-          pickaxeGold 285
-          pickaxeWood 270
-        shovel
-          shovelIron 256
-          shovelDiamond 277
-          shovelStone 273
-          shovelGold 284
-          shovelWood 269
-        axe
-          axeIron 258
-          axeDiamond 279
-          axeStone 275
-          axeGold 284
-          axeWood 271
-        hoe
-          hoeIron 291
-          hoeDiamond 293
-          hoeStone 292
-          hoeGold 294
-          hoeWood 290
+    weapon
+      sword
+        swordIron 267
+        swordDiamond 276
+        swordStone 272
+        swordGold 283
+        swordWood 268
+      arrow 262
+      bow 261
+      snowball 332
+    tool
+      pickaxe
+        pickaxeIron 257
+        pickaxeDiamond 278
+        pickaxeStone 274
+        pickaxeGold 285
+        pickaxeWood 270
+      shovel
+        shovelIron 256
+        shovelDiamond 277
+        shovelStone 273
+        shovelGold 284
+        shovelWood 269
+      axe
+        axeIron 258
+        axeDiamond 279
+        axeStone 275
+        axeGold 284
+        axeWood 271
+      hoe
+        hoeIron 291
+        hoeDiamond 293
+        hoeStone 292
+        hoeGold 294
+        hoeWood 290
 
-      armor
-        helmet
-          helmetChain 302
-          helmetDiamond 310
-          helmetIron 306
-          helmetGold 314
-          helmetLeather 298
-        chestplate
-          chestplateChain 303
-          chestplateDiamond 311
-          chestplateIron 307
-          chestplateGold 315
-          chestplateLeather 299
-        leggings
-          leggingsChain 304
-          leggingsDiamond 312
-          leggingsIron 308
-          leggingsGold 316
-          leggingsLeather 300
-        boots
-          bootsChain 305
-          bootsDiamond 313
-          bootsIron 309
-          bootsGold 317
-          bootsLeather 301
-
-    material
-      miningMaterial
-        coal 263
-        charcoal 263
-        ingot
-          goldIngot 266
-          ironIngot 265
-        diamondGem 264
-        dusts
-          redstoneDust 331
-          glowstoneDust 348
-        clayBrick 336
-        clay 337
-        flint 318
-        stick 280
-      huntingMaterial
-        bone 352
-        leather 334
-        string 287
-        feather 288
-        gunpowder 289
-        slimeball 341
-      farmingMaterial
-        paper 339
-        book 340
-    
-    vehicle
-      boat 333
-      minecarts
-        minecart 328
-        poweredMinecart 343
-        storageMinecart 342
-
-    food
-      edibleFood
-          porkchop
-            porkchopCooked 320
-            porkchopRaw 319
-        bread 297
-          fish
-            fishCooked 350
-            fishRaw 349
-          mushroomStew 282
-          cookie 357
-          apple
-            appleGolden 322
-            appleRed 260
-      unedibleFood
-        cake 354
-        egg 344
-        wheat 296
-        milk 335
-        sugar 353
-
-    plant
-      flower
-        flowerYellow 37
-        dandelion 37
-        flowerRed 38
-        rose 38
-      mushroom
-        mushroomBrown 39
-        mushroomRed 40
-      sapling 6
-      seed 59
-      sugarCane 83
-      
-    decoration
-      bed 355
-      door
-        doorIron 71
-        doorWood 64
-      painting 321
-      sign 323
-      musicDisc
-        musicDiscGreen 2257
-        musicDiscGold 2256
-
-    dye 351
-    bowl 281
-    bucket 325
-    clock 347
-    compass 345
-    fishingRod 346
-    flintAndSteel 259
-    saddle 329
-    
-    
+    armor
+      helmet
+        helmetChain 302
+        helmetDiamond 310
+        helmetIron 306
+        helmetGold 314
+        helmetLeather 298
+      chestplate
+        chestplateChain 303
+        chestplateDiamond 311
+        chestplateIron 307
+        chestplateGold 315
+        chestplateLeather 299
+      leggings
+        leggingsChain 304
+        leggingsDiamond 312
+        leggingsIron 308
+        leggingsGold 316
+        leggingsLeather 300
+      boots
+        bootsChain 305
+        bootsDiamond 313
+        bootsIron 309
+        bootsGold 317
+        bootsLeather 301
+  
   block
-    
+  
     naturalBlock
       stones
         cobblestone 4
@@ -210,24 +120,6 @@ stuff
       air 0
       fire 51
       
-    constructionBlock
-      plank 5
-      woodenPlank 5
-      brick 45
-      brickBlock 45
-      glass 20
-      stairs
-        woodenStairs 53
-        stairsWood 53
-        stoneStairs 67
-        stairsStone 67
-        cobblestoneStairs 67
-        stairsCobblestone 67
-      slabs
-        slab 44
-        doubleSlab 43
-        slabDouble 43
-        
     manufacturedBlock
       torch 50
       ladder 65
@@ -235,70 +127,164 @@ stuff
       sign 63
       signPost 63
       jackOLantern 91
-    
-    utility
-      craftingTable 58
-      furnace 61
-      furnaceBurning 62
-      chest 54
-      bed 26
-      jukebox 84
-      tnt 46
+      constructionBlock
+        plank 5
+        woodenPlank 5
+        brick 45
+        brickBlock 45
+        glass 20
+        stairs
+          woodenStairs 53
+          stairsWood 53
+          stoneStairs 67
+          stairsStone 67
+          cobblestoneStairs 67
+          stairsCobblestone 67
+        slabs
+          slab 44
+          doubleSlab 43
+          slabDouble 43
+        oreBlock
+          diamond 57
+          gold 41
+          iron 42
+          lapisLazuli 22
+        
+  resources
+    miningResources
+      coal 263
+      charcoal 263
+      ingot
+        goldIngot 266
+        ironIngot 265
+      diamondGem 264
+      dusts
+        redstoneDust 331
+        glowstoneDust 348
+      clayBrick 336
+      clay 337
+      flint 318
+      stick 280
+    huntingResources
+      bone 352
+      leather 334
+      string 287
+      feather 288
+      gunpowder 289
+      slimeball 341
+    farmingResources
+      paper 339
+      book 340
       
-    mechanism
-      rails 66
-      railsPowered 27
-      railsDetector 28
-      lever 69
-      pressurePlates
-        pressurePlateWood 70
-        pressurePlateStone 72
-      stoneButton 77
-      doors
-        doorWood 64
-        woodenDoor 64
-        doorIron 71
-        ironDoor 71
-      redstoneWire 55
-      redstoneTorch 75
-      redstoneTorch 76
-      redstoneRepeater 93
-      redstoneRepeater 94
-      dispenser 23
-      note 25
-      noteBlock 25
-    
-    plantBlock
-      cactus 81
-      sugarCane 83
-      reed 83
-      pumpkin 86
-      sapling 6
-      flowerBlock
-        dandelionBlock 37
-        flowerYellowBlock 27
-        roseBlock 28
-        flowerRedBlock 28
-      mushroomBlock
-        mushroomBrownBlock 39
-        mushroomRedBlock 40
-      leaves 18
-      seedBlock 59
-      seedsBlock 59
-
-    oreBlock
-      diamond 57
-      gold 41
-      iron 42
-      lapisLazuli 22
-
-    decorationBlock
-      bookShelf 47
-      wool 35
+  utility
+    craftingTable 58
+    furnace 61
+    furnaceBurning 62
+    chest 54
+    bed 26
+    jukebox 84
+    tnt 46
       
-    web 30
-    farmland 60
-    lockedChest 95 
-    portal 90
-    sponge 19
-    cakeBlock 92
+  vehicle
+    boat 333
+    minecarts
+      minecart 328
+      poweredMinecart 343
+      storageMinecart 342
+
+  mechanism
+    rails 66
+    railsPowered 27
+    railsDetector 28
+    lever 69
+    pressurePlates
+      pressurePlateWood 70
+      pressurePlateStone 72
+    stoneButton 77
+    doors
+      doorWood 64
+      woodenDoor 64
+      doorIron 71
+      ironDoor 71
+    redstoneWire 55
+    redstoneTorch 75
+    redstoneTorch 76
+    redstoneRepeater 93
+    redstoneRepeater 94
+    dispenser 23
+    note 25
+    noteBlock 25      
+      
+  decoration
+    wool 35
+    bed 355
+    door
+      doorIron 71
+      doorWood 64
+    painting 321
+    sign 323
+    bookShelf 47
+    musicDisc
+      musicDiscGreen 2257
+      musicDiscGold 2256
+      
+  food
+    edibleFood
+        porkchop
+          porkchopCooked 320
+          porkchopRaw 319
+      bread 297
+        fish
+          fishCooked 350
+          fishRaw 349
+        mushroomStew 282
+        cookie 357
+        apple
+          appleGolden 322
+          appleRed 260
+    unedibleFood
+      cake 354
+      egg 344
+      wheat 296
+      milk 335
+      sugar 353
+      
+  plant
+    flower
+      flowerYellow 37
+      dandelion 37
+      flowerRed 38
+      rose 38
+      dandelionBlock 27
+      flowerYellowBlock 27
+      roseBlock 28
+      flowerRedBlock 28
+    mushroom
+      mushroomBrown 39
+      mushroomRed 40
+    sapling 6
+    seed 59
+    sugarCane 83
+    cactus 81
+    sugarCane 83
+    reed 83
+    pumpkin 86
+    sapling 6
+    leaves 18
+    seedBlock 59
+    seedsBlock 59
+    
+  dye 351
+  bowl 281
+  bucket 325
+  clock 347
+  compass 345
+  fishingRod 346
+  flintAndSteel 259
+  saddle 329
+  web 30
+  farmland 60
+  lockedChest 95 
+  portal 90
+  sponge 19
+  cakeBlock 92

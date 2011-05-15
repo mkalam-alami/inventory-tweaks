@@ -21,6 +21,8 @@ public class InvTweaksTree {
 		new HashMap<String, InvTweaksItem>(500);
 	private static final Map<Integer, InvTweaksItem> itemsById = 
 		new HashMap<Integer, InvTweaksItem>(500);
+	private static final InvTweaksItem defaultItem =
+		new InvTweaksItem("unknown", -1, Integer.MAX_VALUE);
 
 	private static String rootName;
 	
@@ -209,7 +211,13 @@ public class InvTweaksTree {
 	}
 
 	public static InvTweaksItem getItem(int id) {
-		return itemsById.get(id);
+		InvTweaksItem item = itemsById.get(id);
+		if (item != null)
+			return item;
+		else {
+			log.warning("Unknown item id: "+id);
+			return defaultItem;
+		}
 	}
 	
 	public static InvTweaksItem getItem(String name) {

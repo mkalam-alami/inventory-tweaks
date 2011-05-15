@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class InvTweaksConfig {
 
 	@SuppressWarnings("unused")
-	private static final Logger log = Logger.getLogger("InvTweaksSortingLogic");
+	private static final Logger log = Logger.getLogger("InvTweaksConfig");
 	private static final String LOCKED = "LOCKED";
 	
 	private String file;
@@ -88,7 +88,7 @@ public class InvTweaksConfig {
 						int[] newLockedSlots = InvTweaksRule.
 								getRulePreferredPositions(words[0]);
 						int lockPriority = InvTweaksRule.getRuleType(words[0]).getPriority();
-						for (int i = 0; i < newLockedSlots.length; i++) {
+						for (int i : newLockedSlots) {
 							lockedSlots[i] = lockPriority;
 						}
 					}
@@ -100,13 +100,16 @@ public class InvTweaksConfig {
 							newRule = new InvTweaksRule(words[0], keyword);
 							rules.add(newRule);
 						}
-						else if (keyword.endsWith("s") // Tolerate plurals
-								&& InvTweaksTree.isKeywordValid(
-										keyword.substring(0, keyword.length()-2))) {
-							newRule = new InvTweaksRule(
-									words[0],
-									keyword.substring(0, keyword.length()-2));
-							rules.add(newRule);
+						else if (keyword.endsWith("s")) { // Tolerate plurals
+							
+							String keyword2 = keyword.substring(0, keyword.length()-1);
+							if (InvTweaksTree.isKeywordValid(keyword2)) {
+								newRule = new InvTweaksRule(words[0], keyword2);
+								rules.add(newRule);
+							}
+							else {
+								invalidKeywords.add(words[1]);
+							}
 						}
 						else {
 							invalidKeywords.add(words[1]);
@@ -118,10 +121,6 @@ public class InvTweaksConfig {
 		
 		// Sort rules by priority, highest first
 		Collections.sort(rules, Collections.reverseOrder());
-		
-		/*for (SortButtonRule rule : rules) {
-			log.info(rule.getKeyword()+" "+rule.getPriority());
-		}*/
 		
 	}
 

@@ -8,10 +8,6 @@ import java.util.logging.Logger;
 
 public class InvTweaksSortingLogic {
 	
-	// (Note) In the inventory, indexes are :
-	// 0 = bottom-left, 8 = bottom-right
-	// 9 = top-left, 35 = 3rd-row-right
-	
 	private static final Logger log = Logger.getLogger("InvTweaksSortingLogic");
 
 	public static int[] ALL_SLOTS;
@@ -24,9 +20,11 @@ public class InvTweaksSortingLogic {
 	
 	public InvTweaksSortingLogic() {
 		
-		logging = true;
+		//logging = true;
 		
-		// Default slot order init
+		// Default slot order init. In the inventory, indexes are :
+		// 0 = bottom-left, 8 = bottom-right
+		// 9 = top-left, 35 = 3rd-row-right
 		if (ALL_SLOTS == null) {
 			ALL_SLOTS = new int[InvTweaks.INV_SIZE];
 	    	for (int i = 0; i < ALL_SLOTS.length; i++) {
@@ -93,6 +91,10 @@ public class InvTweaksSortingLogic {
     	
     }
 
+    /**
+     * Apply the user rules, taking in consideration
+     * item orders & lock rules
+     */
 	private void applyRules() {
 
 		Map<Integer, ItemStack> newlyOrderedStacks = new HashMap<Integer, ItemStack>();
@@ -132,7 +134,7 @@ public class InvTweaksSortingLogic {
 						
 						wantedSlotStack = newInv[preferredPos[j]];
 						
-						// If the slot is free, no problem.
+						// If the slot is free, take it.
 						// (except for a special case about locked stacks of the same ID)
 						if (wantedSlotStack == null
 								&& (lockedSlots[i] > lockedSlots[preferredPos[j]]
@@ -198,7 +200,8 @@ public class InvTweaksSortingLogic {
 	}
     
 	/**
-	 * Locked stacks don't move
+	 * Locked stacks don't need to move
+	 * (but may need to be merged)
 	 */
 	private void applyLocks() {
 		for (int i = 0; i < oldInv.length; i++) {
@@ -210,8 +213,7 @@ public class InvTweaksSortingLogic {
 					oldInv[i] = null;
 				}
 				else if (newInv[i].itemID == oldInv[i].itemID) {
-					mergeStacks(oldInv[i], i,
-							newInv[i], i);
+					mergeStacks(oldInv[i], i, newInv[i], i);
 					if (oldInv[i].stackSize == 0) {
 						oldInv[i] = null;
 					}
@@ -308,7 +310,7 @@ public class InvTweaksSortingLogic {
     private boolean mergeStacks(ItemStack from, int fromSlot,
     		ItemStack to, int toSlot) {
     	
-    	// Check item IDs
+    	// Check item IDs & lock levels
     	if (from != null && to != null
     			&& from.itemID == to.itemID
     			&& lockedSlots[fromSlot] == lockedSlots[toSlot]) {

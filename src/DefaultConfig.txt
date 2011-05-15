@@ -1,12 +1,11 @@
-
-|=========================================================|
-| SORT BUTTON Mod - By Jimeo Wan (jimeo.wan at gmail.com) |
-| Sorting rules configuration file                        |
-|=========================================================|
+|==============================================================|
+| INVENTORY TWEAKS Mod - By Jimeo Wan (jimeo.wan at gmail.com) |
+| Sorting rules configuration file                             |
+|==============================================================|
 
 ====== [ SETTINGS ] ======
 
-D LOCKED
+D locked
 
 ======== [ HELP ] ========
 
@@ -19,7 +18,7 @@ D LOCKED
 # Rows are, by default, sorted from left to right, and columns from bottom to top.
 
 # AVAILABLE KEYWORDS
-# You can use any of the keywords found in the ModSortButtonTree.txt file.
+# You can use any of the keywords found in the InvTweaksTree.txt file.
 
 # MODIFIERS
 
@@ -36,4 +35,4 @@ D LOCKED
 # D [D1][D2][D3][D4][D5][D6][D7][D8][D9]
    
 # TIPS
-# - Keep the Sort Button pressed during 1 second to hot-reload your configuration!
+# - Keep the sorting button pressed during 1 second to hot-reload your configuration!

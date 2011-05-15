@@ -20,8 +20,6 @@ public class InvTweaksSortingLogic {
 	
 	public InvTweaksSortingLogic() {
 		
-		//logging = true;
-		
 		// Default slot order init. In the inventory, indexes are :
 		// 0 = bottom-left, 8 = bottom-right
 		// 9 = top-left, 35 = 3rd-row-right

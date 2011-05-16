@@ -230,18 +230,18 @@ stuff
       
   food
     edibleFood
-        porkchop
-          porkchopCooked 320
-          porkchopRaw 319
+      porkchop
+        porkchopCooked 320
+        porkchopRaw 319
       bread 297
-        fish
-          fishCooked 350
-          fishRaw 349
-        mushroomStew 282
-        cookie 357
-        apple
-          appleGolden 322
-          appleRed 260
+      fish
+        fishCooked 350
+        fishRaw 349
+      mushroomStew 282
+      cookie 357
+      apple
+        appleGolden 322
+        appleRed 260
     unedibleFood
       cake 354
       egg 344

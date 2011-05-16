@@ -12,7 +12,7 @@ public class InvTweaksSortingLogic {
 
 	public static int[] ALL_SLOTS;
 	
-	private boolean logging = false;
+	private boolean logging = true;
 	private int[] lockedSlots;
 	private ItemStack[] oldInv;
 	private ItemStack[] newInv;
@@ -94,7 +94,7 @@ public class InvTweaksSortingLogic {
      * item orders & lock rules
      */
 	private void applyRules() {
-
+		
 		Map<Integer, ItemStack> newlyOrderedStacks = new HashMap<Integer, ItemStack>();
 		Iterator<InvTweaksRule> rulesIt = rules.iterator();
 		InvTweaksRule rule;
@@ -119,8 +119,7 @@ public class InvTweaksSortingLogic {
 					continue;
 				
 				InvTweaksItem item = InvTweaksTree.getItem(stack.itemID);
-				if (stack != null && InvTweaksTree.matches(item, rule.getKeyword())
-						&& lockedSlots[i] < rulePriority) {
+				if (stack != null && InvTweaksTree.matches(item, rule.getKeyword())) {
 					
 					// Try to put the matching item stack to a preferred position,
 					// theses positions being sorted by decreasing preference.
@@ -135,11 +134,11 @@ public class InvTweaksSortingLogic {
 						// If the slot is free, take it.
 						// (except for a special case about locked stacks of the same ID)
 						if (wantedSlotStack == null
-								&& (lockedSlots[i] > lockedSlots[preferredPos[j]]
+								/*&& (lockedSlots[i] > lockedSlots[preferredPos[j]]
 									|| oldInv[preferredPos[j]] == null
 									|| (InvTweaksTree.matches(
 											InvTweaksTree.getItem(oldInv[preferredPos[j]].itemID),
-											rule.getKeyword())))) {
+											rule.getKeyword())))*/) {
 							newInv[preferredPos[j]] = stack; // Put the stack in the new inventory!
 							if (logging)
 								log.info(InvTweaksTree.getItem(stack.itemID)+" ("+i+") put in "+preferredPos[j]+", "+i+" OK");
@@ -233,6 +232,7 @@ public class InvTweaksSortingLogic {
 		int[] levels = new int[]{0, Integer.MAX_VALUE};
 		int stackOrder, index, i, j, k;
 		boolean emptySlotFound;
+		ItemStack[] occupied = newInv.clone(); 
 		
 		for (j = 0; j < levels.length; j++) {
 			
@@ -263,8 +263,8 @@ public class InvTweaksSortingLogic {
 						wantedSlotStack = newInv[ALL_SLOTS[index]];
 						
 						// Swap items, then restart search
-						if (stackOrder < InvTweaksTree.
-								getItem(wantedSlotStack.itemID).getOrder() &&
+						if (stackOrder < InvTweaksTree.getItem(wantedSlotStack.itemID).getOrder() &&
+								occupied[ALL_SLOTS[index]] == null &&
 								lockedSlots[i] == lockedSlots[ALL_SLOTS[index]]) {
 							if (logging)
 								log.info("Swapping : "+InvTweaksTree.getItem(stack.itemID)+i+" goes to "+ALL_SLOTS[index]);

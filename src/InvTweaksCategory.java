@@ -8,7 +8,8 @@ public class InvTweaksCategory {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaksCategory");
-	
+
+	private final Vector<Integer> itemIds = new Vector<Integer>();
 	private final Vector<InvTweaksItem> items = new Vector<InvTweaksItem>();
 	private final Vector<InvTweaksCategory> subCategories = new Vector<InvTweaksCategory>();
 	private String name;
@@ -18,9 +19,9 @@ public class InvTweaksCategory {
 	}
     
     public boolean contains(InvTweaksItem item) {
-		if (items.contains(item)) {
+		if (itemIds.contains(item.getId())) {
 			return true;
-		}
+    	}
 		for (InvTweaksCategory category : subCategories) {
 			if (category.contains(item)) {
 				return true;
@@ -35,6 +36,7 @@ public class InvTweaksCategory {
 	
 	public void addItem(InvTweaksItem item) {
 		items.add(item);
+		itemIds.add(item.getId());
 	}
 
 	public int getCategoryOrder() {

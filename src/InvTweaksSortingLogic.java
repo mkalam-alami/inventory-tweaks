@@ -12,7 +12,7 @@ public class InvTweaksSortingLogic {
 
 	public static int[] ALL_SLOTS;
 	
-	private boolean logging = true;
+	private boolean logging = false;
 	private int[] lockedSlots;
 	private ItemStack[] oldInv;
 	private ItemStack[] newInv;

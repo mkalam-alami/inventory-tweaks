@@ -210,6 +210,7 @@ stuff
     redstoneWire 55
     redstoneTorch 75
     redstoneTorch 76
+    redstoneRepeater 356
     redstoneRepeater 93
     redstoneRepeater 94
     dispenser 23

@@ -9,9 +9,9 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 
 	public enum RuleType {
 		
-		TILE(2),
-		COLUMN(1),
-		ROW(1);
+		ROW(1),
+		COLUMN(2),
+		TILE(3);
 		
 		private int priority;
 

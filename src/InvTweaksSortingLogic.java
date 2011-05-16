@@ -10,9 +10,9 @@ public class InvTweaksSortingLogic {
 	
 	private static final Logger log = Logger.getLogger("InvTweaksSortingLogic");
 
-	public static int[] ALL_SLOTS;
-	
 	private boolean logging = false;
+
+	public static int[] ALL_SLOTS;
 	private int[] lockedSlots;
 	private ItemStack[] oldInv;
 	private ItemStack[] newInv;
@@ -39,7 +39,7 @@ public class InvTweaksSortingLogic {
     	this.lockedSlots = lockedSlots;
     	this.rules = rules;
     	newInv = new ItemStack[InvTweaks.INV_SIZE];
-    	
+
     	mergeStacks();
     	applyRules();
     	applyLocks();
@@ -56,34 +56,37 @@ public class InvTweaksSortingLogic {
 	 */
     private void mergeStacks() {
 
-		Vector<Integer> itemIDs = new Vector<Integer>();
+    	// Init
 		ItemStack stack;
-		int search, i, j, k;
+		int i, j, k;
+		Vector<Integer> itemIDs = new Vector<Integer>();
+		for (i = 0; i < oldInv.length; i++) {
+			itemIDs.add(-1);
+		}
 		
+		// Merge stacks
 		for (k = 0; k < oldInv.length; k++) {
 			i = ALL_SLOTS[k];
 			
 			stack = oldInv[i];
-			if (stack != null) {
+			if (stack != null && lockedSlots[i] == 0) {
 				
-				search = 0;
+				j = -1;
 				while (stack != null &&
-						(j = itemIDs.indexOf(stack.itemID, search)) != -1) {
-					if (mergeStacks(stack, i, oldInv[j], j))
+						(j = itemIDs.indexOf(stack.itemID, j + 1)) != -1) {
+					if (mergeStacks(stack, i, oldInv[j], j)) {
+						log.info("First pass merge: "+InvTweaksTree.getItem(stack.itemID)+" "+i+" to "+j);
 						oldInv[i] = stack = null;
+					}
 					else
 						itemIDs.set(j, -1); // j is full
-					search = j + 1;
 				}
-			}
-			
-			if (stack != null && lockedSlots[i] == 0) {
-				itemIDs.add(
-					(stack.stackSize < stack.getMaxStackSize())
-					? stack.itemID : -1);
-			}
-			else {
-				itemIDs.add(-1);
+				
+				if (stack != null) {
+					itemIDs.set(i, 
+						(stack.stackSize < stack.getMaxStackSize())
+						? stack.itemID : -1);
+				}
 			}
 		}
     	
@@ -100,96 +103,84 @@ public class InvTweaksSortingLogic {
 		InvTweaksRule rule;
 		ItemStack wantedSlotStack;
 		ItemStack stack;
-		int rulePriority, i, j, k;
+		int rulePriority, i, j, k = 0, stackOrder;
+		boolean emptySlotFound = false;
+		int[] preferredPos;
 		
 		// Sort rule by rule, themselves being already sorted by decreasing priority
 		while (rulesIt.hasNext()) {
 			
 			rule = rulesIt.next();
 			rulePriority = rule.getPriority();
+			preferredPos = rule.getPreferredPositions();
 			if (logging)
 				log.info("Rule : "+rule.getKeyword()+"("+rule.getPriority()+")");
 			
+			// TODO: Big refactoring with sortRemaining function
 			// Look for item stacks that match the rule
-			for (k = 0; k < oldInv.length; k++) {
-				i = ALL_SLOTS[k];
+			for (i = 0; i < oldInv.length; i++) {
 				
+				// Filter items, init
 				stack = oldInv[i];
 				if (stack == null || lockedSlots[i] > rulePriority)
 					continue;
-				
 				InvTweaksItem item = InvTweaksTree.getItem(stack.itemID);
-				if (stack != null && InvTweaksTree.matches(item, rule.getKeyword())) {
+				if (!InvTweaksTree.matches(item, rule.getKeyword()))
+					continue;
+				stackOrder = InvTweaksTree.getItem(stack.itemID).getOrder();
+				j = -1;
 					
-					// Try to put the matching item stack to a preferred position,
-					// theses positions being sorted by decreasing preference.
-					int[] preferredPos = rule.getPreferredPositions();
-					boolean checkedFilledPos = false;
+				// Look for an empty spot
+				emptySlotFound = false;
+				while (!emptySlotFound
+						&& (j = getNextSlot(preferredPos, j+1, rulePriority)) != -1) {
 					
-					j = -1;
-					while ((j = getNextSlot(preferredPos, j+1, rulePriority)) != -1) {
+					if (lockedSlots[i] > lockedSlots[preferredPos[j]])
+						continue;
+					
+					k = preferredPos[j];
+					
+					if (newInv[k] != null) {
 						
-						wantedSlotStack = newInv[preferredPos[j]];
-						
-						// If the slot is free, take it.
-						// (except for a special case about locked stacks of the same ID)
-						if (wantedSlotStack == null
-								/*&& (lockedSlots[i] > lockedSlots[preferredPos[j]]
-									|| oldInv[preferredPos[j]] == null
-									|| (InvTweaksTree.matches(
-											InvTweaksTree.getItem(oldInv[preferredPos[j]].itemID),
-											rule.getKeyword())))*/) {
-							newInv[preferredPos[j]] = stack; // Put the stack in the new inventory!
+						// Try to merge if same item
+						if (mergeStacks(stack, i, newInv[k], k)) {
 							if (logging)
-								log.info(InvTweaksTree.getItem(stack.itemID)+" ("+i+") put in "+preferredPos[j]+", "+i+" OK");
-							oldInv[i] = null;
-							newlyOrderedStacks.put(preferredPos[j], stack);
+								log.info("Merged : "+InvTweaksTree.getItem(stack.itemID)+i+" to "+k);
+							oldInv[i] = stack = null;
 							break;
 						}
 						
-						else if (wantedSlotStack != null) {
+						wantedSlotStack = newInv[k];
+						
+						// Swap items, then restart search
+						if (stackOrder < InvTweaksTree.getItem(wantedSlotStack.itemID).getOrder() &&
+								//newInv[k] == null &&
+								lockedSlots[i] == lockedSlots[k]) {
+							if (logging)
+								log.info("Swapping : "+InvTweaksTree.getItem(stack.itemID)+i+" goes to "+k);
+							newInv[k] = stack;
+							oldInv[i] = wantedSlotStack;
 							
-							if (mergeStacks(stack, i,
-									newInv[preferredPos[j]], preferredPos[j]))
-								oldInv[i] = stack = null;
-							
-							// If the slot is occupied, check (once) if the item
-							// can replace one of the already put items. This
-							// can be done if both constraints are respected:
-							// * The item to replace has been put using the same rule
-							// * The item to replace has a lower item priority
-							if (stack != null && !checkedFilledPos) {
-								
-								Integer stackToReplaceKey = null;
-								for (Integer stackKey : newlyOrderedStacks.keySet()) {
-									if (InvTweaksTree.getKeywordOrder(item.getName()) <
-										InvTweaksTree.getKeywordOrder(
-											InvTweaksTree.getItem(
-												newlyOrderedStacks.get(stackKey).itemID
-											).getName())) {
-										stackToReplaceKey = stackKey;
-										break;
-									}
-								}
-								
-								// If an item can be replaced, the items are swapped.
-								// (we are now trying to find a slot for the replaced item)
-								if (stackToReplaceKey != null) {
-									newlyOrderedStacks.put(stackToReplaceKey, stack);
-									newInv[preferredPos[j]] = stack;
-									oldInv[i] = wantedSlotStack;
-									if (logging)
-										log.info(InvTweaksTree.getItem(stack.itemID)+" replaces "+InvTweaksTree.getItem(wantedSlotStack.itemID));
-									stack = wantedSlotStack;
-								}
-								else {
-									checkedFilledPos = true;
-								}
-							}
+							// TODO: Little refactoring
+							stack = wantedSlotStack;
+							stackOrder = InvTweaksTree.getItem(stack.itemID).getOrder();
+							j = -1;
 						}
 					}
+					else {
+						emptySlotFound = true;
+					}
+				}
+				
+				// Empty spot found
+				if (stack != null && j != -1) {
+					newInv[k] = stack;
+					oldInv[i] = null;
+					if (logging)
+						log.info("Rule : "+k+" for "+i+"'s"+InvTweaksTree.getItem(stack.itemID));
 				}
 			}
+		
 
 			newlyOrderedStacks.clear();
 		}
@@ -271,7 +262,6 @@ public class InvTweaksSortingLogic {
 							newInv[ALL_SLOTS[index]] = stack;
 							oldInv[i] = wantedSlotStack;
 							
-							// TODO: Refactoring
 							stack = wantedSlotStack;
 							stackOrder = InvTweaksTree.getItem(stack.itemID).getOrder();
 							index = -1;
@@ -311,7 +301,7 @@ public class InvTweaksSortingLogic {
     	// Check item IDs & lock levels
     	if (from != null && to != null
     			&& from.itemID == to.itemID
-    			&& lockedSlots[fromSlot] == lockedSlots[toSlot]) {
+    			&& lockedSlots[fromSlot] <= lockedSlots[toSlot]) {
 			int sum = from.stackSize + to.stackSize;
 			if (sum <= to.getMaxStackSize()) {
 				to.stackSize = sum;

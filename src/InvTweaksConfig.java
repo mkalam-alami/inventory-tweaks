@@ -125,7 +125,7 @@ public class InvTweaksConfig {
 	}
 
 	private void init() {
-		this.lockedSlots = new int[InvTweaks.INV_SIZE];
+		this.lockedSlots = new int[InvTweaksInventory.SIZE];
 		for (int i = 0; i < this.lockedSlots.length; i++) {
 			this.lockedSlots[i] = 0;
 		}

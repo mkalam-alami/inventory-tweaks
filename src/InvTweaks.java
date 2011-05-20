@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Random;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,10 +15,6 @@ import java.util.logging.Logger;
 import net.minecraft.client.Minecraft;
 
 public class InvTweaks {
-	
-	// (Note) In the inventory, indexes are :
-	// 0 = bottom-left, 8 = bottom-right
-	// 9 = top-left, 35 = 3rd-row-right
 	
     private static final Logger log = Logger.getLogger("InvTweaks");
 
@@ -26,9 +24,12 @@ public class InvTweaks {
     public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.txt";
     public static final String INGAME_LOG_PREFIX = "SortButton: ";
     public static final Level LOG_LEVEL = Level.FINE;
-    public static final int INV_SIZE = 36;
     public static final int HOT_RELOAD_DELAY = 1000;
-
+    
+    private static final boolean logging = false;
+    private static final boolean performanceLogging = false;
+    
+	private static int[] ALL_SLOTS;
     private InvTweaksConfig config = null;
     private long lastKeyPress = 0;
     private int keyPressDuration = 0;
@@ -36,13 +37,23 @@ public class InvTweaks {
     private boolean selectedItemTookAwayBySorting = false;
 	private int storedStackId = 0, storedPosition = -1;
     private Minecraft mc;
+    private boolean doingBenchmarking = false;
     
-    public InvTweaks() {
+    public InvTweaks(Minecraft minecraft) {
 
     	log.setLevel(LOG_LEVEL);
-
-		// Get Minecraft instance
-    	mc = ModLoader.getMinecraftInstance();
+    	
+    	mc = minecraft;
+    	
+    	// Default slot order init. In the inventory, indexes are :
+		// 0 = bottom-left, 8 = bottom-right
+		// 9 = top-left, 35 = 3rd-row-right
+    	if (ALL_SLOTS == null) {
+			ALL_SLOTS = new int[InvTweaksInventory.SIZE];
+	    	for (int i = 0; i < ALL_SLOTS.length; i++) {
+	    		ALL_SLOTS[i] = (i + 9) % InvTweaksInventory.SIZE;
+	    	}
+		}
     	
     	// Load config files
 		tryLoading();
@@ -53,25 +64,27 @@ public class InvTweaks {
     
 	/**
 	 * Sort inventory
+	 * @return The number of clicks that were needed
 	 */
-    public final void onSortButtonPressed()
+    public final long onSortButtonPressed()
     {
+    	
     	// Do nothing if config loading failed
     	if (config == null) {
-    		return;
+    		return -1;
     	}
     	
     	// Hot reload trigger
     	long currentTime = System.currentTimeMillis();
-    	if (currentTime - lastKeyPress < 100) {
+    	if (currentTime - lastKeyPress < 100 && !doingBenchmarking) {
     		keyPressDuration += currentTime - lastKeyPress;
         	lastKeyPress = currentTime;
     		if (keyPressDuration > HOT_RELOAD_DELAY && keyPressDuration < 2*HOT_RELOAD_DELAY) {
-    			tryLoading();
+    			tryLoading(); // Hot-reload
     			keyPressDuration = 2*HOT_RELOAD_DELAY; // Prevent from load repetition
     		}
     		else {
-    			return;
+    			return -1;
     		}
     	}
     	else {
@@ -89,24 +102,124 @@ public class InvTweaks {
     	// if (!mc.currentScreen instanceof GuiContainer)
     	//		return;
     	
+    	long timer = System.nanoTime();
+		InventoryPlayer invPlayer = mc.thePlayer.inventory;
+		ItemStack selectedItem = invPlayer.mainInventory[invPlayer.currentItem];
+		
+		Vector<InvTweaksRule> rules = config.getRules();
+		InvTweaksInventory inventory = new InvTweaksInventory(
+				mc, config.getLockedSlots(), logging);
+
+    	//// Merge stacks
+		if (logging)
+			log.info("Merging stacks.");
     	
-    	try {
-    		InventoryPlayer inventory = mc.thePlayer.inventory;
-    		ItemStack selectedStack = inventory.mainInventory[inventory.currentItem];
-    		
-    		InvTweaksSortingLogic logic = new InvTweaksSortingLogic();
-	    	inventory.mainInventory = logic.sort(inventory.mainInventory,
-	    			config.getRules(), config.getLockedSlots());
-	    	
-	    	// This needs to be remembered so that the autoreplace tool doesn't trigger
-	    	if (selectedStack != null && 
-	    			inventory.mainInventory[inventory.currentItem] == null)
-	    		selectedItemTookAwayBySorting = true;
+    	// TODO: Lower complexity from 36² to 36.log(36)+36
+    	// (sort items by increasing priority, then 1 pass is enough)
+    	for (int i = 0; i < inventory.getSize(); i++) {
+    		ItemStack from = inventory.getItemStack(i);
+    		if (from != null) {
+    	    	for (int j = 0; j < inventory.getSize(); j++) {
+    	    		ItemStack to = inventory.getItemStack(j);
+    	    		if (i != j && to != null
+    	    				&& from.itemID == to.itemID
+    	    				&& inventory.mergeStacks(i, j) 
+    	    					== InvTweaksInventory.STACK_EMPTIED) {
+    	    			break;
+    	    		}
+    	    	}
+    		}
     	}
-    	catch (Exception e) {
-    		log.log(Level.SEVERE, "Sort failed: "+e.getMessage(), e);
-    	}
-    		
+    	
+    	//// Apply rules
+		if (logging)
+			log.info("Applying rules.");
+    	
+    	// Sorts rule by rule, themselves being already sorted by decreasing priority
+		Iterator<InvTweaksRule> rulesIt = rules.iterator();
+		while (rulesIt.hasNext()) {
+			
+			InvTweaksRule rule = rulesIt.next();
+			int rulePriority = rule.getPriority();
+
+			if (logging)
+				log.info("Rule : "+rule.getKeyword()+"("+rulePriority+")");
+
+			for (int i = 0; i < inventory.getSize(); i++) {
+	    		ItemStack from = inventory.getItemStack(i);
+	    		
+	    		if (inventory.hasToBeMoved(i) && inventory.getLockLevel(i) < rulePriority) {
+					InvTweaksItem fromItem = InvTweaksTree.getItem(from.itemID);
+					
+	    			if (InvTweaksTree.matches(fromItem, rule.getKeyword())) {
+	    				
+	    				int[] preferredPos = rule.getPreferredPositions();
+	    				for (int j : preferredPos) {
+	    					if (inventory.moveStack(i, j, rulePriority)) {
+	    						break;
+		    				}
+	    				}
+	    			}
+	    		}
+			}
+		}
+    	
+		//// Don't move locked stacks
+		if (logging)
+			log.info("Locking stacks.");
+		
+		for (int i = 0; i < inventory.getSize(); i++) {
+			if (inventory.hasToBeMoved(i) && inventory.getLockLevel(i) > 0) {
+				inventory.markAsMoved(i);
+			}
+		}
+    	
+		//// Sort remaining
+		if (logging)
+			log.info("Sorting remaining.");
+		
+		Vector<Integer> remaining = new Vector<Integer>(), nextRemaining = new Vector<Integer>();
+		for (int i = 0; i < inventory.getSize(); i++) {
+			if (inventory.hasToBeMoved(i)) {
+				remaining.add(i);
+				nextRemaining.add(i);
+			}
+		}
+		
+		int iterations = 0;
+		while (remaining.size() > 0 && iterations++ < 50) {
+			for (int i : remaining) {
+				if (inventory.hasToBeMoved(i)) {
+					for (int j : ALL_SLOTS) {
+						if (inventory.moveStack(i, j, 1)) {
+							nextRemaining.remove((Object) j);
+							break;
+						}
+					}
+				}
+				else {
+					nextRemaining.remove((Object) i);
+				}
+			}
+			remaining.clear();
+			remaining.addAll(nextRemaining);
+		}
+		if (iterations == 50) {
+			log.info("Sorting takes too long, aborting.");
+		}
+
+		if (performanceLogging) {
+			timer = System.nanoTime()-timer;
+			log.info("Sorting done in "
+					+ inventory.getClickCount() + " clicks and "
+					+ timer + "ns");
+		}
+		
+    	// This needs to be remembered so that the autoreplace tool doesn't trigger
+    	if (selectedItem != null && invPlayer.mainInventory[invPlayer.currentItem] == null)
+    		selectedItemTookAwayBySorting = true;
+    	
+    	return inventory.getClickCount();
     }
     
     public void onTick() {
@@ -128,7 +241,7 @@ public class InvTweaks {
 	    		else if (currentStackId == 0 &&
 	    			inventory.getItemStack() == null) { // Filter item pickup from inv.
 		    		ItemStack candidateStack;
-		    		for (int i = 0; i < INV_SIZE; i++) {
+		    		for (int i = 0; i < InvTweaksInventory.SIZE; i++) {
 		    			// Look only for an exactly matching ID
 		    			candidateStack = inventory.mainInventory[i];
 		    			if (candidateStack != null && candidateStack.itemID == storedStackId) {
@@ -150,6 +263,94 @@ public class InvTweaks {
     	if(gui != null)
     		gui.addChatMessage(INGAME_LOG_PREFIX + message);
     }
+    
+    /**
+     * Allows to test algorithm performance in time and clicks,
+     * by generating random inventories and trying to sort them.
+     * Results are given with times in microseconds, following the format:
+     *   [besttime timemean worsttime] [clicksmean worstclicks]
+     * @param iterations The number of random inventories to sort.
+     */
+    public final void doBenchmarking(int iterations)
+    {
+    	// Note that benchmarking is also specific to
+    	// a ruleset, a keyword tree, and the game mode (SP/SMP).
+    	final int minOccupiedSlots = 0;
+    	final int maxOccupiedSlots = InvTweaksInventory.SIZE;
+    	final int maxDuplicateStacks = 5;
+    	
+    	ItemStack[] invBackup = mc.thePlayer.inventory.mainInventory.clone();
+    	Random r = new Random();
+    	long delay, totalDelay = 0, worstDelay = -1, bestDelay = -1,
+    		clickCount, totalClickCount = 0, worstClickCount = -1;
+    	
+    	doingBenchmarking = true;
+    	
+    	for (int i = 0; i < iterations; i++) {
+    		
+    		// Generate random inventory
+    		
+    		int stackCount = r.nextInt(maxOccupiedSlots-minOccupiedSlots)+minOccupiedSlots;
+    		ItemStack[] inventory =  mc.thePlayer.inventory.mainInventory;
+    		for (int j = 0; j < InvTweaksInventory.SIZE; j++) {
+    			inventory[j] = null;
+    		}
+    		
+    		int stacksOfSameID = 0, stackId = 1;
+    		
+    		for (int j = 0; j < stackCount; j++) {
+    			if (stacksOfSameID == 0) {
+    				stacksOfSameID = 1+r.nextInt(maxDuplicateStacks);
+    				do {
+    					stackId = InvTweaksTree.getRandomItem(r).getId();
+    				} while (stackId <= 0); // Needed or NPExc. may occur, don't know why
+    			}
+    			
+    			int k;
+    			do {
+    				k = r.nextInt(InvTweaksInventory.SIZE);
+    			} while (inventory[k] != null);
+    			
+				inventory[k] = new ItemStack(stackId, 1, 0);
+				inventory[k].stackSize = 1+r.nextInt(inventory[k].getMaxStackSize());
+    			stacksOfSameID--;
+    		}
+    		
+    		// Benchmark
+    		
+    		delay = System.nanoTime();
+    		clickCount = onSortButtonPressed();
+    		delay = System.nanoTime() - delay;
+    		
+    		totalDelay += delay;
+    		totalClickCount += clickCount;
+    		if (worstDelay < delay || worstDelay == -1) {
+    			worstDelay = delay;
+    		}
+    		if (bestDelay > delay || bestDelay == -1) {
+    			bestDelay = delay;
+    		}
+    		if (worstClickCount < clickCount || worstClickCount == -1) {
+    			worstClickCount = clickCount;
+    		}
+    		
+    	}
+    	
+    	doingBenchmarking = false;
+    	
+    	// Display results
+    	String results = "Time: [" + bestDelay/1000 + " "
+				+ (totalDelay/iterations/1000) + " " + worstDelay/1000 + "] "
+				+ "Clicks : [" + (totalClickCount/iterations)
+				+ " " + worstClickCount + "]";
+    	log.info(results);
+    	inGameLog(results);
+    	
+    	// Restore inventory
+    	mc.thePlayer.inventory.mainInventory = invBackup;
+    	
+    }
+    	
     
     /**
      * Tries to load mod configuration from file, with error handling.

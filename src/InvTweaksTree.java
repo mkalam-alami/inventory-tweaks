@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Logger;
 
 public class InvTweaksTree {
@@ -218,6 +219,11 @@ public class InvTweaksTree {
 			log.warning("Unknown item id: "+id);
 			return defaultItem;
 		}
+	}
+
+	public static InvTweaksItem getRandomItem(Random r) {
+		return (InvTweaksItem) itemsByName.values().
+				toArray()[r.nextInt(itemsByName.size())];
 	}
 	
 	public static InvTweaksItem getItem(String name) {

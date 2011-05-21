@@ -61,17 +61,20 @@ public class InvTweaksInventory {
 			
 			// Stacks are merged into one
 			if (sum <= max) {
+				sendClick(i, inventory[i]);
+				sendClick(j, inventory[j]);
 				remove(i);
 				inventory[j].stackSize = sum;
-				sendClicks(i, j);
 				return false;
 			}
 			
 			// The rest goes back to the origin slot
 			else {
+				sendClick(i, inventory[i]);
+				sendClick(j, inventory[j]);
+				sendClick(i, null);
 				inventory[i].stackSize = sum - max;
 				inventory[j].stackSize = max;
-				sendClicks(i, j, i);
 				return true;
 			}
 		}
@@ -104,8 +107,9 @@ public class InvTweaksInventory {
 			
 			// Move to empty slot
 			if (to == null && lockLevels[j] <= priority) {
+				sendClick(i, inventory[i]);
+				sendClick(j, inventory[j]);
 				put(remove(i), j, priority);
-				sendClicks(i, j);
 				return true;
 			}
 			
@@ -114,10 +118,12 @@ public class InvTweaksInventory {
 					&& (rulePriority[j] < priority ||
 							(InvTweaksTree.getItem(from.itemID).getOrder()
 								< InvTweaksTree.getItem(to.itemID).getOrder()))) {
+				sendClick(i, inventory[i]);
+				sendClick(j, inventory[j]);
+				sendClick(i, null);
 				put(remove(i), j, priority);
 				put(to, i, 0);
 				oldSlot[i] = j;
-				sendClicks(i, j, i);
 				return true;
 			}
 		}
@@ -154,20 +160,30 @@ public class InvTweaksInventory {
 		keywordOrder[slot] = InvTweaksTree.getItem(stack.itemID).getOrder();
 	}
 
-	private void sendClicks(int... slots) {
-		clickCount += slots.length;
+	/**
+	 * Notify server of a click.
+	 * @param slot The targeted slot
+	 * @param stack The stack that was in the slot before the operation
+	 */
+	private void sendClick(int slot, ItemStack stack) {
+		clickCount++;
 		if (isMultiplayer) {
-			for (int slot : slots) {
-				client.func_20091_a(new Packet102WindowClick(
-						0, // Select player inventory
-						slot % 36, // Select slot (converted for the network protocol indexes,
-								   // see http://mc.kev009.com/Inventory#Windows)
-						0, // Left-click
-						false, // Shift not held 
-						inventory[slot], // ItemStack
-						container.func_20111_a(invPlayer) // Packet ID
-					));
+			if (logging) {
+				if (stack != null)
+					log.info("Click on "+slot+" containing "+InvTweaksTree.getItem(stack.itemID).getName());
+				else
+					log.info("Click on "+slot+" (empty)");
 			}
+			client.addToSendQueue(new Packet102WindowClick(
+					0, // Select player inventory
+					(slot > 8) ? slot : slot+36, // Targeted slot
+							// (converted for the network protocol indexes,
+							// see http://mc.kev009.com/Inventory#Windows)
+					0, // Left-click
+					false, // Shift not held 
+					stack, // ItemStack
+					container.func_20111_a(invPlayer) // Packet ID
+				));
 		}
 	}
 

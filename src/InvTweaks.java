@@ -26,8 +26,7 @@ public class InvTweaks {
     public static final Level LOG_LEVEL = Level.FINE;
     public static final int HOT_RELOAD_DELAY = 1000;
     
-    private static final boolean logging = false;
-    private static final boolean performanceLogging = false;
+    private static final boolean logging = true;
     
 	private static int[] ALL_SLOTS;
     private InvTweaksConfig config = null;
@@ -208,7 +207,7 @@ public class InvTweaks {
 			log.info("Sorting takes too long, aborting.");
 		}
 
-		if (performanceLogging) {
+		if (logging) {
 			timer = System.nanoTime()-timer;
 			log.info("Sorting done in "
 					+ inventory.getClickCount() + " clicks and "
@@ -230,23 +229,29 @@ public class InvTweaks {
     	int currentStackId = (currentStack == null) ? 0 : currentStack.itemID;
     	
     	if (currentStackId != storedStackId) {
-    		InventoryPlayer inventory = mc.thePlayer.inventory;    		
-	    	if (storedPosition != inventory.currentItem) { // Filter selection change
-	    		storedPosition = inventory.currentItem;
+
+    		int currentItem = mc.thePlayer.inventory.currentItem;  
+    		InvTweaksInventory inventory = new InvTweaksInventory(
+    				mc, config.getLockedSlots(), logging);  	
+    		
+	    	if (storedPosition != currentItem) { // Filter selection change
+	    		storedPosition = currentItem;
 	    	}
 	    	else {
 	    		
 	    		if (selectedItemTookAwayBySorting) // Filter inentory sorting
 	    			selectedItemTookAwayBySorting = false;
 	    		else if (currentStackId == 0 &&
-	    			inventory.getItemStack() == null) { // Filter item pickup from inv.
+	    				mc.thePlayer.inventory.getItemStack() == null) { // Filter item pickup from inv.
 		    		ItemStack candidateStack;
 		    		for (int i = 0; i < InvTweaksInventory.SIZE; i++) {
 		    			// Look only for an exactly matching ID
-		    			candidateStack = inventory.mainInventory[i];
+		    			candidateStack = inventory.getItemStack(i);
+	    				// TODO: Choose stack of lowest size
 		    			if (candidateStack != null && candidateStack.itemID == storedStackId) {
-		    				inventory.mainInventory[i] = null;
-		    				inventory.mainInventory[inventory.currentItem] = candidateStack;
+		    				if (logging)
+		    					log.info("Automatic stack replacement.");
+		    				inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
 		    				break;
 		    			}
 		    		}
@@ -258,7 +263,7 @@ public class InvTweaks {
     	
     }
     
-    public static void inGameLog(String message) {
+    public static void logInGame(String message) {
     	GuiIngame gui = ModLoader.getMinecraftInstance().ingameGUI;
     	if(gui != null)
     		gui.addChatMessage(INGAME_LOG_PREFIX + message);
@@ -344,7 +349,7 @@ public class InvTweaks {
 				+ "Clicks : [" + (totalClickCount/iterations)
 				+ " " + worstClickCount + "]";
     	log.info(results);
-    	inGameLog(results);
+    	logInGame(results);
     	
     	// Restore inventory
     	mc.thePlayer.inventory.mainInventory = invBackup;
@@ -362,11 +367,11 @@ public class InvTweaks {
     	
     	if (!new File(CONFIG_FILE).exists()
     			&& copyFile(DEFAULT_CONFIG_FILE, CONFIG_FILE)) {
-    		inGameLog(CONFIG_FILE+" missing, creating default one.");
+    		logInGame(CONFIG_FILE+" missing, creating default one.");
 		}
     	if (!new File(CONFIG_TREE_FILE).exists()
     			&& copyFile(DEFAULT_CONFIG_TREE_FILE, CONFIG_TREE_FILE)) {
-    		inGameLog(CONFIG_TREE_FILE+" missing, creating default one.");
+    		logInGame(CONFIG_TREE_FILE+" missing, creating default one.");
 		}
     	
     	// Load
@@ -377,17 +382,17 @@ public class InvTweaks {
 	    		config = new InvTweaksConfig(CONFIG_FILE);
 	    	}
 			config.load();
-			inGameLog("Configuration reloaded");
+			logInGame("Configuration reloaded");
 			showConfigErrors(config);
 	    	return true;
 		} catch (FileNotFoundException e) {
 			String error = "Config file not found";
-			inGameLog(error);
+			logInGame(error);
 			log.severe(error);
 	    	return false;
 		} catch (IOException e) {
 			String error = "Could not read config file";
-			inGameLog(error);
+			logInGame(error);
 			log.severe(error + " : " + e.getMessage());
 	    	return false;
 		}
@@ -400,7 +405,7 @@ public class InvTweaks {
 			for (String keyword : config.getInvalidKeywords()) {
 				error += keyword+" ";
 			}
-			inGameLog(error);
+			logInGame(error);
     	}
     }
     

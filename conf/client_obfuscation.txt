@@ -4,6 +4,6 @@ InvTweaksConfig
 InvTweaksItem
 InvTweaksRule
 InvTweaksRule$RuleType
-InvTweaksSortingLogic
+InvTweaksInventory
 InvTweaksTree
 mod_InvTweaks

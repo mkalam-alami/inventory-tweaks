@@ -35,6 +35,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Sort inventory
 	 */
+	private static int i = 9;
     public final void KeyboardEvent(KeyBinding keybinding)
     {
     	instance.onSortButtonPressed();

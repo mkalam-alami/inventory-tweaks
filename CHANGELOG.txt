@@ -1,0 +1,19 @@
+[05.17.2011] 1.0 Beta3 (B1.5_01)
+ * Multiplayer support
+ 
+[05.16.2011] 1.0 Beta2 (B1.5_01)
+ * Bug fixes
+ * Item tree fixes
+ * Various improvements
+
+[05.15.2011] 1.0 Beta (B1.5_01)
+ * Configurable sorting shortcut
+ * Automatic item replacement
+ * Customizable sorting rules
+     By column
+     By row
+     By tile
+     Reversed rules
+     Exclusion rules
+ * Customizable item tree
+ * Hot configuration reload

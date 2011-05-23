@@ -37,6 +37,7 @@ public class InvTweaks {
 	private int storedStackId = 0, storedPosition = -1;
     private Minecraft mc;
     private boolean doingBenchmarking = false;
+	private ItemStack autoReplaceBackup;
     
     public InvTweaks(Minecraft minecraft) {
 
@@ -115,10 +116,10 @@ public class InvTweaks {
     	
     	// TODO: Lower complexity from 36² to 36.log(36)+36
     	// (sort items by increasing priority, then 1 pass is enough)
-    	for (int i = 0; i < inventory.getSize(); i++) {
+    	for (int i = inventory.getSize()-1; i >= 0; i--) {
     		ItemStack from = inventory.getItemStack(i);
     		if (from != null) {
-    	    	for (int j = 0; j < inventory.getSize(); j++) {
+    	    	for (int j = inventory.getSize()-1; j >= 0; j--) {
     	    		ItemStack to = inventory.getItemStack(j);
     	    		if (i != j && to != null
     	    				&& from.itemID == to.itemID
@@ -223,14 +224,19 @@ public class InvTweaks {
     
     public void onTick() {
 
-    	// Auto-replace item stack
-    	
     	ItemStack currentStack = mc.thePlayer.getCurrentEquippedItem();
     	int currentStackId = (currentStack == null) ? 0 : currentStack.itemID;
+		int currentItem = mc.thePlayer.inventory.currentItem;  
     	
+    	// Protection against what seems to be a server bug
+    	if (autoReplaceBackup != null && currentStack == null) {
+    		mc.thePlayer.inventory.mainInventory[currentItem] = autoReplaceBackup;
+    		autoReplaceBackup = null;
+    	}
+
+    	// Auto-replace item stack
     	if (currentStackId != storedStackId) {
 
-    		int currentItem = mc.thePlayer.inventory.currentItem;  
     		InvTweaksInventory inventory = new InvTweaksInventory(
     				mc, config.getLockedSlots(), logging);  	
     		
@@ -251,7 +257,14 @@ public class InvTweaks {
 		    			if (candidateStack != null && candidateStack.itemID == storedStackId) {
 		    				if (logging)
 		    					log.info("Automatic stack replacement.");
+		    				
 		    				inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
+		    				
+		    				// TODO: Synchronize
+		    				if (mc.isMultiplayerWorld()) {
+		    					autoReplaceBackup = inventory.getItemStack(currentItem); 
+		    				}
+		    				
 		    				break;
 		    			}
 		    		}

@@ -7,12 +7,12 @@ For documentation about how to use or install the mod, see the [main page of Inv
 This repository doesn't include any third party code, so in order to compile the current version of this mod, the following is needed:
 
 * Minecraft's `minecraft.jar` (version *Beta 1.5_01*)
-* [ModLoader][4] (version *Beta 1.5_01v3*)
-* [Minecraft Coder Pack][5] (version *2.12*)
+* [ModLoader][4] (version *Beta 1.5_01 v3* or *v4*)
+* [Minecraft Coder Pack][5] (version *3.1* or *2.12*)
 
 # Contribute
 
-You're welcome to fork this repository ; do whatever you want with it as long as you respect the license requirements and the [Minecraft's terms][6]. If you're looking for how to help, you can check the issue list.
+You're welcome to fork this repository ; do whatever you want with it as long as you respect the license requirements and the [Minecraft's terms][6]. If you're looking for how to help, why not check the issue list?
 
 [1]: http://www.minecraft.net/
 [2]: http://mojang.com/

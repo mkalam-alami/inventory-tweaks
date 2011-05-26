@@ -1,5 +1,7 @@
 client/
 distfiles/
 *.java
-RenderBlocks.*
+*#
+*~
+*.rej
 !*InvTweaks*

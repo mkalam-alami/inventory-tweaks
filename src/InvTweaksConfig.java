@@ -11,12 +11,16 @@ public class InvTweaksConfig {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaksConfig");
-	private static final String LOCKED = "LOCKED";
+	
+	private static final String LOCKED = "locked";
+	private static final String AUTOREPLACE = "autoreplace";
+	private static final String AUTOREPLACE_NOTHING = "nothing";
 	
 	private String file;
 	private int[] lockedSlots;
 	private Vector<InvTweaksRule> rules = new Vector<InvTweaksRule>();
 	private Vector<String> invalidKeywords = new Vector<String>();
+	private Vector<String> autoReplaceRules = new Vector<String>();
 	
 	/**
 	 * Creates a new configuration holder.
@@ -46,15 +50,21 @@ public class InvTweaksConfig {
 		return lockedSlots;
 	}
 	
-	public boolean isAutoReplaceEnabled() {
-		return true; // TODO
+	public boolean canBeAutoReplaced(int itemID) {
+		InvTweaksItem item = InvTweaksTree.getItem(itemID);
+		for (String keyword : autoReplaceRules) {
+			if (keyword.equals(AUTOREPLACE_NOTHING))
+				return false;
+			if (InvTweaksTree.matches(item, keyword))
+				return true;
+		}
+		return false;
 	}
-
-	/**
-	 * WARNING: Currently not thread-safe
-	 */
+	
 	public void load() throws FileNotFoundException, IOException {
 
+		synchronized (this) {
+		
 		// Reset all
 		init();
 		
@@ -71,23 +81,26 @@ public class InvTweaksConfig {
 				.split("\n");
 		
 		// Parse and sort rules (specific tiles first, then in appearing order)
-		String lineText, keyword;
+		String lineText;
 		InvTweaksRule newRule;
 		
 		int currentLine = 0;
 		while (currentLine < config.length) {
-			lineText = config[currentLine++];
 			
+			lineText = config[currentLine++].toLowerCase();
+			String[] words = lineText.split(" ");
+
 			// Parse valid lines only
-			if (lineText.matches("^([A-D]|[1-9]|[r]){1,2} [\\w]*$")) {
-				String[] words = lineText.split(" ");
-				if (words.length == 2) {
+			if (words.length == 2) {
+
+				// Standard rule format
+				if (lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$")) {
 					
 					// Locking rule
 					if (words[1].equals(LOCKED)) {
 						int[] newLockedSlots = InvTweaksRule.
 								getRulePreferredPositions(words[0]);
-						int lockPriority = InvTweaksRule.getRuleType(words[0]).getPriority();
+						int lockPriority = InvTweaksRule.getRuleType(words[0]).getHighestPriority();
 						for (int i : newLockedSlots) {
 							lockedSlots[i] = lockPriority;
 						}
@@ -95,16 +108,15 @@ public class InvTweaksConfig {
 					
 					// Standard rule
 					else {
-						keyword = words[1].toLowerCase();
-						if (InvTweaksTree.isKeywordValid(keyword)) {
-							newRule = new InvTweaksRule(words[0], keyword);
+						if (InvTweaksTree.isKeywordValid(words[1])) {
+							newRule = new InvTweaksRule(words[0], words[1]);
 							rules.add(newRule);
 						}
-						else if (keyword.endsWith("s")) { // Tolerate plurals
+						else if (words[1].endsWith("s")) { // Tolerate plurals
 							
-							String keyword2 = keyword.substring(0, keyword.length()-1);
-							if (InvTweaksTree.isKeywordValid(keyword2)) {
-								newRule = new InvTweaksRule(words[0], keyword2);
+							String keyword = words[1].substring(0, words[1].length()-1);
+							if (InvTweaksTree.isKeywordValid(keyword)) {
+								newRule = new InvTweaksRule(words[0], keyword);
 								rules.add(newRule);
 							}
 							else {
@@ -116,11 +128,27 @@ public class InvTweaksConfig {
 						}
 					}
 				}
+	
+				// Autoreplace rule
+				else if (words[0].equals(AUTOREPLACE) &&
+						(InvTweaksTree.isKeywordValid(words[1]) ||
+							words[1].equals(AUTOREPLACE_NOTHING))) {
+					autoReplaceRules.add(words[1]);
+				}
+			
 			}
+			
+		}
+		
+		// Default Autoreplace behavior
+		if (autoReplaceRules.isEmpty()) {
+			autoReplaceRules.add(InvTweaksTree.getRootCategory().getName());
 		}
 		
 		// Sort rules by priority, highest first
 		Collections.sort(rules, Collections.reverseOrder());
+		
+		}
 		
 	}
 
@@ -131,6 +159,7 @@ public class InvTweaksConfig {
 		}
 		rules.clear();
 		invalidKeywords.clear();
+		autoReplaceRules.clear();
 	}
 
 }

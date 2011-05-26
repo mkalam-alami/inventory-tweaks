@@ -23,8 +23,11 @@ D LOCKED
 # MODIFIERS
 
 # SPECIAL RULES
-# 'r' modifier = Reverse sort order for a row/column (ex: "Ar sword")
-# LOCKED keyword = Locks a part of the inventory so that stuff doesn't go there (ex: "D LOCKED"). Is overrided by more specific rules ("D LOCKED" is overrided by "D1 swords")
+# r           = Reverse sort order for a row/column (ex: "Ar sword" sorts from right to left)
+# LOCKED      = Locks a part of the inventory so that stuff doesn't go there (ex: "D LOCKED").
+#               Is overrided by more specific rules ("D LOCKED" is overriden by "D1 torch" or "1 swords")
+# AUTOREPLACE = Allows to customize what can be automatically replaced (ex: "AUTOREPLACE tools" restricts the item replacement to tools).
+#               You can disable completely the feature using "AUTOREPLACE nothing".
 
 # INVENTORY GRID
 #     1   2   3   4   5   6   7   8   9
@@ -34,5 +37,5 @@ D LOCKED
 #  
 # D [D1][D2][D3][D4][D5][D6][D7][D8][D9]
    
-# TIPS
-# - Keep the sorting button pressed during 1 second to hot-reload your configuration!
+# TIP
+# Keep the sorting button pressed during 1 second to reload your configuration during the game!

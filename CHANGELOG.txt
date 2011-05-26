@@ -1,8 +1,13 @@
-[05.17.2011] 1.0 Beta3 (B1.5_01)
+[05.27.2011] 1.0 (B1.5_01)
  * Multiplayer support
+ * Added autoreplace configuration
+ * Added short delay before autoreplace
+ * Fixed sorting sometimes not being perfect in one stroke
+ * Fixed wool of different colors (and others) merging together
+ * Minor item tree changes
  
 [05.16.2011] 1.0 Beta2 (B1.5_01)
- * Bug fixes
+ * Various bug fixes
  * Item tree fixes
  * Various improvements
 

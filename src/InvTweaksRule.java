@@ -4,23 +4,28 @@ import java.util.logging.Logger;
 
 public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	
-	// A -> D = 65 -> 68 in ascii
-	// 1 -> 4 = 49 -> 57 in ascii
-
 	public enum RuleType {
 		
 		ROW(1),
 		COLUMN(2),
 		TILE(3);
-		
-		private int priority;
 
-		RuleType(int priority) {
-			this.priority = priority;
+		private int lowestPriority;
+		private int highestPriority;
+
+		RuleType(int priorityLevel) {
+			lowestPriority = priorityLevel*1000000;
+			highestPriority = (priorityLevel+1)*1000000-1;
 		}
 
-		public int getPriority() {
-			return priority;
+		// Used for computing rule priorities
+		public int getLowestPriority() {
+			return lowestPriority;
+		}
+		
+		// Used for computing lock levels
+		public int getHighestPriority() {
+			return highestPriority;
 		}
 	}
 	
@@ -44,7 +49,7 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 		// 1st criteria : the rule type
 		// 2st criteria : the keyword category depth
 		// 3st criteria : the item order in a same category
-		priority = type.priority*1000000 + 
+		priority = type.getLowestPriority() + 
 			InvTweaksTree.getKeywordDepth(keyword)*10000 -
 			InvTweaksTree.getKeywordOrder(keyword);
 		
@@ -114,10 +119,10 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 			}
 			else {
 				switch (c) {
-					case 'A': row = 1; break;
-					case 'B': row = 2; break;
-					case 'C': row = 3; break;
-					case 'D': row = 0;
+					case 'a': row = 1; break;
+					case 'b': row = 2; break;
+					case 'c': row = 3; break;
+					case 'd': row = 0;
 				}
 			}
 		}

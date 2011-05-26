@@ -5,7 +5,7 @@
  
 # Keyword tree
 # * You can create you own categories
-# * [TODO] You can swap items to change their priority for sorting
+# * You can swap items to change their priority for sorting
 #   * Items can be put in several categories
 # * Use exactly the same syntax as what you see:
 #   * Two spaces of indentation for each category level
@@ -275,9 +275,12 @@ stuff
     seedBlock 59
     seedsBlock 59
     
+  bucket
+    emptyBucket 325
+    waterBucket 326
+    lavaBucket 327
   dye 351
   bowl 281
-  bucket 325
   clock 347
   compass 345
   fishingRod 346

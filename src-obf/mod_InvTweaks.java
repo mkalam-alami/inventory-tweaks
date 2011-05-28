@@ -1,3 +1,5 @@
+import java.util.logging.Logger;
+
 import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Keyboard;
@@ -10,19 +12,57 @@ import org.lwjgl.input.Keyboard;
  * 
  */
 public class mod_InvTweaks extends BaseMod {
-	
+
+    @SuppressWarnings("unused")
+	private static final Logger log = Logger.getLogger("mod_InvTweaks");
+    
 	private InvTweaks instance;
-	private static final px myKey = new px("Sort inventory", Keyboard.KEY_R);
     
     public mod_InvTweaks() {
     	
-    	// Register customizable sort key
-    	ModLoader.RegisterKey(this, myKey, true);
+    	Minecraft mc = ModLoader.getMinecraftInstance();
+    	px sortKey = new px("Sort inventory", Keyboard.KEY_R);
+
+    	//// A ModLoader 1.6.4 bug forces to register manually
+    	//// the key to the options menu. This should work even after
+    	//// ModLoader is fixed.
+
+    	// Add sort key to the settings if necessary
+    	px[] oldKeys = mc.z.w;
+    	px[] newKeys = new px[oldKeys.length+1];
+    	boolean keyRegistered = false;
+    	for (int i = 0; i < oldKeys.length; i++) {
+    		if (oldKeys[i].a.equals(sortKey.a)) {
+    			keyRegistered = true; 
+    			break;
+    		}
+    		newKeys[i] = oldKeys[i];
+    	}
+    	if (!keyRegistered) {
+	    	newKeys[newKeys.length-1] = sortKey;
+	    	mc.z.w = newKeys;
+    	}
+
+    	// Reload options (will now load the sorting key config)
+    	mc.z.a();
+
+    	// Register KeyboardEvent, either with default or saved key
+    	for (px key : mc.z.w) {
+    		if (key.a.equals(sortKey.a)) {
+    			sortKey = key;
+    		}
+    	}
+    	ModLoader.RegisterKey(this, sortKey, true);
     	
-    	// Register OnTickInGame event
+  
+    	//// Register OnTickInGame event
+    	
     	ModLoader.SetInGameHook(this, true, true);
+
     	
-    	instance = new InvTweaks(ModLoader.getMinecraftInstance());
+    	//// Instantiate mod core
+    	
+    	instance = new InvTweaks(mc);
     }
     
 	@Override
@@ -42,4 +82,5 @@ public class mod_InvTweaks extends BaseMod {
     {
     	instance.onTick();
     }
+    
 }

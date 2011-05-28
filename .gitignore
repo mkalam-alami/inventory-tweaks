@@ -1,7 +1,10 @@
+bin/
 client/
-distfiles/
+dist/*/**
 *.java
 *#
 *~
 *.rej
 !*InvTweaks*
+.classpath
+.project

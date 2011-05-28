@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 public class InvTweaks {
 	
     private static final Logger log = Logger.getLogger("InvTweaks");
-
+    
     public static final String CONFIG_FILE = Minecraft.b()+"/InvTweaksConfig.txt";
     public static final String CONFIG_TREE_FILE = Minecraft.b()+"/InvTweaksTree.txt";
     public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.txt";

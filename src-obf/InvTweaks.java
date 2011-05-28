@@ -66,7 +66,7 @@ public class InvTweaks {
     public final long onSortButtonPressed()
     {
     	synchronized (this) {
-    	
+    		
     	// Do nothing if config loading failed
     	if (config == null) {
     		return -1;
@@ -112,7 +112,7 @@ public class InvTweaks {
 		if (logging)
 			log.info("Merging stacks.");
     	
-    	// TODO: Lower complexity from 36Â² to 36.log(36)+36
+    	// TODO: Lower complexity from 36² to 36.log(36)+36
     	// (sort items by increasing priority, then 1 pass is enough)
     	for (int i = inventory.getSize()-1; i >= 0; i--) {
     		iw from = inventory.getItemStack(i);
@@ -234,7 +234,7 @@ public class InvTweaks {
     	// This needs to be remembered so that the autoreplace tool doesn't trigger
     	if (selectedItem != null && invPlayer.a[invPlayer.c] == null)
     		selectedItemTookAwayBySorting = true;
-    	
+
     	return inventory.getClickCount();
     	
     	}
@@ -297,22 +297,12 @@ public class InvTweaks {
 		    							return this;
 		    						}
 		    						
+									// TODO: Solve SMP glitch
 									@Override
 									public void run() {
-										try {
-											Thread.sleep(AUTOREPLACE_DELAY);
-										} catch (InterruptedException e) {
-											// Do nothing
-										}
-										synchronized (mutex) {
-											// After AUTOREPLACE_DELAY ms,
-											// things might have changed
-											if (inventory.getItemStack(i).c 
-													== expectedItemId) {
-												inventory.moveStack(i, currentItem,
-														Integer.MAX_VALUE);
-											}
-										}
+										trySleep(AUTOREPLACE_DELAY);
+										inventory.sendClick(i);
+										inventory.sendClick(currentItem);
 									}
 									
 								}.init(this, inventory, i, currentItem)
@@ -506,5 +496,13 @@ public class InvTweaks {
 			return false;
 		}
    	}
+    
+    private void trySleep(int delay) {
+		try {
+			Thread.sleep(delay);
+		} catch (InterruptedException e) {
+			// Do nothing
+		}
+    }
     
 }

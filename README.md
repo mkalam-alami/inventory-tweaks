@@ -6,9 +6,16 @@ For documentation about how to use or install the mod, see the [main page of Inv
 
 This repository doesn't include any third party code, so in order to compile the current version of this mod, the following is needed:
 
+##"src" sources
+
 * Minecraft's `minecraft.jar` (version *Beta 1.5_01*)
 * [ModLoader][4] (version *Beta 1.5_01 v3* or *v4*)
 * [Minecraft Coder Pack][5] (version *3.1* or *2.12*)
+
+##"src-obf" sources
+
+* Minecraft's `minecraft.jar` (version *Beta 1.6.4*)
+* [ModLoader][4] (version *Beta 1.6.4*)
 
 # Contribute
 

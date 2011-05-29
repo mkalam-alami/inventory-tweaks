@@ -17,7 +17,7 @@ import net.minecraft.client.Minecraft;
 public class InvTweaks {
 	
     private static final Logger log = Logger.getLogger("InvTweaks");
-
+    
     public static final String CONFIG_FILE = Minecraft.getMinecraftDir()+"/InvTweaksConfig.txt";
     public static final String CONFIG_TREE_FILE = Minecraft.getMinecraftDir()+"/InvTweaksTree.txt";
     public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.txt";
@@ -31,10 +31,11 @@ public class InvTweaks {
     
 	private static int[] ALL_SLOTS;
     private InvTweaksConfig config = null;
-    private long lastKeyPress = 0;
+    private long lastKeyPress = 0, lastAutoReplace = 0;
     private int keyPressDuration = 0;
     private boolean configErrorsShown = false;
     private boolean selectedItemTookAwayBySorting = false;
+    private boolean smpCorrection = true;
 	private int storedStackId = 0, storedPosition = -1;
     private Minecraft mc;
     
@@ -68,7 +69,7 @@ public class InvTweaks {
     public final long onSortButtonPressed()
     {
     	synchronized (this) {
-    	
+    		
     	// Do nothing if config loading failed
     	if (config == null) {
     		return -1;
@@ -99,7 +100,7 @@ public class InvTweaks {
     	}
     	
     	// Do nothing if the inventory is closed
-    	// if (!mc.currentScreen instanceof GuiContainer)
+    	// if (!mc.hrrentScreen instanceof GuiContainer)
     	//		return;
     	
     	long timer = System.nanoTime();
@@ -114,7 +115,7 @@ public class InvTweaks {
 		if (logging)
 			log.info("Merging stacks.");
     	
-    	// TODO: Lower complexity from 36² to 36.log(36)+36
+    	// TODO: Lower complexity from 36� to 36.log(36)+36
     	// (sort items by increasing priority, then 1 pass is enough)
     	for (int i = inventory.getSize()-1; i >= 0; i--) {
     		ItemStack from = inventory.getItemStack(i);
@@ -234,9 +235,10 @@ public class InvTweaks {
 		}
 		
     	// This needs to be remembered so that the autoreplace tool doesn't trigger
-    	if (selectedItem != null && invPlayer.mainInventory[invPlayer.currentItem] == null)
+    	if (selectedItem != null && 
+    			invPlayer.mainInventory[invPlayer.currentItem] == null)
     		selectedItemTookAwayBySorting = true;
-    	
+
     	return inventory.getClickCount();
     	
     	}
@@ -245,16 +247,23 @@ public class InvTweaks {
     public void onTick() {
     	
     	synchronized (this) {
-
-    	ItemStack currentStack = mc.thePlayer.getCurrentEquippedItem();
+    		
+    	ItemStack currentStack = mc.thePlayer.inventory.getCurrentItem();
     	int currentStackId = (currentStack == null) ? 0 : currentStack.itemID;
-		int currentItem = mc.thePlayer.inventory.currentItem;  
-
-    	// Auto-replace item stack
-    	if (currentStackId != storedStackId) {
-
+		int currentItem = mc.thePlayer.inventory.currentItem;
+		
+		if (smpCorrection == false
+				&& System.currentTimeMillis() - lastAutoReplace > 500
+				&& System.currentTimeMillis() - lastAutoReplace < 700) {
     		InvTweaksInventory inventory = new InvTweaksInventory(
     				mc, config.getLockedSlots(), logging);  	
+    		inventory.sendClick(currentItem);
+    		inventory.sendClick(currentItem);
+    		smpCorrection = true;
+		}
+		
+    	// Auto-replace item stack
+    	if (currentStackId != storedStackId) {
     		
 	    	if (storedPosition != currentItem) { // Filter selection change
 	    		storedPosition = currentItem;
@@ -263,16 +272,21 @@ public class InvTweaks {
 	    		
 	    		if (selectedItemTookAwayBySorting) // Filter inventory sorting
 	    			selectedItemTookAwayBySorting = false;
-	    		else if (currentStackId == 0 &&
+	    		else if (currentStackId == 0 && 
 	    				mc.thePlayer.inventory.getItemStack() == null) { // Filter item pickup from inv.
-		    		ItemStack candidateStack;
-		    		for (int i = 0; i < InvTweaksInventory.SIZE; i++) {
+		    		
+	        		InvTweaksInventory inventory = new InvTweaksInventory(
+	        				mc, config.getLockedSlots(), logging);  	
+	    			ItemStack candidateStack;
+		    		
+	    			for (int i = 0; i < InvTweaksInventory.SIZE; i++) {
 		    			// Look only for an exactly matching ID
 		    			candidateStack = inventory.getItemStack(i);
 	    				// TODO: Choose stack of lowest size
 		    			if (candidateStack != null && 
 		    					candidateStack.itemID == storedStackId &&
-		    					config.canBeAutoReplaced(candidateStack.itemID)) {
+		    					(config == null || 
+		    							config.canBeAutoReplaced(candidateStack.itemID))) {
 		    				if (logging)
 		    					log.info("Automatic stack replacement.");
 		    				
@@ -285,38 +299,35 @@ public class InvTweaks {
 		    						private InvTweaksInventory inventory;
 		    						private int currentItem;
 		    						private int i, expectedItemId;
-		    						private InvTweaks mutex;
 		    						
-		    						public Runnable init(InvTweaks mutex,
+		    						public Runnable init(
 		    								InvTweaksInventory inventory,
 		    								int i, int currentItem) {
 		    							this.inventory = inventory;
 		    							this.currentItem = currentItem;
 		    							this.expectedItemId = inventory.getItemStack(i).itemID;
 		    							this.i = i;
-		    							this.mutex = mutex;
 		    							return this;
 		    						}
 		    						
+									// TODO: Solve SMP glitch
 									@Override
 									public void run() {
-										try {
-											Thread.sleep(AUTOREPLACE_DELAY);
-										} catch (InterruptedException e) {
-											// Do nothing
+										trySleep(AUTOREPLACE_DELAY);
+										if (inventory.getItemStack(i) != null
+												&& inventory.getItemStack(i).itemID
+												== expectedItemId) {
+											inventory.moveStack(i, currentItem,
+													Integer.MAX_VALUE);
 										}
-										synchronized (mutex) {
-											// After AUTOREPLACE_DELAY ms,
-											// things might have changed
-											if (inventory.getItemStack(i).itemID 
-													== expectedItemId) {
-												inventory.moveStack(i, currentItem,
-														Integer.MAX_VALUE);
-											}
+										if (mc.isMultiplayerWorld()) {
+											smpCorrection = false;
+											lastAutoReplace = 
+												System.currentTimeMillis();
 										}
 									}
 									
-								}.init(this, inventory, i, currentItem)
+								}.init(inventory, i, currentItem)
 							).start();
 		    				
 		    				break;
@@ -507,5 +518,13 @@ public class InvTweaks {
 			return false;
 		}
    	}
+    
+    private void trySleep(int delay) {
+		try {
+			Thread.sleep(delay);
+		} catch (InterruptedException e) {
+			// Do nothing
+		}
+    }
     
 }

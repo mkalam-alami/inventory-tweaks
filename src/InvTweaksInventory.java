@@ -11,7 +11,7 @@ public class InvTweaksInventory {
 	public static final int SIZE = 36;
 	public static final boolean STACK_NOT_EMPTIED = true;
 	public static final boolean STACK_EMPTIED = false;
-	
+
 	private ItemStack[] inventory;
 	private int[] rulePriority = new int[SIZE];
 	private int[] keywordOrder = new int[SIZE];
@@ -23,7 +23,7 @@ public class InvTweaksInventory {
 	// Multiplayer
 	private boolean isMultiplayer;
 	private PlayerController playerController;
-	private EntityPlayer player;
+	private EntityPlayerSP player;
 	
 	public InvTweaksInventory(Minecraft minecraft, int[] lockLevels, boolean logging) {
 
@@ -224,20 +224,37 @@ public class InvTweaksInventory {
 	}
 
 	/**
+	 * Click on the interface. Slower than manual swapping, but works in multiplayer.
+	 * Use this method if the stack still has to be moved.
+	 * @param slot The targeted slot
+	 * @param priority Ignored
+	 * @param oldSlot The stacks previous spot
+	 * @param stack The stack that was in the slot before the operation
+	 */
+	public void sendClick(int slot) {
+		clickCount++;
+		if (logging) {
+			log.info("Click on "+slot);
+		}
+		playerController.func_27174_a(
+				0, // Select player inventory
+				(slot > 8) ? slot : slot+36, // Targeted slot
+						// (converted for the network protocol indexes,
+						// see http://mc.kev009.com/Inventory#Windows)
+				0, // Left-click
+				false, // Shift not held 
+				player
+			);
+	}
+
+	/**
 	 * Removes the stack from the given slot
 	 * @param slot
 	 * @return The removed stack
 	 */
 	private ItemStack remove(int slot) {
-		
-		rulePriority[slot] = 0;
-		keywordOrder[slot] = 0;
-
 		ItemStack removed = inventory[slot];
-		
 		if (isMultiplayer) {
-			rulePriority[slot] = 0;
-			keywordOrder[slot] = 0;
 			sendClick(slot);
 		}
 		else {
@@ -245,7 +262,8 @@ public class InvTweaksInventory {
 				log.info("Removed: "+InvTweaksTree.getItem(removed.itemID));
 			inventory[slot] = null;
 		}
-		
+		rulePriority[slot] = 0;
+		keywordOrder[slot] = 0;
 		return removed;
 	}
 	
@@ -267,30 +285,6 @@ public class InvTweaksInventory {
 		}
 		rulePriority[slot] = priority;
 		keywordOrder[slot] = InvTweaksTree.getItem(stack.itemID).getOrder();
-	}
-
-	/**
-	 * Click on the interface. Slower than manual swapping, but works in multiplayer.
-	 * Use this method if the stack still has to be moved.
-	 * @param slot The targeted slot
-	 * @param priority Ignored
-	 * @param oldSlot The stacks previous spot
-	 * @param stack The stack that was in the slot before the operation
-	 */
-	private void sendClick(int slot) {
-		clickCount++;
-		if (logging) {
-			log.info("Click on "+slot);
-		}
-		playerController.func_27174_a(
-				0, // Select player inventory
-				(slot > 8) ? slot : slot+36, // Targeted slot
-						// (converted for the network protocol indexes,
-						// see http://mc.kev009.com/Inventory#Windows)
-				0, // Left-click
-				false, // Shift not held 
-				player
-			);
 	}
 
 }

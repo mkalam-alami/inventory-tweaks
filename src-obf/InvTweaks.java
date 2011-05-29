@@ -29,10 +29,11 @@ public class InvTweaks {
     
 	private static int[] ALL_SLOTS;
     private InvTweaksConfig config = null;
-    private long lastKeyPress = 0;
+    private long lastKeyPress = 0, lastAutoReplace = 0;
     private int keyPressDuration = 0;
     private boolean configErrorsShown = false;
     private boolean selectedItemTookAwayBySorting = false;
+    private boolean smpCorrection = true;
 	private int storedStackId = 0, storedPosition = -1;
     private Minecraft mc;
     
@@ -112,7 +113,7 @@ public class InvTweaks {
 		if (logging)
 			log.info("Merging stacks.");
     	
-    	// TODO: Lower complexity from 36² to 36.log(36)+36
+    	// TODO: Lower complexity from 36ï¿½ to 36.log(36)+36
     	// (sort items by increasing priority, then 1 pass is enough)
     	for (int i = inventory.getSize()-1; i >= 0; i--) {
     		iw from = inventory.getItemStack(i);
@@ -243,16 +244,23 @@ public class InvTweaks {
     public void onTick() {
     	
     	synchronized (this) {
-
+    		
     	iw currentStack = mc.h.G();
     	int currentStackId = (currentStack == null) ? 0 : currentStack.c;
-		int currentItem = mc.h.c.c;  
-
-    	// Auto-replace item stack
-    	if (currentStackId != storedStackId) {
-
+		int currentItem = mc.h.c.c;
+		
+		if (smpCorrection == false
+				&& System.currentTimeMillis() - lastAutoReplace > 500
+				&& System.currentTimeMillis() - lastAutoReplace < 700) {
     		InvTweaksInventory inventory = new InvTweaksInventory(
     				mc, config.getLockedSlots(), logging);  	
+    		inventory.sendClick(currentItem);
+    		inventory.sendClick(currentItem);
+    		smpCorrection = true;
+		}
+		
+    	// Auto-replace item stack
+    	if (currentStackId != storedStackId) {
     		
 	    	if (storedPosition != currentItem) { // Filter selection change
 	    		storedPosition = currentItem;
@@ -261,10 +269,13 @@ public class InvTweaks {
 	    		
 	    		if (selectedItemTookAwayBySorting) // Filter inventory sorting
 	    			selectedItemTookAwayBySorting = false;
-	    		else if (currentStackId == 0 &&
-	    				mc.h.c.i() == null) { // Filter item pickup from inv.
-		    		iw candidateStack;
-		    		for (int i = 0; i < InvTweaksInventory.SIZE; i++) {
+	    		else if (currentStackId == 0 && mc.h.c.i() == null) { // Filter item pickup from inv.
+		    		
+	        		InvTweaksInventory inventory = new InvTweaksInventory(
+	        				mc, config.getLockedSlots(), logging);  	
+	    			iw candidateStack;
+		    		
+	    			for (int i = 0; i < InvTweaksInventory.SIZE; i++) {
 		    			// Look only for an exactly matching ID
 		    			candidateStack = inventory.getItemStack(i);
 	    				// TODO: Choose stack of lowest size
@@ -284,16 +295,14 @@ public class InvTweaks {
 		    						private InvTweaksInventory inventory;
 		    						private int currentItem;
 		    						private int i, expectedItemId;
-		    						private InvTweaks mutex;
 		    						
-		    						public Runnable init(InvTweaks mutex,
+		    						public Runnable init(
 		    								InvTweaksInventory inventory,
 		    								int i, int currentItem) {
 		    							this.inventory = inventory;
 		    							this.currentItem = currentItem;
 		    							this.expectedItemId = inventory.getItemStack(i).c;
 		    							this.i = i;
-		    							this.mutex = mutex;
 		    							return this;
 		    						}
 		    						
@@ -301,11 +310,20 @@ public class InvTweaks {
 									@Override
 									public void run() {
 										trySleep(AUTOREPLACE_DELAY);
-										inventory.sendClick(i);
-										inventory.sendClick(currentItem);
+										if (inventory.getItemStack(i) != null
+												&& inventory.getItemStack(i).c 
+												== expectedItemId) {
+											inventory.moveStack(i, currentItem,
+													Integer.MAX_VALUE);
+										}
+										if (mc.l()) {
+											smpCorrection = false;
+											lastAutoReplace = 
+												System.currentTimeMillis();
+										}
 									}
 									
-								}.init(this, inventory, i, currentItem)
+								}.init(inventory, i, currentItem)
 							).start();
 		    				
 		    				break;

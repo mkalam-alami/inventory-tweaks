@@ -31,11 +31,10 @@ public class InvTweaks {
     
 	private static int[] ALL_SLOTS;
     private InvTweaksConfig config = null;
-    private long lastKeyPress = 0, lastAutoReplace = 0;
+    private long lastKeyPress = 0;
     private int keyPressDuration = 0;
     private boolean configErrorsShown = false;
     private boolean selectedItemTookAwayBySorting = false;
-    private boolean smpCorrection = true;
 	private int storedStackId = 0, storedPosition = -1;
     private Minecraft mc;
     
@@ -246,21 +245,14 @@ public class InvTweaks {
     
     public void onTick() {
     	
+    	if (config == null)
+    		return;
+    	
     	synchronized (this) {
     		
     	ItemStack currentStack = mc.thePlayer.inventory.getCurrentItem();
     	int currentStackId = (currentStack == null) ? 0 : currentStack.itemID;
 		int currentItem = mc.thePlayer.inventory.currentItem;
-		
-		if (smpCorrection == false
-				&& System.currentTimeMillis() - lastAutoReplace > 500
-				&& System.currentTimeMillis() - lastAutoReplace < 700) {
-    		InvTweaksInventory inventory = new InvTweaksInventory(
-    				mc, config.getLockedSlots(), logging);  	
-    		inventory.sendClick(currentItem);
-    		inventory.sendClick(currentItem);
-    		smpCorrection = true;
-		}
 		
     	// Auto-replace item stack
     	if (currentStackId != storedStackId) {
@@ -285,8 +277,7 @@ public class InvTweaks {
 	    				// TODO: Choose stack of lowest size
 		    			if (candidateStack != null && 
 		    					candidateStack.itemID == storedStackId &&
-		    					(config == null || 
-		    							config.canBeAutoReplaced(candidateStack.itemID))) {
+		    					(config.canBeAutoReplaced(candidateStack.itemID))) {
 		    				if (logging)
 		    					log.info("Automatic stack replacement.");
 		    				
@@ -296,39 +287,38 @@ public class InvTweaks {
 						     */
 	    					new Thread(new Runnable() {
 
-		    						private InvTweaksInventory inventory;
-		    						private int currentItem;
-		    						private int i, expectedItemId;
-		    						
-		    						public Runnable init(
-		    								InvTweaksInventory inventory,
-		    								int i, int currentItem) {
-		    							this.inventory = inventory;
-		    							this.currentItem = currentItem;
-		    							this.expectedItemId = inventory.getItemStack(i).itemID;
-		    							this.i = i;
-		    							return this;
-		    						}
-		    						
-									// TODO: Solve SMP glitch
-									@Override
-									public void run() {
+	    						private InvTweaksInventory inventory;
+	    						private int currentItem;
+	    						private int i, expectedItemId;
+	    						
+	    						public Runnable init(
+	    								InvTweaksInventory inventory,
+	    								int i, int currentItem) {
+	    							this.inventory = inventory;
+	    							this.currentItem = currentItem;
+	    							this.expectedItemId = inventory.getItemStack(i).itemID;
+	    							this.i = i;
+	    							return this;
+	    						}
+	    						
+								@Override
+								public void run() {
+									if (mc.isMultiplayerWorld()) {
+										// Wait for the server to be informed
+										// TODO: Find a way to make it work 100%
+										trySleep(AUTOREPLACE_DELAY*3);
+									}	
+									else
 										trySleep(AUTOREPLACE_DELAY);
-										if (inventory.getItemStack(i) != null
-												&& inventory.getItemStack(i).itemID
-												== expectedItemId) {
-											inventory.moveStack(i, currentItem,
-													Integer.MAX_VALUE);
-										}
-										if (mc.isMultiplayerWorld()) {
-											smpCorrection = false;
-											lastAutoReplace = 
-												System.currentTimeMillis();
-										}
+									if (inventory.getItemStack(i) != null
+											&& inventory.getItemStack(i).itemID
+											== expectedItemId) {
+										inventory.moveStack(i, currentItem,
+												Integer.MAX_VALUE);
 									}
-									
-								}.init(inventory, i, currentItem)
-							).start();
+								}
+								
+							}.init(inventory, i, currentItem)).start();
 		    				
 		    				break;
 		    			}

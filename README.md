@@ -10,6 +10,10 @@ This repository doesn't include any third party code, so in order to compile the
 * [ModLoader][4] (version *Beta 1.6.5*)
 * [Minecraft Coder Pack][5] (version *3.3*)
 
+# Compiling the mod
+
+Pull this repository from the `src/minecraft/net/minecraft/` folder of MCP, it should then be ready for compilation. You will also have to copy `DefaultConfig.text` and `DefaultTree.txt` (found in `src/`) to the `bin/minecraft/net/minecraft/src` folder, or else the mod will fail to generate the configuration files.
+
 # Contribute
 
 You're welcome to fork this repository ; do whatever you want with it as long as you respect the license requirements and the [Minecraft's terms][6]. If you're looking for how to help, why not check the issue list?

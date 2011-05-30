@@ -59,7 +59,7 @@ public class InvTweaksTree {
 		
 		for (int currentLine = 0; currentLine < config.length; currentLine++) {
 			
-			lineText = config[currentLine];
+			lineText = config[currentLine].toLowerCase();
 			String[] parts = lineText.split(" ");
 			
 			if (parts.length >= 0 && lineText.matches("^[\\w ]*[\\w]$")) {

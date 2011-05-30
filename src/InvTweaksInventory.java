@@ -122,10 +122,10 @@ public class InvTweaksInventory {
 		else {
 			if (keywordOrder[i] == keywordOrder[j]) {
 				if (inventory[i].stackSize == inventory[j].stackSize) {
-					return inventory[i].getItemDamage() < inventory[j].getItemDamage();
+					return inventory[i].getItemDamage() > inventory[j].getItemDamage();
 				}
 				else {
-					return inventory[i].stackSize < inventory[j].stackSize;
+					return inventory[i].stackSize > inventory[j].stackSize;
 				}
 			}
 			else {
@@ -162,7 +162,7 @@ public class InvTweaksInventory {
 			}
 			else {
 				if (!isMultiplayer) {
-					inventory[j].stackSize = sum - max;
+					inventory[i].stackSize = sum - max;
 					inventory[j].stackSize = max;
 				}
 				put(inventory[j], j, priority);

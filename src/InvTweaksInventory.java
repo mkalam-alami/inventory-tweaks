@@ -222,31 +222,63 @@ public class InvTweaksInventory {
 	public int getSize() {
 		return SIZE;
 	}
-
+	
 	/**
+	 * (Multiplayer only)
 	 * Click on the interface. Slower than manual swapping, but works in multiplayer.
-	 * Use this method if the stack still has to be moved.
 	 * @param slot The targeted slot
 	 * @param priority Ignored
 	 * @param oldSlot The stacks previous spot
 	 * @param stack The stack that was in the slot before the operation
 	 */
-	public void sendClick(int slot) {
+	public void click(int slot) {
 		clickCount++;
 		if (logging) {
 			log.info("Click on "+slot);
 		}
+		
+		// After clicking, we'll need to wait for server answer before continuing.
+		// We'll do this by listening to any change in the slot, but this implies we
+		// check first if the click will indeed produce a change.
+		boolean uselessClick = false;
+		ItemStack stackInSlot = (inventory[slot] != null) ? inventory[slot].copy() : null;
+		ItemStack stackInHand = player.inventory.getItemStack();
+		
+		if ((stackInHand == null && stackInSlot == null) ||
+				(stackInHand != null && stackInSlot != null &&
+				stackInHand.itemID == stackInSlot.itemID &&
+				stackInHand.getItemDamage() == stackInSlot.getItemDamage() &&
+				stackInSlot.stackSize == stackInHand.getMaxStackSize())) {
+			uselessClick = true;
+		}
+		
+		// Click!
+		log.info("Click on "+(((slot > 8) ? slot - 9 : slot + 27) + 
+				player.craftingInventory.slots.size() - 36)+"/"+(player.craftingInventory.slots.size()-36));
 		playerController.func_27174_a(
-				0, // Select player inventory
-				(slot > 8) ? slot : slot+36, // Targeted slot
+				player.craftingInventory.windowId, // Select active inventory
+				((slot > 8) ? slot - 9 : slot + 27) + 
+					player.craftingInventory.slots.size() - 36, // Targeted slot
 						// (converted for the network protocol indexes,
 						// see http://mc.kev009.com/Inventory#Windows)
 				0, // Left-click
 				false, // Shift not held 
 				player
 			);
+		
+		// Wait for inventory update
+		if (!uselessClick) {
+			int pollingTime = 0;
+			while (ItemStack.areItemStacksEqual(inventory[slot], stackInSlot)
+					&& pollingTime < InvTweaks.POLLING_TIMEOUT) {
+				InvTweaks.trySleep(InvTweaks.POLLING_DELAY);
+				pollingTime += InvTweaks.POLLING_DELAY;
+			}
+			if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
+				log.warning("Click timout");
+		}
 	}
-
+	
 	/**
 	 * Removes the stack from the given slot
 	 * @param slot
@@ -255,7 +287,7 @@ public class InvTweaksInventory {
 	private ItemStack remove(int slot) {
 		ItemStack removed = inventory[slot];
 		if (isMultiplayer) {
-			sendClick(slot);
+			click(slot);
 		}
 		else {
 			if (logging)
@@ -276,7 +308,7 @@ public class InvTweaksInventory {
 	 */
 	private void put(ItemStack stack, int slot, int priority) {
 		if (isMultiplayer) {
-			sendClick(slot);
+			click(slot);
 		}
 		else {
 			if (logging)
@@ -286,5 +318,5 @@ public class InvTweaksInventory {
 		rulePriority[slot] = priority;
 		keywordOrder[slot] = InvTweaksTree.getItem(stack.itemID).getOrder();
 	}
-
+    
 }

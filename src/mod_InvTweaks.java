@@ -8,7 +8,6 @@ import org.lwjgl.input.Keyboard;
 
 /**
  * @author Jimeo Wan (jimeo.wan at gmail.com)
- * @version 1.0 (1.5_01)
  * Website: {@link http://wan.ka.free.fr/?invtweaks}
  * Source code: {@link https://github.com/jimeowan/minecraft-mod-inventory-tweaks}
  * 
@@ -69,7 +68,7 @@ public class mod_InvTweaks extends BaseMod {
     
 	@Override
 	public String Version() {
-		return "1.0 (1.5_01)";
+		return "1.03 (1.6.6)";
 	}
     
 	/**

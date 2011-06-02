@@ -17,7 +17,8 @@ import org.lwjgl.input.Mouse;
 import net.minecraft.client.Minecraft;
 
 public class InvTweaks {
-	
+
+    private static final boolean logging = true; // Logging trigger
     private static final Logger log = Logger.getLogger("InvTweaks");
     
     public static final String CONFIG_FILE = Minecraft.getMinecraftDir()+"/InvTweaksConfig.txt";
@@ -28,15 +29,17 @@ public class InvTweaks {
     public static final Level LOG_LEVEL = Level.FINE;
     public static final int HOT_RELOAD_DELAY = 1000;
     public static final int AUTOREPLACE_DELAY = 200;
-    
-    private static final boolean logging = false;
-    
+    public static final int POLLING_DELAY = 5;
+    public static final int POLLING_TIMEOUT = 2000;
 	private static int[] ALL_SLOTS;
+
+	private static InvTweaks instance;
     private InvTweaksConfig config = null;
     private long lastKeyPress = 0;
     private int keyPressDuration = 0;
     private boolean configErrorsShown = false;
     private boolean selectedItemTookAwayBySorting = false;
+    private boolean onTickBusy = false;
 	private int storedStackId = 0, storedPosition = -1;
     private Minecraft mc;
     
@@ -44,6 +47,7 @@ public class InvTweaks {
 
     	log.setLevel(LOG_LEVEL);
     	
+    	instance = this;
     	mc = minecraft;
     	
     	// Default slot order init. In the inventory, indexes are :
@@ -63,6 +67,10 @@ public class InvTweaks {
     	
     }
     
+	public static InvTweaks getInstance() {
+		return instance;
+	}
+
 	/**
 	 * Sort inventory
 	 * @return The number of clicks that were needed
@@ -247,19 +255,21 @@ public class InvTweaks {
     
     public void onTick() {
     	
-    	if (config == null)
+    	if (config == null || onTickBusy == true)
     		return;
     	
-    	// XXX Test
     	if (Mouse.isButtonDown(2)) {
     		sortInventory();
     	}
     	
     	synchronized (this) {
     		
+    	onTickBusy = true;
+    	
     	ItemStack currentStack = mc.thePlayer.inventory.getCurrentItem();
     	int currentStackId = (currentStack == null) ? 0 : currentStack.itemID;
 		int currentItem = mc.thePlayer.inventory.currentItem;
+		boolean foundReplacement = false;
 		
     	// Auto-replace item stack
     	if (currentStackId != storedStackId) {
@@ -285,6 +295,8 @@ public class InvTweaks {
 		    			if (candidateStack != null && 
 		    					candidateStack.itemID == storedStackId &&
 		    					(config.canBeAutoReplaced(candidateStack.itemID))) {
+		    				
+		    				foundReplacement = true;
 		    				if (logging)
 		    					log.info("Automatic stack replacement.");
 		    				
@@ -310,19 +322,32 @@ public class InvTweaks {
 	    						
 								@Override
 								public void run() {
+									
 									if (mc.isMultiplayerWorld()) {
-										// Wait for the server to be informed
-										// TODO: Find a way to make it work 100%
-										trySleep(AUTOREPLACE_DELAY*3);
-									}	
-									else
-										trySleep(AUTOREPLACE_DELAY);
-									if (inventory.getItemStack(i) != null
-											&& inventory.getItemStack(i).itemID
-											== expectedItemId) {
-										inventory.moveStack(i, currentItem,
-												Integer.MAX_VALUE);
+										// Wait for the server to confirm that the
+										// slot is now empty
+										int pollingTime = 0;
+										mc.thePlayer.inventory.inventoryChanged = false;
+										while(!mc.thePlayer.inventory.inventoryChanged
+												&& pollingTime < POLLING_TIMEOUT) {
+											trySleep(POLLING_DELAY);
+										}
+										if (pollingTime < AUTOREPLACE_DELAY)
+											trySleep(AUTOREPLACE_DELAY - pollingTime);
+										if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
+											log.warning("Autoreplace timout");
 									}
+									else {
+										trySleep(AUTOREPLACE_DELAY);
+									}
+									
+									// In POLLING_DELAY ms, things might have changed
+									if (inventory.getItemStack(i) != null &&
+											inventory.getItemStack(i).itemID == expectedItemId) {
+										inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
+									}
+									
+							    	onTickBusy = false;
 								}
 								
 							}.init(inventory, i, currentItem)).start();
@@ -330,15 +355,19 @@ public class InvTweaks {
 		    				break;
 		    			}
 		    		}
+	    			
 	    		}
 	    	}
 	    	
 	    	storedStackId = currentStackId;
     	}
-    	
+
+		if (!foundReplacement)
+	    	onTickBusy = false;
+		
     	}
     }
-    
+	
     public void logInGame(String message) {
     	if(mc.ingameGUI != null)
     		mc.ingameGUI.addChatMessage(INGAME_LOG_PREFIX + message);
@@ -515,13 +544,12 @@ public class InvTweaks {
 			return false;
 		}
    	}
-    
-    private void trySleep(int delay) {
+
+	public static void trySleep(int delay) {
 		try {
 			Thread.sleep(delay);
 		} catch (InterruptedException e) {
 			// Do nothing
 		}
     }
-    
 }

@@ -6,11 +6,11 @@ import java.util.logging.Logger;
 public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	
 	public enum RuleType {
-		
+
+		RECTANGLE(1),
 		ROW(1),
 		COLUMN(2),
-		RECTANGLE(3),
-		TILE(4);
+		TILE(3);
 
 		private int lowestPriority;
 		private int highestPriority;
@@ -239,6 +239,9 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 			else {
 				result = RuleType.ROW; 
 			}
+		}
+		else if (constraint.length() > 4) {
+			result = RuleType.RECTANGLE;
 		}
 		
 		return result;

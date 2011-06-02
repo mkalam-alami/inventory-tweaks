@@ -1,6 +1,8 @@
 [06.02.2011] 1.03 (B1.6.6)
  * Made the mod compatible with MyCraft Mod Manager
  * Added rectangle rules
+ * Fixed occasional ghost items caused by autoreplace in SMP
+ * Fixed sorting not working while opening chests (and others) in SMP
 
 [05.30.2011] 1.02 (B1.6.6)
  * Most damaged tools now are selected first

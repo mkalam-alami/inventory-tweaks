@@ -1,8 +1,11 @@
 [06.02.2011] 1.03 (B1.6.6)
  * Made the mod compatible with MyCraft Mod Manager
  * Added rectangle rules
+ * The middle click will sort your inventory (can be disabled)
  * Fixed occasional ghost items caused by autoreplace in SMP
- * Fixed sorting not working while opening chests (and others) in SMP
+ * Fixed sorting not working while chests/crafting tables are open in SMP
+ * Added map, trapdoors and dead shrubs to the item tree
+ * Various minor changes/fixes to the item tree
 
 [05.30.2011] 1.02 (B1.6.6)
  * Most damaged tools now are selected first

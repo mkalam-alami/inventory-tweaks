@@ -17,12 +17,14 @@ public class InvTweaksConfig {
 	private static final String LOCKED = "locked";
 	private static final String AUTOREPLACE = "autoreplace";
 	private static final String AUTOREPLACE_NOTHING = "nothing";
+	private static final String DISABLEMIDDLECLICK = "disablemiddleclick";
 	
 	private String file;
 	private int[] lockedSlots;
-	private Vector<InvTweaksRule> rules = new Vector<InvTweaksRule>();
-	private Vector<String> invalidKeywords = new Vector<String>();
-	private Vector<String> autoReplaceRules = new Vector<String>();
+	private Vector<InvTweaksRule> rules;
+	private Vector<String> invalidKeywords;
+	private Vector<String> autoReplaceRules;
+	private boolean middleClickEnabled;
 	
 	/**
 	 * Creates a new configuration holder.
@@ -52,6 +54,10 @@ public class InvTweaksConfig {
 		return lockedSlots;
 	}
 	
+	public boolean isMiddleClickEnabled() {
+		return middleClickEnabled;
+	}
+
 	public boolean canBeAutoReplaced(int itemID) {
 		InvTweaksItem item = InvTweaksTree.getItem(itemID);
 		for (String keyword : autoReplaceRules) {
@@ -141,6 +147,15 @@ public class InvTweaksConfig {
 			
 			}
 			
+			else if (words.length == 1) {
+				
+				// Disable middle click
+				if (words[0].equals(DISABLEMIDDLECLICK)) {
+					middleClickEnabled = false;
+				}
+				
+			}
+			
 		}
 		
 		// Default Autoreplace behavior
@@ -160,9 +175,10 @@ public class InvTweaksConfig {
 		for (int i = 0; i < this.lockedSlots.length; i++) {
 			this.lockedSlots[i] = 0;
 		}
-		rules.clear();
-		invalidKeywords.clear();
-		autoReplaceRules.clear();
+		rules = new Vector<InvTweaksRule>();
+		invalidKeywords = new Vector<String>();
+		autoReplaceRules = new Vector<String>();
+		middleClickEnabled = true;
 	}
 
 }

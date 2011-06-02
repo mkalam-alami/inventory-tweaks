@@ -11,21 +11,23 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.lwjgl.input.Mouse;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import net.minecraft.client.Minecraft;
 
+import org.lwjgl.input.Mouse;
+
 public class InvTweaks {
 
-    private static final boolean logging = true; // Logging trigger
+    private static final boolean logging = false; // Logging trigger
     private static final Logger log = Logger.getLogger("InvTweaks");
     
     public static final String CONFIG_FILE = Minecraft.getMinecraftDir()+"/InvTweaksConfig.txt";
     public static final String CONFIG_TREE_FILE = Minecraft.getMinecraftDir()+"/InvTweaksTree.txt";
     public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.txt";
     public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.txt";
-    public static final String INGAME_LOG_PREFIX = "SortButton: ";
+    public static final String INGAME_LOG_PREFIX = "InvTweaks: ";
     public static final Level LOG_LEVEL = Level.FINE;
     public static final int HOT_RELOAD_DELAY = 1000;
     public static final int AUTOREPLACE_DELAY = 200;
@@ -38,7 +40,6 @@ public class InvTweaks {
     private long lastKeyPress = 0;
     private int keyPressDuration = 0;
     private boolean configErrorsShown = false;
-    private boolean selectedItemTookAwayBySorting = false;
     private boolean onTickBusy = false;
 	private int storedStackId = 0, storedPosition = -1;
     private Minecraft mc;
@@ -243,10 +244,11 @@ public class InvTweaks {
 					+ timer + "ns");
 		}
 		
-    	// This needs to be remembered so that the autoreplace tool doesn't trigger
+    	// This needs to be remembered so that the autoreplace feature doesn't trigger
     	if (selectedItem != null && 
-    			invPlayer.mainInventory[invPlayer.currentItem] == null)
-    		selectedItemTookAwayBySorting = true;
+    			invPlayer.mainInventory[invPlayer.currentItem] == null) {
+    		storedStackId = 0;
+    	}
 
     	return inventory.getClickCount();
     	
@@ -258,7 +260,7 @@ public class InvTweaks {
     	if (config == null || onTickBusy == true)
     		return;
     	
-    	if (Mouse.isButtonDown(2)) {
+    	if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled()) {
     		sortInventory();
     	}
     	
@@ -277,85 +279,79 @@ public class InvTweaks {
 	    	if (storedPosition != currentItem) { // Filter selection change
 	    		storedPosition = currentItem;
 	    	}
-	    	else {
+	    	else if (currentStackId == 0 && 
+	    			mc.thePlayer.inventory.getItemStack() == null) { // Filter item pickup from inv.
+		    		
+        		InvTweaksInventory inventory = new InvTweaksInventory(
+        				mc, config.getLockedSlots(), logging);  	
+    			ItemStack candidateStack;
 	    		
-	    		if (selectedItemTookAwayBySorting) // Filter inventory sorting
-	    			selectedItemTookAwayBySorting = false;
-	    		else if (currentStackId == 0 && 
-	    				mc.thePlayer.inventory.getItemStack() == null) { // Filter item pickup from inv.
-		    		
-	        		InvTweaksInventory inventory = new InvTweaksInventory(
-	        				mc, config.getLockedSlots(), logging);  	
-	    			ItemStack candidateStack;
-		    		
-	    			for (int i = 0; i < InvTweaksInventory.SIZE; i++) {
-		    			// Look only for an exactly matching ID
-		    			candidateStack = inventory.getItemStack(i);
-	    				// TODO: Choose stack of lowest size
-		    			if (candidateStack != null && 
-		    					candidateStack.itemID == storedStackId &&
-		    					(config.canBeAutoReplaced(candidateStack.itemID))) {
-		    				
-		    				foundReplacement = true;
-		    				if (logging)
-		    					log.info("Automatic stack replacement.");
-		    				
-						    /*
-						     * This allows to have a short feedback 
-						     * that the stack/tool is empty/broken.
-						     */
-	    					new Thread(new Runnable() {
+    			for (int i = 0; i < InvTweaksInventory.SIZE; i++) {
+	    			// Look only for an exactly matching ID
+	    			candidateStack = inventory.getItemStack(i);
+    				// TODO: Choose stack of lowest size
+	    			if (candidateStack != null && 
+	    					candidateStack.itemID == storedStackId &&
+	    					(config.canBeAutoReplaced(candidateStack.itemID))) {
+	    				
+	    				foundReplacement = true;
+	    				if (logging)
+	    					log.info("Automatic stack replacement.");
+	    				
+					    /*
+					     * This allows to have a short feedback 
+					     * that the stack/tool is empty/broken.
+					     */
+    					new Thread(new Runnable() {
 
-	    						private InvTweaksInventory inventory;
-	    						private int currentItem;
-	    						private int i, expectedItemId;
-	    						
-	    						public Runnable init(
-	    								InvTweaksInventory inventory,
-	    								int i, int currentItem) {
-	    							this.inventory = inventory;
-	    							this.currentItem = currentItem;
-	    							this.expectedItemId = inventory.getItemStack(i).itemID;
-	    							this.i = i;
-	    							return this;
-	    						}
-	    						
-								@Override
-								public void run() {
-									
-									if (mc.isMultiplayerWorld()) {
-										// Wait for the server to confirm that the
-										// slot is now empty
-										int pollingTime = 0;
-										mc.thePlayer.inventory.inventoryChanged = false;
-										while(!mc.thePlayer.inventory.inventoryChanged
-												&& pollingTime < POLLING_TIMEOUT) {
-											trySleep(POLLING_DELAY);
-										}
-										if (pollingTime < AUTOREPLACE_DELAY)
-											trySleep(AUTOREPLACE_DELAY - pollingTime);
-										if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
-											log.warning("Autoreplace timout");
+    						private InvTweaksInventory inventory;
+    						private int currentItem;
+    						private int i, expectedItemId;
+    						
+    						public Runnable init(
+    								InvTweaksInventory inventory,
+    								int i, int currentItem) {
+    							this.inventory = inventory;
+    							this.currentItem = currentItem;
+    							this.expectedItemId = inventory.getItemStack(i).itemID;
+    							this.i = i;
+    							return this;
+    						}
+    						
+							@Override
+							public void run() {
+								
+								if (mc.isMultiplayerWorld()) {
+									// Wait for the server to confirm that the
+									// slot is now empty
+									int pollingTime = 0;
+									mc.thePlayer.inventory.inventoryChanged = false;
+									while(!mc.thePlayer.inventory.inventoryChanged
+											&& pollingTime < POLLING_TIMEOUT) {
+										trySleep(POLLING_DELAY);
 									}
-									else {
-										trySleep(AUTOREPLACE_DELAY);
-									}
-									
-									// In POLLING_DELAY ms, things might have changed
-									if (inventory.getItemStack(i) != null &&
-											inventory.getItemStack(i).itemID == expectedItemId) {
-										inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
-									}
-									
-							    	onTickBusy = false;
+									if (pollingTime < AUTOREPLACE_DELAY)
+										trySleep(AUTOREPLACE_DELAY - pollingTime);
+									if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
+										log.warning("Autoreplace timout");
+								}
+								else {
+									trySleep(AUTOREPLACE_DELAY);
 								}
 								
-							}.init(inventory, i, currentItem)).start();
-		    				
-		    				break;
-		    			}
-		    		}
-	    			
+								// In POLLING_DELAY ms, things might have changed
+								if (inventory.getItemStack(i) != null &&
+										inventory.getItemStack(i).itemID == expectedItemId) {
+									inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
+								}
+								
+						    	onTickBusy = false;
+							}
+							
+						}.init(inventory, i, currentItem)).start();
+	    				
+	    				break;
+	    			}
 	    		}
 	    	}
 	    	
@@ -514,33 +510,78 @@ public class InvTweaks {
     }
     
     private boolean copyFile(String resource, String destination) {
-    	
+
+		String resourceContents = "";
 		URL resourceUrl = InvTweaks.class.getResource(resource);
 		
+		// Extraction from minecraft.jar
 		if (resourceUrl != null) {
 			try  {
 				Object o = resourceUrl.getContent();
 				if (o instanceof InputStream) {
 					InputStream content = (InputStream) o;
-					String result = "";
 					while (content.available() > 0) {
 						byte[] bytes = new byte[content.available()];
 						content.read(bytes);
-						result += new String(bytes);
+						resourceContents += new String(bytes);
 					}
-					FileWriter f = new FileWriter(destination);
-					f.write(result);
-					f.close();
 				}
+			}
+			catch (IOException e) {
+				log.warning("Failed to extract "+resource+": "+e.getMessage());
+			}
+		}
+		
+		// Extraction from mods folder (MyCraft compatibility)
+		if (resourceUrl == null) {
+			
+			File modFolder = new File(Minecraft.getMinecraftDir().getPath()+
+					File.separatorChar+"mods");
+			
+			File[] zips = modFolder.listFiles();
+			if (zips != null && zips.length > 0) {
+				for (File zip : zips) {
+					if (zip.getName().toLowerCase().contains("invtweaks")) {
+						try {
+							ZipFile invTweaksZip = new ZipFile(zip);
+							ZipEntry zipResource = invTweaksZip.getEntry(resource);
+							if (zipResource != null) {
+								InputStream content = invTweaksZip.
+										getInputStream(zipResource);
+								while (content.available() > 0) {
+									byte[] bytes = new byte[content.available()];
+									content.read(bytes);
+									resourceContents += new String(bytes);
+								}
+								break;
+							}
+						} catch (Exception e) {
+							if (logging) {
+								log.warning("Failed to extract "+resource+" from mod: "+e.getMessage());
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		// Write to destination
+		if (!resourceContents.isEmpty()) {
+			try {
+				FileWriter f = new FileWriter(destination);
+				f.write(resourceContents);
+				f.close();
 				return true;
 			}
 			catch (IOException e) {
+				logInGame("The mod won't work, because "+destination+" creation failed!");
 				log.severe("Cannot create "+destination+" file: "+e.getMessage());
 				return false;
 			}
 		}
 		else {
-			log.severe("Source file "+resource+" doesn't exist, cannot create config file");
+			logInGame("The mod won't work, because "+resource+" could not be found!");
+			log.severe("Source file "+resource+" not found, cannot create config file");
 			return false;
 		}
    	}

@@ -26,6 +26,7 @@ stuff
       arrow 262
       bow 261
       snowball 332
+      
     tool
       pickaxe
         pickaxeIron 257
@@ -34,16 +35,16 @@ stuff
         pickaxeGold 285
         pickaxeWood 270
       shovel
-        shovelIron 256
-        shovelDiamond 277
+        shovelWood 269
         shovelStone 273
         shovelGold 284
-        shovelWood 269
+        shovelIron 256
+        shovelDiamond 277
       axe
         axeIron 258
         axeDiamond 279
         axeStone 275
-        axeGold 284
+        axeGold 286
         axeWood 271
       hoe
         hoeIron 291
@@ -51,6 +52,8 @@ stuff
         hoeStone 292
         hoeGold 294
         hoeWood 290
+        
+    fishingRod 346
 
     armor
       helmet
@@ -98,7 +101,7 @@ stuff
         oreRedstone 73
         oreRedstoneGlowing 74
         oreLapisLazuli 21
-        oreDiamond
+        oreDiamond 56
       clayBlock 82
       obsidian 49
       netherBlock
@@ -107,8 +110,12 @@ stuff
         netherrack 87
         soulSand 88
       wool 35
+      web 30
       monsterSpawner 52
       bedrock 7
+      sponge 19
+      grass 2
+      farmland 60
       snow 80
       snowBlock 80
       snowModifier 78
@@ -118,6 +125,7 @@ stuff
         water 9
         lava 10
         lava 11
+      portal 90
       air 0
       fire 51
       
@@ -151,6 +159,7 @@ stuff
           lapisLazuli 22
         
   resources
+  
     miningResources
       coal 263
       charcoal 263
@@ -165,6 +174,7 @@ stuff
       clay 337
       flint 318
       stick 280
+    flintAndSteel 259
     huntingResources
       bone 352
       leather 334
@@ -175,7 +185,8 @@ stuff
     farmingResources
       paper 339
       book 340
-      
+    dye 351
+    
   utility
     torch 50
     craftingTable 58
@@ -185,6 +196,17 @@ stuff
     bed 26
     jukebox 84
     tnt 46
+    lockedChest 95
+  
+  bucket
+    emptyBucket 325
+    waterBucket 326
+    lavaBucket 327
+    
+  instrument
+    clock 347
+    compass 345
+    map 358
       
   vehicle
     boat 333
@@ -192,6 +214,7 @@ stuff
       minecart 328
       poweredMinecart 343
       storageMinecart 342
+    saddle 329
 
   mechanism
     rails 66
@@ -203,10 +226,13 @@ stuff
       pressurePlateStone 72
     stoneButton 77
     doors
-      doorWood 64
-      woodenDoor 64
-      doorIron 71
-      ironDoor 71
+      doorWood 324
+      woodenDoor 324
+      doorIron 330
+      ironDoor 330
+      woodenDoorBlock 64
+      ironDoorBlock 64
+    trapdoor 96
     redstoneWire 55
     redstoneTorch 75
     redstoneTorch 76
@@ -249,6 +275,8 @@ stuff
       wheat 296
       milk 335
       sugar 353
+      cakeBlock 92
+  bowl 281
       
   plant
     flower
@@ -264,31 +292,13 @@ stuff
       mushroomBrown 39
       mushroomRed 40
     sapling 6
-    seed 59
+    seed 295
     sugarCane 83
     cactus 81
     sugarCane 83
     reed 83
     pumpkin 86
     sapling 6
+    deadShrub 32
     leaves 18
     seedBlock 59
-    seedsBlock 59
-    
-  bucket
-    emptyBucket 325
-    waterBucket 326
-    lavaBucket 327
-  dye 351
-  bowl 281
-  clock 347
-  compass 345
-  fishingRod 346
-  flintAndSteel 259
-  saddle 329
-  web 30
-  farmland 60
-  lockedChest 95 
-  portal 90
-  sponge 19
-  cakeBlock 92

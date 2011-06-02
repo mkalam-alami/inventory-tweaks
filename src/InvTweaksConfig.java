@@ -1,3 +1,4 @@
+
 package net.minecraft.src;
 
 import java.io.File;
@@ -94,8 +95,9 @@ public class InvTweaksConfig {
 			// Parse valid lines only
 			if (words.length == 2) {
 
-				// Standard rule format
-				if (lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$")) {
+				// Standard rules format
+				if (lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$")
+						|| lineText.matches("^[a-d][1-9]-[a-d][1-9]v? [\\w]*$")) {
 					
 					// Locking rule
 					if (words[1].equals(LOCKED)) {

@@ -12,6 +12,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.lwjgl.input.Mouse;
+
 import net.minecraft.client.Minecraft;
 
 public class InvTweaks {
@@ -65,7 +67,7 @@ public class InvTweaks {
 	 * Sort inventory
 	 * @return The number of clicks that were needed
 	 */
-    public final long onSortButtonPressed()
+    public final long sortInventory()
     {
     	synchronized (this) {
     		
@@ -248,6 +250,11 @@ public class InvTweaks {
     	if (config == null)
     		return;
     	
+    	// XXX Test
+    	if (Mouse.isButtonDown(2)) {
+    		sortInventory();
+    	}
+    	
     	synchronized (this) {
     		
     	ItemStack currentStack = mc.thePlayer.inventory.getCurrentItem();
@@ -392,7 +399,7 @@ public class InvTweaks {
 	    		// Benchmark
 	    		
 	    		delay = System.nanoTime();
-	    		clickCount = onSortButtonPressed();
+	    		clickCount = sortInventory();
 	    		delay = System.nanoTime() - delay;
 	    		
 	    		totalDelay += delay;

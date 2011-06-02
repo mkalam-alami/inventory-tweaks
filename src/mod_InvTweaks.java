@@ -77,7 +77,7 @@ public class mod_InvTweaks extends BaseMod {
 	 */
     public final void KeyboardEvent(KeyBinding keybinding)
     {
-    	instance.onSortButtonPressed();
+    	instance.sortInventory();
     }
     
     public void OnTickInGame(Minecraft minecraft)

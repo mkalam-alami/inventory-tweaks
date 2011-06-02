@@ -1,10 +1,19 @@
+[06.02.2011] 1.03 (B1.6.6)
+ * Made the mod compatible with MyCraft Mod Manager
+ * Added rectangle rules
+
+[05.30.2011] 1.02 (B1.6.6)
+ * Most damaged tools now are selected first
+ * Fixed item duplication bug
+ * Fixed bug concerning upper case item names
+ 
 [05.29.2011] 1.01 (B1.6.5)
  * The sort button can now be configured again
  * Autoreplace now works most of the time in SMP
 
 [05.28.2011] 1.0 (B1.6.4)
  * Updated to 1.6.4
- * Changed defautl key from E to R
+ * Changed default key from E to R
 
 [05.27.2011] 1.0 (B1.5_01)
  * Multiplayer support

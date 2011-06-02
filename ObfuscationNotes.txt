@@ -1,0 +1,31 @@
+[For 1.6.X]
+
+Classes
+---------
+InventoryPlayer = iu
+ItemStack = iw
+EntityPlayerSP = da
+EntityPlayer = gq
+PlayerController = nx
+GuiControls = uj
+GameSettings = kr
+
+Methods
+---------
+Minecraft.getMinecraftDir = b
+Minecraft.isMultiplayerWorld = l
+ItemStack.getItemDamage = i
+ItemStack.getMaxStackSize = c
+EntityPlayer.getCurrentEquippedItem = G
+InventoryPlayer.getItemStack = i
+GuiIngame.addChatMessage = a
+PlayerController.func_27174_a = a
+
+Fields
+---------
+Minecraft.thePlayer.inventory.mainInventory = mc.h.c.a
+Minecraft.inGameGUI = v
+Minecraft.playerController = c
+InventoryPlayer.currentItem = c
+ItemStack.stackSize = a
+ItemStack.itemID = c

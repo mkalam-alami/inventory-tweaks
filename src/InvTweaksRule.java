@@ -1,5 +1,6 @@
 package net.minecraft.src;
 
+import java.awt.Point;
 import java.util.logging.Logger;
 
 public class InvTweaksRule implements Comparable<InvTweaksRule> {
@@ -8,7 +9,8 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 		
 		ROW(1),
 		COLUMN(2),
-		TILE(3);
+		RECTANGLE(3),
+		TILE(4);
 
 		private int lowestPriority;
 		private int highestPriority;
@@ -104,60 +106,121 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	
 	public static int[] getRulePreferredPositions(String constraint) {
 
-		// Default values
-		int[] result;
-		int column = -1, row = -1;
-		boolean reverse = false;
+		int[] result = null;
 		
-		// Extract chars
-		for (int i = 0; i < constraint.length(); i++) {
-			char c = constraint.charAt(i);
-			if (c <= '9')
-				column = c-'1';
-			else if (c == 'r') {
-				reverse = true;
+		// Rectangle rules
+		if (constraint.length() >= 5) {
+			
+			boolean vertical = false;
+			if (constraint.contains("v")) {
+				vertical = true;
+				constraint.replaceAll("v", "");
 			}
-			else {
-				switch (c) {
-					case 'a': row = 1; break;
-					case 'b': row = 2; break;
-					case 'c': row = 3; break;
-					case 'd': row = 0;
+			String[] elements = constraint.split("-");
+			if (elements.length == 2) {
+				
+				int[] slots1 = getRulePreferredPositions(elements[0]);
+				int[] slots2 = getRulePreferredPositions(elements[1]);
+				if (slots1.length == 1 && slots2.length == 1) {
+					
+					int slot1 = slots1[0], slot2 = slots2[0];
+					// Offset to 0 = top left, 36 = bottom right,
+					// to simplify the algorithm
+					slot1 = (slot1 + 27) % 36;
+					slot2 = (slot2 + 27) % 36;	
+					
+					Point point1 = new Point(slot1%9, slot1/9),
+						point2 = new Point(slot2%9, slot2/9);
+					
+					result = new int[(Math.abs(point2.y-point1.y)+1)*
+					                 (Math.abs(point2.x-point1.x)+1)];
+					int resultIndex = 0;
+					
+					// Swap coordinates for vertical ordering
+					if (vertical) {
+						for (Point p : new Point[]{point1, point2}) {
+							int buffer = p.x;
+							p.x = p.y;
+							p.y = buffer;
+						}
+					}
+					
+					int y = point1.y;
+					while ((point1.y < point2.y) ? 
+							y <= point2.y : y >= point2.y) {
+						int x = point1.x;
+						while ((point1.x < point2.x) ? 
+								x <= point2.x : x >= point2.x) {
+							result[resultIndex++] = (vertical) ? x*9+y : y*9+x;
+							x += (point1.x < point2.x) ? 1 : -1;
+						}
+						y += (point1.y < point2.y) ? 1 : -1;
+					}
+					
+					// Undo offset
+					for (int i = 0; i < result.length; i++) {
+						result[i] = (result[i] + 9) % 36;
+					}	
 				}
 			}
 		}
 		
-		// Tile case
-		if (column != -1 && row != -1) {
-			result = new int[]{
-					index(row, column)
-				};
-		}
-		// Row case
-		else if (row != -1) {
-			result = new int[9];
-			for (int i = 0; i < 9; i++) {
-				result[i] = 
-					index(row, reverse ? 8-i : i);
-			}
-		}
-		// Column case
 		else {
-			if (reverse) {
-				result = new int[]{
-					index(1, column),
-					index(2, column),
-					index(3, column),
-					index(0, column)
-				};
+		
+			// Default values
+			int column = -1, row = -1;
+			boolean reverse = false;
+			
+			// Extract chars
+			for (int i = 0; i < constraint.length(); i++) {
+				char c = constraint.charAt(i);
+				if (c <= '9')
+					column = c-'1';
+				else if (c == 'r') {
+					reverse = true;
+				}
+				else {
+					switch (c) {
+						case 'a': row = 1; break;
+						case 'b': row = 2; break;
+						case 'c': row = 3; break;
+						case 'd': row = 0;
+					}
+				}
 			}
-			else {
+			
+			// Tile case
+			if (column != -1 && row != -1) {
 				result = new int[]{
-					index(0, column),
-					index(3, column),
-					index(2, column),
-					index(1, column)
-				};
+						index(row, column)
+					};
+			}
+			// Row case
+			else if (row != -1) {
+				result = new int[9];
+				for (int i = 0; i < 9; i++) {
+					result[i] = 
+						index(row, reverse ? 8-i : i);
+				}
+			}
+			// Column case
+			else {
+				if (reverse) {
+					result = new int[]{
+						index(1, column),
+						index(2, column),
+						index(3, column),
+						index(0, column)
+					};
+				}
+				else {
+					result = new int[]{
+						index(0, column),
+						index(3, column),
+						index(2, column),
+						index(1, column)
+					};
+				}
 			}
 		}
 		

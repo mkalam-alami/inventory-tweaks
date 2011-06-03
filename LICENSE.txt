@@ -1,4 +1,9 @@
-Copyright (c) 2011 jimeowan
+|==============================================================|
+| INVENTORY TWEAKS Mod - By Jimeo Wan (jimeo.wan at gmail.com) |
+| License                                                      |
+|==============================================================|
+
+Copyright (c) 2011 Jimeo Wan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

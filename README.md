@@ -6,13 +6,18 @@ For documentation about how to use or install the mod, see the [main page of Inv
 
 This repository doesn't include any third party code, so in order to compile the current version of this mod, the following is needed:
 
-* Minecraft's `minecraft.jar` (version *Beta 1.6.5*)
-* [ModLoader][4] (version *Beta 1.6.5*)
-* [Minecraft Coder Pack][5] (version *3.3*)
+ * Minecraft's `minecraft.jar` (version *Beta 1.6.5*)
+ * [ModLoader][4] (version *Beta 1.6.5*)
+ * [Minecraft Coder Pack][5] (version *3.3*)
 
 # Compiling the mod
 
 Pull this repository from the `src/minecraft/net/minecraft/` folder of MCP, it should then be ready for compilation. You will also have to copy `DefaultConfig.text` and `DefaultTree.txt` (found in `src/`) to the `bin/minecraft/net/minecraft/src` folder, or else the mod will fail to generate the configuration files.
+
+# Developing
+
+ * You can enable verbose logging by adding a "DEBUG" rule in *InvTweaksConfig.txt*.
+ * The sorting algorithm is probably not very easy to understand, but if you're interested in having some documentation about how it works, please contact me, and I'll write something on this repository's wiki. Meanwhile, there is already a few comments to help.
 
 # Contribute
 

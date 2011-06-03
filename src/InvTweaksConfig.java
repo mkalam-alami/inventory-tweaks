@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class InvTweaksConfig {
@@ -18,6 +19,7 @@ public class InvTweaksConfig {
 	private static final String AUTOREPLACE = "autoreplace";
 	private static final String AUTOREPLACE_NOTHING = "nothing";
 	private static final String DISABLEMIDDLECLICK = "disablemiddleclick";
+	private static final String DEBUG = "debug";
 	
 	private String file;
 	private int[] lockedSlots;
@@ -25,6 +27,7 @@ public class InvTweaksConfig {
 	private Vector<String> invalidKeywords;
 	private Vector<String> autoReplaceRules;
 	private boolean middleClickEnabled;
+	private boolean debugEnabled;
 	
 	/**
 	 * Creates a new configuration holder.
@@ -56,6 +59,10 @@ public class InvTweaksConfig {
 	
 	public boolean isMiddleClickEnabled() {
 		return middleClickEnabled;
+	}
+
+	public Level getLogLevel() {
+		return (this.debugEnabled) ? Level.INFO : Level.WARNING;
 	}
 
 	public boolean canBeAutoReplaced(int itemID) {
@@ -153,6 +160,9 @@ public class InvTweaksConfig {
 				if (words[0].equals(DISABLEMIDDLECLICK)) {
 					middleClickEnabled = false;
 				}
+				else if (words[0].equals(DEBUG)) {
+					debugEnabled = true;
+				}
 				
 			}
 			
@@ -179,6 +189,7 @@ public class InvTweaksConfig {
 		invalidKeywords = new Vector<String>();
 		autoReplaceRules = new Vector<String>();
 		middleClickEnabled = true;
+		debugEnabled = false;
 	}
 
 }

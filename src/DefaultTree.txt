@@ -1,6 +1,6 @@
 |==============================================================|
 | INVENTORY TWEAKS Mod - By Jimeo Wan (jimeo.wan at gmail.com) |
-| Tree configuration file                                      |
+| Tree configuration                                           |
 |==============================================================|
  
 # Keyword tree

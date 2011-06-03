@@ -1,6 +1,6 @@
 |==============================================================|
 | INVENTORY TWEAKS Mod - By Jimeo Wan (jimeo.wan at gmail.com) |
-| Sorting rules configuration file                             |
+| Sorting rules and general configuration                      |
 |==============================================================|
 
 ====== [ SETTINGS ] ======
@@ -34,7 +34,7 @@ D LOCKED
 #                 Is overriden by more specific rules ("D LOCKED" is overriden by "D1 torch" or "1 swords")
 # "AUTOREPLACE" = Allows to customize what can be automatically replaced (ex: "AUTOREPLACE tools" restricts the item replacement to tools).
 #                 You can disable completely the feature using "AUTOREPLACE nothing".
-# "DISABLEMIDDLECLICK" = By using this, pressing the middle click will do nothing - at least with this mod! (ex: "DISABLEMIDDLECLICK")
+# "DISABLEMIDDLECLICK" = Using this, pressing the middle click will do nothing - at least with this mod! (ex: "DISABLEMIDDLECLICK")
 
 # INVENTORY GRID
 #     1   2   3   4   5   6   7   8   9

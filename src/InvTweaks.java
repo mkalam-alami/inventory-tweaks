@@ -20,7 +20,6 @@ import org.lwjgl.input.Mouse;
 
 public class InvTweaks {
 
-    private static final boolean logging = false; // Logging trigger
     private static final Logger log = Logger.getLogger("InvTweaks");
     
     public static final String CONFIG_FILE = Minecraft.getMinecraftDir()+"/InvTweaksConfig.txt";
@@ -28,11 +27,12 @@ public class InvTweaks {
     public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.txt";
     public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.txt";
     public static final String INGAME_LOG_PREFIX = "InvTweaks: ";
-    public static final Level LOG_LEVEL = Level.FINE;
+    public static final Level DEFAULT_LOG_LEVEL = Level.WARNING;
+    public static final Level DEBUG = Level.INFO;
     public static final int HOT_RELOAD_DELAY = 1000;
     public static final int AUTOREPLACE_DELAY = 200;
-    public static final int POLLING_DELAY = 5;
-    public static final int POLLING_TIMEOUT = 2000;
+    public static final int POLLING_DELAY = 3;
+    public static final int POLLING_TIMEOUT = 1500;
 	private static int[] ALL_SLOTS;
 
 	private static InvTweaks instance;
@@ -46,7 +46,7 @@ public class InvTweaks {
     
     public InvTweaks(Minecraft minecraft) {
 
-    	log.setLevel(LOG_LEVEL);
+    	log.setLevel(DEFAULT_LOG_LEVEL);
     	
     	instance = this;
     	mc = minecraft;
@@ -119,13 +119,12 @@ public class InvTweaks {
 		
 		Vector<InvTweaksRule> rules = config.getRules();
 		InvTweaksInventory inventory = new InvTweaksInventory(
-				mc, config.getLockedSlots(), logging);
+				mc, config.getLockedSlots());
 
     	//// Merge stacks
-		if (logging)
-			log.info("Merging stacks.");
+		log.info("Merging stacks.");
     	
-    	// TODO: Lower complexity from 36� to 36.log(36)+36
+    	// TODO: Lower complexity from 36^2 to 36.log(36)+36
     	// (sort items by increasing priority, then 1 pass is enough)
     	for (int i = inventory.getSize()-1; i >= 0; i--) {
     		ItemStack from = inventory.getItemStack(i);
@@ -145,8 +144,7 @@ public class InvTweaks {
     	}
     	
     	//// Apply rules
-		if (logging)
-			log.info("Applying rules.");
+		log.info("Applying rules.");
     	
     	// Sorts rule by rule, themselves being already sorted by decreasing priority
 		Iterator<InvTweaksRule> rulesIt = rules.iterator();
@@ -155,7 +153,7 @@ public class InvTweaks {
 			InvTweaksRule rule = rulesIt.next();
 			int rulePriority = rule.getPriority();
 
-			if (logging)
+			if (log.getLevel() == DEBUG)
 				log.info("Rule : "+rule.getKeyword()+"("+rulePriority+")");
 
 			for (int i = 0; i < inventory.getSize(); i++) {
@@ -194,8 +192,7 @@ public class InvTweaks {
 		}
     	
 		//// Don't move locked stacks
-		if (logging)
-			log.info("Locking stacks.");
+		log.info("Locking stacks.");
 		
 		for (int i = 0; i < inventory.getSize(); i++) {
 			if (inventory.hasToBeMoved(i) && inventory.getLockLevel(i) > 0) {
@@ -204,8 +201,7 @@ public class InvTweaks {
 		}
     	
 		//// Sort remaining
-		if (logging)
-			log.info("Sorting remaining.");
+		log.info("Sorting remaining.");
 		
 		Vector<Integer> remaining = new Vector<Integer>(), nextRemaining = new Vector<Integer>();
 		for (int i = 0; i < inventory.getSize(); i++) {
@@ -237,7 +233,7 @@ public class InvTweaks {
 			log.info("Sorting takes too long, aborting.");
 		}
 
-		if (logging) {
+		if (log.getLevel() == DEBUG) {
 			timer = System.nanoTime()-timer;
 			log.info("Sorting done in "
 					+ inventory.getClickCount() + " clicks and "
@@ -269,9 +265,9 @@ public class InvTweaks {
     	onTickBusy = true;
     	
     	ItemStack currentStack = mc.thePlayer.inventory.getCurrentItem();
+    	ItemStack replacementStack = null;
     	int currentStackId = (currentStack == null) ? 0 : currentStack.itemID;
 		int currentItem = mc.thePlayer.inventory.currentItem;
-		boolean foundReplacement = false;
 		
     	// Auto-replace item stack
     	if (currentStackId != storedStackId) {
@@ -283,82 +279,91 @@ public class InvTweaks {
 	    			mc.thePlayer.inventory.getItemStack() == null) { // Filter item pickup from inv.
 		    		
         		InvTweaksInventory inventory = new InvTweaksInventory(
-        				mc, config.getLockedSlots(), logging);  	
+        				mc, config.getLockedSlots());  	
     			ItemStack candidateStack;
+    			int selectedStackId = -1;
 	    		
+    			// Search replacement
     			for (int i = 0; i < InvTweaksInventory.SIZE; i++) {
+    				
 	    			// Look only for an exactly matching ID
 	    			candidateStack = inventory.getItemStack(i);
-    				// TODO: Choose stack of lowest size
 	    			if (candidateStack != null && 
 	    					candidateStack.itemID == storedStackId &&
 	    					(config.canBeAutoReplaced(candidateStack.itemID))) {
-	    				
-	    				foundReplacement = true;
-	    				if (logging)
-	    					log.info("Automatic stack replacement.");
-	    				
-					    /*
-					     * This allows to have a short feedback 
-					     * that the stack/tool is empty/broken.
-					     */
-    					new Thread(new Runnable() {
+	    				// Choose stack of lowest size
+	    				if (replacementStack == null ||
+	    						replacementStack.stackSize > candidateStack.stackSize) {
+	    					replacementStack = candidateStack;
+	    					selectedStackId = i;
+	    				}
+	    			}
+    			}
+    			
+    			// Proceed to replacement
+    			if (replacementStack != null) {
+    				
+    				log.info("Automatic stack replacement.");
+    				
+				    /*
+				     * This allows to have a short feedback 
+				     * that the stack/tool is empty/broken.
+				     */
+					new Thread(new Runnable() {
 
-    						private InvTweaksInventory inventory;
-    						private int currentItem;
-    						private int i, expectedItemId;
-    						
-    						public Runnable init(
-    								InvTweaksInventory inventory,
-    								int i, int currentItem) {
-    							this.inventory = inventory;
-    							this.currentItem = currentItem;
-    							this.expectedItemId = inventory.getItemStack(i).itemID;
-    							this.i = i;
-    							return this;
-    						}
-    						
-							@Override
-							public void run() {
-								
-								if (mc.isMultiplayerWorld()) {
-									// Wait for the server to confirm that the
-									// slot is now empty
-									int pollingTime = 0;
-									mc.thePlayer.inventory.inventoryChanged = false;
-									while(!mc.thePlayer.inventory.inventoryChanged
-											&& pollingTime < POLLING_TIMEOUT) {
-										trySleep(POLLING_DELAY);
-									}
-									if (pollingTime < AUTOREPLACE_DELAY)
-										trySleep(AUTOREPLACE_DELAY - pollingTime);
-									if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
-										log.warning("Autoreplace timout");
+						private InvTweaksInventory inventory;
+						private int currentItem;
+						private int i, expectedItemId;
+						
+						public Runnable init(
+								InvTweaksInventory inventory,
+								int i, int currentItem) {
+							this.inventory = inventory;
+							this.currentItem = currentItem;
+							this.expectedItemId = inventory.getItemStack(i).itemID;
+							this.i = i;
+							return this;
+						}
+						
+						@Override
+						public void run() {
+							
+							if (mc.isMultiplayerWorld()) {
+								// Wait for the server to confirm that the
+								// slot is now empty
+								int pollingTime = 0;
+								mc.thePlayer.inventory.inventoryChanged = false;
+								while(!mc.thePlayer.inventory.inventoryChanged
+										&& pollingTime < POLLING_TIMEOUT) {
+									trySleep(POLLING_DELAY);
 								}
-								else {
-									trySleep(AUTOREPLACE_DELAY);
-								}
-								
-								// In POLLING_DELAY ms, things might have changed
-								if (inventory.getItemStack(i) != null &&
-										inventory.getItemStack(i).itemID == expectedItemId) {
-									inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
-								}
-								
-						    	onTickBusy = false;
+								if (pollingTime < AUTOREPLACE_DELAY)
+									trySleep(AUTOREPLACE_DELAY - pollingTime);
+								if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
+									log.warning("Autoreplace timout");
+							}
+							else {
+								trySleep(AUTOREPLACE_DELAY);
 							}
 							
-						}.init(inventory, i, currentItem)).start();
-	    				
-	    				break;
-	    			}
+							// In POLLING_DELAY ms, things might have changed
+							if (inventory.getItemStack(i) != null &&
+									inventory.getItemStack(i).itemID == expectedItemId) {
+								inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
+							}
+							
+					    	onTickBusy = false;
+						}
+						
+					}.init(inventory, selectedStackId, currentItem)).start();
+    				
 	    		}
 	    	}
 	    	
 	    	storedStackId = currentStackId;
     	}
 
-		if (!foundReplacement)
+		if (replacementStack == null)
 	    	onTickBusy = false;
 		
     	}
@@ -482,6 +487,7 @@ public class InvTweaks {
 	    		config = new InvTweaksConfig(CONFIG_FILE);
 	    	}
 			config.load();
+			log.setLevel(config.getLogLevel());
 			logInGame("Configuration reloaded");
 			showConfigErrors(config);
 	    	return true;
@@ -528,11 +534,11 @@ public class InvTweaks {
 				}
 			}
 			catch (IOException e) {
-				log.warning("Failed to extract "+resource+": "+e.getMessage());
+				resourceUrl = null;
 			}
 		}
 		
-		// Extraction from mods folder (MyCraft compatibility)
+		// Extraction from mods folder
 		if (resourceUrl == null) {
 			
 			File modFolder = new File(Minecraft.getMinecraftDir().getPath()+
@@ -541,25 +547,21 @@ public class InvTweaks {
 			File[] zips = modFolder.listFiles();
 			if (zips != null && zips.length > 0) {
 				for (File zip : zips) {
-					if (zip.getName().toLowerCase().contains("invtweaks")) {
-						try {
-							ZipFile invTweaksZip = new ZipFile(zip);
-							ZipEntry zipResource = invTweaksZip.getEntry(resource);
-							if (zipResource != null) {
-								InputStream content = invTweaksZip.
-										getInputStream(zipResource);
-								while (content.available() > 0) {
-									byte[] bytes = new byte[content.available()];
-									content.read(bytes);
-									resourceContents += new String(bytes);
-								}
-								break;
+					try {
+						ZipFile invTweaksZip = new ZipFile(zip);
+						ZipEntry zipResource = invTweaksZip.getEntry(resource);
+						if (zipResource != null) {
+							InputStream content = invTweaksZip.
+									getInputStream(zipResource);
+							while (content.available() > 0) {
+								byte[] bytes = new byte[content.available()];
+								content.read(bytes);
+								resourceContents += new String(bytes);
 							}
-						} catch (Exception e) {
-							if (logging) {
-								log.warning("Failed to extract "+resource+" from mod: "+e.getMessage());
-							}
+							break;
 						}
+					} catch (Exception e) {
+						log.warning("Failed to extract "+resource+" from mod: "+e.getMessage());
 					}
 				}
 			}
@@ -581,7 +583,7 @@ public class InvTweaks {
 		}
 		else {
 			logInGame("The mod won't work, because "+resource+" could not be found!");
-			log.severe("Source file "+resource+" not found, cannot create config file");
+			log.severe("Cannot create "+destination+" file: "+resource+" not found");
 			return false;
 		}
    	}

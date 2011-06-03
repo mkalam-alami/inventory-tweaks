@@ -17,7 +17,6 @@ public class InvTweaksInventory {
 	private int[] keywordOrder = new int[SIZE];
 	private int[] oldSlot = new int[SIZE];
 	private int[] lockLevels;
-	private boolean logging;
 	private int clickCount = 0;
 	
 	// Multiplayer
@@ -25,9 +24,8 @@ public class InvTweaksInventory {
 	private PlayerController playerController;
 	private EntityPlayerSP player;
 	
-	public InvTweaksInventory(Minecraft minecraft, int[] lockLevels, boolean logging) {
+	public InvTweaksInventory(Minecraft minecraft, int[] lockLevels) {
 
-		this.logging = logging;
 		this.inventory = minecraft.thePlayer.inventory.mainInventory;
 		this.playerController = minecraft.playerController;
 		this.player = minecraft.thePlayer;
@@ -121,11 +119,19 @@ public class InvTweaksInventory {
 		
 		else {
 			if (keywordOrder[i] == keywordOrder[j]) {
-				if (inventory[i].stackSize == inventory[j].stackSize) {
-					return inventory[i].getItemDamage() > inventory[j].getItemDamage();
+				// Items of same keyword orders can have different IDs,
+				// in the case of categories defined by a range of IDs
+				if (inventory[i].itemID == inventory[j].itemID) {
+					if (inventory[i].stackSize == inventory[j].stackSize) {
+						return inventory[i].getItemDamage() > inventory[j].getItemDamage()
+								&& inventory[j].getMaxStackSize() > 1; // exclude tools
+					}
+					else {
+						return inventory[i].stackSize > inventory[j].stackSize;
+					}
 				}
 				else {
-					return inventory[i].stackSize > inventory[j].stackSize;
+					return inventory[i].itemID > inventory[j].itemID;
 				}
 			}
 			else {
@@ -233,9 +239,9 @@ public class InvTweaksInventory {
 	 */
 	public void click(int slot) {
 		clickCount++;
-		if (logging) {
+		
+		if (log.getLevel() == InvTweaks.DEBUG)
 			log.info("Click on "+slot);
-		}
 		
 		// After clicking, we'll need to wait for server answer before continuing.
 		// We'll do this by listening to any change in the slot, but this implies we
@@ -244,17 +250,17 @@ public class InvTweaksInventory {
 		ItemStack stackInSlot = (inventory[slot] != null) ? inventory[slot].copy() : null;
 		ItemStack stackInHand = player.inventory.getItemStack();
 		
-		if ((stackInHand == null && stackInSlot == null) ||
-				(stackInHand != null && stackInSlot != null &&
+		// Useless if empty stacks
+		if (stackInHand == null && stackInSlot == null)
+			uselessClick = true;
+		// Useless if destination stack is full, or items are tools
+		else if (stackInHand != null && stackInSlot != null &&
 				stackInHand.itemID == stackInSlot.itemID &&
-				stackInHand.getItemDamage() == stackInSlot.getItemDamage() &&
-				stackInSlot.stackSize == stackInHand.getMaxStackSize())) {
+				stackInSlot.stackSize == stackInHand.getMaxStackSize()) {
 			uselessClick = true;
 		}
 		
 		// Click!
-		log.info("Click on "+(((slot > 8) ? slot - 9 : slot + 27) + 
-				player.craftingInventory.slots.size() - 36)+"/"+(player.craftingInventory.slots.size()-36));
 		playerController.func_27174_a(
 				player.craftingInventory.windowId, // Select active inventory
 				((slot > 8) ? slot - 9 : slot + 27) + 
@@ -290,7 +296,7 @@ public class InvTweaksInventory {
 			click(slot);
 		}
 		else {
-			if (logging)
+			if (log.getLevel() == InvTweaks.DEBUG)
 				log.info("Removed: "+InvTweaksTree.getItem(removed.itemID));
 			inventory[slot] = null;
 		}
@@ -311,7 +317,7 @@ public class InvTweaksInventory {
 			click(slot);
 		}
 		else {
-			if (logging)
+			if (log.getLevel() == InvTweaks.DEBUG)
 				log.info("Put: "+InvTweaksTree.getItem(stack.itemID)+" in "+slot);
 			inventory[slot] = stack;
 		}

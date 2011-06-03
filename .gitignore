@@ -1,6 +1,7 @@
 bin/
 client/
-dist/*/**
+dist/files/
+!*.zip
 *.java
 *#
 *~

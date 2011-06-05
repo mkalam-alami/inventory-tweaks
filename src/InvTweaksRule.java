@@ -7,10 +7,10 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	
 	public enum RuleType {
 
-		RECTANGLE(1),
+		RECTANGLE(2),
 		ROW(1),
-		COLUMN(2),
-		TILE(3);
+		COLUMN(3),
+		TILE(4);
 
 		private int lowestPriority;
 		private int highestPriority;
@@ -51,9 +51,7 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 		// 1st criteria : the rule type
 		// 2st criteria : the keyword category depth
 		// 3st criteria : the item order in a same category
-		priority = type.getLowestPriority() + 
-			InvTweaksTree.getKeywordDepth(keyword)*10000 -
-			InvTweaksTree.getKeywordOrder(keyword);
+		priority = type.getLowestPriority() + 100000 - InvTweaksTree.getKeywordOrder(keyword);
 		
 	}
 	

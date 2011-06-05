@@ -169,7 +169,7 @@ public class InvTweaksTree {
 		}
 		catch (NullPointerException e) {
 			log.severe("The root category is missing: " + e.getMessage());
-			return -1;
+			return 0;
 		}
 	}
 	

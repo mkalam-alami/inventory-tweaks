@@ -6,7 +6,7 @@
 [06.04.2011] 1.04 (B1.6.6)
  * The mod can now be installed through the mods folder
      Now really compatible with MyCraft
- * Autoreplace now selects the lowest stack first
+ * Autoreplace now selects the smallest stack first
  * Fixed freeze when sorting several tools of same ID in SMP
  * Added DEBUG rule to enable verbose logging
  
@@ -20,10 +20,13 @@
  * Various minor changes/fixes to the item tree
 
 [05.30.2011] 1.02 (B1.6.6)
- * Most damaged tools now are selected first
+ * Most damaged tools are now selected first
  * Fixed item duplication bug
  * Fixed bug concerning upper case item names
  
+[05.30.2011] 1.01b (B1.6.5)
+ * Default configuration was missing in the zip
+
 [05.29.2011] 1.01 (B1.6.5)
  * The sort button can now be configured again
  * Autoreplace now works most of the time in SMP

@@ -152,6 +152,7 @@ stuff
           slab 44
           doubleSlab 43
           slabDouble 43
+        stick 280
         oreBlock
           diamond 57
           gold 41
@@ -173,7 +174,6 @@ stuff
       clayBrick 336
       clay 337
       flint 318
-      stick 280
     flintAndSteel 259
     huntingResources
       bone 352
@@ -294,8 +294,8 @@ stuff
     sapling 6
     seed 295
     sugarCane 83
+    sugarCane 338
     cactus 81
-    sugarCane 83
     reed 83
     pumpkin 86
     sapling 6

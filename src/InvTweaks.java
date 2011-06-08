@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -41,7 +42,7 @@ public class InvTweaks {
     private int keyPressDuration = 0;
     private boolean configErrorsShown = false;
     private boolean onTickBusy = false;
-	private int storedStackId = 0, storedPosition = -1;
+	private int storedStackId = 0, storedStackDamage = -1, storedPosition = -1;
     private Minecraft mc;
     
     public InvTweaks(Minecraft minecraft) {
@@ -78,13 +79,13 @@ public class InvTweaks {
 	 */
     public final long sortInventory()
     {
-    	synchronized (this) {
-    		
-    	// Do nothing if config loading failed
-    	if (config == null) {
+    	// Do nothing if config loading failed or the chat is open
+    	if (config == null || mc.currentScreen instanceof GuiChat) {
     		return -1;
     	}
     	
+    	synchronized (this) {
+    		
     	// Hot reload trigger
     	long currentTime = System.currentTimeMillis();
     	if (currentTime - lastKeyPress < 100) {
@@ -161,9 +162,9 @@ public class InvTweaks {
 	    		
 	    		if (inventory.hasToBeMoved(i) && 
 	    				inventory.getLockLevel(i) < rulePriority) {
-					InvTweaksItem fromItem = InvTweaksTree.getItem(from.itemID);
-					
-	    			if (InvTweaksTree.matches(fromItem, rule.getKeyword())) {
+					List<InvTweaksItem> fromItems = InvTweaksTree.getItems(
+							from.itemID, from.getItemDamage());
+	    			if (InvTweaksTree.matches(fromItems, rule.getKeyword())) {
 	    				
 	    				int[] preferredPos = rule.getPreferredPositions();
 	    				for (int j = 0; j < preferredPos.length; j++) {
@@ -175,9 +176,10 @@ public class InvTweaks {
 	    							break;
 	    						}
 	    						else {
-	    							fromItem = InvTweaksTree.getItem(from.itemID);
+	    							fromItems = InvTweaksTree.getItems(
+	    									from.itemID, from.getItemDamage());
 	    							if (!InvTweaksTree.matches(
-	    									fromItem, rule.getKeyword())) {
+	    									fromItems, rule.getKeyword())) {
 	    								break;
 	    							}
 	    							else {
@@ -256,9 +258,8 @@ public class InvTweaks {
     	if (config == null || onTickBusy == true)
     		return;
     	
-    	if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled()) {
+    	if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled())
     		sortInventory();
-    	}
     	
     	synchronized (this) {
     		
@@ -267,10 +268,12 @@ public class InvTweaks {
     	ItemStack currentStack = mc.thePlayer.inventory.getCurrentItem();
     	ItemStack replacementStack = null;
     	int currentStackId = (currentStack == null) ? 0 : currentStack.itemID;
+    	int currentStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
 		int currentItem = mc.thePlayer.inventory.currentItem;
 		
     	// Auto-replace item stack
-    	if (currentStackId != storedStackId) {
+    	if (currentStackId != storedStackId
+    			|| currentStackDamage != storedStackDamage) {
     		
 	    	if (storedPosition != currentItem) { // Filter selection change
 	    		storedPosition = currentItem;
@@ -281,16 +284,19 @@ public class InvTweaks {
         		InvTweaksInventory inventory = new InvTweaksInventory(
         				mc, config.getLockedSlots());  	
     			ItemStack candidateStack;
+    			ItemStack storedStack = new ItemStack(storedStackId, 1, storedStackDamage);
     			int selectedStackId = -1;
 	    		
     			// Search replacement
     			for (int i = 0; i < InvTweaksInventory.SIZE; i++) {
     				
-	    			// Look only for an exactly matching ID
+	    			// Look only for a matching stack
 	    			candidateStack = inventory.getItemStack(i);
 	    			if (candidateStack != null && 
-	    					candidateStack.itemID == storedStackId &&
-	    					(config.canBeAutoReplaced(candidateStack.itemID))) {
+	    					inventory.areSameItem(storedStack, candidateStack) &&
+	    					config.canBeAutoReplaced(
+	    							candidateStack.itemID,
+	    							candidateStack.getItemDamage())) {
 	    				// Choose stack of lowest size
 	    				if (replacementStack == null ||
 	    						replacementStack.stackSize > candidateStack.stackSize) {
@@ -361,6 +367,7 @@ public class InvTweaks {
 	    	}
 	    	
 	    	storedStackId = currentStackId;
+	    	storedStackDamage = currentStackDamage;
     	}
 
 		if (replacementStack == null)
@@ -481,6 +488,8 @@ public class InvTweaks {
     	
     	// Load
     	
+    	String error = null;
+    	
 		try {
 	    	InvTweaksTree.loadTreeFromFile(CONFIG_TREE_FILE);
 	    	if (config == null) {
@@ -490,17 +499,19 @@ public class InvTweaks {
 			log.setLevel(config.getLogLevel());
 			logInGame("Configuration reloaded");
 			showConfigErrors(config);
-	    	return true;
 		} catch (FileNotFoundException e) {
-			String error = "Config file not found";
+			error = "Config file not found";
+		} catch (Exception e) {
+			error = "Error while loading config: "+e.getMessage();
+		}
+			
+		if (error != null) {
 			logInGame(error);
 			log.severe(error);
-	    	return false;
-		} catch (IOException e) {
-			String error = "Could not read config file";
-			logInGame(error);
-			log.severe(error + " : " + e.getMessage());
-	    	return false;
+		    return false;
+		}
+		else {
+			return true;
 		}
     }
 

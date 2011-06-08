@@ -1,5 +1,6 @@
 package net.minecraft.src;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
@@ -35,8 +36,11 @@ public class InvTweaksInventory {
 		for (int i = 0; i < SIZE; i++) {
 			this.rulePriority[i] = 0;
 			this.oldSlot[i] = i;
-			if (this.inventory[i] != null)
-				this.keywordOrder[i] = InvTweaksTree.getItem(this.inventory[i].itemID).getOrder();
+			if (this.inventory[i] != null) {
+				this.keywordOrder[i] = getItemOrder(
+						this.inventory[i].itemID,
+						this.inventory[i].getItemDamage());
+			}
 		}
 		
 	}
@@ -99,10 +103,20 @@ public class InvTweaksInventory {
 		return inventory[slot] != null && rulePriority[slot] == 0;
 	}
 
+	/**
+	 * Note: asserts stacks are not null
+	 */
+	public boolean areSameItem(ItemStack stack1, ItemStack stack2) {
+		// Note: may be invalid if a stackable item can take damage
+		// (currently never the case in vanilla, an never should be)
+		return stack1.itemID == stack2.itemID
+				&& (stack1.getItemDamage() == stack2.getItemDamage() // same item variant
+						|| stack1.getMaxStackSize() == 1); // except if unstackable
+	}
+
 	public boolean canBeMerged(int i, int j) {
 		return (inventory[i] != null && inventory[j] != null && 
-				inventory[i].itemID == inventory[j].itemID &&
-				inventory[i].getItemDamage() == inventory[j].getItemDamage() &&
+				areSameItem(inventory[i], inventory[j]) &&
 				inventory[j].stackSize < inventory[j].getMaxStackSize());
 	}
 
@@ -110,13 +124,10 @@ public class InvTweaksInventory {
 		
 		if (inventory[j] == null)
 			return true;
-		
-		else if (inventory[i] == null)
+		else if (inventory[i] == null
+				|| keywordOrder[i] == 0
+				|| areSameItem(inventory[i], inventory[j]))
 			return false;
-		
-		else if (keywordOrder[i] == 0)
-			return false;
-		
 		else {
 			if (keywordOrder[i] == keywordOrder[j]) {
 				// Items of same keyword orders can have different IDs,
@@ -253,9 +264,9 @@ public class InvTweaksInventory {
 		// Useless if empty stacks
 		if (stackInHand == null && stackInSlot == null)
 			uselessClick = true;
-		// Useless if destination stack is full, or items are tools
+		// Useless if destination stack is full
 		else if (stackInHand != null && stackInSlot != null &&
-				stackInHand.itemID == stackInSlot.itemID &&
+				areSameItem(stackInHand, stackInSlot) &&
 				stackInSlot.stackSize == stackInHand.getMaxStackSize()) {
 			uselessClick = true;
 		}
@@ -296,8 +307,15 @@ public class InvTweaksInventory {
 			click(slot);
 		}
 		else {
-			if (log.getLevel() == InvTweaks.DEBUG)
-				log.info("Removed: "+InvTweaksTree.getItem(removed.itemID));
+			if (log.getLevel() == InvTweaks.DEBUG) {
+				try {
+					log.info("Removed: "+InvTweaksTree.getItems(
+							removed.itemID, removed.getItemDamage()).get(0));
+				}
+				catch (NullPointerException e) {
+					log.info("Removed: null");
+				}
+			}
 			inventory[slot] = null;
 		}
 		rulePriority[slot] = 0;
@@ -317,12 +335,27 @@ public class InvTweaksInventory {
 			click(slot);
 		}
 		else {
-			if (log.getLevel() == InvTweaks.DEBUG)
-				log.info("Put: "+InvTweaksTree.getItem(stack.itemID)+" in "+slot);
+			if (log.getLevel() == InvTweaks.DEBUG) {
+				try {
+					log.info("Put: "+InvTweaksTree.getItems(
+							stack.itemID, stack.getItemDamage()).get(0)+" in "+slot);
+				}
+				catch (NullPointerException e) {
+					log.info("Removed: null");
+				}
+			}
 			inventory[slot] = stack;
 		}
 		rulePriority[slot] = priority;
-		keywordOrder[slot] = InvTweaksTree.getItem(stack.itemID).getOrder();
+		
+		keywordOrder[slot] = getItemOrder(stack.itemID, stack.getItemDamage());
+	}
+	
+	private int getItemOrder(int itemID, int itemDamage) {
+		List<InvTweaksItem> items = InvTweaksTree.getItems(itemID, itemDamage);
+		return (items != null && items.size() > 0)
+				? items.get(0).getOrder()
+				: Integer.MAX_VALUE;
 	}
     
 }

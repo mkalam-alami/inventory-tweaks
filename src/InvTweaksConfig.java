@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,7 @@ public class InvTweaksConfig {
 	private static final String AUTOREPLACE_NOTHING = "nothing";
 	private static final String DISABLEMIDDLECLICK = "disablemiddleclick";
 	private static final String DEBUG = "debug";
+	private static final boolean DEFAULT_AUTOREPLACE_BEHAVIOUR = true;
 	
 	private String file;
 	private int[] lockedSlots;
@@ -65,18 +67,18 @@ public class InvTweaksConfig {
 		return (this.debugEnabled) ? Level.INFO : Level.WARNING;
 	}
 
-	public boolean canBeAutoReplaced(int itemID) {
-		InvTweaksItem item = InvTweaksTree.getItem(itemID);
+	public boolean canBeAutoReplaced(int itemID, int itemDamage) {
+		List<InvTweaksItem> items = InvTweaksTree.getItems(itemID, itemDamage);
 		for (String keyword : autoReplaceRules) {
 			if (keyword.equals(AUTOREPLACE_NOTHING))
 				return false;
-			if (InvTweaksTree.matches(item, keyword))
+			if (InvTweaksTree.matches(items, keyword))
 				return true;
 		}
-		return false;
+		return DEFAULT_AUTOREPLACE_BEHAVIOUR;
 	}
 	
-	public void load() throws FileNotFoundException, IOException {
+	public void load() throws FileNotFoundException, IOException, Exception{
 
 		synchronized (this) {
 		
@@ -170,7 +172,12 @@ public class InvTweaksConfig {
 		
 		// Default Autoreplace behavior
 		if (autoReplaceRules.isEmpty()) {
-			autoReplaceRules.add(InvTweaksTree.getRootCategory().getName());
+			try {
+				autoReplaceRules.add(InvTweaksTree.getRootCategory().getName());
+			}
+			catch (NullPointerException e) {
+				throw new NullPointerException("No root category is defined.");
+			}
 		}
 		
 		// Sort rules by priority, highest first

@@ -1,6 +1,10 @@
 package net.minecraft.src;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -9,19 +13,23 @@ public class InvTweaksCategory {
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaksCategory");
 
-	private final Vector<Integer> itemIds = new Vector<Integer>();
-	private final Vector<InvTweaksItem> items = new Vector<InvTweaksItem>();
+	private final Map<Integer, List<InvTweaksItem>> items = new HashMap<Integer, List<InvTweaksItem>>();
 	private final Vector<InvTweaksCategory> subCategories = new Vector<InvTweaksCategory>();
 	private String name;
+	private int order = -1;
 	
     public InvTweaksCategory(String name) {
     	this.name = name;
 	}
     
     public boolean contains(InvTweaksItem item) {
-		if (itemIds.contains(item.getId())) {
-			return true;
-    	}
+    	List<InvTweaksItem> storedItems = items.get(item.getId());
+		if (storedItems != null) {
+			for (InvTweaksItem storedItem : storedItems) {
+				if (storedItem.equals(item))
+					return true;
+			}
+		}
 		for (InvTweaksCategory category : subCategories) {
 			if (category.contains(item)) {
 				return true;
@@ -35,14 +43,26 @@ public class InvTweaksCategory {
 	}
 	
 	public void addItem(InvTweaksItem item) {
-		items.add(item);
-		itemIds.add(item.getId());
+		
+		// Add item to category
+		if (items.get(item.getId()) == null) {
+			List<InvTweaksItem> itemList = new ArrayList<InvTweaksItem>();
+			itemList.add(item);
+			items.put(item.getId(), itemList);
+		}
+		else {
+			items.get(item.getId()).add(item);
+		}
+		
+		// Categorie's order is defined by its lowest item order
+		if (order == -1 || order > item.getOrder()) {
+			order = item.getOrder();
+		}
 	}
 
 	public int getCategoryOrder() {
-
-		if (items.size() > 0) {
-			return items.get(0).getOrder();
+		if (this.order != -1) {
+			return this.order;
 		}
 		else {
 			int order;
@@ -95,8 +115,8 @@ public class InvTweaksCategory {
 		return subCategories;
 	}
 	
-	public Collection<InvTweaksItem> getItems() {
-		return items;
+	public Collection<List<InvTweaksItem>> getItems() {
+		return items.values();
 	}
 
 	public String getName() {

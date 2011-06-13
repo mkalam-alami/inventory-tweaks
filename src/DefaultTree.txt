@@ -3,14 +3,16 @@
 | Tree configuration                                           |
 |==============================================================|
  
-# Keyword tree
-# * You can create you own categories
-# * You can swap items to change their priority for sorting
-#   * Items can be put in several categories
-# * Use exactly the same syntax as what you see:
-#   * Two spaces of indentation for each category level
-#   * One space between the item name and its ID
-#   * Skip lines as you want
+# You can edit this tree as you want, just use exactly the 
+# same syntax as what you see here.
+# * Two spaces of indentation for each category level
+# * One space between the item name and its ID...
+# * Categories syntax:
+#   * <category name>
+#   * <category name> <firstID> to <lastID>
+# * Item names:
+#   * <item name> <itemID>
+#   * <item name> <itemID>-<item "damage">
 
 stuff
 
@@ -18,68 +20,68 @@ stuff
   
     weapon
       sword
-        swordIron 267
-        swordDiamond 276
-        swordStone 272
-        swordGold 283
-        swordWood 268
+        ironSword 267
+        diamondSword 276
+        stoneSword 272
+        goldSword 283
+        woodSword 268
       arrow 262
       bow 261
       snowball 332
       
     tool
       pickaxe
-        pickaxeIron 257
-        pickaxeDiamond 278
-        pickaxeStone 274
-        pickaxeGold 285
-        pickaxeWood 270
+        ironPickaxe 257
+        diamondPickaxe 278
+        stonePickaxe 274
+        goldPickaxe 285
+        woodPickaxe 270
       shovel
-        shovelWood 269
-        shovelStone 273
-        shovelGold 284
-        shovelIron 256
-        shovelDiamond 277
+        ironShovel 256
+        diamondShovel 277
+        stoneShovel 273
+        woodShovel 269
+        goldShovel 284
       axe
-        axeIron 258
-        axeDiamond 279
-        axeStone 275
-        axeGold 286
-        axeWood 271
+        ironAxe 258
+        diamondAxe 279
+        stoneAxe 275
+        goldAxe 296
+        woodAxe 271
       hoe
-        hoeIron 291
-        hoeDiamond 293
-        hoeStone 292
-        hoeGold 294
-        hoeWood 290
+        ironHoe 291
+        diamondHoe 293
+        stoneHoe 292
+        goldHoe 294
+        woodHoe 290
         
     fishingRod 346
 
     armor
       helmet
-        helmetChain 302
-        helmetDiamond 310
-        helmetIron 306
-        helmetGold 314
-        helmetLeather 298
+        chainHelmet 302
+        diamondHelmet 310
+        ironHelmet 306
+        goldHelmet 314
+        leatherHelmet 298
       chestplate
-        chestplateChain 303
-        chestplateDiamond 311
-        chestplateIron 307
-        chestplateGold 315
-        chestplateLeather 299
+        chainChestplate 303
+        diamondChestplate 311
+        ironChestplate 307
+        goldChestplate 315
+        leatherChestplate 299
       leggings
-        leggingsChain 304
-        leggingsDiamond 312
-        leggingsIron 308
-        leggingsGold 316
-        leggingsLeather 300
+        chainLeggings 304
+        diamondLeggings 312
+        ironLeggings 308
+        goldLeggings 316
+        leatherLeggings 300
       boots
-        bootsChain 305
-        bootsDiamond 313
-        bootsIron 309
-        bootsGold 317
-        bootsLeather 301
+        chainBoots 305
+        diamonBoots 313
+        ironBoots 309
+        goldBoots 317
+        leatherBoots 301
   
   block
   
@@ -95,13 +97,13 @@ stuff
         sandStone 24
       gravel 13
       ore
-        oreIron 15
-        oreGold 14
-        oreCoal 16
-        oreRedstone 73
-        oreRedstoneGlowing 74
-        oreLapisLazuli 21
-        oreDiamond 56
+        ironOre 15
+        goldOre 14
+        coalOre 16
+        redstoneOre 73
+        redstoneOre 74
+        lapisLazuliOre 21
+        diamondOre 56
       clayBlock 82
       obsidian 49
       netherBlock
@@ -109,7 +111,20 @@ stuff
         glowstoneBlock 89
         netherrack 87
         soulSand 88
-      wool 35
+      wool
+        whiteWool 35-0
+        orangeWOol 35-1
+        magentWool 35-2
+        lightBlueWool 35-3
+        yellowWool 35-4
+        lightGreenWool 35-5
+        pinkWool 35-6
+        grayWool 35-7
+        lightGrayWool 35-8
+        cyanWool 35-9
+        purpleWool 35-10
+        blueWool 35-11
+        brownWool 35-12
       web 30
       monsterSpawner 52
       bedrock 7
@@ -147,11 +162,12 @@ stuff
           stoneStairs 67
           stairsStone 67
           cobblestoneStairs 67
-          stairsCobblestone 67
         slabs
-          slab 44
+          stoneSlab 44-0
+          sandstoneSlab 44-1
+          woodenSlab 44-2
+          cobblestoneSlab 44-3
           doubleSlab 43
-          slabDouble 43
         stick 280
         oreBlock
           diamond 57
@@ -175,6 +191,7 @@ stuff
       clay 337
       flint 318
     flintAndSteel 259
+    
     huntingResources
       bone 352
       leather 334
@@ -182,10 +199,36 @@ stuff
       feather 288
       gunpowder 289
       slimeball 341
+      
     farmingResources
       paper 339
       book 340
-    dye 351
+    
+    dye
+      boneMeal 351-15
+      whiteDye 351-15
+      inkSac 351-0
+      blackDye 351-0
+      roseRed 351-1
+      redDye 351-1
+      cactusGreen 351-2
+      greenDye 351-2
+      cocoaBeans 351-3
+      brownDye 351-3
+      lapisLazuli 351-4
+      lapisLazuliDye 351-4
+      blueDye 351-4
+      purpleDye 351-5
+      cyanDye 351-6
+      lightGrayDye 351-7
+      grayDye 351-8
+      pinkDye 351-9
+      limeDye 351-10
+      dandelionYellow 351-11
+      yellowDye 351-11
+      lightBlueDye 351-12
+      magentaDye 351-13
+      orangeDye 351-14
     
   utility
     torch 50
@@ -298,7 +341,11 @@ stuff
     cactus 81
     reed 83
     pumpkin 86
-    sapling 6
+    sapling
+      usualSapling 6-0
+      spruceSapling 6-1
+      birchSapling 6-2
+    tallGrass 31
     deadShrub 32
     leaves 18
     seedBlock 59

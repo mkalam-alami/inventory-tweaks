@@ -14,6 +14,7 @@ public class InvTweaksCategory {
 	private static final Logger log = Logger.getLogger("InvTweaksCategory");
 
 	private final Map<Integer, List<InvTweaksItem>> items = new HashMap<Integer, List<InvTweaksItem>>();
+	private final Vector<String> matchingItems = new Vector<String>();
 	private final Vector<InvTweaksCategory> subCategories = new Vector<InvTweaksCategory>();
 	private String name;
 	private int order = -1;
@@ -53,6 +54,7 @@ public class InvTweaksCategory {
 		else {
 			items.get(item.getId()).add(item);
 		}
+		matchingItems.add(item.getName());
 		
 		// Categorie's order is defined by its lowest item order
 		if (order == -1 || order > item.getOrder()) {
@@ -94,6 +96,9 @@ public class InvTweaksCategory {
 	public int findKeywordDepth(String keyword) {
 		if (name.equals(keyword)) {
 			return 0;
+		}
+		else if (matchingItems.contains(keyword)) {
+			return 1;
 		}
 		else {
 			int result;

@@ -7,11 +7,13 @@
  * Enhanced keyword tree possibilities
      Categories defined by ID ranges
      Items defined by both ID and "damage value"
+ * Improved guessing for wrong keywords
  * Fixed sorting triggered while chatting or creating signs
  * Fixed sorting sometimes leaving an item under the cursor in SMP
  * Fixed shift + click on the hotbar triggering autoreplace
  * Fixed autoreplace ignoring wool colors, sapling types, etc.
  * Fixed the item tree not handling correctly duplicate items
+ * Fixed rules priorities problem
 
 [06.04.2011] 1.04b (B1.6.6)
  * Adjusted rules priorities

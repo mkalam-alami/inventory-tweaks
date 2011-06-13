@@ -51,7 +51,10 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 		// 1st criteria : the rule type
 		// 2st criteria : the keyword category depth
 		// 3st criteria : the item order in a same category
-		priority = type.getLowestPriority() + 100000 - InvTweaksTree.getKeywordOrder(keyword);
+		
+		priority = type.getLowestPriority() + 100000 +
+			InvTweaksTree.getKeywordDepth(keyword)*1000 -
+			InvTweaksTree.getKeywordOrder(keyword);
 		
 	}
 	

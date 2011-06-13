@@ -5,7 +5,7 @@
 
 ====== [ SETUP ] ======
 
-1. Make sure ModLoader is already installed (http://www.minecraftforum.net/viewtopic.php?t=80246)
+1. Make sure ModLoader is already installed (http://www.minecraftforum.net/topic/75440-v166-risugamis-mods-updates)
 2. Remove any previous version of Inventory Tweaks
 3. Put the Zip in the "mods" folder of Minecraft
 4. Launch the game!

@@ -3,6 +3,10 @@
 | Changelog                                                    |
 |==============================================================|
 
+[06.04.2011] 1.04b (B1.6.6)
+ * Adjusted rules priorities
+ * Minor item tree fix
+
 [06.04.2011] 1.04 (B1.6.6)
  * The mod can now be installed through the mods folder
      Now really compatible with MyCraft

@@ -79,8 +79,10 @@ public class InvTweaks {
 	 */
     public final long sortInventory()
     {
-    	// Do nothing if config loading failed or the chat is open
-    	if (config == null || mc.currentScreen instanceof GuiChat) {
+    	// Check config loading success & current GUI
+    	if (config == null ||
+    			!(mc.currentScreen == null ||
+    			mc.currentScreen instanceof GuiContainer)) {
     		return -1;
     	}
     	
@@ -120,20 +122,22 @@ public class InvTweaks {
 		
 		Vector<InvTweaksRule> rules = config.getRules();
 		InvTweaksInventory inventory = new InvTweaksInventory(
-				mc, config.getLockedSlots());
+				mc, config.getLockPriorities());
 
-    	//// Merge stacks
+		//// Empty hand (needed in SMP)
+		if (mc.isMultiplayerWorld())
+			inventory.putSelectedItemDown();
+		
+    	//// Merge stacks to fill the ones in locked slots
 		log.info("Merging stacks.");
-    	
-    	// TODO: Lower complexity from 36^2 to 36.log(36)+36
-    	// (sort items by increasing priority, then 1 pass is enough)
+		
+		Vector<Integer> lockedSlots = config.getLockedSlots();
     	for (int i = inventory.getSize()-1; i >= 0; i--) {
     		ItemStack from = inventory.getItemStack(i);
     		if (from != null) {
-    	    	for (int j = inventory.getSize()-1; j >= 0; j--) {
+    	    	for (Integer j : lockedSlots) {
     	    		ItemStack to = inventory.getItemStack(j);
-    	    		if (i != j && to != null
-    	    				&& inventory.canBeMerged(i, j)) {
+    	    		if (to != null && inventory.canBeMerged(i, j)) {
     	    			boolean result = inventory.mergeStacks(i, j);
     	    			inventory.markAsNotMoved(j);
     	    			if (result == InvTweaksInventory.STACK_EMPTIED) {
@@ -252,8 +256,8 @@ public class InvTweaks {
     	
     	}
     }
-    
-    public void onTick() {
+
+	public void onTick() {
     	
     	if (config == null || onTickBusy == true)
     		return;
@@ -278,11 +282,10 @@ public class InvTweaks {
 	    	if (storedPosition != currentItem) { // Filter selection change
 	    		storedPosition = currentItem;
 	    	}
-	    	else if (currentStackId == 0 && 
-	    			mc.thePlayer.inventory.getItemStack() == null) { // Filter item pickup from inv.
+	    	else if (mc.currentScreen == null) { // Filter open inventory or other window
 		    		
         		InvTweaksInventory inventory = new InvTweaksInventory(
-        				mc, config.getLockedSlots());  	
+        				mc, config.getLockPriorities());  	
     			ItemStack candidateStack;
     			ItemStack storedStack = new ItemStack(storedStackId, 1, storedStackDamage);
     			int selectedStackId = -1;
@@ -353,9 +356,15 @@ public class InvTweaks {
 							}
 							
 							// In POLLING_DELAY ms, things might have changed
-							if (inventory.getItemStack(i) != null &&
-									inventory.getItemStack(i).itemID == expectedItemId) {
-								inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
+							try {
+								ItemStack stack = inventory.getItemStack(i);
+								if (stack != null && stack.itemID == expectedItemId) {
+									inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
+								}
+							}
+							catch (NullPointerException e) {
+								// Nothing: Due to multithreading + 
+								// unsafe accesses, NPE may (very rarely) occur (?).
 							}
 							
 					    	onTickBusy = false;

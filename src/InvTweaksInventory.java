@@ -71,14 +71,17 @@ public class InvTweaksInventory {
 				swapOrMerge(i, j, priority);
 				return true;
 			}
-			
+
 			// Try to swap/merge
-			else if (!targetEmpty && lockLevels[j] <= priority
-					&& (rulePriority[j] < priority || 
-							(rulePriority[j] == priority && isOrderedBefore(i, j)))) {
-				swapOrMerge(i, j, priority);
-				return true;
+			else if (!targetEmpty) {
+				boolean canBeSwapped = lockLevels[j] <= priority && 
+					(rulePriority[j] < priority || (rulePriority[j] == priority && isOrderedBefore(i, j)));
+				if (canBeSwapped || canBeMerged(i, j)) {
+					swapOrMerge(i, j, priority);
+					return true;
+				}
 			}
+			
 		}
 		
 		return false;
@@ -115,7 +118,7 @@ public class InvTweaksInventory {
 	}
 
 	public boolean canBeMerged(int i, int j) {
-		return (inventory[i] != null && inventory[j] != null && 
+		return (i != j && inventory[i] != null && inventory[j] != null && 
 				areSameItem(inventory[i], inventory[j]) &&
 				inventory[j].stackSize < inventory[j].getMaxStackSize());
 	}
@@ -161,8 +164,6 @@ public class InvTweaksInventory {
 	 */
 	public boolean swapOrMerge(int i, int j, int priority) {
 		
-		ItemStack jStack = inventory[j];
-		
 		// Merge stacks
 		if (canBeMerged(i, j)) {
 			
@@ -170,17 +171,27 @@ public class InvTweaksInventory {
 			int max = inventory[j].getMaxStackSize();
 			
 			if (sum <= max) {
+				
 				remove(i);
-				if (!isMultiplayer) {
-					inventory[j].stackSize = sum;
-				}
+				if (isMultiplayer)
+					click(i);
+
 				put(inventory[j], j, priority);
+				if (isMultiplayer)
+					click(j);
+				else
+					inventory[j].stackSize = sum;
 				return true;
 			}
 			else {
 				if (!isMultiplayer) {
 					inventory[i].stackSize = sum - max;
 					inventory[j].stackSize = max;
+				}
+				else {
+					click(i);
+					click(j);
+					click(i);
 				}
 				put(inventory[j], j, priority);
 				return false;
@@ -196,10 +207,19 @@ public class InvTweaksInventory {
 			oldSlot[j] = buffer;
 			
 			// i to j
-			put(remove(i), j, priority);
+			ItemStack jStack = inventory[j];
+			ItemStack iStack = remove(i);
+			if (isMultiplayer) {
+				click(i);
+				click(j);
+			}
+			put(iStack, j, priority);
 			
 			// j to i
 			if (jStack != null) {
+				if (isMultiplayer) {
+					click(i);
+				}
 				put(jStack, i, 0);
 				return false;
 			}
@@ -215,6 +235,35 @@ public class InvTweaksInventory {
 
 	public void markAsNotMoved(int i) {
 		rulePriority[i] = 0;
+	}
+
+	/**
+	 * If an item is in hand (= attached to the cursor), puts it down.
+	 * @return false if there is no room to put the item.
+	 */
+	public boolean putSelectedItemDown() {
+		ItemStack selectedStack = player.inventory.getItemStack();
+		if (selectedStack != null) {
+			// Try to find an unlocked slot first, to avoid
+			// impacting too much the sorting
+			for (int step = 1; step <= 2; step++) {
+				for (int i = SIZE-1; i >= 0; i--) {
+					if (inventory[i] == null
+							&& (lockLevels[i] == 0 || step == 2)) {
+						if (isMultiplayer) {
+							click(i);
+						}
+						else {
+							inventory[i] = selectedStack;
+							player.inventory.setItemStack(null);
+						}
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		return true;
 	}
 
 	public int getClickCount() {
@@ -267,7 +316,7 @@ public class InvTweaksInventory {
 		// Useless if destination stack is full
 		else if (stackInHand != null && stackInSlot != null &&
 				areSameItem(stackInHand, stackInSlot) &&
-				stackInSlot.stackSize == stackInHand.getMaxStackSize()) {
+				stackInSlot.stackSize == stackInSlot.getMaxStackSize()) {
 			uselessClick = true;
 		}
 		
@@ -297,16 +346,14 @@ public class InvTweaksInventory {
 	}
 	
 	/**
-	 * Removes the stack from the given slot
+	 * SP: Removes the stack from the given slot
+	 * SMP: Registers the action without actually doing it.
 	 * @param slot
 	 * @return The removed stack
 	 */
 	private ItemStack remove(int slot) {
 		ItemStack removed = inventory[slot];
-		if (isMultiplayer) {
-			click(slot);
-		}
-		else {
+		if (!isMultiplayer) {
 			if (log.getLevel() == InvTweaks.DEBUG) {
 				try {
 					log.info("Removed: "+InvTweaksTree.getItems(
@@ -324,17 +371,14 @@ public class InvTweaksInventory {
 	}
 	
 	/**
-	 * Puts a stack in the given slot.
-	 * WARNING: Any existing stack will be overriden!
+	 * SP: Puts a stack in the given slot. WARNING: Any existing stack will be overriden!
+	 * SMP: Registers the action without actually doing it.
 	 * @param stack
 	 * @param slot
 	 * @param priority
 	 */
 	private void put(ItemStack stack, int slot, int priority) {
-		if (isMultiplayer) {
-			click(slot);
-		}
-		else {
+		if (!isMultiplayer) {
 			if (log.getLevel() == InvTweaks.DEBUG) {
 				try {
 					log.info("Put: "+InvTweaksTree.getItems(
@@ -347,7 +391,6 @@ public class InvTweaksInventory {
 			inventory[slot] = stack;
 		}
 		rulePriority[slot] = priority;
-		
 		keywordOrder[slot] = getItemOrder(stack.itemID, stack.getItemDamage());
 	}
 	
@@ -357,5 +400,4 @@ public class InvTweaksInventory {
 				? items.get(0).getOrder()
 				: Integer.MAX_VALUE;
 	}
-    
 }

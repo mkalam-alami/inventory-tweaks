@@ -3,16 +3,24 @@
 | Tree configuration                                           |
 |==============================================================|
  
-# You can edit this tree as you want, just use exactly the 
-# same syntax as what you see here.
-# * Two spaces of indentation for each category level
-# * One space between the item name and its ID...
+======== [ HELP ] ========
+
+# HOWTO
+# * Edit this tree as you want, just use exactly the 
+#   same syntax as what you see here:
+#     * Two spaces of indentation for each category level
+#     * One space between the item name and its ID
+# * You can add a same item to different categories
+
+# SYNTAX
 # * Categories syntax:
 #   * <category name>
 #   * <category name> <firstID> to <lastID>
 # * Item names:
 #   * <item name> <itemID>
 #   * <item name> <itemID>-<item "damage">
+
+======== [ TREE ] ========
 
 stuff
 

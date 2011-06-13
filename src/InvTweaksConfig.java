@@ -16,15 +16,16 @@ public class InvTweaksConfig {
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaksConfig");
 	
-	private static final String LOCKED = "locked";
-	private static final String AUTOREPLACE = "autoreplace";
+	private static final String LOCKED = "LOCKED";
+	private static final String AUTOREPLACE = "AUTOREPLACE";
 	private static final String AUTOREPLACE_NOTHING = "nothing";
-	private static final String DISABLEMIDDLECLICK = "disablemiddleclick";
-	private static final String DEBUG = "debug";
+	private static final String DISABLEMIDDLECLICK = "DISABLEMIDDLECLICK";
+	private static final String DEBUG = "DEBUG";
 	private static final boolean DEFAULT_AUTOREPLACE_BEHAVIOUR = true;
 	
 	private String file;
-	private int[] lockedSlots;
+	private int[] lockPriorities;
+	private Vector<Integer> lockedSlots;
 	private Vector<InvTweaksRule> rules;
 	private Vector<String> invalidKeywords;
 	private Vector<String> autoReplaceRules;
@@ -55,7 +56,15 @@ public class InvTweaksConfig {
 	 * @return The locked slots array with locked priorities.
 	 * Not a copy.
 	 */
-	public int[] getLockedSlots() {
+	public int[] getLockPriorities() {
+		return lockPriorities;
+	}
+	
+	/**
+	 * @return The locked slots only
+	 * TODO ordered by decreasing priority
+	 */
+	public Vector<Integer> getLockedSlots() {
 		return lockedSlots;
 	}
 	
@@ -103,9 +112,10 @@ public class InvTweaksConfig {
 		
 		int currentLine = 0;
 		while (currentLine < config.length) {
-			
-			lineText = config[currentLine++].toLowerCase();
-			String[] words = lineText.split(" ");
+
+			String[] words = config[currentLine].split(" ");
+			lineText = config[currentLine].toLowerCase();
+			currentLine++;
 
 			// Parse valid lines only
 			if (words.length == 2) {
@@ -114,44 +124,52 @@ public class InvTweaksConfig {
 				if (lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$")
 						|| lineText.matches("^[a-d][1-9]-[a-d][1-9]v? [\\w]*$")) {
 					
+					words[0] = words[0].toLowerCase();
+					
 					// Locking rule
 					if (words[1].equals(LOCKED)) {
 						int[] newLockedSlots = InvTweaksRule.
 								getRulePreferredPositions(words[0]);
 						int lockPriority = InvTweaksRule.getRuleType(words[0]).getHighestPriority();
 						for (int i : newLockedSlots) {
-							lockedSlots[i] = lockPriority;
+							lockPriorities[i] = lockPriority;
 						}
 					}
 					
 					// Standard rule
 					else {
-						if (InvTweaksTree.isKeywordValid(words[1])) {
-							newRule = new InvTweaksRule(words[0], words[1]);
+						String keyword = words[1];
+						boolean isValidKeyword = InvTweaksTree.isKeywordValid(keyword.toLowerCase());
+						
+						// If invalid keyword, guess something similar
+						if (!isValidKeyword) {
+							Vector<String> wordVariants = getKeywordVariants(keyword);
+							for (String wordVariant : wordVariants) {
+								if (InvTweaksTree.isKeywordValid(wordVariant.toLowerCase())) {
+									isValidKeyword = true;
+									keyword = wordVariant;
+									break;
+								}
+							}
+						}
+						
+						if (isValidKeyword) {
+							newRule = new InvTweaksRule(words[0], keyword);
 							rules.add(newRule);
 						}
-						else if (words[1].endsWith("s")) { // Tolerate plurals
-							
-							String keyword = words[1].substring(0, words[1].length()-1);
-							if (InvTweaksTree.isKeywordValid(keyword)) {
-								newRule = new InvTweaksRule(words[0], keyword);
-								rules.add(newRule);
-							}
-							else {
-								invalidKeywords.add(words[1]);
-							}
-						}
 						else {
-							invalidKeywords.add(words[1]);
+							invalidKeywords.add(keyword);
 						}
 					}
 				}
 	
 				// Autoreplace rule
-				else if (words[0].equals(AUTOREPLACE) &&
-						(InvTweaksTree.isKeywordValid(words[1]) ||
-							words[1].equals(AUTOREPLACE_NOTHING))) {
-					autoReplaceRules.add(words[1]);
+				else if (words[0].equals(AUTOREPLACE)) {
+					words[1] = words[1].toLowerCase();
+					if (InvTweaksTree.isKeywordValid(words[1]) || 
+							words[1].equals(AUTOREPLACE_NOTHING)) {
+						autoReplaceRules.add(words[1]);
+					}
 				}
 			
 			}
@@ -183,20 +201,66 @@ public class InvTweaksConfig {
 		// Sort rules by priority, highest first
 		Collections.sort(rules, Collections.reverseOrder());
 		
+		// Compute ordered locked slots
+		for (int i = 0; i < lockPriorities.length; i++) {
+			if (lockPriorities[i] > 0) {
+				lockedSlots.add(i);
+			}
+		}
+		
 		}
 		
 	}
 
 	private void init() {
-		this.lockedSlots = new int[InvTweaksInventory.SIZE];
-		for (int i = 0; i < this.lockedSlots.length; i++) {
-			this.lockedSlots[i] = 0;
+		lockPriorities = new int[InvTweaksInventory.SIZE];
+		for (int i = 0; i < lockPriorities.length; i++) {
+			lockPriorities[i] = 0;
 		}
+		lockedSlots = new Vector<Integer>();
 		rules = new Vector<InvTweaksRule>();
 		invalidKeywords = new Vector<String>();
 		autoReplaceRules = new Vector<String>();
 		middleClickEnabled = true;
 		debugEnabled = false;
 	}
-
+	
+	/**
+	 * Compute keyword variants to also match bad keywords.
+	 * torches => torch
+	 * diamondSword => sworddiamond
+	 * woodenPlank => woodPlank plankwooden plankwood
+	 */
+	private Vector<String> getKeywordVariants(String keyword) {
+		Vector<String> variants = new Vector<String>();
+		
+		if (keyword.endsWith("es")) // ex: torches => torch
+			variants.add(keyword.substring(0, keyword.length()-2));
+		else if (keyword.endsWith("s")) // ex: wools => wool
+			variants.add(keyword.substring(0, keyword.length()-1));
+		
+		if (keyword.contains("en")) // ex: wooden => wood
+			variants.add(keyword.replaceAll("en", ""));
+		else {
+			if (keyword.contains("wood"))
+				variants.add(keyword.replaceAll("wood", "wooden"));
+			if (keyword.contains("gold"))
+				variants.add(keyword.replaceAll("gold", "golden"));
+		}
+		
+		// Swap words
+		if (keyword.matches("\\w*[A-Z]\\w*")) {
+			byte[] keywordBytes = keyword.getBytes();
+			for (int i = 0; i < keywordBytes.length; i++) {
+				if (keywordBytes[i] >= 'A' && keywordBytes[i] <= 'Z') {
+					String swapped = (keyword.substring(i) + 
+							keyword.substring(0, i)).toLowerCase();
+					variants.add(swapped);
+					variants.addAll(getKeywordVariants(swapped));
+				}
+			}
+		}
+		
+		return variants;
+	}
 }

@@ -34,4 +34,4 @@
     * Mods/Inventory Tweaks
     
 TODO: Python script for steps 2/3/4
-TODO: Online form for step 6
+TODO: Online form for step 7

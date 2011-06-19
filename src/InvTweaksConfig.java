@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 public class InvTweaksConfig {
 
 	@SuppressWarnings("unused")
-	private static final Logger log = Logger.getLogger("InvTweaksConfig");
+	private static final Logger log = Logger.getLogger("InvTweaks");
 	
 	private static final String LOCKED = "LOCKED";
 	private static final String AUTOREPLACE = "AUTOREPLACE";

@@ -17,7 +17,7 @@ public class InvTweaksTree {
 
     public static final int MAX_CATEGORY_RANGE = 1000;
 	
-    private static final Logger log = Logger.getLogger("InvTweaksTree");
+    private static final Logger log = Logger.getLogger("InvTweaks");
     
     /** All categories, stored by name */
 	private static final Map<String, InvTweaksCategory> categories =

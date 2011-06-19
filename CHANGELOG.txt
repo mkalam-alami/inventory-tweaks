@@ -3,6 +3,12 @@
 | Changelog                                                    |
 |==============================================================|
 
+[06.19.2011] 1.06 (B1.6.6)
+ * Fixed a few things broken by the 1.05 update
+ * Fixed autoreplace not working with signs
+ * Fixed bugs where items end in wrong slots or swap on each sorting
+ * Minor item tree update
+
 [06.13.2011] 1.05 (B1.6.6)
  * Enhanced keyword tree possibilities
      Categories defined by ID ranges

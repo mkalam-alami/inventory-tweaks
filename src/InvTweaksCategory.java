@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class InvTweaksCategory {
 
 	@SuppressWarnings("unused")
-	private static final Logger log = Logger.getLogger("InvTweaksCategory");
+	private static final Logger log = Logger.getLogger("InvTweaks");
 
 	private final Map<Integer, List<InvTweaksItem>> items = new HashMap<Integer, List<InvTweaksItem>>();
 	private final Vector<String> matchingItems = new Vector<String>();

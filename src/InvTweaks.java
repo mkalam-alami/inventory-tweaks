@@ -257,6 +257,9 @@ public class InvTweaks {
     	}
     }
 
+    /**
+     * Autoreplace + middle click sorting
+     */
 	public void onTick() {
     	
     	if (config == null || onTickBusy == true)

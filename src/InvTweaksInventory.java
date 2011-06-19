@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 
 public class InvTweaksInventory {
 
-	private static final Logger log = Logger.getLogger("InvTweaksInventory");
+	private static final Logger log = Logger.getLogger("InvTweaks");
 	
 	public static final int SIZE = 36;
 	public static final boolean STACK_NOT_EMPTIED = true;
@@ -33,7 +33,7 @@ public class InvTweaksInventory {
 		this.lockLevels = lockLevels;
 		
 		for (int i = 0; i < SIZE; i++) {
-			this.rulePriority[i] = 0;
+			this.rulePriority[i] = -1;
 			if (this.inventory[i] != null) {
 				this.keywordOrder[i] = getItemOrder(
 						this.inventory[i].itemID,
@@ -72,8 +72,17 @@ public class InvTweaksInventory {
 
 			// Try to swap/merge
 			else if (!targetEmpty) {
-				boolean canBeSwapped = lockLevels[j] <= priority && 
-					(rulePriority[j] < priority || (rulePriority[j] == priority && isOrderedBefore(i, j)));
+				boolean canBeSwapped = false;
+				if (lockLevels[j] <= priority) {
+					if (rulePriority[j] < priority) {
+						canBeSwapped = true;
+					}
+					else if (rulePriority[j] == priority) {
+						if (isOrderedBefore(i, j)) {
+							canBeSwapped = true;
+						}
+					}
+				}
 				if (canBeSwapped || canBeMerged(i, j)) {
 					swapOrMerge(i, j, priority);
 					return true;
@@ -101,7 +110,7 @@ public class InvTweaksInventory {
 	}
 
 	public boolean hasToBeMoved(int slot) {
-		return inventory[slot] != null && rulePriority[slot] == 0;
+		return inventory[slot] != null && rulePriority[slot] == -1;
 	}
 
 	/**
@@ -125,8 +134,7 @@ public class InvTweaksInventory {
 		
 		if (inventory[j] == null)
 			return true;
-		else if (inventory[i] == null
-				|| keywordOrder[i] == 0)
+		else if (inventory[i] == null || keywordOrder[i] == -1)
 			return false;
 		else {
 			if (keywordOrder[i] == keywordOrder[j]) {
@@ -212,7 +220,7 @@ public class InvTweaksInventory {
 				int dropSlot = i;
 				if (lockLevels[j] > lockLevels[i]) {
 					for (int k = 0; k < SIZE; k++) {
-						if (inventory[k] == null && lockLevels[k] == lockLevels[j]) {
+						if (inventory[k] == null && lockLevels[k] == 0) {
 							dropSlot = k;
 							break;
 						}
@@ -221,7 +229,7 @@ public class InvTweaksInventory {
 				if (isMultiplayer) {
 					click(dropSlot);
 				}
-				put(jStack, dropSlot, 0);
+				put(jStack, dropSlot, -1);
 				return false;
 			}
 			else {
@@ -235,7 +243,7 @@ public class InvTweaksInventory {
 	}
 
 	public void markAsNotMoved(int i) {
-		rulePriority[i] = 0;
+		rulePriority[i] = -1;
 	}
 
 	/**
@@ -354,20 +362,20 @@ public class InvTweaksInventory {
 	 */
 	private ItemStack remove(int slot) {
 		ItemStack removed = inventory[slot];
-		if (!isMultiplayer) {
-			if (log.getLevel() == InvTweaks.DEBUG) {
-				try {
-					log.info("Removed: "+InvTweaksTree.getItems(
-							removed.itemID, removed.getItemDamage()).get(0));
-				}
-				catch (NullPointerException e) {
-					log.info("Removed: null");
-				}
+		if (log.getLevel() == InvTweaks.DEBUG) {
+			try {
+				log.info("Removed: "+InvTweaksTree.getItems(
+						removed.itemID, removed.getItemDamage()).get(0)+" from "+slot);
 			}
+			catch (NullPointerException e) {
+				log.info("Removed: null from "+slot);
+			}
+		}
+		if (!isMultiplayer) {
 			inventory[slot] = null;
 		}
-		rulePriority[slot] = 0;
-		keywordOrder[slot] = 0;
+		rulePriority[slot] = -1;
+		keywordOrder[slot] = -1;
 		return removed;
 	}
 	
@@ -379,16 +387,16 @@ public class InvTweaksInventory {
 	 * @param priority
 	 */
 	private void put(ItemStack stack, int slot, int priority) {
-		if (!isMultiplayer) {
-			if (log.getLevel() == InvTweaks.DEBUG) {
-				try {
-					log.info("Put: "+InvTweaksTree.getItems(
-							stack.itemID, stack.getItemDamage()).get(0)+" in "+slot);
-				}
-				catch (NullPointerException e) {
-					log.info("Removed: null");
-				}
+		if (log.getLevel() == InvTweaks.DEBUG) {
+			try {
+				log.info("Put: "+InvTweaksTree.getItems(
+						stack.itemID, stack.getItemDamage()).get(0)+" in "+slot);
 			}
+			catch (NullPointerException e) {
+				log.info("Removed: null");
+			}
+		}
+		if (!isMultiplayer) {
 			inventory[slot] = stack;
 		}
 		rulePriority[slot] = priority;

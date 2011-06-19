@@ -32,7 +32,7 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	}
 	
 	@SuppressWarnings("unused")
-	private static final Logger log = Logger.getLogger("InvTweaksRule");
+	private static final Logger log = Logger.getLogger("InvTweaks");
 
 	private String constraint;
 	private int[] preferredPositions;

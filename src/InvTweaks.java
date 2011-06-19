@@ -282,7 +282,9 @@ public class InvTweaks {
 	    	if (storedPosition != currentItem) { // Filter selection change
 	    		storedPosition = currentItem;
 	    	}
-	    	else if (mc.currentScreen == null) { // Filter open inventory or other window
+	    	else if (currentStack == null &&
+	    			mc.currentScreen == null || 
+	    			mc.currentScreen instanceof GuiEditSign) { // Filter open inventory or other window
 		    		
         		InvTweaksInventory inventory = new InvTweaksInventory(
         				mc, config.getLockPriorities());  	
@@ -300,9 +302,12 @@ public class InvTweaks {
 	    					config.canBeAutoReplaced(
 	    							candidateStack.itemID,
 	    							candidateStack.getItemDamage())) {
-	    				// Choose stack of lowest size
+	    				// Choose stack of lowest size and (in case of tools) highest damage
 	    				if (replacementStack == null ||
-	    						replacementStack.stackSize > candidateStack.stackSize) {
+	    						replacementStack.stackSize > candidateStack.stackSize ||
+	    						(replacementStack.stackSize == candidateStack.stackSize &&
+	    								replacementStack.getMaxStackSize() == 1 &&
+	    								replacementStack.getItemDamage() < candidateStack.getItemDamage())) {
 	    					replacementStack = candidateStack;
 	    					selectedStackId = i;
 	    				}
@@ -334,7 +339,6 @@ public class InvTweaks {
 							return this;
 						}
 						
-						@Override
 						public void run() {
 							
 							if (mc.isMultiplayerWorld()) {

@@ -16,7 +16,6 @@ public class InvTweaksInventory {
 	private ItemStack[] inventory;
 	private int[] rulePriority = new int[SIZE];
 	private int[] keywordOrder = new int[SIZE];
-	private int[] oldSlot = new int[SIZE];
 	private int[] lockLevels;
 	private int clickCount = 0;
 	
@@ -35,7 +34,6 @@ public class InvTweaksInventory {
 		
 		for (int i = 0; i < SIZE; i++) {
 			this.rulePriority[i] = 0;
-			this.oldSlot[i] = i;
 			if (this.inventory[i] != null) {
 				this.keywordOrder[i] = getItemOrder(
 						this.inventory[i].itemID,
@@ -128,8 +126,7 @@ public class InvTweaksInventory {
 		if (inventory[j] == null)
 			return true;
 		else if (inventory[i] == null
-				|| keywordOrder[i] == 0
-				|| areSameItem(inventory[i], inventory[j]))
+				|| keywordOrder[i] == 0)
 			return false;
 		else {
 			if (keywordOrder[i] == keywordOrder[j]) {
@@ -137,8 +134,8 @@ public class InvTweaksInventory {
 				// in the case of categories defined by a range of IDs
 				if (inventory[i].itemID == inventory[j].itemID) {
 					if (inventory[i].stackSize == inventory[j].stackSize) {
-						return inventory[i].getItemDamage() > inventory[j].getItemDamage()
-								&& inventory[j].getMaxStackSize() > 1; // exclude tools
+						return inventory[i].getItemDamage() < inventory[j].getItemDamage()
+								&& (!isMultiplayer || inventory[j].getMaxStackSize() > 1); // exclude tools
 					}
 					else {
 						return inventory[i].stackSize > inventory[j].stackSize;
@@ -184,14 +181,14 @@ public class InvTweaksInventory {
 				return true;
 			}
 			else {
-				if (!isMultiplayer) {
-					inventory[i].stackSize = sum - max;
-					inventory[j].stackSize = max;
-				}
-				else {
+				if (isMultiplayer) {
 					click(i);
 					click(j);
 					click(i);
+				}
+				else {
+					inventory[i].stackSize = sum - max;
+					inventory[j].stackSize = max;
 				}
 				put(inventory[j], j, priority);
 				return false;
@@ -200,11 +197,6 @@ public class InvTweaksInventory {
 		
 		// Swap stacks
 		else {
-			
-			// Swap original slots
-			int buffer = oldSlot[i];
-			oldSlot[i] = oldSlot[j];
-			oldSlot[j] = buffer;
 			
 			// i to j
 			ItemStack jStack = inventory[j];
@@ -217,10 +209,19 @@ public class InvTweaksInventory {
 			
 			// j to i
 			if (jStack != null) {
-				if (isMultiplayer) {
-					click(i);
+				int dropSlot = i;
+				if (lockLevels[j] > lockLevels[i]) {
+					for (int k = 0; k < SIZE; k++) {
+						if (inventory[k] == null && lockLevels[k] == lockLevels[j]) {
+							dropSlot = k;
+							break;
+						}
+					}
 				}
-				put(jStack, i, 0);
+				if (isMultiplayer) {
+					click(dropSlot);
+				}
+				put(jStack, dropSlot, 0);
 				return false;
 			}
 			else {
@@ -279,7 +280,7 @@ public class InvTweaksInventory {
 	}
 	
 	public int getLockLevel(int i) {
-		return lockLevels[oldSlot[i]];
+		return lockLevels[i];
 	}
 
 	/**

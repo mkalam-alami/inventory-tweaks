@@ -93,7 +93,6 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	 * Compares rules priority : positive value
 	 * means 'this' is of greater priority than o
 	 */
-	@Override
 	public int compareTo(InvTweaksRule o) {
 		return getPriority() - o.getPriority();
 	}

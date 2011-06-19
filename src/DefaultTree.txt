@@ -126,6 +126,7 @@ stuff
         lightBlueWool 35-3
         yellowWool 35-4
         lightGreenWool 35-5
+        limeWool 35-5
         pinkWool 35-6
         grayWool 35-7
         lightGrayWool 35-8

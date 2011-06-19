@@ -154,11 +154,11 @@ public class InvTweaksConfig {
 						}
 						
 						if (isValidKeyword) {
-							newRule = new InvTweaksRule(words[0], keyword);
+							newRule = new InvTweaksRule(words[0], keyword.toLowerCase());
 							rules.add(newRule);
 						}
 						else {
-							invalidKeywords.add(keyword);
+							invalidKeywords.add(keyword.toLowerCase());
 						}
 					}
 				}

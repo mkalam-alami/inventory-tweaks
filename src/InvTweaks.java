@@ -286,8 +286,8 @@ public class InvTweaks {
 	    		storedPosition = currentItem;
 	    	}
 	    	else if (currentStack == null &&
-	    			mc.currentScreen == null || 
-	    			mc.currentScreen instanceof GuiEditSign) { // Filter open inventory or other window
+	    			(mc.currentScreen == null || 
+	    			mc.currentScreen instanceof GuiEditSign)) { // Filter open inventory or other window
 		    		
         		InvTweaksInventory inventory = new InvTweaksInventory(
         				mc, config.getLockPriorities());  	

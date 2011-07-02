@@ -140,8 +140,10 @@ public class InvTweaksInventory {
 				// in the case of categories defined by a range of IDs
 				if (inventory[i].c == inventory[j].c) {
 					if (inventory[i].a == inventory[j].a) {
-						return inventory[i].i() < inventory[j].i()
-								&& (!isMultiplayer || inventory[j].c() > 1); // exclude tools
+						// Highest damage first for tools, else lowest damage.
+						// No tool ordering for same ID in multiplayer (cannot swap directly)
+						return (inventory[i].i() > inventory[j].i() && inventory[j].c() == 1 && !isMultiplayer)
+								|| (inventory[i].i() < inventory[j].i() && inventory[j].c() > 1);
 					}
 					else {
 						return inventory[i].a > inventory[j].a;

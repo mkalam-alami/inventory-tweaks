@@ -3,6 +3,11 @@
 | Changelog                                                    |
 |==============================================================|
 
+[07.02.2011] 1.07 (B1.7.2)
+ * Holding the sort key is no more needed to hot-reload
+ * Fixed eating mushroom soups not triggering autoreplace
+ * Fixed least damaged tools being selected first again
+
 [07.02.2011] 1.06 (B1.7.2)
  * Updated to 1.7.2
 

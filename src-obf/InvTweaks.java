@@ -37,8 +37,7 @@ public class InvTweaks {
 
 	private static InvTweaks instance;
     private InvTweaksConfig config = null;
-    private long lastKeyPress = 0;
-    private int keyPressDuration = 0;
+    private long configLastModified = 0;
     private boolean configErrorsShown = false;
     private boolean onTickBusy = false;
 	private int storedStackId = 0, storedStackDamage = -1, storedPosition = -1;
@@ -78,6 +77,10 @@ public class InvTweaks {
 	 */
     public final long sortInventory()
     {
+    	// Hot reload trigger
+    	if (getConfigLastModified() != configLastModified)
+    		tryLoading();
+    	
     	// Check config loading success & current GUI
     	if (config == null ||
     			!(mc.r == null ||
@@ -86,24 +89,6 @@ public class InvTweaks {
     	}
     	
     	synchronized (this) {
-    		
-    	// Hot reload trigger
-    	long currentTime = System.currentTimeMillis();
-    	if (currentTime - lastKeyPress < 100) {
-    		keyPressDuration += currentTime - lastKeyPress;
-        	lastKeyPress = currentTime;
-    		if (keyPressDuration > HOT_RELOAD_DELAY && keyPressDuration < 2*HOT_RELOAD_DELAY) {
-    			tryLoading(); // Hot-reload
-    			keyPressDuration = 2*HOT_RELOAD_DELAY; // Prevent from load repetition
-    		}
-    		else {
-    			return -1;
-    		}
-    	}
-    	else {
-        	lastKeyPress = currentTime;
-    		keyPressDuration = 0;
-    	}
     	
     	// Config keywords error message
     	if (!configErrorsShown) {
@@ -284,7 +269,9 @@ public class InvTweaks {
 	    	if (storedPosition != currentItem) { // Filter selection change
 	    		storedPosition = currentItem;
 	    	}
-	    	else if (currentStack == null &&
+	    	else if ((currentStack == null ||
+	    			currentStack.c == 281 && storedStackId == 282) // Handle eaten mushroom soup
+	    			&&
 	    			(mc.r == null || 
 	    			mc.r instanceof yc)) { // Filter open inventory or other window
 		    		
@@ -482,7 +469,16 @@ public class InvTweaks {
     	mc.h.c.a = invBackup;
     	
     }
-    	
+
+	
+    /**
+     * Checks time of last edit for both configuration files.
+     * @return
+     */
+    private long getConfigLastModified() {
+    	return new File(CONFIG_FILE).lastModified() + 
+    			new File(CONFIG_TREE_FILE).lastModified();
+    }
     
     /**
      * Tries to load mod configuration from file, with error handling.
@@ -526,6 +522,7 @@ public class InvTweaks {
 		    return false;
 		}
 		else {
+			configLastModified = getConfigLastModified();
 			return true;
 		}
     }

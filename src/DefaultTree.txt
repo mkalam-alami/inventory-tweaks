@@ -48,13 +48,13 @@ stuff
         ironShovel 256
         diamondShovel 277
         stoneShovel 273
-        woodShovel 269
         goldShovel 284
+        woodShovel 269
       axe
         ironAxe 258
         diamondAxe 279
         stoneAxe 275
-        goldAxe 296
+        goldAxe 286
         woodAxe 271
       hoe
         ironHoe 291
@@ -62,7 +62,8 @@ stuff
         stoneHoe 292
         goldHoe 294
         woodHoe 290
-        
+    
+    shears 359
     fishingRod 346
 
     armor
@@ -269,9 +270,14 @@ stuff
     saddle 329
 
   mechanism
-    rails 66
-    railsPowered 27
-    railsDetector 28
+    rails
+      simpleRails 66
+      poweredRails 27
+      detectorRails 28
+    pistons
+      piston 33
+      stickyPiston 29
+      pistonHead 34
     lever 69
     pressurePlates
       pressurePlateWood 70
@@ -328,6 +334,7 @@ stuff
       milk 335
       sugar 353
       cakeBlock 92
+	  
   bowl 281
       
   plant
@@ -354,7 +361,10 @@ stuff
       usualSapling 6-0
       spruceSapling 6-1
       birchSapling 6-2
+    leaves 18
+      usualLeaves 18-0
+      spruceLeaves 18-1
+      birchLeaves 18-2
     tallGrass 31
     deadShrub 32
-    leaves 18
     seedBlock 59

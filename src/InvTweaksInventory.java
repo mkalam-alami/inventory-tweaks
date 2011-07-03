@@ -1,5 +1,3 @@
-package net.minecraft.src;
-
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -13,7 +11,7 @@ public class InvTweaksInventory {
 	public static final boolean STACK_NOT_EMPTIED = true;
 	public static final boolean STACK_EMPTIED = false;
 
-	private ItemStack[] inventory;
+	private iz[] inventory;
 	private int[] rulePriority = new int[SIZE];
 	private int[] keywordOrder = new int[SIZE];
 	private int[] lockLevels;
@@ -21,23 +19,23 @@ public class InvTweaksInventory {
 	
 	// Multiplayer
 	private boolean isMultiplayer;
-	private PlayerController playerController;
-	private EntityPlayerSP player;
+	private ob playerController;
+	private gs player;
 	
 	public InvTweaksInventory(Minecraft minecraft, int[] lockLevels) {
 
-		this.inventory = minecraft.thePlayer.inventory.mainInventory;
-		this.playerController = minecraft.playerController;
-		this.player = minecraft.thePlayer;
-		this.isMultiplayer = minecraft.isMultiplayerWorld();
+		this.inventory = minecraft.h.c.a;
+		this.playerController = minecraft.c;
+		this.player = minecraft.h;
+		this.isMultiplayer = minecraft.l();
 		this.lockLevels = lockLevels;
 		
 		for (int i = 0; i < SIZE; i++) {
 			this.rulePriority[i] = -1;
 			if (this.inventory[i] != null) {
 				this.keywordOrder[i] = getItemOrder(
-						this.inventory[i].itemID,
-						this.inventory[i].getItemDamage());
+						this.inventory[i].c,
+						this.inventory[i].i());
 			}
 		}
 		
@@ -116,18 +114,18 @@ public class InvTweaksInventory {
 	/**
 	 * Note: asserts stacks are not null
 	 */
-	public boolean areSameItem(ItemStack stack1, ItemStack stack2) {
+	public boolean areSameItem(iz stack1, iz stack2) {
 		// Note: may be invalid if a stackable item can take damage
 		// (currently never the case in vanilla, an never should be)
-		return stack1.itemID == stack2.itemID
-				&& (stack1.getItemDamage() == stack2.getItemDamage() // same item variant
-						|| stack1.getMaxStackSize() == 1); // except if unstackable
+		return stack1.c == stack2.c
+				&& (stack1.i() == stack2.i() // same item variant
+						|| stack1.c() == 1); // except if unstackable
 	}
 
 	public boolean canBeMerged(int i, int j) {
 		return (i != j && inventory[i] != null && inventory[j] != null && 
 				areSameItem(inventory[i], inventory[j]) &&
-				inventory[j].stackSize < inventory[j].getMaxStackSize());
+				inventory[j].a < inventory[j].c());
 	}
 
 	public boolean isOrderedBefore(int i, int j) {
@@ -140,17 +138,19 @@ public class InvTweaksInventory {
 			if (keywordOrder[i] == keywordOrder[j]) {
 				// Items of same keyword orders can have different IDs,
 				// in the case of categories defined by a range of IDs
-				if (inventory[i].itemID == inventory[j].itemID) {
-					if (inventory[i].stackSize == inventory[j].stackSize) {
-						return inventory[i].getItemDamage() < inventory[j].getItemDamage()
-								&& (!isMultiplayer || inventory[j].getMaxStackSize() > 1); // exclude tools
+				if (inventory[i].c == inventory[j].c) {
+					if (inventory[i].a == inventory[j].a) {
+						// Highest damage first for tools, else lowest damage.
+						// No tool ordering for same ID in multiplayer (cannot swap directly)
+						return (inventory[i].i() > inventory[j].i() && inventory[j].c() == 1 && !isMultiplayer)
+								|| (inventory[i].i() < inventory[j].i() && inventory[j].c() > 1);
 					}
 					else {
-						return inventory[i].stackSize > inventory[j].stackSize;
+						return inventory[i].a > inventory[j].a;
 					}
 				}
 				else {
-					return inventory[i].itemID > inventory[j].itemID;
+					return inventory[i].c > inventory[j].c;
 				}
 			}
 			else {
@@ -172,8 +172,8 @@ public class InvTweaksInventory {
 		// Merge stacks
 		if (canBeMerged(i, j)) {
 			
-			int sum = inventory[i].stackSize + inventory[j].stackSize;
-			int max = inventory[j].getMaxStackSize();
+			int sum = inventory[i].a + inventory[j].a;
+			int max = inventory[j].c();
 			
 			if (sum <= max) {
 				
@@ -185,7 +185,7 @@ public class InvTweaksInventory {
 				if (isMultiplayer)
 					click(j);
 				else
-					inventory[j].stackSize = sum;
+					inventory[j].a = sum;
 				return true;
 			}
 			else {
@@ -195,8 +195,8 @@ public class InvTweaksInventory {
 					click(i);
 				}
 				else {
-					inventory[i].stackSize = sum - max;
-					inventory[j].stackSize = max;
+					inventory[i].a = sum - max;
+					inventory[j].a = max;
 				}
 				put(inventory[j], j, priority);
 				return false;
@@ -207,8 +207,8 @@ public class InvTweaksInventory {
 		else {
 			
 			// i to j
-			ItemStack jStack = inventory[j];
-			ItemStack iStack = remove(i);
+			iz jStack = inventory[j];
+			iz iStack = remove(i);
 			if (isMultiplayer) {
 				click(i);
 				click(j);
@@ -251,7 +251,7 @@ public class InvTweaksInventory {
 	 * @return false if there is no room to put the item.
 	 */
 	public boolean putSelectedItemDown() {
-		ItemStack selectedStack = player.inventory.getItemStack();
+		iz selectedStack = player.c.i();
 		if (selectedStack != null) {
 			// Try to find an unlocked slot first, to avoid
 			// impacting too much the sorting
@@ -264,7 +264,7 @@ public class InvTweaksInventory {
 						}
 						else {
 							inventory[i] = selectedStack;
-							player.inventory.setItemStack(null);
+							player.c.b((iz) null);
 						}
 						return true;
 					}
@@ -283,7 +283,7 @@ public class InvTweaksInventory {
 			return -1;
 	}
 
-	public ItemStack getItemStack(int i) {
+	public iz getItemStack(int i) {
 		return inventory[i];
 	}
 	
@@ -316,8 +316,8 @@ public class InvTweaksInventory {
 		// We'll do this by listening to any change in the slot, but this implies we
 		// check first if the click will indeed produce a change.
 		boolean uselessClick = false;
-		ItemStack stackInSlot = (inventory[slot] != null) ? inventory[slot].copy() : null;
-		ItemStack stackInHand = player.inventory.getItemStack();
+		iz stackInSlot = (inventory[slot] != null) ? inventory[slot].k() : null;
+		iz stackInHand = player.c.i();
 		
 		// Useless if empty stacks
 		if (stackInHand == null && stackInSlot == null)
@@ -325,15 +325,15 @@ public class InvTweaksInventory {
 		// Useless if destination stack is full
 		else if (stackInHand != null && stackInSlot != null &&
 				areSameItem(stackInHand, stackInSlot) &&
-				stackInSlot.stackSize == stackInSlot.getMaxStackSize()) {
+				stackInSlot.a == stackInSlot.c()) {
 			uselessClick = true;
 		}
 		
 		// Click!
-		playerController.func_27174_a(
-				player.craftingInventory.windowId, // Select active inventory
+		playerController.a(
+				player.e.f, // Select active inventory
 				((slot > 8) ? slot - 9 : slot + 27) + 
-					player.craftingInventory.slots.size() - 36, // Targeted slot
+					player.e.e.size() - 36, // Targeted slot
 						// (converted for the network protocol indexes,
 						// see http://mc.kev009.com/Inventory#Windows)
 				0, // Left-click
@@ -344,7 +344,7 @@ public class InvTweaksInventory {
 		// Wait for inventory update
 		if (!uselessClick) {
 			int pollingTime = 0;
-			while (ItemStack.areItemStacksEqual(inventory[slot], stackInSlot)
+			while (iz.a(inventory[slot], stackInSlot)
 					&& pollingTime < InvTweaks.POLLING_TIMEOUT) {
 				InvTweaks.trySleep(InvTweaks.POLLING_DELAY);
 				pollingTime += InvTweaks.POLLING_DELAY;
@@ -360,12 +360,12 @@ public class InvTweaksInventory {
 	 * @param slot
 	 * @return The removed stack
 	 */
-	private ItemStack remove(int slot) {
-		ItemStack removed = inventory[slot];
+	private iz remove(int slot) {
+		iz removed = inventory[slot];
 		if (log.getLevel() == InvTweaks.DEBUG) {
 			try {
 				log.info("Removed: "+InvTweaksTree.getItems(
-						removed.itemID, removed.getItemDamage()).get(0)+" from "+slot);
+						removed.c, removed.i()).get(0)+" from "+slot);
 			}
 			catch (NullPointerException e) {
 				log.info("Removed: null from "+slot);
@@ -386,11 +386,11 @@ public class InvTweaksInventory {
 	 * @param slot
 	 * @param priority
 	 */
-	private void put(ItemStack stack, int slot, int priority) {
+	private void put(iz stack, int slot, int priority) {
 		if (log.getLevel() == InvTweaks.DEBUG) {
 			try {
 				log.info("Put: "+InvTweaksTree.getItems(
-						stack.itemID, stack.getItemDamage()).get(0)+" in "+slot);
+						stack.c, stack.i()).get(0)+" in "+slot);
 			}
 			catch (NullPointerException e) {
 				log.info("Removed: null");
@@ -400,7 +400,7 @@ public class InvTweaksInventory {
 			inventory[slot] = stack;
 		}
 		rulePriority[slot] = priority;
-		keywordOrder[slot] = getItemOrder(stack.itemID, stack.getItemDamage());
+		keywordOrder[slot] = getItemOrder(stack.c, stack.i());
 	}
 	
 	private int getItemOrder(int itemID, int itemDamage) {

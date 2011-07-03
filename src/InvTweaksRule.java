@@ -1,5 +1,3 @@
-package net.minecraft.src;
-
 import java.awt.Point;
 import java.util.logging.Logger;
 
@@ -7,8 +5,8 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	
 	public enum RuleType {
 
-		RECTANGLE(2),
-		ROW(1),
+		RECTANGLE(1),
+		ROW(2),
 		COLUMN(3),
 		TILE(4);
 

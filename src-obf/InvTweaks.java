@@ -20,8 +20,10 @@ import org.lwjgl.input.Mouse;
 public class InvTweaks {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final InvTweaksObf o = 
+    	new InvTweaksObf(ModLoader.getMinecraftInstance());
     
-    public static final String MINECRAFT_DIR = Minecraft.b().getPath();
+    public static final String MINECRAFT_DIR = o.getMinecraftDir().getPath();
     public static final String CONFIG_FILE = MINECRAFT_DIR+"/InvTweaksConfig.txt";
     public static final String CONFIG_TREE_FILE = MINECRAFT_DIR+"/InvTweaksTree.txt";
     public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.txt";
@@ -71,11 +73,16 @@ public class InvTweaks {
 		return instance;
 	}
 
-	/**
+    public final void onSortingKeyPressed()
+    {
+    	sortContainer(0);
+    }
+    
+    /**
 	 * Sort inventory
 	 * @return The number of clicks that were needed
-	 */
-    public final long sortInventory()
+     */
+    public final long sortContainer(int windowId) // TODO: Use window ID
     {
     	// Hot reload trigger
     	if (getConfigLastModified() != configLastModified)
@@ -83,8 +90,8 @@ public class InvTweaks {
     	
     	// Check config loading success & current GUI
     	if (config == null ||
-    			!(mc.r == null ||
-    			mc.r instanceof id)) {
+    			!(o.getCurrentScreen() == null ||
+    			o.getCurrentScreen() instanceof id)) {
     		return -1;
     	}
     	
@@ -250,7 +257,7 @@ public class InvTweaks {
     		return;
     	
     	if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled())
-    		sortInventory();
+    		onSortingKeyPressed();
     	
     	synchronized (this) {
     		
@@ -438,7 +445,7 @@ public class InvTweaks {
 	    		// Benchmark
 	    		
 	    		delay = System.nanoTime();
-	    		clickCount = sortInventory();
+	    		clickCount = sortContainer(0); // TODO
 	    		delay = System.nanoTime() - delay;
 	    		
 	    		totalDelay += delay;

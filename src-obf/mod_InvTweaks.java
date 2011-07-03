@@ -19,48 +19,15 @@ public class mod_InvTweaks extends BaseMod {
     
     public mod_InvTweaks() {
     	
+    	// Register key
     	Minecraft mc = ModLoader.getMinecraftInstance();
     	qb sortKey = new qb("Sort inventory", Keyboard.KEY_R);
-
-    	/*//// A ModLoader 1.6.4 bug forces to register manually
-    	//// the key to the options menu. This should work even after
-    	//// ModLoader is fixed.
-
-    	// Add sort key to the settings if necessary
-    	KeyBinding[] oldKeys = mc.gameSettings.keyBindings;
-    	KeyBinding[] newKeys = new KeyBinding[oldKeys.length+1];
-    	boolean keyRegistered = false;
-    	for (int i = 0; i < oldKeys.length; i++) {
-    		if (oldKeys[i].keyDescription.equals(sortKey.keyDescription)) {
-    			keyRegistered = true; 
-    			break;
-    		}
-    		newKeys[i] = oldKeys[i];
-    	}
-    	if (!keyRegistered) {
-	    	newKeys[newKeys.length-1] = sortKey;
-	    	mc.gameSettings.keyBindings = newKeys;
-    	}
-
-    	// Reload options (will now load the sorting key config)
-    	mc.gameSettings.loadOptions();
-
-    	// Register KeyboardEvent, either with default or saved key
-    	for (KeyBinding key : mc.gameSettings.keyBindings) {
-    		if (key.keyDescription.equals(sortKey.keyDescription)) {
-    			sortKey = key;
-    		}
-    	}*/
     	ModLoader.RegisterKey(this, sortKey, true);
     	
-  
-    	//// Register OnTickInGame event
-    	
+    	// Register OnTickInGame event
     	ModLoader.SetInGameHook(this, true, true);
 
-    	
-    	//// Instantiate mod core
-    	
+    	// Instantiate mod core
     	instance = new InvTweaks(mc);
     }
     
@@ -74,7 +41,7 @@ public class mod_InvTweaks extends BaseMod {
 	 */
     public final void KeyboardEvent(qb keybinding)
     {
-    	instance.sortInventory();
+    	instance.onSortingKeyPressed();
     }
     
     public boolean OnTickInGame(Minecraft minecraft)

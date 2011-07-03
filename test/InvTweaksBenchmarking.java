@@ -28,7 +28,7 @@ public class InvTweaksBenchmarking extends InvTweaksObf {
     	final int maxOccupiedSlots = InvTweaksInventory.SIZE;
     	final int maxDuplicateStacks = 5;
     	
-    	iz[] invBackup = mc.h.c.a.clone();
+    	iz[] invBackup = getMainInventory().clone();
     	Random r = new Random();
     	long delay, totalDelay = 0, worstDelay = -1, bestDelay = -1,
     		clickCount, totalClickCount = 0, worstClickCount = -1;
@@ -39,8 +39,9 @@ public class InvTweaksBenchmarking extends InvTweaksObf {
 	    		
 	    		// Generate random inventory
 	    		
-	    		int stackCount = r.nextInt(maxOccupiedSlots-minOccupiedSlots)+minOccupiedSlots;
-	    		iz[] inventory =  mc.h.c.a;
+	    		int stackCount = r.nextInt(maxOccupiedSlots-minOccupiedSlots)
+	    				+ minOccupiedSlots;
+	    		iz[] inventory = getMainInventory();
 	    		for (int j = 0; j < InvTweaksInventory.SIZE; j++) {
 	    			inventory[j] = null;
 	    		}
@@ -96,7 +97,7 @@ public class InvTweaksBenchmarking extends InvTweaksObf {
     	invTweaks.logInGame(results);
     	
     	// Restore inventory
-    	mc.h.c.a = invBackup;
+    	setMainInventory(invBackup);
     	
     }
 

@@ -51,6 +51,9 @@ public class InvTweaksObf {
 	public iz[] getMainInventory() {
 		return getInventoryPlayer().a;
 	}
+	public void setMainInventory(iz[] value) {
+		getInventoryPlayer().a = value;
+	}
 	public void setHasInventoryChanged(boolean value) {
 		getInventoryPlayer().e = value;
 	}

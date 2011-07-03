@@ -14,7 +14,9 @@ public class InvTweaksObf {
 	// Minecraft members
 
 	public void addChatMessage(String message) {
-		mc.v.a(message);
+		if (mc.v != null) {
+			mc.v.a(message);
+		}
 	}
 	public boolean isMultiplayerWorld() {
 		return mc.l();
@@ -70,6 +72,9 @@ public class InvTweaksObf {
 	
 	// ItemStack members
 
+	public iz createItemStack(int id, int size, int damage) {
+		return new iz(id, size, damage);
+	}
 	public iz copy(iz itemStack) {
 		return itemStack.k();
 	}

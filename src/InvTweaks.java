@@ -283,7 +283,7 @@ public class InvTweaks extends InvTweaksObf {
         		InvTweaksInventory inventory = new InvTweaksInventory(
         				mc, config.getLockPriorities());  	
         		iz candidateStack;
-        		iz storedStack = new iz(storedStackId, 1, storedStackDamage);
+        		iz storedStack = createItemStack(storedStackId, 1, storedStackDamage);
     			int selectedStackId = -1;
 	    		
     			// Search replacement
@@ -384,8 +384,7 @@ public class InvTweaks extends InvTweaksObf {
     }
 	
     public void logInGame(String message) {
-    	if(mc.v != null)
-    		mc.v.a(INGAME_LOG_PREFIX + message);
+    	addChatMessage(INGAME_LOG_PREFIX + message);
     }
     
     /**

@@ -60,8 +60,8 @@ public class InvTweaksBenchmarking extends InvTweaksObf {
 	    				k = r.nextInt(InvTweaksInventory.SIZE);
 	    			} while (inventory[k] != null);
 	    			
-					inventory[k] = new iz(stackId, 1, 0);
-					inventory[k].a = 1+r.nextInt(getMaxStackSize(inventory[k]));
+					inventory[k] = createItemStack(stackId, 1, 0);
+					setStackSize(inventory[k], 1+r.nextInt(getMaxStackSize(inventory[k])));
 	    			stacksOfSameID--;
 	    		}
 	    		

@@ -117,33 +117,35 @@ public class InvTweaksInventory extends InvTweaksObf {
 		// (currently never the case in vanilla, an never should be)
 		return getItemID(stack1) == getItemID(stack2)
 				&& (getItemDamage(stack1) == getItemDamage(stack2) // same item variant
-						|| stack1.c() == 1); // except if unstackable
+						|| getMaxStackSize(stack1) == 1); // except if unstackable
 	}
 
 	public boolean canBeMerged(int i, int j) {
 		return (i != j && inventory[i] != null && inventory[j] != null && 
 				areSameItem(inventory[i], inventory[j]) &&
-				inventory[j].a < inventory[j].c());
+				getStackSize(inventory[j]) < getMaxStackSize(inventory[j]));
 	}
 
 	public boolean isOrderedBefore(int i, int j) {
 		
-		if (inventory[j] == null)
+		if (inventory[j] == null) {
 			return true;
-		else if (inventory[i] == null || keywordOrder[i] == -1)
+		}
+		else if (inventory[i] == null || keywordOrder[i] == -1) {
 			return false;
+		}
 		else {
 			if (keywordOrder[i] == keywordOrder[j]) {
 				// Items of same keyword orders can have different IDs,
 				// in the case of categories defined by a range of IDs
 				if (getItemID(inventory[i]) == getItemID(inventory[j])) {
-					if (inventory[i].a == inventory[j].a) {
+					if (getStackSize(inventory[i]) == getStackSize(inventory[j])) {
 						// Highest damage first for tools, else lowest damage.
 						// No tool ordering for same ID in multiplayer (cannot swap directly)
 						return (getItemDamage(inventory[i]) > getItemDamage(inventory[j])
-									&& inventory[j].c() == 1 && !isMultiplayer)
+									&& getMaxStackSize(inventory[j]) == 1 && !isMultiplayer)
 								|| (getItemDamage(inventory[i]) < getItemDamage(inventory[j])
-										&& inventory[j].c() > 1);
+										&& getMaxStackSize(inventory[j]) > 1);
 					}
 					else {
 						return getStackSize(inventory[i]) > getStackSize(inventory[j]);
@@ -172,20 +174,23 @@ public class InvTweaksInventory extends InvTweaksObf {
 		// Merge stacks
 		if (canBeMerged(i, j)) {
 			
-			int sum = inventory[i].a + inventory[j].a;
-			int max = inventory[j].c();
+			int sum = getStackSize(inventory[i]) + getStackSize(inventory[j]);
+			int max = getMaxStackSize(inventory[j]);
 			
 			if (sum <= max) {
 				
 				remove(i);
-				if (isMultiplayer)
+				if (isMultiplayer) {
 					click(i);
+				}
 
 				put(inventory[j], j, priority);
-				if (isMultiplayer)
+				if (isMultiplayer) {
 					click(j);
-				else
-					inventory[j].a = sum;
+				}
+				else {
+					setStackSize(inventory[j], sum);
+				}
 				return true;
 			}
 			else {
@@ -331,9 +336,9 @@ public class InvTweaksInventory extends InvTweaksObf {
 		
 		// Click!
 		clickInventory(getPlayerController(),
-				player.e.f, // Select active inventory
+				getWindowId(getCraftingInventory()), // Select active inventory
 				((slot > 8) ? slot - 9 : slot + 27) + 
-					player.e.e.size() - 36, // Targeted slot
+					getSlots(getCraftingInventory()).size() - 36, // Targeted slot
 						// (converted for the network protocol indexes,
 						// see http://mc.kev009.com/Inventory#Windows)
 				0, // Left-click
@@ -344,7 +349,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 		// Wait for inventory update
 		if (!uselessClick) {
 			int pollingTime = 0;
-			while (iz.a(inventory[slot], stackInSlot)
+			while (areItemStacksEqual(inventory[slot], stackInSlot)
 					&& pollingTime < InvTweaks.POLLING_TIMEOUT) {
 				InvTweaks.trySleep(InvTweaks.POLLING_DELAY);
 				pollingTime += InvTweaks.POLLING_DELAY;

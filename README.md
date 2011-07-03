@@ -6,13 +6,16 @@ For documentation about how to use or install the mod, see the [main page of Inv
 
 This repository doesn't include any third party code, so in order to compile the current version of this mod, the following is needed:
 
- * Minecraft's `minecraft.jar` (version *Beta 1.6.5* or *1.6.6*)
- * [ModLoader][4] (version *Beta 1.6.5* or *1.6.6*)
- * [Minecraft Coder Pack][5] (version *3.3* or more)
+ * Minecraft's `minecraft.jar` (version *Beta 1.7.2*)
+ * [ModLoader][4] (version *Beta 1.7.2*)
+
+The mod doesn't use MCP anymore, to allow for faster updates when a new version of Minecraft comes out.
 
 # Compiling the mod
 
-Pull this repository from the `src/minecraft/net/minecraft/` folder of MCP, it should then be ready for compilation. You will also have to copy `DefaultConfig.text` and `DefaultTree.txt` (found in `src/`) to the `bin/minecraft/net/minecraft/src` folder, or else the mod will fail to generate the configuration files.
+After building the sources, you can either move them directly to the `minecraft.jar` file, or ZIP them the same way the mod is packaged, then put the archive in the `mods` folder. Don't forget to copy `DefaultConfig.text` and `DefaultTree.txt` (found in `src/`) with the files, or else the mod will fail to generate the configuration files.
+
+I'll soon make an Ant task to do the install more easily.
 
 # Developing
 

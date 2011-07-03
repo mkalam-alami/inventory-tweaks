@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,13 +16,11 @@ import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Mouse;
 
-public class InvTweaks {
+public class InvTweaks extends InvTweaksObf {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
-    private static final InvTweaksObf o = 
-    	new InvTweaksObf(ModLoader.getMinecraftInstance());
     
-    public static final String MINECRAFT_DIR = o.getMinecraftDir().getPath();
+    public static final String MINECRAFT_DIR = getMinecraftDir().getPath();
     public static final String CONFIG_FILE = MINECRAFT_DIR+"/InvTweaksConfig.txt";
     public static final String CONFIG_TREE_FILE = MINECRAFT_DIR+"/InvTweaksTree.txt";
     public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.txt";
@@ -43,14 +40,14 @@ public class InvTweaks {
     private boolean configErrorsShown = false;
     private boolean onTickBusy = false;
 	private int storedStackId = 0, storedStackDamage = -1, storedPosition = -1;
-    private Minecraft mc;
     
-    public InvTweaks(Minecraft minecraft) {
+    public InvTweaks(Minecraft mc) {
 
+    	super(mc);
+    	
     	log.setLevel(DEFAULT_LOG_LEVEL);
     	
     	instance = this;
-    	mc = minecraft;
     	
     	// Default slot order init. In the inventory, indexes are :
 		// 0 = bottom-left, 8 = bottom-right
@@ -90,8 +87,8 @@ public class InvTweaks {
     	
     	// Check config loading success & current GUI
     	if (config == null ||
-    			!(o.getCurrentScreen() == null ||
-    			o.getCurrentScreen() instanceof id)) {
+    			!(getCurrentScreen() == null ||
+    			getCurrentScreen() instanceof id)) {
     		return -1;
     	}
     	
@@ -108,16 +105,17 @@ public class InvTweaks {
     	//		return;
     	
     	long timer = System.nanoTime();
-    	ix invPlayer = mc.h.c;
-    	iz selectedItem = invPlayer.a[invPlayer.c];
+    	iz selectedItem = getItemStack(
+    			getMainInventory(),
+    			getFocusedSlot());
 		
 		Vector<InvTweaksRule> rules = config.getRules();
 		InvTweaksInventory inventory = new InvTweaksInventory(
 				mc, config.getLockPriorities());
 
 		//// Empty hand (needed in SMP)
-		if (mc.l())
-			inventory.putSelectedItemDown();
+		if (isMultiplayerWorld())
+			inventory.putHoldItemDown();
 		
     	//// Merge stacks to fill the ones in locked slots
 		log.info("Merging stacks.");
@@ -158,7 +156,7 @@ public class InvTweaks {
 	    		if (inventory.hasToBeMoved(i) && 
 	    				inventory.getLockLevel(i) < rulePriority) {
 					List<InvTweaksItem> fromItems = InvTweaksTree.getItems(
-							from.c, from.i());
+							getItemID(from), getItemDamage(from));
 	    			if (InvTweaksTree.matches(fromItems, rule.getKeyword())) {
 	    				
 	    				int[] preferredPos = rule.getPreferredPositions();
@@ -172,7 +170,7 @@ public class InvTweaks {
 	    						}
 	    						else {
 	    							fromItems = InvTweaksTree.getItems(
-	    									from.c, from.i());
+	    									getItemID(from), getItemDamage(from));
 	    							if (!InvTweaksTree.matches(
 	    									fromItems, rule.getKeyword())) {
 	    								break;
@@ -239,7 +237,7 @@ public class InvTweaks {
 		
     	// This needs to be remembered so that the autoreplace feature doesn't trigger
     	if (selectedItem != null && 
-    			invPlayer.a[invPlayer.c] == null) {
+    			getMainInventory()[getFocusedSlot()] == null) {
     		storedStackId = 0;
     	}
 
@@ -263,10 +261,10 @@ public class InvTweaks {
     		
     	onTickBusy = true;
     	
-    	iz currentStack = mc.h.c.b();
+    	iz currentStack = getFocusedStack();
     	iz replacementStack = null;
-    	int currentStackId = (currentStack == null) ? 0 : currentStack.c;
-    	int currentStackDamage = (currentStack == null) ? 0 : currentStack.i();
+    	int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
+    	int currentStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
 		int currentItem = mc.h.c.c;
 		
     	// Auto-replace item stack
@@ -277,7 +275,7 @@ public class InvTweaks {
 	    		storedPosition = currentItem;
 	    	}
 	    	else if ((currentStack == null ||
-	    			currentStack.c == 281 && storedStackId == 282) // Handle eaten mushroom soup
+	    			getItemID(currentStack) == 281 && storedStackId == 282) // Handle eaten mushroom soup
 	    			&&
 	    			(mc.r == null || 
 	    			mc.r instanceof yc)) { // Filter open inventory or other window
@@ -296,14 +294,14 @@ public class InvTweaks {
 	    			if (candidateStack != null && 
 	    					inventory.areSameItem(storedStack, candidateStack) &&
 	    					config.canBeAutoReplaced(
-	    							candidateStack.c,
-	    							candidateStack.i())) {
+	    							getItemID(candidateStack),
+	    							getItemDamage(candidateStack))) {
 	    				// Choose stack of lowest size and (in case of tools) highest damage
 	    				if (replacementStack == null ||
-	    						replacementStack.a > candidateStack.a ||
-	    						(replacementStack.a == candidateStack.a &&
-	    								replacementStack.c() == 1 &&
-	    								replacementStack.i() < candidateStack.i())) {
+	    						getStackSize(replacementStack) > getStackSize(candidateStack) ||
+	    						(getStackSize(replacementStack) == getStackSize(candidateStack) &&
+	    								getMaxStackSize(replacementStack) == 1 &&
+	    								getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
 	    					replacementStack = candidateStack;
 	    					selectedStackId = i;
 	    				}
@@ -330,19 +328,19 @@ public class InvTweaks {
 								int i, int currentItem) {
 							this.inventory = inventory;
 							this.currentItem = currentItem;
-							this.expectedItemId = inventory.getItemStack(i).c;
+							this.expectedItemId = getItemID(inventory.getItemStack(i));
 							this.i = i;
 							return this;
 						}
 						
 						public void run() {
 							
-							if (mc.l()) {
+							if (isMultiplayerWorld()) {
 								// Wait for the server to confirm that the
 								// slot is now empty
 								int pollingTime = 0;
-								mc.h.c.e = false;
-								while(!mc.h.c.e
+								setHasInventoryChanged(false);
+								while(!hasInventoryChanged()
 										&& pollingTime < POLLING_TIMEOUT) {
 									trySleep(POLLING_DELAY);
 								}
@@ -358,7 +356,7 @@ public class InvTweaks {
 							// In POLLING_DELAY ms, things might have changed
 							try {
 								iz stack = inventory.getItemStack(i);
-								if (stack != null && stack.c == expectedItemId) {
+								if (stack != null && getItemID(stack) == expectedItemId) {
 									inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
 								}
 							}
@@ -390,94 +388,6 @@ public class InvTweaks {
     		mc.v.a(INGAME_LOG_PREFIX + message);
     }
     
-    /**
-     * Allows to test algorithm performance in time and clicks,
-     * by generating random inventories and trying to sort them.
-     * Results are given with times in microseconds, following the format:
-     *   [besttime timemean worsttime] [clicksmean worstclicks]
-     * @param iterations The number of random inventories to sort.
-     */
-    public final void doBenchmarking(int iterations)
-    {
-    	// Note that benchmarking is also specific to
-    	// a ruleset, a keyword tree, and the game mode (SP/SMP).
-    	final int minOccupiedSlots = 0;
-    	final int maxOccupiedSlots = InvTweaksInventory.SIZE;
-    	final int maxDuplicateStacks = 5;
-    	
-    	iz[] invBackup = mc.h.c.a.clone();
-    	Random r = new Random();
-    	long delay, totalDelay = 0, worstDelay = -1, bestDelay = -1,
-    		clickCount, totalClickCount = 0, worstClickCount = -1;
-    	
-    	synchronized (this) {
-    	
-	    	for (int i = 0; i < iterations; i++) {
-	    		
-	    		// Generate random inventory
-	    		
-	    		int stackCount = r.nextInt(maxOccupiedSlots-minOccupiedSlots)+minOccupiedSlots;
-	    		iz[] inventory =  mc.h.c.a;
-	    		for (int j = 0; j < InvTweaksInventory.SIZE; j++) {
-	    			inventory[j] = null;
-	    		}
-	    		
-	    		int stacksOfSameID = 0, stackId = 1;
-	    		
-	    		for (int j = 0; j < stackCount; j++) {
-	    			if (stacksOfSameID == 0) {
-	    				stacksOfSameID = 1+r.nextInt(maxDuplicateStacks);
-	    				do {
-	    					stackId = InvTweaksTree.getRandomItem(r).getId();
-	    				} while (stackId <= 0); // Needed or NPExc. may occur, don't know why
-	    			}
-	    			
-	    			int k;
-	    			do {
-	    				k = r.nextInt(InvTweaksInventory.SIZE);
-	    			} while (inventory[k] != null);
-	    			
-					inventory[k] = new iz(stackId, 1, 0);
-					inventory[k].a = 1+r.nextInt(inventory[k].c());
-	    			stacksOfSameID--;
-	    		}
-	    		
-	    		// Benchmark
-	    		
-	    		delay = System.nanoTime();
-	    		clickCount = sortContainer(0); // TODO
-	    		delay = System.nanoTime() - delay;
-	    		
-	    		totalDelay += delay;
-	    		totalClickCount += clickCount;
-	    		if (worstDelay < delay || worstDelay == -1) {
-	    			worstDelay = delay;
-	    		}
-	    		if (bestDelay > delay || bestDelay == -1) {
-	    			bestDelay = delay;
-	    		}
-	    		if (worstClickCount < clickCount || worstClickCount == -1) {
-	    			worstClickCount = clickCount;
-	    		}
-	    		
-	    	}
-    	
-    	}
-    	
-    	// Display results
-    	String results = "Time: [" + bestDelay/1000 + " "
-				+ (totalDelay/iterations/1000) + " " + worstDelay/1000 + "] "
-				+ "Clicks : [" + (totalClickCount/iterations)
-				+ " " + worstClickCount + "]";
-    	log.info(results);
-    	logInGame(results);
-    	
-    	// Restore inventory
-    	mc.h.c.a = invBackup;
-    	
-    }
-
-	
     /**
      * Checks time of last edit for both configuration files.
      * @return

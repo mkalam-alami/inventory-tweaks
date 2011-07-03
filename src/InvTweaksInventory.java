@@ -3,10 +3,10 @@ import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
 
-public class InvTweaksInventory {
+public class InvTweaksInventory extends InvTweaksObf {
 
 	private static final Logger log = Logger.getLogger("InvTweaks");
-	
+    
 	public static final int SIZE = 36;
 	public static final boolean STACK_NOT_EMPTIED = true;
 	public static final boolean STACK_EMPTIED = false;
@@ -19,26 +19,24 @@ public class InvTweaksInventory {
 	
 	// Multiplayer
 	private boolean isMultiplayer;
-	private ob playerController;
 	private gs player;
 	
-	public InvTweaksInventory(Minecraft minecraft, int[] lockLevels) {
-
-		this.inventory = minecraft.h.c.a;
-		this.playerController = minecraft.c;
-		this.player = minecraft.h;
-		this.isMultiplayer = minecraft.l();
-		this.lockLevels = lockLevels;
+	public InvTweaksInventory(Minecraft mc, int[] lockLevels) {
+		super(mc);
 		
+		this.inventory = getMainInventory();
+		this.lockLevels = lockLevels;
 		for (int i = 0; i < SIZE; i++) {
 			this.rulePriority[i] = -1;
 			if (this.inventory[i] != null) {
 				this.keywordOrder[i] = getItemOrder(
-						this.inventory[i].c,
-						this.inventory[i].i());
+						getItemID(this.inventory[i]),
+						getItemDamage(this.inventory[i]));
 			}
 		}
-		
+
+		this.player = getThePlayer();
+		this.isMultiplayer = isMultiplayerWorld();
 	}
 	
 	/**
@@ -117,8 +115,8 @@ public class InvTweaksInventory {
 	public boolean areSameItem(iz stack1, iz stack2) {
 		// Note: may be invalid if a stackable item can take damage
 		// (currently never the case in vanilla, an never should be)
-		return stack1.c == stack2.c
-				&& (stack1.i() == stack2.i() // same item variant
+		return getItemID(stack1) == getItemID(stack2)
+				&& (getItemDamage(stack1) == getItemDamage(stack2) // same item variant
 						|| stack1.c() == 1); // except if unstackable
 	}
 
@@ -138,19 +136,21 @@ public class InvTweaksInventory {
 			if (keywordOrder[i] == keywordOrder[j]) {
 				// Items of same keyword orders can have different IDs,
 				// in the case of categories defined by a range of IDs
-				if (inventory[i].c == inventory[j].c) {
+				if (getItemID(inventory[i]) == getItemID(inventory[j])) {
 					if (inventory[i].a == inventory[j].a) {
 						// Highest damage first for tools, else lowest damage.
 						// No tool ordering for same ID in multiplayer (cannot swap directly)
-						return (inventory[i].i() > inventory[j].i() && inventory[j].c() == 1 && !isMultiplayer)
-								|| (inventory[i].i() < inventory[j].i() && inventory[j].c() > 1);
+						return (getItemDamage(inventory[i]) > getItemDamage(inventory[j])
+									&& inventory[j].c() == 1 && !isMultiplayer)
+								|| (getItemDamage(inventory[i]) < getItemDamage(inventory[j])
+										&& inventory[j].c() > 1);
 					}
 					else {
-						return inventory[i].a > inventory[j].a;
+						return getStackSize(inventory[i]) > getStackSize(inventory[j]);
 					}
 				}
 				else {
-					return inventory[i].c > inventory[j].c;
+					return getItemID(inventory[i]) > getItemID(inventory[j]);
 				}
 			}
 			else {
@@ -195,8 +195,8 @@ public class InvTweaksInventory {
 					click(i);
 				}
 				else {
-					inventory[i].a = sum - max;
-					inventory[j].a = max;
+					setStackSize(inventory[i], sum - max);
+					setStackSize(inventory[j], max);
 				}
 				put(inventory[j], j, priority);
 				return false;
@@ -250,9 +250,9 @@ public class InvTweaksInventory {
 	 * If an item is in hand (= attached to the cursor), puts it down.
 	 * @return false if there is no room to put the item.
 	 */
-	public boolean putSelectedItemDown() {
-		iz selectedStack = player.c.i();
-		if (selectedStack != null) {
+	public boolean putHoldItemDown() {
+		iz holdStack = getHoldStack();
+		if (holdStack != null) {
 			// Try to find an unlocked slot first, to avoid
 			// impacting too much the sorting
 			for (int step = 1; step <= 2; step++) {
@@ -263,8 +263,8 @@ public class InvTweaksInventory {
 							click(i);
 						}
 						else {
-							inventory[i] = selectedStack;
-							player.c.b((iz) null);
+							inventory[i] = holdStack;
+							setHoldStack(null);
 						}
 						return true;
 					}
@@ -316,8 +316,8 @@ public class InvTweaksInventory {
 		// We'll do this by listening to any change in the slot, but this implies we
 		// check first if the click will indeed produce a change.
 		boolean uselessClick = false;
-		iz stackInSlot = (inventory[slot] != null) ? inventory[slot].k() : null;
-		iz stackInHand = player.c.i();
+		iz stackInSlot = (inventory[slot] != null) ? copy(inventory[slot]) : null;
+		iz stackInHand = getHoldStack();
 		
 		// Useless if empty stacks
 		if (stackInHand == null && stackInSlot == null)
@@ -325,12 +325,12 @@ public class InvTweaksInventory {
 		// Useless if destination stack is full
 		else if (stackInHand != null && stackInSlot != null &&
 				areSameItem(stackInHand, stackInSlot) &&
-				stackInSlot.a == stackInSlot.c()) {
+				getStackSize(stackInSlot) == getMaxStackSize(stackInSlot)) {
 			uselessClick = true;
 		}
 		
 		// Click!
-		playerController.a(
+		clickInventory(getPlayerController(),
 				player.e.f, // Select active inventory
 				((slot > 8) ? slot - 9 : slot + 27) + 
 					player.e.e.size() - 36, // Targeted slot
@@ -365,7 +365,7 @@ public class InvTweaksInventory {
 		if (log.getLevel() == InvTweaks.DEBUG) {
 			try {
 				log.info("Removed: "+InvTweaksTree.getItems(
-						removed.c, removed.i()).get(0)+" from "+slot);
+						getItemID(removed), getItemDamage(removed)).get(0)+" from "+slot);
 			}
 			catch (NullPointerException e) {
 				log.info("Removed: null from "+slot);
@@ -390,7 +390,7 @@ public class InvTweaksInventory {
 		if (log.getLevel() == InvTweaks.DEBUG) {
 			try {
 				log.info("Put: "+InvTweaksTree.getItems(
-						stack.c, stack.i()).get(0)+" in "+slot);
+						getItemID(stack), getItemDamage(stack)).get(0)+" in "+slot);
 			}
 			catch (NullPointerException e) {
 				log.info("Removed: null");
@@ -400,7 +400,7 @@ public class InvTweaksInventory {
 			inventory[slot] = stack;
 		}
 		rulePriority[slot] = priority;
-		keywordOrder[slot] = getItemOrder(stack.c, stack.i());
+		keywordOrder[slot] = getItemOrder(getItemID(stack), getItemDamage(stack));
 	}
 	
 	private int getItemOrder(int itemID, int itemDamage) {

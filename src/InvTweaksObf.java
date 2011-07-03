@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 
 public class InvTweaksObf {
 
-	private Minecraft mc;
+	protected Minecraft mc;
 	
 	public InvTweaksObf(Minecraft mc) {
 		this.mc = mc;
@@ -19,17 +19,8 @@ public class InvTweaksObf {
 	public boolean isMultiplayerWorld() {
 		return mc.l();
 	}
-	public File getMinecraftDir() {
-		return Minecraft.b();
-	}
 	public dc getThePlayer() {
 		return mc.h;
-	}
-	public ix getInventoryPlayer() {
-		return mc.h.c;
-	}
-	public iz[] getMainInventory() {
-		return mc.h.c.a;
 	}
 	public ob getPlayerController() {
 		return mc.c;
@@ -37,14 +28,50 @@ public class InvTweaksObf {
 	public da getCurrentScreen() {
 		return mc.r;
 	}
+	public static File getMinecraftDir() {
+		return Minecraft.b();
+	}
+
+	// EntityPlayer members
+	
+	public ix getInventoryPlayer() {
+		return getThePlayer().c;
+	}
+	public iz getCurrentEquippedItem() {
+		return getThePlayer().G();
+	}
+	public dw getCraftingInventory() {
+		return getThePlayer().e;
+	}
+
+	// InventoryPlayer members
+	
+	public iz[] getMainInventory() {
+		return getInventoryPlayer().a;
+	}
+	public void setHasInventoryChanged(boolean value) {
+		getInventoryPlayer().e = value;
+	}
+	public void setHoldStack(iz stack) {
+		getInventoryPlayer().b(stack); // MCP name: setItemStack
+	}
+	public boolean hasInventoryChanged() {
+		return getInventoryPlayer().e;
+	}
+	public iz getHoldStack() {
+		return getInventoryPlayer().i(); // MCP name: getItemStack
+	}
+	public iz getFocusedStack() {
+		return getInventoryPlayer().b(); // MCP name: getCurrentItem
+	}
+	public int getFocusedSlot() {
+		return getInventoryPlayer().c; // MCP name: currentItem
+	}
 	
 	// ItemStack members
 
 	public iz copy(iz itemStack) {
 		return itemStack.k();
-	}
-	public boolean areItemStacksEqual(iz itemStack1, iz itemStack2) {
-		return iz.a(itemStack1, itemStack2);
 	}
 	public int getItemDamage(iz itemStack) {
 		return itemStack.i();
@@ -55,38 +82,17 @@ public class InvTweaksObf {
 	public int getStackSize(iz itemStack) {
 		return itemStack.a;
 	}
+	public void setStackSize(iz itemStack, int value) {
+		itemStack.a = value;
+	}
 	public int getItemID(iz itemStack) {
 		return itemStack.c;
 	}
-	
-	// InventoryPlayer members
-
-	public boolean hasInventoryChanged(ix invPlayer) {
-		return invPlayer.e;
+	public boolean areItemStacksEqual(iz itemStack1, iz itemStack2) {
+		return iz.a(itemStack1, itemStack2);
 	}
-	public iz[] getMainInventory(ix inventory) {
-		return inventory.a;
-	}
-	public iz getItemStack(ix invPlayer) { // TODO Rename
-		return invPlayer.i();
-	}
-	public iz getCurrentItem(ix invPlayer) { // TODO Rename
-		return invPlayer.b();
-	}
-	public int getSelectedSlot(ix invPlayer) {
-		return invPlayer.c; // MCP name: currentItem
-	}
-
-	// EntityPlayer members
-
-	public ix getInventoryPlayer(dc thePlayer) {
-		return thePlayer.c;
-	}
-	public iz getCurrentEquippedItem(gs entityPlayer) {
-		return entityPlayer.G();
-	}
-	public dw getCraftingInventory(gs entityPlayer) {
-		return entityPlayer.e;
+	public iz getItemStack(iz[] stacks, int i) {
+		return stacks[i];
 	}
 	
 	// PlayerController members
@@ -106,7 +112,5 @@ public class InvTweaksObf {
 	public List<?> getSlots(dw container) {
 		return container.e;
 	}
-	
-	
 	
 }

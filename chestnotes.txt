@@ -1,0 +1,86 @@
+  /*
+	private boolean customized = false;
+	
+	private class TestGuiButton extends GuiButton {
+
+		private boolean buttonClicked = false;
+		
+		public TestGuiButton(int i, int j, int k, int l, int i1, String s) {
+			super(i, j, k, l, i1, s);
+		}
+
+	    public void drawButton(Minecraft minecraft, int i, int j)
+	    {
+	        if(!enabled2) {
+	            return;
+	        }
+	        
+	        FontRenderer fontrenderer = minecraft.fontRenderer;
+	        GL11.glBindTexture(3553, minecraft.renderEngine.getTexture("/gui/gui.png"));
+	        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	        boolean flag = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
+	        int k = getHoverState(flag) - ((buttonClicked) ? 1:0);
+	        drawTexturedModalRect(xPosition, yPosition, 1, 46 + k * 20 + 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition, yPosition + height / 2, 1, 46 + k * 20 + 20 - height / 2 - 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2 - 1, 46 + k * 20 + 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2, 200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2, width / 2, height / 2);
+
+	        ////
+	    	if(mc.theWorld.getWorldTime() % (long)mc.theWorld.autosavePeriod == 0L)
+	        {
+	    		try {
+					logInGame("!"+((File) ModLoader.getPrivateValue(SaveHandler.class, mc.theWorld.saveHandler, 3)).exists());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	        }
+	        ////
+	        
+	        if(!enabled)
+	        {
+	            drawCenteredString(fontrenderer, displayString, xPosition + width / 2, yPosition + height / 2, 0xffa0a0a0);
+	        } else {
+		        if(flag)
+		        {
+		        	if (Mouse.isButtonDown(0)) {
+		        		if (!buttonClicked) {
+			        		sortInventory();
+			        		buttonClicked = true;
+		        		}
+		        	}
+		        	else {
+		        		buttonClicked = false;
+		        	}
+		            drawCenteredString(fontrenderer, displayString, xPosition + width / 2, yPosition + height / 2 - 4, 0xffffa0);
+		        }
+		        else
+		        {
+		            drawCenteredString(fontrenderer, displayString, xPosition + width / 2, yPosition + height / 2 - 4, 0xe0e0e0);
+		        }
+	        }
+	    }
+	}
+	
+	private void updateInterface() {
+		
+		
+		if (mc.currentScreen instanceof GuiChest
+				|| mc.currentScreen instanceof GuiDispenser) {
+			
+			GuiContainer gui = (GuiContainer) mc.currentScreen;
+			
+			if (customized == false) {
+				GuiButton button = new TestGuiButton(10, 
+						gui.xSize/2+gui.width/2-17,
+						(gui.height - gui.ySize)/2 + 5,
+						10, 10,
+						"s");
+				gui.controlList.add((GuiButton) button);
+				customized = true;
+			}
+			
+		}
+		else {
+			customized = false;
+		}
+	}*/

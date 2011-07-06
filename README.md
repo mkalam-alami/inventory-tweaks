@@ -7,9 +7,8 @@ For documentation about how to use or install the mod, see the [main page of Inv
 This repository doesn't include any third party code, so in order to compile the current version of this mod, the following is needed:
 
  * Minecraft's `minecraft.jar` (version *Beta 1.7.2*)
- * [ModLoader][4] (version *Beta 1.7.2*)
-
-The mod doesn't use MCP anymore, to allow for faster updates when a new version of Minecraft comes out.
+ * [ModLoader][4]
+ * [MCP 4.2](http://mcp.ocean-labs.de/index.php/MCP_Releases)
 
 # Compiling the mod
 

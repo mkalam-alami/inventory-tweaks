@@ -15,6 +15,7 @@ import java.util.zip.ZipFile;
 import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 public class InvTweaks extends InvTweaksObf {
 
@@ -37,6 +38,7 @@ public class InvTweaks extends InvTweaksObf {
     private long configLastModified = 0;
     private boolean configErrorsShown = false;
 	private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
+	private boolean buttonAddedToGui = false;
     
     public InvTweaks(Minecraft mc) {
 
@@ -48,7 +50,7 @@ public class InvTweaks extends InvTweaksObf {
     	instance = this;
     	
     	// Load config files
-		tryLoading();
+		loadConfig();
 		
 		// Load algorithm
     	sortingAlgorithm = new InvTweaksAlgorithm(mc, config);
@@ -64,14 +66,15 @@ public class InvTweaks extends InvTweaksObf {
     public final void onSortingKeyPressed()
     {
     	// Check config loading success & current GUI
+    	GuiScreen guiScreen = getCurrentScreen();
     	if (config == null ||
-    			!(getCurrentScreen() == null ||
-    			getCurrentScreen() instanceof GuiContainer /* GuiContainer */)) {
+    			!(guiScreen == null ||
+    			guiScreen instanceof GuiContainer /* GuiContainer */)) {
     		return;
     	}
     	// Hot reload trigger
     	if (getConfigLastModified() != configLastModified)
-    		tryLoading();
+    		loadConfig();
     	
     	// Config keywords error message
     	if (!configErrorsShown) {
@@ -91,13 +94,42 @@ public class InvTweaks extends InvTweaksObf {
     			getMainInventory()[getFocusedSlot()] == null) {
     		storedStackId = 0;
     	}
+    	
+    	if (guiScreen instanceof GuiChest /* GuiChest */
+    			|| guiScreen instanceof GuiDispenser /* GuiDispenser */) {
+    		
+    	}
     }
 
     /**
      * Autoreplace + middle click sorting
      */
+	@SuppressWarnings("unchecked")
 	public void onTick() {
     	
+		//// Chest sorting button
+    	GuiScreen guiScreen = getCurrentScreen();
+    	if (getCurrentScreen() instanceof GuiChest /* GuiChest */
+    			|| getCurrentScreen() instanceof GuiDispenser /* GuiDispenser */) {
+    	
+			GuiContainer guiContainer = (GuiContainer) guiScreen;
+			if (buttonAddedToGui == false) {
+				GuiButton button = new InvTweaksSortingButton(10, 
+						guiContainer.xSize/2 + guiContainer.width/2 - 17,
+						(guiContainer.height - guiContainer.ySize)/2 + 5,
+						10, 10,
+						"s", guiContainer.inventorySlots.windowId);
+				guiContainer.controlList.add((GuiButton) button);
+				buttonAddedToGui = true;
+			}
+			
+		}
+		else {
+			buttonAddedToGui  = false;
+		}
+		
+		//// Autoreplace
+		
     	if (config == null)
     		return;
     	
@@ -157,16 +189,16 @@ public class InvTweaks extends InvTweaksObf {
      * Tries to load mod configuration from file, with error handling.
      * @param config
      */
-    private boolean tryLoading() {
+    private boolean loadConfig() {
 
     	// Create missing files
     	
     	if (!new File(CONFIG_FILE).exists()
-    			&& copyFile(DEFAULT_CONFIG_FILE, CONFIG_FILE)) {
+    			&& extractFile(DEFAULT_CONFIG_FILE, CONFIG_FILE)) {
     		logInGame(CONFIG_FILE+" missing, creating default one.");
 		}
     	if (!new File(CONFIG_TREE_FILE).exists()
-    			&& copyFile(DEFAULT_CONFIG_TREE_FILE, CONFIG_TREE_FILE)) {
+    			&& extractFile(DEFAULT_CONFIG_TREE_FILE, CONFIG_TREE_FILE)) {
     		logInGame(CONFIG_TREE_FILE+" missing, creating default one.");
 		}
     	
@@ -211,7 +243,7 @@ public class InvTweaks extends InvTweaksObf {
     	}
     }
     
-    private boolean copyFile(String resource, String destination) {
+    private boolean extractFile(String resource, String destination) {
 
 		String resourceContents = "";
 		URL resourceUrl = InvTweaks.class.getResource(resource);
@@ -282,5 +314,60 @@ public class InvTweaks extends InvTweaksObf {
 			return false;
 		}
    	}
+	
+	private class InvTweaksSortingButton extends GuiButton {
+
+		private boolean buttonClicked = false;
+		private int windowId = -1;
+		
+		public InvTweaksSortingButton(int i, int j, int k,
+				int l, int i1, String s, int windowId) { // TODO Explicit params
+			super(i, j, k, l, i1, s);
+			this.windowId = windowId;
+		}
+
+	    public void drawButton(Minecraft minecraft, int i, int j)
+	    {
+	        if(!enabled2) {
+	            return;
+	        }
+	        
+	        // Draw little button
+	        // (use the 4 corners of the texture to fit best its small size)
+	        FontRenderer fontrenderer = minecraft.fontRenderer;
+	        GL11.glBindTexture(3553, minecraft.renderEngine.getTexture("/gui/gui.png"));
+	        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	        boolean flag = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
+	        int k = getHoverState(flag) - ((buttonClicked) ? 1:0);
+	        drawTexturedModalRect(xPosition, yPosition, 1, 46 + k * 20 + 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition, yPosition + height / 2, 1, 46 + k * 20 + 20 - height / 2 - 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2 - 1, 46 + k * 20 + 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2, 200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2, width / 2, height / 2);
+	        
+	        if(!enabled)
+	        {
+	            drawCenteredString(fontrenderer, displayString, xPosition + width / 2, yPosition + height / 2, 0xffa0a0a0);
+	        } else {
+		        if(flag)
+		        {
+		        	// Sort container
+		        	if (Mouse.isButtonDown(0)) {
+		        		if (!buttonClicked) {
+			        		sortingAlgorithm.sortContainer(windowId);
+			        		buttonClicked = true;
+		        		}
+		        	}
+		        	else {
+		        		buttonClicked = false;
+		        	}
+		            drawCenteredString(fontrenderer, displayString, xPosition + width / 2, yPosition + height / 2 - 4, 0xffffa0);
+		        }
+		        else
+		        {
+		            drawCenteredString(fontrenderer, displayString, xPosition + width / 2, yPosition + height / 2 - 4, 0xe0e0e0);
+		        }
+	        }
+	    }
+	}
 
 }

@@ -14,7 +14,7 @@ This repository doesn't include any third party code, so in order to compile the
 
 I set up two versions of a class named InventoryTweaksObf`, that I switch when I use MCP and when I don't. This is made so that updates are easier and faster when a new version of Minecraft comes out.
 
-## With MCP
+## [Currently] With MCP
 
 Clone the repository to  the `src/minecraft/net/minecraft/` folder of MCP, it should then be ready for compilation. You will also have to copy `DefaultConfig.text` and `DefaultTree.txt` (found in `src/`) to the `bin/minecraft/net/minecraft/src` folder, or else the mod will fail to generate the configuration files.
 

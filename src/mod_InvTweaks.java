@@ -1,3 +1,5 @@
+package net.minecraft.src;
+
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
@@ -21,7 +23,8 @@ public class mod_InvTweaks extends BaseMod {
     	
     	// Register key
     	Minecraft mc = ModLoader.getMinecraftInstance();
-    	qb sortKey = new qb("Sort inventory", Keyboard.KEY_R);
+    	KeyBinding sortKey = new KeyBinding(
+    			"Sort inventory", Keyboard.KEY_R); /* KeyBinding */
     	ModLoader.RegisterKey(this, sortKey, true);
     	
     	// Register OnTickInGame event
@@ -39,7 +42,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Sort inventory
 	 */
-    public final void KeyboardEvent(qb keybinding)
+    public final void KeyboardEvent(KeyBinding keyBinding)
     {
     	instance.onSortingKeyPressed();
     }

@@ -1,3 +1,5 @@
+package net.minecraft.src;
+
 import java.awt.Point;
 import java.util.logging.Logger;
 

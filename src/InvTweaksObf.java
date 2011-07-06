@@ -1,3 +1,5 @@
+package net.minecraft.src;
+
 import java.io.File;
 import java.util.List;
 
@@ -14,111 +16,111 @@ public class InvTweaksObf {
 	// Minecraft members
 
 	public void addChatMessage(String message) {
-		if (mc.v != null) {
-			mc.v.a(message);
+		if (mc.ingameGUI != null) {
+			mc.ingameGUI.addChatMessage(message);
 		}
 	}
 	public boolean isMultiplayerWorld() {
-		return mc.l();
+		return mc.isMultiplayerWorld();
 	}
-	public dc getThePlayer() {
-		return mc.h;
+	public EntityPlayer getThePlayer() {
+		return mc.thePlayer;
 	}
-	public ob getPlayerController() {
-		return mc.c;
+	public PlayerController getPlayerController() {
+		return mc.playerController;
 	}
-	public da getCurrentScreen() {
-		return mc.r;
+	public GuiScreen getCurrentScreen() {
+		return mc.currentScreen;
 	}
 	public static File getMinecraftDir() {
-		return Minecraft.b();
+		return Minecraft.getMinecraftDir();
 	}
 
 	// EntityPlayer members
 	
-	public ix getInventoryPlayer() {
-		return getThePlayer().c;
+	public InventoryPlayer getInventoryPlayer() {
+		return getThePlayer().inventory;
 	}
-	public iz getCurrentEquippedItem() {
-		return getThePlayer().G();
+	public ItemStack getCurrentEquippedItem() {
+		return getThePlayer().getCurrentEquippedItem();
 	}
-	public dw getCraftingInventory() {
-		return getThePlayer().e;
+	public Container getCraftingInventory() {
+		return getThePlayer().craftingInventory;
 	}
 
 	// InventoryPlayer members
 	
-	public iz[] getMainInventory() {
-		return getInventoryPlayer().a;
+	public ItemStack[] getMainInventory() {
+		return getInventoryPlayer().mainInventory;
 	}
-	public void setMainInventory(iz[] value) {
-		getInventoryPlayer().a = value;
+	public void setMainInventory(ItemStack[] value) {
+		getInventoryPlayer().mainInventory = value;
 	}
 	public void setHasInventoryChanged(boolean value) {
-		getInventoryPlayer().e = value;
+		getInventoryPlayer().inventoryChanged = value;
 	}
-	public void setHoldStack(iz stack) {
-		getInventoryPlayer().b(stack); // MCP name: setItemStack
+	public void setHoldStack(ItemStack stack) {
+		getInventoryPlayer().setItemStack(stack); // MCP name: setItemStack
 	}
 	public boolean hasInventoryChanged() {
-		return getInventoryPlayer().e;
+		return getInventoryPlayer().inventoryChanged;
 	}
-	public iz getHoldStack() {
-		return getInventoryPlayer().i(); // MCP name: getItemStack
+	public ItemStack getHoldStack() {
+		return getInventoryPlayer().getItemStack(); // MCP name: getItemStack
 	}
-	public iz getFocusedStack() {
-		return getInventoryPlayer().b(); // MCP name: getCurrentItem
+	public ItemStack getFocusedStack() {
+		return getInventoryPlayer().getCurrentItem(); // MCP name: getCurrentItem
 	}
 	public int getFocusedSlot() {
-		return getInventoryPlayer().c; // MCP name: currentItem
+		return getInventoryPlayer().currentItem; // MCP name: currentItem
 	}
 	
 	// ItemStack members
 
-	public iz createItemStack(int id, int size, int damage) {
-		return new iz(id, size, damage);
+	public ItemStack createItemStack(int id, int size, int damage) {
+		return new ItemStack(id, size, damage);
 	}
-	public iz copy(iz itemStack) {
-		return itemStack.k();
+	public ItemStack copy(ItemStack itemStack) {
+		return itemStack.copy();
 	}
-	public int getItemDamage(iz itemStack) {
-		return itemStack.i();
+	public int getItemDamage(ItemStack itemStack) {
+		return itemStack.getItemDamage();
 	}
-	public int getMaxStackSize(iz itemStack) {
-		return itemStack.c();
+	public int getMaxStackSize(ItemStack itemStack) {
+		return itemStack.getMaxStackSize();
 	}
-	public int getStackSize(iz itemStack) {
-		return itemStack.a;
+	public int getStackSize(ItemStack itemStack) {
+		return itemStack.stackSize;
 	}
-	public void setStackSize(iz itemStack, int value) {
-		itemStack.a = value;
+	public void setStackSize(ItemStack itemStack, int value) {
+		itemStack.stackSize = value;
 	}
-	public int getItemID(iz itemStack) {
-		return itemStack.c;
+	public int getItemID(ItemStack itemStack) {
+		return itemStack.itemID;
 	}
-	public boolean areItemStacksEqual(iz itemStack1, iz itemStack2) {
-		return iz.a(itemStack1, itemStack2);
+	public boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
+		return ItemStack.areItemStacksEqual(itemStack1, itemStack2);
 	}
-	public iz getItemStack(iz[] stacks, int i) {
+	public ItemStack getItemStack(ItemStack[] stacks, int i) {
 		return stacks[i];
 	}
 	
 	// PlayerController members
 
-	public iz clickInventory(ob playerController,
+	public ItemStack clickInventory(PlayerController playerController,
 			int windowId, int slot, int clickButton,
-			boolean shiftHold, gs entityPlayer) {
-		return playerController.a(windowId, slot, clickButton,
-				shiftHold, entityPlayer);
+			boolean shiftHold, EntityPlayer entityPlayer) {
+		return playerController.func_27174_a(windowId, slot, clickButton,
+				shiftHold, entityPlayer); /* func_27174_a */
 	}
 	
 	// Container members
 	
-	public int getWindowId(dw container) {
-		return container.f;
+	public int getWindowId(Container container) {
+		return container.windowId;
 	}
-	public List<?> getSlots(dw container) {
-		return container.e;
+	public List<?> getSlots(Container container) {
+		return container.slots;
 	}
 	
 }

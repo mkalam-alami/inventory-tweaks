@@ -1,3 +1,5 @@
+package net.minecraft.src;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -62,7 +64,7 @@ public class InvTweaks extends InvTweaksObf {
     	// Load config files
 		tryLoading();
     	
-    	log.info("Mod initialized");
+    	log.info("Mod initialItemStacked");
     	
     }
     
@@ -88,7 +90,7 @@ public class InvTweaks extends InvTweaksObf {
     	// Check config loading success & current GUI
     	if (config == null ||
     			!(getCurrentScreen() == null ||
-    			getCurrentScreen() instanceof id)) {
+    			getCurrentScreen() instanceof GuiContainer /* GuiContainer */)) {
     		return -1;
     	}
     	
@@ -105,7 +107,7 @@ public class InvTweaks extends InvTweaksObf {
     	//		return;
     	
     	long timer = System.nanoTime();
-    	iz selectedItem = getItemStack(
+    	ItemStack selectedItem = getItemStack(
     			getMainInventory(),
     			getFocusedSlot());
 		
@@ -122,10 +124,10 @@ public class InvTweaks extends InvTweaksObf {
 		
 		Vector<Integer> lockedSlots = config.getLockedSlots();
     	for (int i = inventory.getSize()-1; i >= 0; i--) {
-    		iz from = inventory.getItemStack(i);
+    		ItemStack from = inventory.getItemStack(i);
     		if (from != null) {
     	    	for (Integer j : lockedSlots) {
-    	    		iz to = inventory.getItemStack(j);
+    	    		ItemStack to = inventory.getItemStack(j);
     	    		if (to != null && inventory.canBeMerged(i, j)) {
     	    			boolean result = inventory.mergeStacks(i, j);
     	    			inventory.markAsNotMoved(j);
@@ -151,7 +153,7 @@ public class InvTweaks extends InvTweaksObf {
 				log.info("Rule : "+rule.getKeyword()+"("+rulePriority+")");
 
 			for (int i = 0; i < inventory.getSize(); i++) {
-				iz from = inventory.getItemStack(i);
+				ItemStack from = inventory.getItemStack(i);
 	    		
 	    		if (inventory.hasToBeMoved(i) && 
 	    				inventory.getLockLevel(i) < rulePriority) {
@@ -261,11 +263,11 @@ public class InvTweaks extends InvTweaksObf {
     		
     	onTickBusy = true;
     	
-    	iz currentStack = getFocusedStack();
-    	iz replacementStack = null;
+    	ItemStack currentStack = getFocusedStack();
+    	ItemStack replacementStack = null;
     	int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
     	int currentStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
-		int currentItem = mc.h.c.c;
+		int currentItem = getFocusedSlot();
 		
     	// Auto-replace item stack
     	if (currentStackId != storedStackId
@@ -277,13 +279,13 @@ public class InvTweaks extends InvTweaksObf {
 	    	else if ((currentStack == null ||
 	    			getItemID(currentStack) == 281 && storedStackId == 282) // Handle eaten mushroom soup
 	    			&&
-	    			(mc.r == null || 
-	    			mc.r instanceof yc)) { // Filter open inventory or other window
+	    			(getCurrentScreen() == null || // Filter open inventory or other window
+	    			getCurrentScreen() instanceof GuiEditSign /* GuiEditSign */)) { 
 		    		
         		InvTweaksInventory inventory = new InvTweaksInventory(
         				mc, config.getLockPriorities());  	
-        		iz candidateStack;
-        		iz storedStack = createItemStack(storedStackId, 1, storedStackDamage);
+        		ItemStack candidateStack;
+        		ItemStack storedStack = createItemStack(storedStackId, 1, storedStackDamage);
     			int selectedStackId = -1;
 	    		
     			// Search replacement
@@ -296,7 +298,7 @@ public class InvTweaks extends InvTweaksObf {
 	    					config.canBeAutoReplaced(
 	    							getItemID(candidateStack),
 	    							getItemDamage(candidateStack))) {
-	    				// Choose stack of lowest size and (in case of tools) highest damage
+	    				// Choose stack of lowest sItemStacke and (in case of tools) highest damage
 	    				if (replacementStack == null ||
 	    						getStackSize(replacementStack) > getStackSize(candidateStack) ||
 	    						(getStackSize(replacementStack) == getStackSize(candidateStack) &&
@@ -355,7 +357,7 @@ public class InvTweaks extends InvTweaksObf {
 							
 							// In POLLING_DELAY ms, things might have changed
 							try {
-								iz stack = inventory.getItemStack(i);
+								ItemStack stack = inventory.getItemStack(i);
 								if (stack != null && getItemID(stack) == expectedItemId) {
 									inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
 								}

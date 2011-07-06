@@ -1,3 +1,5 @@
+package net.minecraft.src;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

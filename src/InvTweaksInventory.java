@@ -1,3 +1,5 @@
+package net.minecraft.src;
+
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -11,7 +13,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 	public static final boolean STACK_NOT_EMPTIED = true;
 	public static final boolean STACK_EMPTIED = false;
 
-	private iz[] inventory;
+	private ItemStack[] inventory;
 	private int[] rulePriority = new int[SIZE];
 	private int[] keywordOrder = new int[SIZE];
 	private int[] lockLevels;
@@ -19,7 +21,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 	
 	// Multiplayer
 	private boolean isMultiplayer;
-	private gs player;
+	private EntityPlayer player; /* EntityPlayer */
 	
 	public InvTweaksInventory(Minecraft mc, int[] lockLevels) {
 		super(mc);
@@ -112,7 +114,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 	/**
 	 * Note: asserts stacks are not null
 	 */
-	public boolean areSameItem(iz stack1, iz stack2) {
+	public boolean areSameItem(ItemStack stack1, ItemStack stack2) {
 		// Note: may be invalid if a stackable item can take damage
 		// (currently never the case in vanilla, an never should be)
 		return getItemID(stack1) == getItemID(stack2)
@@ -212,8 +214,8 @@ public class InvTweaksInventory extends InvTweaksObf {
 		else {
 			
 			// i to j
-			iz jStack = inventory[j];
-			iz iStack = remove(i);
+			ItemStack jStack = inventory[j];
+			ItemStack iStack = remove(i);
 			if (isMultiplayer) {
 				click(i);
 				click(j);
@@ -256,7 +258,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 	 * @return false if there is no room to put the item.
 	 */
 	public boolean putHoldItemDown() {
-		iz holdStack = getHoldStack();
+		ItemStack holdStack = getHoldStack();
 		if (holdStack != null) {
 			// Try to find an unlocked slot first, to avoid
 			// impacting too much the sorting
@@ -288,7 +290,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 			return -1;
 	}
 
-	public iz getItemStack(int i) {
+	public ItemStack getItemStack(int i) {
 		return inventory[i];
 	}
 	
@@ -321,8 +323,8 @@ public class InvTweaksInventory extends InvTweaksObf {
 		// We'll do this by listening to any change in the slot, but this implies we
 		// check first if the click will indeed produce a change.
 		boolean uselessClick = false;
-		iz stackInSlot = (inventory[slot] != null) ? copy(inventory[slot]) : null;
-		iz stackInHand = getHoldStack();
+		ItemStack stackInSlot = (inventory[slot] != null) ? copy(inventory[slot]) : null;
+		ItemStack stackInHand = getHoldStack();
 		
 		// Useless if empty stacks
 		if (stackInHand == null && stackInSlot == null)
@@ -365,8 +367,8 @@ public class InvTweaksInventory extends InvTweaksObf {
 	 * @param slot
 	 * @return The removed stack
 	 */
-	private iz remove(int slot) {
-		iz removed = inventory[slot];
+	private ItemStack remove(int slot) {
+		ItemStack removed = inventory[slot];
 		if (log.getLevel() == InvTweaks.DEBUG) {
 			try {
 				log.info("Removed: "+InvTweaksTree.getItems(
@@ -391,7 +393,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 	 * @param slot
 	 * @param priority
 	 */
-	private void put(iz stack, int slot, int priority) {
+	private void put(ItemStack stack, int slot, int priority) {
 		if (log.getLevel() == InvTweaks.DEBUG) {
 			try {
 				log.info("Put: "+InvTweaksTree.getItems(

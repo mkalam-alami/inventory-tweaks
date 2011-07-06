@@ -1,3 +1,5 @@
+package net.minecraft.src;
+
 public class InvTweaksItem {
 
 	private String name;

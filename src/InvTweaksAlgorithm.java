@@ -184,16 +184,15 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
      * Autoreplace + middle click sorting
      */
 	public void autoReplaceSlot(int slot, int wantedId, int wantedDamage) {
-    	
+   
 		InvTweaksInventory inventory = new InvTweaksInventory(
 				mc, config.getLockPriorities());  	
 		ItemStack candidateStack, replacementStack = null;
 		ItemStack storedStack = createItemStack(wantedId, 1, wantedDamage);
-		int selectedStackId = -1;
-		
+		int replacementStackSlot = -1;
+
 		// Search replacement
 		for (int i = 0; i < InvTweaks.INVENTORY_SIZE; i++) {
-			
 			// Look only for a matching stack
 			candidateStack = inventory.getItemStack(i);
 			if (candidateStack != null && 
@@ -208,7 +207,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 								getMaxStackSize(replacementStack) == 1 &&
 								getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
 					replacementStack = candidateStack;
-					selectedStackId = i;
+					replacementStackSlot = i;
 				}
 			}
 		}
@@ -225,14 +224,14 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 			new Thread(new Runnable() {
 
 				private InvTweaksInventory inventory;
-				private int currentItem;
+				private int targetedSlot;
 				private int i, expectedItemId;
 				
 				public Runnable init(
 						InvTweaksInventory inventory,
 						int i, int currentItem) {
 					this.inventory = inventory;
-					this.currentItem = currentItem;
+					this.targetedSlot = currentItem;
 					this.expectedItemId = getItemID(inventory.getItemStack(i));
 					this.i = i;
 					return this;
@@ -262,7 +261,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 					try {
 						ItemStack stack = inventory.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId) {
-							inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
+							inventory.moveStack(i, targetedSlot, Integer.MAX_VALUE);
 						}
 					}
 					catch (NullPointerException e) {
@@ -273,7 +272,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 			    	//onTickBusy = false; // TODO Check commenting this doesn't break SMP
 				}
 				
-			}.init(inventory, selectedStackId, wantedId)).start();
+			}.init(inventory, replacementStackSlot, slot)).start();
 			
 		}
     }

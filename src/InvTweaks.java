@@ -36,7 +36,6 @@ public class InvTweaks extends InvTweaksObf {
     private InvTweaksAlgorithm sortingAlgorithm = null;
     private long configLastModified = 0;
     private boolean configErrorsShown = false;
-    private boolean onTickBusy = false;
 	private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
     
     public InvTweaks(Minecraft mc) {
@@ -99,15 +98,13 @@ public class InvTweaks extends InvTweaksObf {
      */
 	public void onTick() {
     	
-    	if (config == null || onTickBusy == true)
+    	if (config == null)
     		return;
     	
     	if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled())
     		onSortingKeyPressed();
     	
     	synchronized (this) {
-    		
-    	onTickBusy = true;
     	
     	ItemStack currentStack = getFocusedStack();
     	int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);

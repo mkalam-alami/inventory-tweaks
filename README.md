@@ -8,9 +8,17 @@ This repository doesn't include any third party code, so in order to compile the
 
  * Minecraft's `minecraft.jar` (version *Beta 1.7.2*)
  * [ModLoader][4]
- * [MCP 4.2](http://mcp.ocean-labs.de/index.php/MCP_Releases)
+ * Depending on the `InventoryTweaksObf.java` file used, [MCP 4.2](http://mcp.ocean-labs.de/index.php/MCP_Releases)
 
 # Compiling the mod
+
+I set up two versions of a class named InventoryTweaksObf`, that I switch when I use MCP and when I don't. This is made so that updates are easier and faster when a new version of Minecraft comes out.
+
+## With MCP
+
+Clone the repository to  the `src/minecraft/net/minecraft/` folder of MCP, it should then be ready for compilation. You will also have to copy `DefaultConfig.text` and `DefaultTree.txt` (found in `src/`) to the `bin/minecraft/net/minecraft/src` folder, or else the mod will fail to generate the configuration files.
+
+## Without MCP
 
 After building the sources, you can either move them directly to the `minecraft.jar` file, or ZIP them the same way the mod is packaged, then put the archive in the `mods` folder. Don't forget to copy `DefaultConfig.text` and `DefaultTree.txt` (found in `src/`) with the files, or else the mod will fail to generate the configuration files.
 

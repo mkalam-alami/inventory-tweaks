@@ -9,13 +9,13 @@ public class InvTweaksInventory extends InvTweaksObf {
 
 	private static final Logger log = Logger.getLogger("InvTweaks");
     
-	public static final int SIZE = 36;
 	public static final boolean STACK_NOT_EMPTIED = true;
 	public static final boolean STACK_EMPTIED = false;
 
 	private ItemStack[] inventory;
-	private int[] rulePriority = new int[SIZE];
-	private int[] keywordOrder = new int[SIZE];
+	private int size;
+	private int[] rulePriority;
+	private int[] keywordOrder;
 	private int[] lockLevels;
 	private int clickCount = 0;
 	
@@ -25,10 +25,14 @@ public class InvTweaksInventory extends InvTweaksObf {
 	
 	public InvTweaksInventory(Minecraft mc, int[] lockLevels) {
 		super(mc);
-		
+
 		this.inventory = getMainInventory();
 		this.lockLevels = lockLevels;
-		for (int i = 0; i < SIZE; i++) {
+		
+		this.size = 36; // TODO : Change according to window ID
+		this.rulePriority = new int[size];
+		this.keywordOrder = new int[size];
+		for (int i = 0; i < size; i++) {
 			this.rulePriority[i] = -1;
 			if (this.inventory[i] != null) {
 				this.keywordOrder[i] = getItemOrder(
@@ -226,7 +230,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 			if (jStack != null) {
 				int dropSlot = i;
 				if (lockLevels[j] > lockLevels[i]) {
-					for (int k = 0; k < SIZE; k++) {
+					for (int k = 0; k < size; k++) {
 						if (inventory[k] == null && lockLevels[k] == 0) {
 							dropSlot = k;
 							break;
@@ -263,7 +267,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 			// Try to find an unlocked slot first, to avoid
 			// impacting too much the sorting
 			for (int step = 1; step <= 2; step++) {
-				for (int i = SIZE-1; i >= 0; i--) {
+				for (int i = size-1; i >= 0; i--) {
 					if (inventory[i] == null
 							&& (lockLevels[i] == 0 || step == 2)) {
 						if (isMultiplayer) {
@@ -298,11 +302,8 @@ public class InvTweaksInventory extends InvTweaksObf {
 		return lockLevels[i];
 	}
 
-	/**
-	 * Alternative to InvTweaksInventory.SIZE
-	 */
 	public int getSize() {
-		return SIZE;
+		return size;
 	}
 	
 	/**
@@ -352,11 +353,11 @@ public class InvTweaksInventory extends InvTweaksObf {
 		if (!uselessClick) {
 			int pollingTime = 0;
 			while (areItemStacksEqual(inventory[slot], stackInSlot)
-					&& pollingTime < InvTweaks.POLLING_TIMEOUT) {
-				InvTweaks.trySleep(InvTweaks.POLLING_DELAY);
-				pollingTime += InvTweaks.POLLING_DELAY;
+					&& pollingTime < InvTweaksAlgorithm.POLLING_TIMEOUT) {
+				InvTweaksAlgorithm.trySleep(InvTweaksAlgorithm.POLLING_DELAY);
+				pollingTime += InvTweaksAlgorithm.POLLING_DELAY;
 			}
-			if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
+			if (pollingTime >= InvTweaksAlgorithm.POLLING_TIMEOUT)
 				log.warning("Click timout");
 		}
 	}

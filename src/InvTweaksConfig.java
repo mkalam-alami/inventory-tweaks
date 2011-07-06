@@ -212,7 +212,7 @@ public class InvTweaksConfig {
 	}
 
 	private void init() {
-		lockPriorities = new int[InvTweaksInventory.SIZE];
+		lockPriorities = new int[InvTweaks.INVENTORY_SIZE];
 		for (int i = 0; i < lockPriorities.length; i++) {
 			lockPriorities[i] = 0;
 		}

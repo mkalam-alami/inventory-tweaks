@@ -6,8 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,17 +29,15 @@ public class InvTweaks extends InvTweaksObf {
     public static final Level DEFAULT_LOG_LEVEL = Level.WARNING;
     public static final Level DEBUG = Level.INFO;
     public static final int HOT_RELOAD_DELAY = 1000;
-    public static final int AUTOREPLACE_DELAY = 200;
-    public static final int POLLING_DELAY = 3;
-    public static final int POLLING_TIMEOUT = 1500;
-	private static int[] ALL_SLOTS;
+    public static final int INVENTORY_SIZE = 36;
 
 	private static InvTweaks instance;
     private InvTweaksConfig config = null;
+    private InvTweaksAlgorithm sortingAlgorithm = null;
     private long configLastModified = 0;
     private boolean configErrorsShown = false;
     private boolean onTickBusy = false;
-	private int storedStackId = 0, storedStackDamage = -1, storedPosition = -1;
+	private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
     
     public InvTweaks(Minecraft mc) {
 
@@ -49,20 +45,14 @@ public class InvTweaks extends InvTweaksObf {
     	
     	log.setLevel(DEFAULT_LOG_LEVEL);
     	
+    	// Stor instance
     	instance = this;
-    	
-    	// Default slot order init. In the inventory, indexes are :
-		// 0 = bottom-left, 8 = bottom-right
-		// 9 = top-left, 35 = 3rd-row-right
-    	if (ALL_SLOTS == null) {
-			ALL_SLOTS = new int[InvTweaksInventory.SIZE];
-	    	for (int i = 0; i < ALL_SLOTS.length; i++) {
-	    		ALL_SLOTS[i] = (i + 9) % InvTweaksInventory.SIZE;
-	    	}
-		}
     	
     	// Load config files
 		tryLoading();
+		
+		// Load algorithm
+    	sortingAlgorithm = new InvTweaksAlgorithm(mc, config);
     	
     	log.info("Mod initialItemStacked");
     	
@@ -74,177 +64,33 @@ public class InvTweaks extends InvTweaksObf {
 
     public final void onSortingKeyPressed()
     {
-    	sortContainer(0);
-    }
-    
-    /**
-	 * Sort inventory
-	 * @return The number of clicks that were needed
-     */
-    public final long sortContainer(int windowId) // TODO: Use window ID
-    {
-    	// Hot reload trigger
-    	if (getConfigLastModified() != configLastModified)
-    		tryLoading();
-    	
     	// Check config loading success & current GUI
     	if (config == null ||
     			!(getCurrentScreen() == null ||
     			getCurrentScreen() instanceof GuiContainer /* GuiContainer */)) {
-    		return -1;
+    		return;
     	}
-    	
-    	synchronized (this) {
+    	// Hot reload trigger
+    	if (getConfigLastModified() != configLastModified)
+    		tryLoading();
     	
     	// Config keywords error message
     	if (!configErrorsShown) {
     		showConfigErrors(config);
 			configErrorsShown = true;
     	}
-    	
-    	// Do nothing if the inventory is closed
-    	// if (!mc.hrrentScreen instanceof GuiContainer)
-    	//		return;
-    	
-    	long timer = System.nanoTime();
+
     	ItemStack selectedItem = getItemStack(
     			getMainInventory(),
     			getFocusedSlot());
-		
-		Vector<InvTweaksRule> rules = config.getRules();
-		InvTweaksInventory inventory = new InvTweaksInventory(
-				mc, config.getLockPriorities());
-
-		//// Empty hand (needed in SMP)
-		if (isMultiplayerWorld())
-			inventory.putHoldItemDown();
-		
-    	//// Merge stacks to fill the ones in locked slots
-		log.info("Merging stacks.");
-		
-		Vector<Integer> lockedSlots = config.getLockedSlots();
-    	for (int i = inventory.getSize()-1; i >= 0; i--) {
-    		ItemStack from = inventory.getItemStack(i);
-    		if (from != null) {
-    	    	for (Integer j : lockedSlots) {
-    	    		ItemStack to = inventory.getItemStack(j);
-    	    		if (to != null && inventory.canBeMerged(i, j)) {
-    	    			boolean result = inventory.mergeStacks(i, j);
-    	    			inventory.markAsNotMoved(j);
-    	    			if (result == InvTweaksInventory.STACK_EMPTIED) {
-        	    			break;
-    	    			}
-    	    		}
-    	    	}
-    		}
-    	}
     	
-    	//// Apply rules
-		log.info("Applying rules.");
-    	
-    	// Sorts rule by rule, themselves being already sorted by decreasing priority
-		Iterator<InvTweaksRule> rulesIt = rules.iterator();
-		while (rulesIt.hasNext()) {
-			
-			InvTweaksRule rule = rulesIt.next();
-			int rulePriority = rule.getPriority();
-
-			if (log.getLevel() == DEBUG)
-				log.info("Rule : "+rule.getKeyword()+"("+rulePriority+")");
-
-			for (int i = 0; i < inventory.getSize(); i++) {
-				ItemStack from = inventory.getItemStack(i);
-	    		
-	    		if (inventory.hasToBeMoved(i) && 
-	    				inventory.getLockLevel(i) < rulePriority) {
-					List<InvTweaksItem> fromItems = InvTweaksTree.getItems(
-							getItemID(from), getItemDamage(from));
-	    			if (InvTweaksTree.matches(fromItems, rule.getKeyword())) {
-	    				
-	    				int[] preferredPos = rule.getPreferredPositions();
-	    				for (int j = 0; j < preferredPos.length; j++) {
-	    					int k = preferredPos[j];
-	    					
-	    					if (inventory.moveStack(i, k, rulePriority)) {
-	    						from = inventory.getItemStack(i);
-	    						if (from == null || i == k) {
-	    							break;
-	    						}
-	    						else {
-	    							fromItems = InvTweaksTree.getItems(
-	    									getItemID(from), getItemDamage(from));
-	    							if (!InvTweaksTree.matches(
-	    									fromItems, rule.getKeyword())) {
-	    								break;
-	    							}
-	    							else {
-	    								j--;
-	    							}
-	    						}
-		    				}
-	    				}
-	    			}
-	    		}
-			}
-		}
-    	
-		//// Don't move locked stacks
-		log.info("Locking stacks.");
+    	sortingAlgorithm.sortContainer(0); // TODO: Use window ID
 		
-		for (int i = 0; i < inventory.getSize(); i++) {
-			if (inventory.hasToBeMoved(i) && inventory.getLockLevel(i) > 0) {
-				inventory.markAsMoved(i, 1);
-			}
-		}
-    	
-		//// Sort remaining
-		log.info("Sorting remaining.");
-		
-		Vector<Integer> remaining = new Vector<Integer>(), nextRemaining = new Vector<Integer>();
-		for (int i = 0; i < inventory.getSize(); i++) {
-			if (inventory.hasToBeMoved(i)) {
-				remaining.add(i);
-				nextRemaining.add(i);
-			}
-		}
-		
-		int iterations = 0;
-		while (remaining.size() > 0 && iterations++ < 50) {
-			for (int i : remaining) {
-				if (inventory.hasToBeMoved(i)) {
-					for (int j : ALL_SLOTS) {
-						if (inventory.moveStack(i, j, 1)) {
-							nextRemaining.remove((Object) j);
-							break;
-						}
-					}
-				}
-				else {
-					nextRemaining.remove((Object) i);
-				}
-			}
-			remaining.clear();
-			remaining.addAll(nextRemaining);
-		}
-		if (iterations == 50) {
-			log.info("Sorting takes too long, aborting.");
-		}
-
-		if (log.getLevel() == DEBUG) {
-			timer = System.nanoTime()-timer;
-			log.info("Sorting done in "
-					+ inventory.getClickCount() + " clicks and "
-					+ timer + "ns");
-		}
-		
-    	// This needs to be remembered so that the autoreplace feature doesn't trigger
+    	// This needs to be remembered so that the
+    	// autoreplace feature doesn't trigger
     	if (selectedItem != null && 
     			getMainInventory()[getFocusedSlot()] == null) {
     		storedStackId = 0;
-    	}
-
-    	return inventory.getClickCount();
-    	
     	}
     }
 
@@ -264,17 +110,16 @@ public class InvTweaks extends InvTweaksObf {
     	onTickBusy = true;
     	
     	ItemStack currentStack = getFocusedStack();
-    	ItemStack replacementStack = null;
     	int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
     	int currentStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
-		int currentItem = getFocusedSlot();
+		int focusedSlot = getFocusedSlot();
 		
     	// Auto-replace item stack
     	if (currentStackId != storedStackId
     			|| currentStackDamage != storedStackDamage) {
     		
-	    	if (storedPosition != currentItem) { // Filter selection change
-	    		storedPosition = currentItem;
+	    	if (storedFocusedSlot != focusedSlot) { // Filter selection change
+	    		storedFocusedSlot = focusedSlot;
 	    	}
 	    	else if ((currentStack == null ||
 	    			getItemID(currentStack) == 281 && storedStackId == 282) // Handle eaten mushroom soup
@@ -282,96 +127,9 @@ public class InvTweaks extends InvTweaksObf {
 	    			(getCurrentScreen() == null || // Filter open inventory or other window
 	    			getCurrentScreen() instanceof GuiEditSign /* GuiEditSign */)) { 
 		    		
-        		InvTweaksInventory inventory = new InvTweaksInventory(
-        				mc, config.getLockPriorities());  	
-        		ItemStack candidateStack;
-        		ItemStack storedStack = createItemStack(storedStackId, 1, storedStackDamage);
-    			int selectedStackId = -1;
+	    			sortingAlgorithm.autoReplaceSlot(focusedSlot, 
+	    					storedStackId, storedStackDamage);
 	    		
-    			// Search replacement
-    			for (int i = 0; i < InvTweaksInventory.SIZE; i++) {
-    				
-	    			// Look only for a matching stack
-	    			candidateStack = inventory.getItemStack(i);
-	    			if (candidateStack != null && 
-	    					inventory.areSameItem(storedStack, candidateStack) &&
-	    					config.canBeAutoReplaced(
-	    							getItemID(candidateStack),
-	    							getItemDamage(candidateStack))) {
-	    				// Choose stack of lowest sItemStacke and (in case of tools) highest damage
-	    				if (replacementStack == null ||
-	    						getStackSize(replacementStack) > getStackSize(candidateStack) ||
-	    						(getStackSize(replacementStack) == getStackSize(candidateStack) &&
-	    								getMaxStackSize(replacementStack) == 1 &&
-	    								getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
-	    					replacementStack = candidateStack;
-	    					selectedStackId = i;
-	    				}
-	    			}
-    			}
-    			
-    			// Proceed to replacement
-    			if (replacementStack != null) {
-    				
-    				log.info("Automatic stack replacement.");
-    				
-				    /*
-				     * This allows to have a short feedback 
-				     * that the stack/tool is empty/broken.
-				     */
-					new Thread(new Runnable() {
-
-						private InvTweaksInventory inventory;
-						private int currentItem;
-						private int i, expectedItemId;
-						
-						public Runnable init(
-								InvTweaksInventory inventory,
-								int i, int currentItem) {
-							this.inventory = inventory;
-							this.currentItem = currentItem;
-							this.expectedItemId = getItemID(inventory.getItemStack(i));
-							this.i = i;
-							return this;
-						}
-						
-						public void run() {
-							
-							if (isMultiplayerWorld()) {
-								// Wait for the server to confirm that the
-								// slot is now empty
-								int pollingTime = 0;
-								setHasInventoryChanged(false);
-								while(!hasInventoryChanged()
-										&& pollingTime < POLLING_TIMEOUT) {
-									trySleep(POLLING_DELAY);
-								}
-								if (pollingTime < AUTOREPLACE_DELAY)
-									trySleep(AUTOREPLACE_DELAY - pollingTime);
-								if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
-									log.warning("Autoreplace timout");
-							}
-							else {
-								trySleep(AUTOREPLACE_DELAY);
-							}
-							
-							// In POLLING_DELAY ms, things might have changed
-							try {
-								ItemStack stack = inventory.getItemStack(i);
-								if (stack != null && getItemID(stack) == expectedItemId) {
-									inventory.moveStack(i, currentItem, Integer.MAX_VALUE);
-								}
-							}
-							catch (NullPointerException e) {
-								// Nothing: Due to multithreading + 
-								// unsafe accesses, NPE may (very rarely) occur (?).
-							}
-							
-					    	onTickBusy = false;
-						}
-						
-					}.init(inventory, selectedStackId, currentItem)).start();
-    				
 	    		}
 	    	}
 	    	
@@ -379,17 +137,17 @@ public class InvTweaks extends InvTweaksObf {
 	    	storedStackDamage = currentStackDamage;
     	}
 
-		if (replacementStack == null)
-	    	onTickBusy = false;
-		
-    	}
     }
 	
     public void logInGame(String message) {
     	addChatMessage(INGAME_LOG_PREFIX + message);
     }
     
-    /**
+    public InvTweaksConfig getConfig() {
+		return config;
+	}
+
+	/**
      * Checks time of last edit for both configuration files.
      * @return
      */
@@ -528,11 +286,4 @@ public class InvTweaks extends InvTweaksObf {
 		}
    	}
 
-	public static void trySleep(int delay) {
-		try {
-			Thread.sleep(delay);
-		} catch (InterruptedException e) {
-			// Do nothing
-		}
-    }
 }

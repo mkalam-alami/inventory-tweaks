@@ -1,6 +1,14 @@
+package net.minecraft.test;
+
 import java.util.Random;
 import java.util.logging.Logger;
 
+import net.minecraft.src.InvTweaks;
+import net.minecraft.src.InvTweaksAlgorithm;
+import net.minecraft.src.InvTweaksObf;
+import net.minecraft.src.InvTweaksTree;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.ModLoader;
 
 public class InvTweaksBenchmarking extends InvTweaksObf {
 
@@ -25,10 +33,12 @@ public class InvTweaksBenchmarking extends InvTweaksObf {
     	// Note that benchmarking is also specific to
     	// a ruleset, a keyword tree, and the game mode (SP/SMP).
     	final int minOccupiedSlots = 0;
-    	final int maxOccupiedSlots = InvTweaksInventory.SIZE;
+    	final int maxOccupiedSlots = InvTweaks.INVENTORY_SIZE;
     	final int maxDuplicateStacks = 5;
     	
-    	iz[] invBackup = getMainInventory().clone();
+    	InvTweaksAlgorithm sortingAlgorithm = 
+    		new InvTweaksAlgorithm(mc, invTweaks.getConfig());
+    	ItemStack[] invBackup = getMainInventory().clone();
     	Random r = new Random();
     	long delay, totalDelay = 0, worstDelay = -1, bestDelay = -1,
     		clickCount, totalClickCount = 0, worstClickCount = -1;
@@ -41,8 +51,8 @@ public class InvTweaksBenchmarking extends InvTweaksObf {
 	    		
 	    		int stackCount = r.nextInt(maxOccupiedSlots-minOccupiedSlots)
 	    				+ minOccupiedSlots;
-	    		iz[] inventory = getMainInventory();
-	    		for (int j = 0; j < InvTweaksInventory.SIZE; j++) {
+	    		ItemStack[] inventory = getMainInventory();
+	    		for (int j = 0; j < InvTweaks.INVENTORY_SIZE; j++) {
 	    			inventory[j] = null;
 	    		}
 	    		
@@ -58,7 +68,7 @@ public class InvTweaksBenchmarking extends InvTweaksObf {
 	    			
 	    			int k;
 	    			do {
-	    				k = r.nextInt(InvTweaksInventory.SIZE);
+	    				k = r.nextInt(InvTweaks.INVENTORY_SIZE);
 	    			} while (inventory[k] != null);
 	    			
 					inventory[k] = createItemStack(stackId, 1, 0);
@@ -69,7 +79,7 @@ public class InvTweaksBenchmarking extends InvTweaksObf {
 	    		// Benchmark
 	    		
 	    		delay = System.nanoTime();
-	    		clickCount = invTweaks.sortContainer(0); // TODO
+	    		clickCount = sortingAlgorithm.sortContainer(0);
 	    		delay = System.nanoTime() - delay;
 	    		
 	    		totalDelay += delay;

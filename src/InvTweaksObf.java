@@ -123,4 +123,10 @@ public class InvTweaksObf {
 		return container.slots;
 	}
 	
+	// GuiContainer members
+	
+	public Container getInventorySlots(GuiContainer guiContainer) {
+		return guiContainer.inventorySlots;
+	}
+	
 }

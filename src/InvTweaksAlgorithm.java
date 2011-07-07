@@ -14,6 +14,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
     public static final int AUTOREPLACE_DELAY = 200;
     public static final int POLLING_DELAY = 3;
     public static final int POLLING_TIMEOUT = 1500;
+    public static final int PLAYER_INVENTORY_WINDOW = 0;
     
     private InvTweaksConfig config = null;
     
@@ -40,7 +41,6 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
     	
     	long timer = System.nanoTime();
 		
-		Vector<InvTweaksRule> rules = config.getRules();
 		InvTweaksInventory inventory = new InvTweaksInventory(
 				mc, config.getLockPriorities());
 
@@ -48,86 +48,108 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		if (isMultiplayerWorld())
 			inventory.putHoldItemDown();
 		
-    	//// Merge stacks to fill the ones in locked slots
-		log.info("Merging stacks.");
-		
-		Vector<Integer> lockedSlots = config.getLockedSlots();
-    	for (int i = inventory.getSize()-1; i >= 0; i--) {
-    		ItemStack from = inventory.getItemStack(i);
-    		if (from != null) {
-    	    	for (Integer j : lockedSlots) {
-    	    		ItemStack to = inventory.getItemStack(j);
-    	    		if (to != null && inventory.canBeMerged(i, j)) {
-    	    			boolean result = inventory.mergeStacks(i, j);
-    	    			inventory.markAsNotMoved(j);
-    	    			if (result == InvTweaksInventory.STACK_EMPTIED) {
-        	    			break;
-    	    			}
-    	    		}
-    	    	}
-    		}
-    	}
-    	
-    	//// Apply rules
-		log.info("Applying rules.");
-    	
-    	// Sorts rule by rule, themselves being already sorted by decreasing priority
-		Iterator<InvTweaksRule> rulesIt = rules.iterator();
-		while (rulesIt.hasNext()) {
+		if (windowId == PLAYER_INVENTORY_WINDOW) {
+				
+			Vector<InvTweaksRule> rules = config.getRules();
 			
-			InvTweaksRule rule = rulesIt.next();
-			int rulePriority = rule.getPriority();
-
-			if (log.getLevel() == InvTweaks.DEBUG)
-				log.info("Rule : "+rule.getKeyword()+"("+rulePriority+")");
-
-			for (int i = 0; i < inventory.getSize(); i++) {
-				ItemStack from = inventory.getItemStack(i);
-	    		
-	    		if (inventory.hasToBeMoved(i) && 
-	    				inventory.getLockLevel(i) < rulePriority) {
-					List<InvTweaksItem> fromItems = InvTweaksTree.getItems(
-							getItemID(from), getItemDamage(from));
-	    			if (InvTweaksTree.matches(fromItems, rule.getKeyword())) {
-	    				
-	    				int[] preferredPos = rule.getPreferredPositions();
-	    				for (int j = 0; j < preferredPos.length; j++) {
-	    					int k = preferredPos[j];
-	    					
-	    					if (inventory.moveStack(i, k, rulePriority)) {
-	    						from = inventory.getItemStack(i);
-	    						if (from == null || i == k) {
-	    							break;
-	    						}
-	    						else {
-	    							fromItems = InvTweaksTree.getItems(
-	    									getItemID(from), getItemDamage(from));
-	    							if (!InvTweaksTree.matches(
-	    									fromItems, rule.getKeyword())) {
-	    								break;
-	    							}
-	    							else {
-	    								j--;
-	    							}
-	    						}
-		    				}
-	    				}
-	    			}
+	    	//// Merge stacks to fill the ones in locked slots
+			log.info("Merging stacks.");
+			
+			Vector<Integer> lockedSlots = config.getLockedSlots();
+	    	for (int i = inventory.getSize()-1; i >= 0; i--) {
+	    		ItemStack from = inventory.getItemStack(i);
+	    		if (from != null) {
+	    	    	for (Integer j : lockedSlots) {
+	    	    		ItemStack to = inventory.getItemStack(j);
+	    	    		if (to != null && inventory.canBeMerged(i, j)) {
+	    	    			boolean result = inventory.mergeStacks(i, j);
+	    	    			inventory.markAsNotMoved(j);
+	    	    			if (result == InvTweaksInventory.STACK_EMPTIED) {
+	        	    			break;
+	    	    			}
+	    	    		}
+	    	    	}
 	    		}
+	    	}
+	    	
+	    	//// Apply rules
+			log.info("Applying rules.");
+	    	
+	    	// Sorts rule by rule, themselves being already sorted by decreasing priority
+			Iterator<InvTweaksRule> rulesIt = rules.iterator();
+			while (rulesIt.hasNext()) {
+				
+				InvTweaksRule rule = rulesIt.next();
+				int rulePriority = rule.getPriority();
+	
+				if (log.getLevel() == InvTweaks.DEBUG)
+					log.info("Rule : "+rule.getKeyword()+"("+rulePriority+")");
+	
+				for (int i = 0; i < inventory.getSize(); i++) {
+					ItemStack from = inventory.getItemStack(i);
+		    		
+		    		if (inventory.hasToBeMoved(i) && 
+		    				inventory.getLockLevel(i) < rulePriority) {
+						List<InvTweaksItem> fromItems = InvTweaksTree.getItems(
+								getItemID(from), getItemDamage(from));
+		    			if (InvTweaksTree.matches(fromItems, rule.getKeyword())) {
+		    				
+		    				int[] preferredPos = rule.getPreferredPositions();
+		    				for (int j = 0; j < preferredPos.length; j++) {
+		    					int k = preferredPos[j];
+		    					
+		    					if (inventory.moveStack(i, k, rulePriority)) {
+		    						from = inventory.getItemStack(i);
+		    						if (from == null || i == k) {
+		    							break;
+		    						}
+		    						else {
+		    							fromItems = InvTweaksTree.getItems(
+		    									getItemID(from), getItemDamage(from));
+		    							if (!InvTweaksTree.matches(
+		    									fromItems, rule.getKeyword())) {
+		    								break;
+		    							}
+		    							else {
+		    								j--;
+		    							}
+		    						}
+			    				}
+		    				}
+		    			}
+		    		}
+				}
 			}
+	    	
+			//// Don't move locked stacks
+			log.info("Locking stacks.");
+			
+			for (int i = 0; i < inventory.getSize(); i++) {
+				if (inventory.hasToBeMoved(i) && inventory.getLockLevel(i) > 0) {
+					inventory.markAsMoved(i, 1);
+				}
+			}
+
 		}
-    	
-		//// Don't move locked stacks
-		log.info("Locking stacks.");
 		
-		for (int i = 0; i < inventory.getSize(); i++) {
-			if (inventory.hasToBeMoved(i) && inventory.getLockLevel(i) > 0) {
-				inventory.markAsMoved(i, 1);
-			}
-		}
-    	
 		//// Sort remaining
-		log.info("Sorting remaining.");
+		defaultSorting(inventory);
+
+		if (log.getLevel() == InvTweaks.DEBUG) {
+			timer = System.nanoTime()-timer;
+			log.info("Sorting done in "
+					+ inventory.getClickCount() + " clicks and "
+					+ timer + "ns");
+		}
+
+    	return inventory.getClickCount();
+    	
+    	}
+    }
+    
+    private void defaultSorting(InvTweaksInventory inventory) {
+
+		log.info("Default sorting.");
 		
 		Vector<Integer> remaining = new Vector<Integer>(), nextRemaining = new Vector<Integer>();
 		for (int i = 0; i < inventory.getSize(); i++) {
@@ -166,19 +188,8 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		if (iterations == 50) {
 			log.info("Sorting takes too long, aborting.");
 		}
-
-		if (log.getLevel() == InvTweaks.DEBUG) {
-			timer = System.nanoTime()-timer;
-			log.info("Sorting done in "
-					+ inventory.getClickCount() + " clicks and "
-					+ timer + "ns");
-		}
-
-    	return inventory.getClickCount();
-    	
-    	}
+		
     }
-    
 
     /**
      * Autoreplace + middle click sorting

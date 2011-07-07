@@ -86,18 +86,13 @@ public class InvTweaks extends InvTweaksObf {
     			getMainInventory(),
     			getFocusedSlot());
     	
-    	sortingAlgorithm.sortContainer(0); // TODO: Use window ID
+    	sortingAlgorithm.sortContainer(0);
 		
     	// This needs to be remembered so that the
     	// autoreplace feature doesn't trigger
     	if (selectedItem != null && 
     			getMainInventory()[getFocusedSlot()] == null) {
     		storedStackId = 0;
-    	}
-    	
-    	if (guiScreen instanceof GuiChest /* GuiChest */
-    			|| guiScreen instanceof GuiDispenser /* GuiDispenser */) {
-    		
     	}
     }
 

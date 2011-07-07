@@ -13,7 +13,9 @@ public class InvTweaksInventory extends InvTweaksObf {
 	public static final boolean STACK_EMPTIED = false;
 
 	private ItemStack[] inventory;
-	private int size;
+	private Container container = null;
+	private int size = 36;
+	private int windowId = 0;
 	private int[] rulePriority;
 	private int[] keywordOrder;
 	private int[] lockLevels;
@@ -21,7 +23,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 	
 	// Multiplayer
 	private boolean isMultiplayer;
-	private EntityPlayer player; /* EntityPlayer */
+	private EntityPlayer entityPlayer;
 	
 	public InvTweaksInventory(Minecraft mc, int[] lockLevels) {
 		super(mc);
@@ -29,19 +31,26 @@ public class InvTweaksInventory extends InvTweaksObf {
 		this.inventory = getMainInventory();
 		this.lockLevels = lockLevels;
 		
-		this.size = 36; // TODO : Change according to window ID
+		GuiScreen guiScreen = getCurrentScreen(); 
+		if (guiScreen instanceof GuiChest /* GuiChest */
+				|| guiScreen instanceof GuiDispenser /* GuiDispenser */) {
+			GuiContainer guiContainer = (GuiContainer) guiScreen;
+			this.container = getInventorySlots(guiContainer);
+			this.inventory = null;
+			this.windowId = getWindowId(container);
+			this.size = getSlots(container).size();
+		}
+		
 		this.rulePriority = new int[size];
 		this.keywordOrder = new int[size];
 		for (int i = 0; i < size; i++) {
 			this.rulePriority[i] = -1;
-			if (this.inventory[i] != null) {
-				this.keywordOrder[i] = getItemOrder(
-						getItemID(this.inventory[i]),
-						getItemDamage(this.inventory[i]));
-			}
+			this.keywordOrder[i] = getItemOrder(
+					getItemID(getStackInSlot(i)),
+					getItemDamage(getStackInSlot(i)));
 		}
 
-		this.player = getThePlayer();
+		this.entityPlayer = getThePlayer();
 		this.isMultiplayer = isMultiplayerWorld();
 	}
 	
@@ -64,7 +73,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 				return true;
 			}
 			
-			boolean targetEmpty = inventory[j] == null;
+			boolean targetEmpty = getStackInSlot(j) == null;
 			
 			// Move to empty slot
 			if (targetEmpty && lockLevels[j] <= priority) {
@@ -112,7 +121,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 	}
 
 	public boolean hasToBeMoved(int slot) {
-		return inventory[slot] != null && rulePriority[slot] == -1;
+		return getStackInSlot(slot) != null && rulePriority[slot] == -1;
 	}
 
 	/**
@@ -127,38 +136,38 @@ public class InvTweaksInventory extends InvTweaksObf {
 	}
 
 	public boolean canBeMerged(int i, int j) {
-		return (i != j && inventory[i] != null && inventory[j] != null && 
-				areSameItem(inventory[i], inventory[j]) &&
-				getStackSize(inventory[j]) < getMaxStackSize(inventory[j]));
+		return (i != j && getStackInSlot(i) != null && getStackInSlot(j) != null && 
+				areSameItem(getStackInSlot(i), getStackInSlot(j)) &&
+				getStackSize(getStackInSlot(j)) < getMaxStackSize(getStackInSlot(j)));
 	}
 
 	public boolean isOrderedBefore(int i, int j) {
 		
-		if (inventory[j] == null) {
+		if (getStackInSlot(j) == null) {
 			return true;
 		}
-		else if (inventory[i] == null || keywordOrder[i] == -1) {
+		else if (getStackInSlot(i) == null || keywordOrder[i] == -1) {
 			return false;
 		}
 		else {
 			if (keywordOrder[i] == keywordOrder[j]) {
 				// Items of same keyword orders can have different IDs,
 				// in the case of categories defined by a range of IDs
-				if (getItemID(inventory[i]) == getItemID(inventory[j])) {
-					if (getStackSize(inventory[i]) == getStackSize(inventory[j])) {
+				if (getItemID(getStackInSlot(i)) == getItemID(getStackInSlot(j))) {
+					if (getStackSize(getStackInSlot(i)) == getStackSize(getStackInSlot(j))) {
 						// Highest damage first for tools, else lowest damage.
 						// No tool ordering for same ID in multiplayer (cannot swap directly)
-						return (getItemDamage(inventory[i]) > getItemDamage(inventory[j])
-									&& getMaxStackSize(inventory[j]) == 1 && !isMultiplayer)
-								|| (getItemDamage(inventory[i]) < getItemDamage(inventory[j])
-										&& getMaxStackSize(inventory[j]) > 1);
+						return (getItemDamage(getStackInSlot(i)) > getItemDamage(getStackInSlot(j))
+									&& getMaxStackSize(getStackInSlot(j)) == 1 && !isMultiplayer)
+								|| (getItemDamage(getStackInSlot(i)) < getItemDamage(getStackInSlot(j))
+										&& getMaxStackSize(getStackInSlot(j)) > 1);
 					}
 					else {
-						return getStackSize(inventory[i]) > getStackSize(inventory[j]);
+						return getStackSize(getStackInSlot(i)) > getStackSize(getStackInSlot(j));
 					}
 				}
 				else {
-					return getItemID(inventory[i]) > getItemID(inventory[j]);
+					return getItemID(getStackInSlot(i)) > getItemID(getStackInSlot(j));
 				}
 			}
 			else {
@@ -180,8 +189,8 @@ public class InvTweaksInventory extends InvTweaksObf {
 		// Merge stacks
 		if (canBeMerged(i, j)) {
 			
-			int sum = getStackSize(inventory[i]) + getStackSize(inventory[j]);
-			int max = getMaxStackSize(inventory[j]);
+			int sum = getStackSize(getStackInSlot(i)) + getStackSize(getStackInSlot(j));
+			int max = getMaxStackSize(getStackInSlot(j));
 			
 			if (sum <= max) {
 				
@@ -190,12 +199,12 @@ public class InvTweaksInventory extends InvTweaksObf {
 					click(i);
 				}
 
-				put(inventory[j], j, priority);
+				put(getStackInSlot(j), j, priority);
 				if (isMultiplayer) {
 					click(j);
 				}
 				else {
-					setStackSize(inventory[j], sum);
+					setStackSize(getStackInSlot(j), sum);
 				}
 				return true;
 			}
@@ -206,10 +215,10 @@ public class InvTweaksInventory extends InvTweaksObf {
 					click(i);
 				}
 				else {
-					setStackSize(inventory[i], sum - max);
-					setStackSize(inventory[j], max);
+					setStackSize(getStackInSlot(i), sum - max);
+					setStackSize(getStackInSlot(j), max);
 				}
-				put(inventory[j], j, priority);
+				put(getStackInSlot(j), j, priority);
 				return false;
 			}
 		}
@@ -218,7 +227,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 		else {
 			
 			// i to j
-			ItemStack jStack = inventory[j];
+			ItemStack jStack = getStackInSlot(j);
 			ItemStack iStack = remove(i);
 			if (isMultiplayer) {
 				click(i);
@@ -231,7 +240,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 				int dropSlot = i;
 				if (lockLevels[j] > lockLevels[i]) {
 					for (int k = 0; k < size; k++) {
-						if (inventory[k] == null && lockLevels[k] == 0) {
+						if (getStackInSlot(k) == null && lockLevels[k] == 0) {
 							dropSlot = k;
 							break;
 						}
@@ -268,13 +277,13 @@ public class InvTweaksInventory extends InvTweaksObf {
 			// impacting too much the sorting
 			for (int step = 1; step <= 2; step++) {
 				for (int i = size-1; i >= 0; i--) {
-					if (inventory[i] == null
+					if (getStackInSlot(i) == null
 							&& (lockLevels[i] == 0 || step == 2)) {
 						if (isMultiplayer) {
 							click(i);
 						}
 						else {
-							inventory[i] = holdStack;
+							putStackInSlot(i, holdStack);
 							setHoldStack(null);
 						}
 						return true;
@@ -295,7 +304,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 	}
 
 	public ItemStack getItemStack(int i) {
-		return inventory[i];
+		return getStackInSlot(i);
 	}
 	
 	public int getLockLevel(int i) {
@@ -324,7 +333,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 		// We'll do this by listening to any change in the slot, but this implies we
 		// check first if the click will indeed produce a change.
 		boolean uselessClick = false;
-		ItemStack stackInSlot = (inventory[slot] != null) ? copy(inventory[slot]) : null;
+		ItemStack stackInSlot = (getStackInSlot(slot) != null) ? copy(getStackInSlot(slot)) : null;
 		ItemStack stackInHand = getHoldStack();
 		
 		// Useless if empty stacks
@@ -339,20 +348,20 @@ public class InvTweaksInventory extends InvTweaksObf {
 		
 		// Click!
 		clickInventory(getPlayerController(),
-				getWindowId(getCraftingInventory()), // Select active inventory
+				windowId, // Select container
 				((slot > 8) ? slot - 9 : slot + 27) + 
 					getSlots(getCraftingInventory()).size() - 36, // Targeted slot
 						// (converted for the network protocol indexes,
 						// see http://mc.kev009.com/Inventory#Windows)
 				0, // Left-click
 				false, // Shift not held 
-				player
+				entityPlayer
 			);
 		
 		// Wait for inventory update
 		if (!uselessClick) {
 			int pollingTime = 0;
-			while (areItemStacksEqual(inventory[slot], stackInSlot)
+			while (areItemStacksEqual(getStackInSlot(slot), stackInSlot)
 					&& pollingTime < InvTweaksAlgorithm.POLLING_TIMEOUT) {
 				InvTweaksAlgorithm.trySleep(InvTweaksAlgorithm.POLLING_DELAY);
 				pollingTime += InvTweaksAlgorithm.POLLING_DELAY;
@@ -369,7 +378,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 	 * @return The removed stack
 	 */
 	private ItemStack remove(int slot) {
-		ItemStack removed = inventory[slot];
+		ItemStack removed = getStackInSlot(slot);
 		if (log.getLevel() == InvTweaks.DEBUG) {
 			try {
 				log.info("Removed: "+InvTweaksTree.getItems(
@@ -380,7 +389,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 			}
 		}
 		if (!isMultiplayer) {
-			inventory[slot] = null;
+			putStackInSlot(slot, null);
 		}
 		rulePriority[slot] = -1;
 		keywordOrder[slot] = -1;
@@ -405,10 +414,28 @@ public class InvTweaksInventory extends InvTweaksObf {
 			}
 		}
 		if (!isMultiplayer) {
-			inventory[slot] = stack;
+			putStackInSlot(slot, stack);
 		}
 		rulePriority[slot] = priority;
 		keywordOrder[slot] = getItemOrder(getItemID(stack), getItemDamage(stack));
+	}
+	
+	private ItemStack getStackInSlot(int i) {
+		if (container == null) {
+			return inventory[i];
+		}
+		else {
+			return container.getStackInSlot(i);
+		}
+	}
+	
+	private void putStackInSlot(int i, ItemStack stack) {
+		if (container == null) {
+			inventory[i] = stack;
+		}
+		else {
+			container.putStackInSlot(i, stack);
+		}
 	}
 	
 	private int getItemOrder(int itemID, int itemDamage) {

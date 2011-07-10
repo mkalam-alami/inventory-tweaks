@@ -354,10 +354,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 		// Click!
 		clickInventory(getPlayerController(),
 				getWindowId(container), // Select container
-				((slot > 8) ? slot - 9 : slot + 27) + 
-					getSlots(getCraftingInventory()).size() - 36, // Targeted slot
-						// (converted for the network protocol indexes,
-						// see http://mc.kev009.com/Inventory#Windows)
+				slot + offset, // Targeted slot
 				0, // Left-click
 				false, // Shift not held 
 				entityPlayer
@@ -371,8 +368,9 @@ public class InvTweaksContainer extends InvTweaksObf {
 				InvTweaksAlgorithm.trySleep(InvTweaks.POLLING_DELAY);
 				pollingTime += InvTweaks.POLLING_DELAY;
 			}
-			if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
+			if (pollingTime >= InvTweaks.POLLING_TIMEOUT) {
 				log.warning("Click timout");
+			}
 		}
 	}
 	

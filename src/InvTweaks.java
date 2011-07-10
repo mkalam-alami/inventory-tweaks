@@ -36,6 +36,7 @@ public class InvTweaks extends InvTweaksObf {
     public static final int POLLING_DELAY = 3;
     public static final int POLLING_TIMEOUT = 1500;
     public static final int PLAYER_INVENTORY_WINDOW_ID = 0;
+	public static final int SORTING_TIMEOUT = 5000; // TODO: Enable timeout
 
 	private static InvTweaks instance;
     private InvTweaksConfig config = null;
@@ -121,18 +122,18 @@ public class InvTweaks extends InvTweaksObf {
 					w = 10, h = 10;
 
 				GuiButton button = new SortingButton(
-						id++, x, y, w, h, "s",
+						id++, x-24, y, w, h, "s",
 						container, InvTweaksAlgorithm.DEFAULT);
-				guiContainer.controlList.add((GuiButton) button);
-				
-				button = new SortingButton(
-						id++, x-12, y, w, h, "h",
-						container, InvTweaksAlgorithm.HORIZONTAL);
 				guiContainer.controlList.add((GuiButton) button);
 
 				button = new SortingButton(
-						id++, x-24, y, w, h, "v",
+						id++, x-12, y, w, h, "v",
 						container, InvTweaksAlgorithm.VERTICAL);
+				guiContainer.controlList.add((GuiButton) button);
+				
+				button = new SortingButton(
+						id++, x, y, w, h, "h",
+						container, InvTweaksAlgorithm.HORIZONTAL);
 				guiContainer.controlList.add((GuiButton) button);
 				
 				buttonsAddedToGui = true;
@@ -375,9 +376,9 @@ public class InvTweaks extends InvTweaksObf {
 		private int algorithm;
 		
 		public SortingButton(int id, int x, int y,
-				int w, int h, String s,
+				int w, int h, String displayString,
 				Container container, int algorithm) { // TODO Explicit params
-			super(id, x, y, w, h, s);
+			super(id, x, y, w, h, displayString);
 			this.container = container;
 			this.algorithm = algorithm;
 		}
@@ -404,13 +405,15 @@ public class InvTweaks extends InvTweaksObf {
 	        drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2,
 	        		200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2, 
 	        		width / 2, height / 2);
-	        
-	        if(!enabled)
-	        {
-	            drawCenteredString(fontrenderer, displayString, xPosition + width / 2, yPosition + height / 2, 0xffa0a0a0);
+
+	        // Button status specific behaviour
+        	int textColor = 0xffe0e0e0;
+	        if (!enabled) {
+	            textColor = 0xffa0a0a0;
 	        } else {
-		        if(flag)
+		        if (flag)
 		        {
+		        	textColor = 0xffffffa0;
 		        	// Sort container
 		        	if (Mouse.isButtonDown(0)) {
 		        		if (!buttonClicked) {
@@ -422,12 +425,23 @@ public class InvTweaks extends InvTweaksObf {
 		        	else {
 		        		buttonClicked = false;
 		        	}
-		            drawCenteredString(fontrenderer, displayString, xPosition + width / 2, yPosition + height / 2 - 4, 0xffffa0);
 		        }
-		        else
-		        {
-		            drawCenteredString(fontrenderer, displayString, xPosition + width / 2, yPosition + height / 2 - 4, 0xe0e0e0);
-		        }
+	        }
+	        
+	        // Display string (or symbol)
+	        if (displayString.equals("h")) {
+	        	drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4, textColor);
+	        	drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7, textColor);
+	        }
+	        else if (displayString.equals("v")) {
+	        	drawRect(xPosition + 3, yPosition + 3, xPosition + 4, yPosition + height - 3, textColor);
+	        	drawRect(xPosition + 6, yPosition + 3, xPosition + 7, yPosition + height - 3, textColor);
+	        }
+	        else {
+	        	drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4, textColor);
+	        	drawRect(xPosition + 5, yPosition + 4, xPosition + 6, yPosition + 5, textColor);
+	        	drawRect(xPosition + 4, yPosition + 5, xPosition + 5, yPosition + 6, textColor);
+	        	drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7, textColor);
 	        }
 	    }
 	}

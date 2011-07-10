@@ -79,7 +79,8 @@ public class InvTweaksBenchmarking extends InvTweaksObf {
 	    		// Benchmark
 	    		
 	    		delay = System.nanoTime();
-	    		clickCount = sortingAlgorithm.sortContainer(0);
+	    		clickCount = sortingAlgorithm.sortContainer(getPlayerContainer(),
+	    				InvTweaksAlgorithm.INVENTORY);
 	    		delay = System.nanoTime() - delay;
 	    		
 	    		totalDelay += delay;

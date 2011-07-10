@@ -36,7 +36,7 @@ public class mod_InvTweaks extends BaseMod {
     
 	@Override
 	public String Version() {
-		return "1.05 (1.6.6)";
+		return "1.10 (1.7.3)";
 	}
     
 	/**

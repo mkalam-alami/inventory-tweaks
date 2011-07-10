@@ -9,105 +9,108 @@ public class InvTweaksObf {
 
 	protected Minecraft mc;
 	
-	public InvTweaksObf(Minecraft mc) {
+	protected InvTweaksObf(Minecraft mc) {
 		this.mc = mc;
 	}
 	
 	// Minecraft members
 
-	public void addChatMessage(String message) {
+	protected void addChatMessage(String message) {
 		if (mc.ingameGUI != null) {
 			mc.ingameGUI.addChatMessage(message);
 		}
 	}
-	public boolean isMultiplayerWorld() {
+	protected boolean isMultiplayerWorld() {
 		return mc.isMultiplayerWorld();
 	}
-	public EntityPlayer getThePlayer() {
+	protected EntityPlayer getThePlayer() {
 		return mc.thePlayer;
 	}
-	public PlayerController getPlayerController() {
+	protected PlayerController getPlayerController() {
 		return mc.playerController;
 	}
-	public GuiScreen getCurrentScreen() {
+	protected GuiScreen getCurrentScreen() {
 		return mc.currentScreen;
 	}
-	public static File getMinecraftDir() {
+	protected static File getMinecraftDir() {
 		return Minecraft.getMinecraftDir();
 	}
 
 	// EntityPlayer members
 	
-	public InventoryPlayer getInventoryPlayer() {
+	protected InventoryPlayer getInventoryPlayer() {
 		return getThePlayer().inventory;
 	}
-	public ItemStack getCurrentEquippedItem() {
+	protected ItemStack getCurrentEquippedItem() {
 		return getThePlayer().getCurrentEquippedItem();
 	}
-	public Container getCraftingInventory() {
+	protected Container getCraftingInventory() {
 		return getThePlayer().craftingInventory;
+	}
+	protected Container getPlayerContainer() {
+		return getThePlayer().inventorySlots; // MCP name: inventorySlots
 	}
 
 	// InventoryPlayer members
 	
-	public ItemStack[] getMainInventory() {
+	protected ItemStack[] getMainInventory() {
 		return getInventoryPlayer().mainInventory;
 	}
-	public void setMainInventory(ItemStack[] value) {
+	protected void setMainInventory(ItemStack[] value) {
 		getInventoryPlayer().mainInventory = value;
 	}
-	public void setHasInventoryChanged(boolean value) {
+	protected void setHasInventoryChanged(boolean value) {
 		getInventoryPlayer().inventoryChanged = value;
 	}
-	public void setHoldStack(ItemStack stack) {
+	protected void setHoldStack(ItemStack stack) {
 		getInventoryPlayer().setItemStack(stack); // MCP name: setItemStack
 	}
-	public boolean hasInventoryChanged() {
+	protected boolean hasInventoryChanged() {
 		return getInventoryPlayer().inventoryChanged;
 	}
-	public ItemStack getHoldStack() {
+	protected ItemStack getHoldStack() {
 		return getInventoryPlayer().getItemStack(); // MCP name: getItemStack
 	}
-	public ItemStack getFocusedStack() {
+	protected ItemStack getFocusedStack() {
 		return getInventoryPlayer().getCurrentItem(); // MCP name: getCurrentItem
 	}
-	public int getFocusedSlot() {
+	protected int getFocusedSlot() {
 		return getInventoryPlayer().currentItem; // MCP name: currentItem
 	}
 	
 	// ItemStack members
 
-	public ItemStack createItemStack(int id, int size, int damage) {
+	protected ItemStack createItemStack(int id, int size, int damage) {
 		return new ItemStack(id, size, damage);
 	}
-	public ItemStack copy(ItemStack itemStack) {
+	protected ItemStack copy(ItemStack itemStack) {
 		return itemStack.copy();
 	}
-	public int getItemDamage(ItemStack itemStack) {
+	protected int getItemDamage(ItemStack itemStack) {
 		return itemStack.getItemDamage();
 	}
-	public int getMaxStackSize(ItemStack itemStack) {
+	protected int getMaxStackSize(ItemStack itemStack) {
 		return itemStack.getMaxStackSize();
 	}
-	public int getStackSize(ItemStack itemStack) {
+	protected int getStackSize(ItemStack itemStack) {
 		return itemStack.stackSize;
 	}
-	public void setStackSize(ItemStack itemStack, int value) {
+	protected void setStackSize(ItemStack itemStack, int value) {
 		itemStack.stackSize = value;
 	}
-	public int getItemID(ItemStack itemStack) {
+	protected int getItemID(ItemStack itemStack) {
 		return itemStack.itemID;
 	}
-	public boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
+	protected boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
 		return ItemStack.areItemStacksEqual(itemStack1, itemStack2);
 	}
-	public ItemStack getItemStack(ItemStack[] stacks, int i) {
+	protected ItemStack getItemStack(ItemStack[] stacks, int i) {
 		return stacks[i];
 	}
 	
 	// PlayerController members
 
-	public ItemStack clickInventory(PlayerController playerController,
+	protected ItemStack clickInventory(PlayerController playerController,
 			int windowId, int slot, int clickButton,
 			boolean shiftHold, EntityPlayer entityPlayer) {
 		return playerController.func_27174_a(windowId, slot, clickButton,
@@ -116,17 +119,34 @@ public class InvTweaksObf {
 	
 	// Container members
 	
-	public int getWindowId(Container container) {
+	protected int getWindowId(Container container) {
 		return container.windowId;
 	}
-	public List<?> getSlots(Container container) {
+	protected List<?> getSlots(Container container) {
 		return container.slots;
+	}
+	protected Slot getSlot(Container container, int i) {
+		return (Slot) getSlots(container).get(i);
+	}
+	protected ItemStack getSlotStack(Container container, int i) {
+		Slot slot = (Slot) getSlots(container).get(i);
+		return (slot == null) ? null : slot.getStack(); /* getStack */
+	}
+	protected void setSlotStack(Container container, int i, ItemStack stack) {
+		container.putStackInSlot(i, stack); /* putStackInSlot */
 	}
 	
 	// GuiContainer members
 	
-	public Container getInventorySlots(GuiContainer guiContainer) {
+	protected Container getContainer(GuiContainer guiContainer) {
 		return guiContainer.inventorySlots;
+	}
+	
+	// Other
+	
+	protected boolean isChestOrDispenser(GuiScreen guiScreen) {
+		return (guiScreen instanceof GuiChest /* GuiChest */
+    			|| guiScreen instanceof GuiDispenser /* GuiDispenser */);
 	}
 	
 }

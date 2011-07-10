@@ -5,51 +5,54 @@ import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
 
-public class InvTweaksInventory extends InvTweaksObf {
+public class InvTweaksContainer extends InvTweaksObf {
 
 	private static final Logger log = Logger.getLogger("InvTweaks");
     
 	public static final boolean STACK_NOT_EMPTIED = true;
 	public static final boolean STACK_EMPTIED = false;
 
-	private ItemStack[] inventory;
-	private Container container = null;
-	private int size = 36;
-	private int windowId = 0;
+	private Container container;
 	private int[] rulePriority;
 	private int[] keywordOrder;
 	private int[] lockLevels;
 	private int clickCount = 0;
+	private int offset; // offset of the first sortable item
+	private int size;
 	
 	// Multiplayer
 	private boolean isMultiplayer;
 	private EntityPlayer entityPlayer;
 	
-	public InvTweaksInventory(Minecraft mc, int[] lockLevels) {
+	public InvTweaksContainer(Minecraft mc, int[] lockLevels, Container container) {
 		super(mc);
-
-		this.inventory = getMainInventory();
-		this.lockLevels = lockLevels;
 		
-		GuiScreen guiScreen = getCurrentScreen(); 
-		if (guiScreen instanceof GuiChest /* GuiChest */
-				|| guiScreen instanceof GuiDispenser /* GuiDispenser */) {
-			GuiContainer guiContainer = (GuiContainer) guiScreen;
-			this.container = getInventorySlots(guiContainer);
-			this.inventory = null;
-			this.windowId = getWindowId(container);
-			this.size = getSlots(container).size();
+		this.lockLevels = lockLevels;
+		this.container = container;
+		
+		if (container instanceof ContainerPlayer) {
+			this.size = InvTweaks.INVENTORY_SIZE;
+			this.offset = 9; // 5 crafting slots + 4 armor slots
+		}
+		else {
+			this.size = getSlots(container).size() - InvTweaks.INVENTORY_SIZE;
+			this.offset = 0;
 		}
 		
 		this.rulePriority = new int[size];
 		this.keywordOrder = new int[size];
 		for (int i = 0; i < size; i++) {
 			this.rulePriority[i] = -1;
-			this.keywordOrder[i] = getItemOrder(
-					getItemID(getStackInSlot(i)),
-					getItemDamage(getStackInSlot(i)));
+			ItemStack stack = getStackInSlot(i);
+			if (stack != null) {
+				this.keywordOrder[i] = getItemOrder(
+						getItemID(stack),
+						getItemDamage(stack));
+			}
+			else {
+				this.keywordOrder[i] = -1;
+			}
 		}
-
 		this.entityPlayer = getThePlayer();
 		this.isMultiplayer = isMultiplayerWorld();
 	}
@@ -136,9 +139,11 @@ public class InvTweaksInventory extends InvTweaksObf {
 	}
 
 	public boolean canBeMerged(int i, int j) {
-		return (i != j && getStackInSlot(i) != null && getStackInSlot(j) != null && 
-				areSameItem(getStackInSlot(i), getStackInSlot(j)) &&
-				getStackSize(getStackInSlot(j)) < getMaxStackSize(getStackInSlot(j)));
+		if (i == j || getStackInSlot(i) == null || getStackInSlot(j) == null) {
+			return false;
+		}
+		return areSameItem(getStackInSlot(i), getStackInSlot(j)) &&
+			getStackSize(getStackInSlot(j)) < getMaxStackSize(getStackInSlot(j));
 	}
 
 	public boolean isOrderedBefore(int i, int j) {
@@ -348,7 +353,7 @@ public class InvTweaksInventory extends InvTweaksObf {
 		
 		// Click!
 		clickInventory(getPlayerController(),
-				windowId, // Select container
+				getWindowId(container), // Select container
 				((slot > 8) ? slot - 9 : slot + 27) + 
 					getSlots(getCraftingInventory()).size() - 36, // Targeted slot
 						// (converted for the network protocol indexes,
@@ -362,15 +367,22 @@ public class InvTweaksInventory extends InvTweaksObf {
 		if (!uselessClick) {
 			int pollingTime = 0;
 			while (areItemStacksEqual(getStackInSlot(slot), stackInSlot)
-					&& pollingTime < InvTweaksAlgorithm.POLLING_TIMEOUT) {
-				InvTweaksAlgorithm.trySleep(InvTweaksAlgorithm.POLLING_DELAY);
-				pollingTime += InvTweaksAlgorithm.POLLING_DELAY;
+					&& pollingTime < InvTweaks.POLLING_TIMEOUT) {
+				InvTweaksAlgorithm.trySleep(InvTweaks.POLLING_DELAY);
+				pollingTime += InvTweaks.POLLING_DELAY;
 			}
-			if (pollingTime >= InvTweaksAlgorithm.POLLING_TIMEOUT)
+			if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
 				log.warning("Click timout");
 		}
 	}
 	
+	private int getItemOrder(int itemID, int itemDamage) {
+		List<InvTweaksItem> items = InvTweaksTree.getItems(itemID, itemDamage);
+		return (items != null && items.size() > 0)
+				? items.get(0).getOrder()
+				: Integer.MAX_VALUE;
+	}
+
 	/**
 	 * SP: Removes the stack from the given slot
 	 * SMP: Registers the action without actually doing it.
@@ -421,27 +433,11 @@ public class InvTweaksInventory extends InvTweaksObf {
 	}
 	
 	private ItemStack getStackInSlot(int i) {
-		if (container == null) {
-			return inventory[i];
-		}
-		else {
-			return container.getStackInSlot(i);
-		}
+		return getSlotStack(container, i + offset);
 	}
 	
 	private void putStackInSlot(int i, ItemStack stack) {
-		if (container == null) {
-			inventory[i] = stack;
-		}
-		else {
-			container.putStackInSlot(i, stack);
-		}
+		setSlotStack(container, i + offset, stack);
 	}
 	
-	private int getItemOrder(int itemID, int itemDamage) {
-		List<InvTweaksItem> items = InvTweaksTree.getItems(itemID, itemDamage);
-		return (items != null && items.size() > 0)
-				? items.get(0).getOrder()
-				: Integer.MAX_VALUE;
-	}
 }

@@ -1,6 +1,7 @@
 package net.minecraft.src;
 
-public class InvTweaksItem {
+public class InvTweaksItem extends InvTweaksObf 
+		implements Comparable<InvTweaksItem> {
 
 	private String name;
 	private int id;
@@ -14,6 +15,7 @@ public class InvTweaksItem {
 	 * @param order The item order while sorting
 	 */
 	public InvTweaksItem(String name, int id, int damage, int order) {
+		super(null);
 		this.name = name;
 		this.id = id;
 		this.damage = damage;
@@ -36,6 +38,12 @@ public class InvTweaksItem {
 		return order;
 	}
 	
+	public boolean matchesStack(ItemStack stack) {
+		return getItemID(stack) == id && (
+				getMaxStackSize(stack) == 1 ||
+				getItemDamage(stack) == damage);
+	}
+	
 	/**
 	 * Warning: the item equality is not reflective.
 	 * They are equal if "o" matches the item constraints (the opposite can be false). 
@@ -50,6 +58,11 @@ public class InvTweaksItem {
 	
 	public String toString() {
 		return name;
+	}
+
+	@Override
+	public int compareTo(InvTweaksItem item) {
+		return item.order - order;
 	}
 
 }

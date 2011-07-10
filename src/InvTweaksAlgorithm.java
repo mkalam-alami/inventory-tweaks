@@ -1,7 +1,11 @@
 package net.minecraft.src;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -11,16 +15,26 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
     
     private static final Logger log = Logger.getLogger("InvTweaks");
 
-    public static final int AUTOREPLACE_DELAY = 200;
-    public static final int POLLING_DELAY = 3;
-    public static final int POLLING_TIMEOUT = 1500;
-    public static final int PLAYER_INVENTORY_WINDOW = 0;
+    public static final int DEFAULT = 0;
+    public static final int INVENTORY = 1;
+    public static final int HORIZONTAL = 2;
+    public static final int VERTICAL = 3;
+
+    private static final int MAX_CONTAINER_SIZE = 100;
+    private static int[] DEFAULT_LOCK_PRIORITIES = null;
     
     private InvTweaksConfig config = null;
     
     public InvTweaksAlgorithm(Minecraft mc, InvTweaksConfig config) {
 		super(mc);
 		setConfig(config);
+		
+		if (DEFAULT_LOCK_PRIORITIES == null) {
+			DEFAULT_LOCK_PRIORITIES = new int[MAX_CONTAINER_SIZE];
+			for (int i = 0; i < MAX_CONTAINER_SIZE; i++) {
+				DEFAULT_LOCK_PRIORITIES[i] = 0;
+			}
+		}
 	}
     
     public void setConfig(InvTweaksConfig config) {
@@ -31,46 +45,62 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 	 * Sort inventory
 	 * @return The number of clicks that were needed
      */
-    public final long sortContainer(int windowId) // TODO: Use window ID
-    {
-    	synchronized (this) {
+    public final long sortContainer(Container container, int algorithm) {
     	
     	// Do nothing if the inventory is closed
     	// if (!mc.hrrentScreen instanceof GuiContainer)
     	//		return;
     	
     	long timer = System.nanoTime();
-		
-		InvTweaksInventory inventory = new InvTweaksInventory(
-				mc, config.getLockPriorities());
+
+    	InvTweaksContainer inventory;
+    	
+    	if (algorithm == INVENTORY) {
+    		inventory = new InvTweaksContainer(mc, config.getLockPriorities(), container);
+    	}
+    	else {
+    		inventory = new InvTweaksContainer(mc, DEFAULT_LOCK_PRIORITIES, container);
+    	}
 
 		//// Empty hand (needed in SMP)
 		if (isMultiplayerWorld())
 			inventory.putHoldItemDown();
 		
-		if (windowId == PLAYER_INVENTORY_WINDOW) {
+		if (algorithm != DEFAULT) {
+			
+			Vector<InvTweaksRule> rules;
+			Vector<Integer> lockedSlots;
+			
+			if (algorithm == INVENTORY) {
+				rules = config.getRules();
+				lockedSlots = config.getLockedSlots();
 				
-			Vector<InvTweaksRule> rules = config.getRules();
-			
-	    	//// Merge stacks to fill the ones in locked slots
-			log.info("Merging stacks.");
-			
-			Vector<Integer> lockedSlots = config.getLockedSlots();
-	    	for (int i = inventory.getSize()-1; i >= 0; i--) {
-	    		ItemStack from = inventory.getItemStack(i);
-	    		if (from != null) {
-	    	    	for (Integer j : lockedSlots) {
-	    	    		ItemStack to = inventory.getItemStack(j);
-	    	    		if (to != null && inventory.canBeMerged(i, j)) {
-	    	    			boolean result = inventory.mergeStacks(i, j);
-	    	    			inventory.markAsNotMoved(j);
-	    	    			if (result == InvTweaksInventory.STACK_EMPTIED) {
-	        	    			break;
-	    	    			}
-	    	    		}
-	    	    	}
-	    		}
-	    	}
+		    	//// Merge stacks to fill the ones in locked slots
+				log.info("Merging stacks.");
+				
+		    	for (int i = inventory.getSize()-1; i >= 0; i--) {
+		    		ItemStack from = inventory.getItemStack(i);
+		    		if (from != null) {
+		    	    	for (Integer j : lockedSlots) {
+		    	    		ItemStack to = inventory.getItemStack(j);
+		    	    		if (to != null && inventory.canBeMerged(i, j)) {
+		    	    			boolean result = inventory.mergeStacks(i, j);
+		    	    			inventory.markAsNotMoved(j);
+		    	    			if (result == InvTweaksContainer.STACK_EMPTIED) {
+		        	    			break;
+		    	    			}
+		    	    		}
+		    	    	}
+		    		}
+		    	}
+				
+			}
+			else {
+				int rowSize = (container instanceof ContainerDispenser) ? 3 : 9;
+				rules = computeLineSortingRules(inventory,
+						rowSize, (algorithm == HORIZONTAL));
+				lockedSlots = new Vector<Integer>();
+			}
 	    	
 	    	//// Apply rules
 			log.info("Applying rules.");
@@ -143,61 +173,15 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		}
 
     	return inventory.getClickCount();
-    	
-    	}
     }
     
-    private void defaultSorting(InvTweaksInventory inventory) {
-
-		log.info("Default sorting.");
-		
-		Vector<Integer> remaining = new Vector<Integer>(), nextRemaining = new Vector<Integer>();
-		for (int i = 0; i < inventory.getSize(); i++) {
-			if (inventory.hasToBeMoved(i)) {
-				remaining.add(i);
-				nextRemaining.add(i);
-			}
-		}
-		
-		// Default slot order init. In the inventory, indexes are :
-		// 0 = bottom-left, 8 = bottom-right
-		// 9 = top-left, 35 = 3rd-row-right
-		int[] slotsOrder = new int[inventory.getSize()];
-    	for (int i = 0; i < slotsOrder.length; i++) {
-    		slotsOrder[i] = (i + 9) % slotsOrder.length;
-    	}
-
-		int iterations = 0;
-		while (remaining.size() > 0 && iterations++ < 50) {
-			for (int i : remaining) {
-				if (inventory.hasToBeMoved(i)) {
-					for (int j : slotsOrder) {
-						if (inventory.moveStack(i, j, 1)) {
-							nextRemaining.remove((Object) j);
-							break;
-						}
-					}
-				}
-				else {
-					nextRemaining.remove((Object) i);
-				}
-			}
-			remaining.clear();
-			remaining.addAll(nextRemaining);
-		}
-		if (iterations == 50) {
-			log.info("Sorting takes too long, aborting.");
-		}
-		
-    }
-
     /**
      * Autoreplace + middle click sorting
      */
 	public void autoReplaceSlot(int slot, int wantedId, int wantedDamage) {
    
-		InvTweaksInventory inventory = new InvTweaksInventory(
-				mc, config.getLockPriorities());  	
+		InvTweaksContainer inventory = new InvTweaksContainer(
+				mc, config.getLockPriorities(), getPlayerContainer());  	
 		ItemStack candidateStack, replacementStack = null;
 		ItemStack storedStack = createItemStack(wantedId, 1, wantedDamage);
 		int replacementStackSlot = -1;
@@ -234,12 +218,12 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		     */
 			new Thread(new Runnable() {
 
-				private InvTweaksInventory inventory;
+				private InvTweaksContainer inventory;
 				private int targetedSlot;
 				private int i, expectedItemId;
 				
 				public Runnable init(
-						InvTweaksInventory inventory,
+						InvTweaksContainer inventory,
 						int i, int currentItem) {
 					this.inventory = inventory;
 					this.targetedSlot = currentItem;
@@ -256,16 +240,16 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 						int pollingTime = 0;
 						setHasInventoryChanged(false);
 						while(!hasInventoryChanged()
-								&& pollingTime < POLLING_TIMEOUT) {
-							trySleep(POLLING_DELAY);
+								&& pollingTime < InvTweaks.POLLING_TIMEOUT) {
+							trySleep(InvTweaks.POLLING_DELAY);
 						}
-						if (pollingTime < AUTOREPLACE_DELAY)
-							trySleep(AUTOREPLACE_DELAY - pollingTime);
-						if (pollingTime >= POLLING_TIMEOUT)
+						if (pollingTime < InvTweaks.AUTOREPLACE_DELAY)
+							trySleep(InvTweaks.AUTOREPLACE_DELAY - pollingTime);
+						if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
 							log.warning("Autoreplace timout");
 					}
 					else {
-						trySleep(AUTOREPLACE_DELAY);
+						trySleep(InvTweaks.AUTOREPLACE_DELAY);
 					}
 					
 					// In POLLING_DELAY ms, things might have changed
@@ -295,5 +279,147 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 			// Do nothing
 		}
     }
+
+	private void defaultSorting(InvTweaksContainer inventory) {
+	
+		log.info("Default sorting.");
+		
+		Vector<Integer> remaining = new Vector<Integer>(), nextRemaining = new Vector<Integer>();
+		for (int i = 0; i < inventory.getSize(); i++) {
+			if (inventory.hasToBeMoved(i)) {
+				remaining.add(i);
+				nextRemaining.add(i);
+			}
+		}
+		
+		int iterations = 0;
+		while (remaining.size() > 0 && iterations++ < 50) {
+			for (int i : remaining) {
+				if (inventory.hasToBeMoved(i)) {
+					for (int j = 0; j < inventory.getSize(); j++) {
+						if (inventory.moveStack(i, j, 1)) {
+							nextRemaining.remove((Object) j);
+							break;
+						}
+					}
+				}
+				else {
+					nextRemaining.remove((Object) i);
+				}
+			}
+			remaining.clear();
+			remaining.addAll(nextRemaining);
+		}
+		if (iterations == 50) {
+			log.info("Sorting takes too long, aborting.");
+		}
+		
+	}
+
+	private Vector<InvTweaksRule> computeLineSortingRules(
+			InvTweaksContainer container, int rowSize, boolean horizontal) {
+		
+		Vector<InvTweaksRule> rules = new Vector<InvTweaksRule>();
+		Map<InvTweaksItem, Integer> stats = computeContainerStats(container);		
+		List<InvTweaksItem> itemOrder = new ArrayList<InvTweaksItem>(stats.keySet());
+		Collections.sort(itemOrder, Collections.reverseOrder());
+
+		int distinctItems = stats.size();
+		int columnSize = getContainerColumnSize(container, rowSize);
+		int spaceWidth;
+		int spaceHeight;
+		boolean lotsOfStacks = false;
+		
+		// Check if it's necessary to have wide spaces (more than 1*X)
+		for (int amount : stats.values()) {
+			if (horizontal && amount > rowSize
+					|| !horizontal && amount > columnSize) {
+				lotsOfStacks = true;
+				break;
+			}
+		}
+		
+		// Define space size used for each item type.
+		if (horizontal) {
+			spaceHeight = (distinctItems < columnSize && lotsOfStacks) ? (columnSize / distinctItems) : 1;
+			spaceWidth = (spaceHeight == 1) ? rowSize/((distinctItems+columnSize-1)/columnSize) : rowSize;
+		}
+		else {
+			spaceWidth = (distinctItems < rowSize && lotsOfStacks) ? (rowSize / distinctItems) : 1;
+			spaceHeight = (spaceWidth == 1) ? columnSize/((distinctItems+rowSize-1)/rowSize) : columnSize;
+		}
+		
+		char row = 'a', maxRow = (char) (row - 1 + columnSize);
+		char column = '1', maxColumn = (char) (column - 1 + rowSize);
+		
+		// Create rules
+		for (InvTweaksItem item : itemOrder) {
+			String constraint = row + "" + column + "-"
+					+ (char)(row - 1 + spaceHeight)
+					+ (char)(column - 1 + spaceWidth);
+			rules.add(new InvTweaksRule(constraint, item.getName(),
+					container.getSize(), rowSize));
+			if (horizontal) {
+				if (column + spaceWidth <= maxColumn) {
+					column += spaceWidth;
+				}
+				else {
+					column = '1';
+					row += spaceHeight;
+				}
+			}
+			else {
+				if (row + spaceHeight <= maxRow) {
+					row += spaceHeight;
+				}
+				else {
+					row = 'a';
+					column += spaceWidth;
+				}
+			}
+		}
+		
+		String defaultRule = maxRow + "" + maxColumn + "-a1";
+		if (!horizontal) {
+			defaultRule += 'v';
+		}
+		rules.add(new InvTweaksRule(defaultRule, 
+				InvTweaksTree.getRootCategory().getName(),
+				container.getSize(), rowSize));
+		
+		Collections.sort(rules, Collections.reverseOrder());
+		
+		return rules;
+		
+	}
+	
+	private Map<InvTweaksItem, Integer> computeContainerStats(InvTweaksContainer container) {
+		Map<InvTweaksItem, Integer> stats = new HashMap<InvTweaksItem, Integer>();
+		Map<Integer, InvTweaksItem> itemSearch = new HashMap<Integer, InvTweaksItem>();
+		
+		for (int i = 0; i < container.getSize(); i++) {
+			ItemStack stack = container.getItemStack(i);
+			if (stack != null) {
+				int itemSearchKey = getItemID(stack)*100000 + 
+						((getMaxStackSize(stack) != 1) ? getItemDamage(stack) : 0);
+				InvTweaksItem item = itemSearch.get(itemSearchKey);
+				if (item == null) {
+					item = InvTweaksTree.getItems(
+							getItemID(stack), getItemDamage(stack)).get(0);
+					itemSearch.put(itemSearchKey, item);	
+					stats.put(item, 1);
+				}
+				else {
+					stats.put(item, stats.get(item) + 1);
+				}
+			}
+		}
+		
+		return stats;
+	}
+	
+	private int getContainerColumnSize(InvTweaksContainer container, int rowSize) {
+		return container.getSize() / rowSize;
+	}
 
 }

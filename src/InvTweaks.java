@@ -31,14 +31,18 @@ public class InvTweaks extends InvTweaksObf {
     public static final Level DEBUG = Level.INFO;
     public static final int HOT_RELOAD_DELAY = 1000;
     public static final int INVENTORY_SIZE = 36;
+	public static final int INVENTORY_ROW_SIZE = 9;
+    public static final int AUTOREPLACE_DELAY = 200;
+    public static final int POLLING_DELAY = 3;
+    public static final int POLLING_TIMEOUT = 1500;
+    public static final int PLAYER_INVENTORY_WINDOW_ID = 0;
 
 	private static InvTweaks instance;
     private InvTweaksConfig config = null;
     private InvTweaksAlgorithm sortingAlgorithm = null;
     private long configLastModified = 0;
-    private boolean configErrorsShown = false;
 	private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
-	private boolean buttonAddedToGui = false;
+	private boolean buttonsAddedToGui = false;
     
     public InvTweaks(Minecraft mc) {
 
@@ -65,35 +69,36 @@ public class InvTweaks extends InvTweaksObf {
 
     public final void onSortingKeyPressed()
     {
-    	// Check config loading success & current GUI
-    	GuiScreen guiScreen = getCurrentScreen();
-    	if (config == null ||
-    			!(guiScreen == null ||
-    			guiScreen instanceof GuiContainer /* GuiContainer */)) {
-    		return;
-    	}
-    	// Hot reload trigger
-    	if (getConfigLastModified() != configLastModified)
-    		loadConfig();
-    	
-    	// Config keywords error message
-    	if (!configErrorsShown) {
-    		showConfigErrors(config);
-			configErrorsShown = true;
-    	}
-
-    	ItemStack selectedItem = getItemStack(
-    			getMainInventory(),
-    			getFocusedSlot());
-    	
-    	sortingAlgorithm.sortContainer(0);
-		
-    	// This needs to be remembered so that the
-    	// autoreplace feature doesn't trigger
-    	if (selectedItem != null && 
-    			getMainInventory()[getFocusedSlot()] == null) {
-    		storedStackId = 0;
-    	}
+    	synchronized (this) {
+			
+	    	// Check config loading success & current GUI
+	    	GuiScreen guiScreen = getCurrentScreen();
+	    	if (config == null ||
+	    			!(guiScreen == null ||
+	    			guiScreen instanceof GuiContainer /* GuiContainer */)) {
+	    		return;
+	    	}
+	    	
+	    	// Hot reload trigger
+	    	if (getConfigLastModified() != configLastModified)
+	    		loadConfig();
+	
+	    	ItemStack selectedItem = getItemStack(
+	    			getMainInventory(),
+	    			getFocusedSlot());
+	    	
+	    	sortingAlgorithm.sortContainer(
+	    			getPlayerContainer(),
+	    			InvTweaksAlgorithm.INVENTORY);
+			
+	    	// This needs to be remembered so that the
+	    	// autoreplace feature doesn't trigger
+	    	if (selectedItem != null && 
+	    			getItemStack(getMainInventory(), getFocusedSlot()) == null) {
+	    		storedStackId = 0;
+	    	}
+	    	
+		}
     }
 
     /**
@@ -103,40 +108,94 @@ public class InvTweaks extends InvTweaksObf {
 	public void onTick() {
     	
 		//// Chest sorting button
+		
     	GuiScreen guiScreen = getCurrentScreen();
-    	if (getCurrentScreen() instanceof GuiChest /* GuiChest */
-    			|| getCurrentScreen() instanceof GuiDispenser /* GuiDispenser */) {
-    	
+    	if (isChestOrDispenser(guiScreen)) {
 			GuiContainer guiContainer = (GuiContainer) guiScreen;
-			if (buttonAddedToGui == false) {
-				GuiButton button = new InvTweaksSortingButton(10, 
-						guiContainer.xSize/2 + guiContainer.width/2 - 17,
-						(guiContainer.height - guiContainer.ySize)/2 + 5,
-						10, 10,
-						"s", guiContainer.inventorySlots.windowId);
+			if (buttonsAddedToGui == false) {
+
+				Container container = getContainer(guiContainer);
+				int id = 10,
+					x = guiContainer.xSize/2 + guiContainer.width/2 - 17,
+					y = (guiContainer.height - guiContainer.ySize)/2 + 5,
+					w = 10, h = 10;
+
+				GuiButton button = new SortingButton(
+						id++, x, y, w, h, "s",
+						container, InvTweaksAlgorithm.DEFAULT);
 				guiContainer.controlList.add((GuiButton) button);
-				buttonAddedToGui = true;
+				
+				button = new SortingButton(
+						id++, x-12, y, w, h, "h",
+						container, InvTweaksAlgorithm.HORIZONTAL);
+				guiContainer.controlList.add((GuiButton) button);
+
+				button = new SortingButton(
+						id++, x-24, y, w, h, "v",
+						container, InvTweaksAlgorithm.VERTICAL);
+				guiContainer.controlList.add((GuiButton) button);
+				
+				buttonsAddedToGui = true;
 			}
-			
 		}
 		else {
-			buttonAddedToGui  = false;
+			buttonsAddedToGui  = false;
 		}
-		
-		//// Autoreplace
-		
+    	
+
     	if (config == null)
     		return;
     	
-    	if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled())
-    		onSortingKeyPressed();
+		//// Middle click
+    	// TODO: Doesn't work on chests
     	
-    	synchronized (this) {
+    	if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled()) {
+    		
+	    	// Hot reload trigger
+	    	if (getConfigLastModified() != configLastModified)
+	    		loadConfig();
+    		
+        	if (isChestOrDispenser(guiScreen)) {
+        		
+        		// Check if the middle click target the chest or the inventory
+        		// (copied GuiContainer.getSlotAtPosition algorithm)
+        		GuiContainer guiContainer = (GuiContainer) guiScreen;
+    			Container container = getContainer((GuiContainer) guiScreen);
+    			int slotCount = getSlots(container).size();
+    			int deltaX = (guiContainer.width - guiContainer.xSize) / 2,
+    				deltaY =  (guiContainer.height - guiContainer.ySize) / 2;
+    			int mouseX = Mouse.getX() - deltaX, mouseY = Mouse.getY() - deltaY;
+    			boolean chestTargeted = false;
+    			for(int i = 0; i < slotCount - INVENTORY_SIZE; i++) {
+    	            Slot slot = getSlot(container, i);
+    	            if (mouseX >= slot.xDisplayPosition - 1 && mouseX < slot.xDisplayPosition + 16 + 1
+    	            		&& mouseY >= slot.yDisplayPosition - 1 && mouseY < slot.yDisplayPosition + 16 + 1) {
+    	            	chestTargeted = true;
+    	            	break;
+    	            }
+    	        }
+    			
+    			if (chestTargeted) {
+    				sortingAlgorithm.sortContainer(container,
+    						InvTweaksAlgorithm.DEFAULT);
+    			}
+    			else {
+    				sortingAlgorithm.sortContainer(getPlayerContainer(),
+    						InvTweaksAlgorithm.INVENTORY);
+    			}
+    			
+        	}
+        	else {
+        		onSortingKeyPressed();
+        	}
+    	}
+
+		//// Autoreplace
     	
     	ItemStack currentStack = getFocusedStack();
     	int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
     	int currentStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
-		int focusedSlot = getFocusedSlot();
+		int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
 		
     	// Auto-replace item stack
     	if (currentStackId != storedStackId
@@ -157,9 +216,8 @@ public class InvTweaks extends InvTweaksObf {
 	    		}
 	    	}
 	    	
-	    	storedStackId = currentStackId;
-	    	storedStackDamage = currentStackDamage;
-    	}
+    	storedStackId = currentStackId;
+    	storedStackDamage = currentStackDamage;
 
     }
 	
@@ -215,7 +273,7 @@ public class InvTweaks extends InvTweaksObf {
 		} catch (Exception e) {
 			error = "Error while loading config: "+e.getMessage();
 		}
-			
+
 		if (error != null) {
 			logInGame(error);
 			log.severe(error);
@@ -310,20 +368,23 @@ public class InvTweaks extends InvTweaksObf {
 		}
    	}
 	
-	private class InvTweaksSortingButton extends GuiButton {
+	private class SortingButton extends GuiButton {
 
 		private boolean buttonClicked = false;
-		private int windowId = -1;
+		private Container container;
+		private int algorithm;
 		
-		public InvTweaksSortingButton(int i, int j, int k,
-				int l, int i1, String s, int windowId) { // TODO Explicit params
-			super(i, j, k, l, i1, s);
-			this.windowId = windowId;
+		public SortingButton(int id, int x, int y,
+				int w, int h, String s,
+				Container container, int algorithm) { // TODO Explicit params
+			super(id, x, y, w, h, s);
+			this.container = container;
+			this.algorithm = algorithm;
 		}
 
 	    public void drawButton(Minecraft minecraft, int i, int j)
 	    {
-	        if(!enabled2) {
+	        if (!enabled2) {
 	            return;
 	        }
 	        
@@ -334,10 +395,15 @@ public class InvTweaks extends InvTweaksObf {
 	        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	        boolean flag = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
 	        int k = getHoverState(flag) - ((buttonClicked) ? 1:0);
-	        drawTexturedModalRect(xPosition, yPosition, 1, 46 + k * 20 + 1, width / 2, height / 2);
-	        drawTexturedModalRect(xPosition, yPosition + height / 2, 1, 46 + k * 20 + 20 - height / 2 - 1, width / 2, height / 2);
-	        drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2 - 1, 46 + k * 20 + 1, width / 2, height / 2);
-	        drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2, 200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition, yPosition, 1,
+	        		46 + k * 20 + 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition, yPosition + height / 2, 1,
+	        		46 + k * 20 + 20 - height / 2 - 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition + width / 2, yPosition,
+	        		200 - width / 2 - 1, 46 + k * 20 + 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2,
+	        		200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2, 
+	        		width / 2, height / 2);
 	        
 	        if(!enabled)
 	        {
@@ -348,7 +414,8 @@ public class InvTweaks extends InvTweaksObf {
 		        	// Sort container
 		        	if (Mouse.isButtonDown(0)) {
 		        		if (!buttonClicked) {
-			        		sortingAlgorithm.sortContainer(windowId);
+			        		sortingAlgorithm.sortContainer(
+			        				container, algorithm);
 			        		buttonClicked = true;
 		        		}
 		        	}

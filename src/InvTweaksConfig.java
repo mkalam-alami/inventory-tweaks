@@ -127,8 +127,9 @@ public class InvTweaksConfig {
 					
 					// Locking rule
 					if (words[1].equals(LOCKED)) {
-						int[] newLockedSlots = InvTweaksRule.
-								getRulePreferredPositions(words[0]);
+						int[] newLockedSlots = InvTweaksRule.getRulePreferredPositions(
+										words[0], InvTweaks.INVENTORY_SIZE,
+										InvTweaks.INVENTORY_ROW_SIZE);
 						int lockPriority = InvTweaksRule.getRuleType(words[0]).getHighestPriority();
 						for (int i : newLockedSlots) {
 							lockPriorities[i] = lockPriority;
@@ -153,7 +154,9 @@ public class InvTweaksConfig {
 						}
 						
 						if (isValidKeyword) {
-							newRule = new InvTweaksRule(words[0], keyword.toLowerCase());
+							newRule = new InvTweaksRule(words[0], 
+									keyword.toLowerCase(), InvTweaks.INVENTORY_SIZE,
+									InvTweaks.INVENTORY_ROW_SIZE);
 							rules.add(newRule);
 						}
 						else {

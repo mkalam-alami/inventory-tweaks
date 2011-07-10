@@ -123,7 +123,7 @@ stuff
       wool
         whiteWool 35-0
         orangeWOol 35-1
-        magentWool 35-2
+        magentaWool 35-2
         lightBlueWool 35-3
         yellowWool 35-4
         lightGreenWool 35-5
@@ -135,6 +135,10 @@ stuff
         purpleWool 35-10
         blueWool 35-11
         brownWool 35-12
+        greenWool 35-13
+        darkGreenWool 35-13
+        redWool 35-14
+        blackWool 35-15
       web 30
       monsterSpawner 52
       bedrock 7

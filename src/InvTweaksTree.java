@@ -285,7 +285,7 @@ public class InvTweaksTree {
 					filteredItems.remove(item);
 				}
 			}
-			return (filteredItems != null) ? filteredItems : items;
+			return (filteredItems != null && !filteredItems.isEmpty()) ? filteredItems : items;
 		}
 		else {
 			log.warning("Unknown item id: "+id);

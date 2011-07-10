@@ -122,7 +122,7 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 			boolean vertical = false;
 			if (constraint.contains("v")) {
 				vertical = true;
-				constraint.replaceAll("v", "");
+				constraint = constraint.replaceAll("v", "");
 			}
 			String[] elements = constraint.split("-");
 			if (elements.length == 2) {
@@ -134,10 +134,6 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 				if (slots1.length == 1 && slots2.length == 1) {
 					
 					int slot1 = slots1[0], slot2 = slots2[0];
-					/*// Offset to 0 = top left, 36 = bottom right,
-					// to simplify the algorithm
-					slot1 = (slot1 + 27) % containerSize;
-					slot2 = (slot2 + 27) % containerSize;*/
 					
 					Point point1 = new Point(slot1%containerRowSize, slot1/containerRowSize),
 						point2 = new Point(slot2%containerRowSize, slot2/containerRowSize);
@@ -163,16 +159,12 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 								x <= point2.x : x >= point2.x) {
 							result[resultIndex++] = (vertical) ?
 									index(containerRowSize, x, y) :
-									index(containerRowSize, y-1, x);
+									index(containerRowSize, y, x);
 							x += (point1.x < point2.x) ? 1 : -1;
 						}
 						y += (point1.y < point2.y) ? 1 : -1;
 					}
 					
-					// Undo offset
-					for (int i = 0; i < result.length; i++) {
-						result[i] = (result[i] + containerRowSize) % containerSize;
-					}	
 				}
 			}
 		}
@@ -245,6 +237,10 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 		
 		return result;
 		
+	}
+	
+	public String toString() {
+		return constraint + " " + keyword;
 	}
 
 }

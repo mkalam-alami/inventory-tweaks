@@ -47,6 +47,9 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
      */
     public final long sortContainer(Container container, int algorithm) {
     	
+    	if (config == null)
+    		return -1;
+    	
     	// Do nothing if the inventory is closed
     	// if (!mc.hrrentScreen instanceof GuiContainer)
     	//		return;
@@ -321,73 +324,130 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		
 		Vector<InvTweaksRule> rules = new Vector<InvTweaksRule>();
 		Map<InvTweaksItem, Integer> stats = computeContainerStats(container);		
-		List<InvTweaksItem> itemOrder = new ArrayList<InvTweaksItem>(stats.keySet());
-		Collections.sort(itemOrder, Collections.reverseOrder());
+		List<InvTweaksItem> itemOrder = new ArrayList<InvTweaksItem>();
 
 		int distinctItems = stats.size();
 		int columnSize = getContainerColumnSize(container, rowSize);
 		int spaceWidth;
 		int spaceHeight;
-		boolean lotsOfStacks = false;
 		
-		// Check if it's necessary to have wide spaces (more than 1*X)
-		for (int amount : stats.values()) {
-			if (horizontal && amount > rowSize
-					|| !horizontal && amount > columnSize) {
-				lotsOfStacks = true;
-				break;
+		// (Partially) sort stats by decreasing item stack count
+		List<InvTweaksItem> unorderedItems = new ArrayList<InvTweaksItem>(stats.keySet());
+		boolean hasStacksToOrderFirst = true;
+		while (hasStacksToOrderFirst) {
+			hasStacksToOrderFirst = false;
+			for (InvTweaksItem item : unorderedItems) {
+				Integer value = stats.get(item);
+				if (value > ((horizontal) ? rowSize : columnSize)
+						&& !itemOrder.contains(item)) {
+					hasStacksToOrderFirst = true;
+					itemOrder.add(item);
+					unorderedItems.remove(item);
+					break;
+				}
 			}
 		}
+		Collections.sort(unorderedItems, Collections.reverseOrder());
+		itemOrder.addAll(unorderedItems);
 		
 		// Define space size used for each item type.
 		if (horizontal) {
-			spaceHeight = (distinctItems < columnSize && lotsOfStacks) ? (columnSize / distinctItems) : 1;
-			spaceWidth = (spaceHeight == 1) ? rowSize/((distinctItems+columnSize-1)/columnSize) : rowSize;
+			spaceHeight = 1;
+			spaceWidth = rowSize/((distinctItems+columnSize-1)/columnSize);
 		}
 		else {
-			spaceWidth = (distinctItems < rowSize && lotsOfStacks) ? (rowSize / distinctItems) : 1;
-			spaceHeight = (spaceWidth == 1) ? columnSize/((distinctItems+rowSize-1)/rowSize) : columnSize;
+			spaceWidth = 1;
+			spaceHeight = columnSize/((distinctItems+rowSize-1)/rowSize);
 		}
 		
 		char row = 'a', maxRow = (char) (row - 1 + columnSize);
 		char column = '1', maxColumn = (char) (column - 1 + rowSize);
 		
 		// Create rules
-		for (InvTweaksItem item : itemOrder) {
+		Iterator<InvTweaksItem> it = itemOrder.iterator();
+		while (it.hasNext()) {
+			
+			InvTweaksItem item = it.next();
+			
+			// Adapt rule dimensions to fit the amount
+			int thisSpaceWidth = spaceWidth,
+				thisSpaceHeight = spaceHeight;
+			while (stats.get(item) > thisSpaceHeight*thisSpaceWidth) {
+				if (horizontal) {
+					if (column + thisSpaceWidth < maxColumn) {
+						thisSpaceWidth = maxColumn - column + 1;
+					}
+					else if (column - '1' + thisSpaceHeight < maxColumn) {
+						thisSpaceHeight++;
+					}
+					else {
+						break;
+					}
+				}
+				else {
+					if (row + thisSpaceHeight < maxRow) {
+						thisSpaceHeight = maxRow - row + 1;
+					}
+					else if (row - 'a' + thisSpaceWidth < maxColumn) {
+						thisSpaceWidth++;
+					}
+					else {
+						break;
+					}
+				}
+			}
+			
+			// Adjust line/column ends to fill empty space
+			if (horizontal && (column + thisSpaceWidth == maxColumn)) {
+				thisSpaceWidth++;
+			}
+			else if (!horizontal && row + thisSpaceHeight == maxRow) {
+				thisSpaceHeight++;
+			}
+			
+			// Create rule
 			String constraint = row + "" + column + "-"
-					+ (char)(row - 1 + spaceHeight)
-					+ (char)(column - 1 + spaceWidth);
+					+ (char)(row - 1 + thisSpaceHeight)
+					+ (char)(column - 1 + thisSpaceWidth);
+			if (!horizontal) {
+				constraint += 'v';
+			}
 			rules.add(new InvTweaksRule(constraint, item.getName(),
 					container.getSize(), rowSize));
+			
+			// Move origin for next rule
 			if (horizontal) {
-				if (column + spaceWidth <= maxColumn) {
-					column += spaceWidth;
+				if (column + thisSpaceWidth + spaceWidth <= maxColumn + 1) {
+					column += thisSpaceWidth;
 				}
 				else {
 					column = '1';
-					row += spaceHeight;
+					row += thisSpaceHeight;
 				}
 			}
 			else {
-				if (row + spaceHeight <= maxRow) {
-					row += spaceHeight;
+				if (row + thisSpaceHeight + spaceHeight <= maxRow + 1) {
+					row += thisSpaceHeight;
 				}
 				else {
 					row = 'a';
-					column += spaceWidth;
+					column += thisSpaceWidth;
 				}
 			}
+			if (row > maxRow || column > maxColumn)
+				break;
 		}
 		
-		String defaultRule = maxRow + "" + maxColumn + "-a1";
-		if (!horizontal) {
-			defaultRule += 'v';
+		String defaultRule;
+		if (horizontal) {
+			defaultRule = maxRow + "1-a" + maxColumn;
+		}
+		else {
+			defaultRule = "a" + maxColumn + "-" + maxRow + "1v";
 		}
 		rules.add(new InvTweaksRule(defaultRule, 
 				InvTweaksTree.getRootCategory().getName(),
 				container.getSize(), rowSize));
-		
-		Collections.sort(rules, Collections.reverseOrder());
 		
 		return rules;
 		

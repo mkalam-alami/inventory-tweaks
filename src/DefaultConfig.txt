@@ -10,7 +10,8 @@ D LOCKED
 ======== [ HELP ] ========
 
 # HOWTO
-# Each line you type is a new constraint you add for sorting items.
+# Each line you type is a new constraint you add for sorting your inventory.
+# This configuration has no impact on how chests can be sorted.
 # You can specify :
 #   * a particular slot (ex: "D1 sword")
 #   * a whole row (ex: "D sword")

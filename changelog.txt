@@ -3,6 +3,13 @@
 | Changelog                                                    |
 |==============================================================|
 
+[07.10.2011] 1.10 (B1.7.3)
+ * Added three buttons on chests and dispensers to sort them
+ * Added some missing items to item tree
+ * Fixed a bug involving rectangle rules
+ 
+|== 1.0X ======================================================|
+ 
 [07.02.2011] 1.07 (B1.7.2)
  * Holding the sort key is no more needed to hot-reload
  * Fixed eating mushroom soups not triggering autoreplace

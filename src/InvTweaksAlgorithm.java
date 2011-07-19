@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -318,7 +319,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		}
 		
 	}
-
+	
 	private Vector<InvTweaksRule> computeLineSortingRules(
 			InvTweaksContainer container, int rowSize, boolean horizontal) {
 		
@@ -377,7 +378,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 					if (column + thisSpaceWidth < maxColumn) {
 						thisSpaceWidth = maxColumn - column + 1;
 					}
-					else if (column - '1' + thisSpaceHeight < maxColumn) {
+					else if (row + thisSpaceHeight < maxRow) {
 						thisSpaceHeight++;
 					}
 					else {
@@ -388,7 +389,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 					if (row + thisSpaceHeight < maxRow) {
 						thisSpaceHeight = maxRow - row + 1;
 					}
-					else if (row - 'a' + thisSpaceWidth < maxColumn) {
+					else if (column + thisSpaceWidth < maxColumn) {
 						thisSpaceWidth++;
 					}
 					else {

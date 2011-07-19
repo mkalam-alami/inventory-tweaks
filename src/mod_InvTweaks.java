@@ -25,7 +25,7 @@ public class mod_InvTweaks extends BaseMod {
     	Minecraft mc = ModLoader.getMinecraftInstance();
     	KeyBinding sortKey = new KeyBinding(
     			"Sort inventory", Keyboard.KEY_R); /* KeyBinding */
-    	ModLoader.RegisterKey(this, sortKey, true);
+    	ModLoader.RegisterKey(this, sortKey, false);
     	
     	// Register OnTickInGame event
     	ModLoader.SetInGameHook(this, true, true);

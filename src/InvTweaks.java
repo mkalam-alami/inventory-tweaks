@@ -391,7 +391,6 @@ public class InvTweaks extends InvTweaksObf {
 	        
 	        // Draw little button
 	        // (use the 4 corners of the texture to fit best its small size)
-	        FontRenderer fontrenderer = minecraft.fontRenderer;
 	        GL11.glBindTexture(3553, minecraft.renderEngine.getTexture("/gui/gui.png"));
 	        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	        boolean flag = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
@@ -428,7 +427,7 @@ public class InvTweaks extends InvTweaksObf {
 		        }
 	        }
 	        
-	        // Display string (or symbol)
+	        // Display symbol
 	        if (displayString.equals("h")) {
 	        	drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4, textColor);
 	        	drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7, textColor);

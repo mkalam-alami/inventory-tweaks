@@ -8,6 +8,7 @@
  * Added some missing items to item tree
  * Fixed a bug involving rectangle rules
  * Eaten mushroom soups now always leave the hotbar on autoreplace
+ * Added German and French readmes
  
 |== 1.0X ======================================================|
  

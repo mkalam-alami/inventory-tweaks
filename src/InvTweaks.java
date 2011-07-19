@@ -36,7 +36,7 @@ public class InvTweaks extends InvTweaksObf {
     public static final int POLLING_DELAY = 3;
     public static final int POLLING_TIMEOUT = 1500;
     public static final int PLAYER_INVENTORY_WINDOW_ID = 0;
-	public static final int SORTING_TIMEOUT = 5000; // TODO: Enable timeout
+	public static final int SORTING_TIMEOUT = 5000; // TODO Enable timeout
 
 	private static InvTweaks instance;
     private InvTweaksConfig config = null;
@@ -148,7 +148,7 @@ public class InvTweaks extends InvTweaksObf {
     		return;
     	
 		//// Middle click
-    	// TODO: Doesn't work on chests
+    	// TODO Doesn't work on chests
     	
     	if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled()) {
     		
@@ -377,7 +377,7 @@ public class InvTweaks extends InvTweaksObf {
 		
 		public SortingButton(int id, int x, int y,
 				int w, int h, String displayString,
-				Container container, int algorithm) { // TODO Explicit params
+				Container container, int algorithm) {
 			super(id, x, y, w, h, displayString);
 			this.container = container;
 			this.algorithm = algorithm;

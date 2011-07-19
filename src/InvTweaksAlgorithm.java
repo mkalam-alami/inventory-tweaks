@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -261,6 +260,16 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 						ItemStack stack = inventory.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							inventory.moveStack(i, targetedSlot, Integer.MAX_VALUE);
+							// If item are swapped (like for mushroom soups),
+							// put the item back in the inventory if it is in the hotbar
+							if (inventory.getItemStack(i) != null && i >= 27) {
+								for (int j = 0; j < InvTweaks.INVENTORY_SIZE; j++) {
+									if (inventory.getItemStack(j) == null) {
+										inventory.moveStack(i, j, Integer.MAX_VALUE);
+										break;
+									}
+								}
+							}
 						}
 					}
 					catch (NullPointerException e) {
@@ -268,7 +277,6 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 						// unsafe accesses, NPE may (very rarely) occur (?).
 					}
 					
-			    	//onTickBusy = false; // TODO Check commenting this doesn't break SMP
 				}
 				
 			}.init(inventory, replacementStackSlot, slot)).start();

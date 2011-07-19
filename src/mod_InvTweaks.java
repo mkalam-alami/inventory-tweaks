@@ -9,7 +9,7 @@ import org.lwjgl.input.Keyboard;
 /**
  * @author Jimeo Wan (jimeo.wan at gmail.com)
  * Website: {@link http://wan.ka.free.fr/?invtweaks}
- * Source code: {@link https://github.com/jimeowan/minecraft-mod-inventory-tweaks}
+ * Source code: {@link https://github.com/jimeowan/inventory-tweaks}
  * 
  */
 public class mod_InvTweaks extends BaseMod {
@@ -50,7 +50,7 @@ public class mod_InvTweaks extends BaseMod {
     public boolean OnTickInGame(Minecraft minecraft)
     {
     	instance.onTick();
-    	return true; // TODO: What's this for? 
+    	return true; 
     }
     
 }

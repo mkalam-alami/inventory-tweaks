@@ -61,7 +61,7 @@ public class InvTweaksConfig {
 	
 	/**
 	 * @return The locked slots only
-	 * TODO ordered by decreasing priority
+	 * TODO Order by decreasing priority
 	 */
 	public Vector<Integer> getLockedSlots() {
 		return lockedSlots;

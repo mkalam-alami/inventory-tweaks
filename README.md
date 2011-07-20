@@ -2,40 +2,6 @@ This Open Source mod aims to implement a sorting feature for inventories in [Min
 
 For documentation about how to use or install the mod, see the [main page of Inventory Tweaks][3]. This place is for developers!
 
-# Dependencies
+## Developer information
 
-This repository doesn't include any third party code, so in order to compile the current version of this mod, the following is needed:
-
- * Minecraft's `minecraft.jar` (version *Beta 1.7.2*)
- * [ModLoader][4]
- * Depending on the `InventoryTweaksObf.java` file used, [MCP 4.2](http://mcp.ocean-labs.de/index.php/MCP_Releases)
-
-# Compiling the mod
-
-I set up two versions of a class named InventoryTweaksObf`, that I switch when I use MCP and when I don't. This is made so that updates are easier and faster when a new version of Minecraft comes out.
-
-## [Currently] With MCP
-
-Clone the repository to  the `src/minecraft/net/minecraft/` folder of MCP, it should then be ready for compilation. You will also have to copy `DefaultConfig.text` and `DefaultTree.txt` (found in `src/`) to the `bin/minecraft/net/minecraft/src` folder, or else the mod will fail to generate the configuration files.
-
-## Without MCP
-
-After building the sources, you can either move them directly to the `minecraft.jar` file, or ZIP them the same way the mod is packaged, then put the archive in the `mods` folder. Don't forget to copy `DefaultConfig.text` and `DefaultTree.txt` (found in `src/`) with the files, or else the mod will fail to generate the configuration files.
-
-I'll soon make an Ant task to do the install more easily.
-
-# Developing
-
- * You can enable verbose logging by adding a "DEBUG" rule in *InvTweaksConfig.txt*.
- * The sorting algorithm is probably not very easy to understand, but if you're interested in having some documentation about how it works, please contact me, and I'll write something on this repository's wiki. Meanwhile, there is already a few comments to help.
-
-# Contribute
-
-You're welcome to fork this repository ; do whatever you want with it as long as you respect the license requirements and the [Minecraft's terms][6]. If you're looking for how to help, why not check the issue list?
-
-[1]: http://www.minecraft.net/
-[2]: http://mojang.com/
-[3]: http://wan.ka.free.fr/?invtweaks
-[4]: http://www.minecraftforum.net/viewtopic.php?t=80246
-[5]: http://mcp.ocean-labs.de/index.php/MCP_Releases
-[6]: http://www.minecraft.net/copyright.jsp
+See the [Wiki](https://github.com/jimeowan/inventory-tweaks/wiki).

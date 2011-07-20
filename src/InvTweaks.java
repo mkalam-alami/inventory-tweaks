@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Vector;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -35,8 +36,9 @@ public class InvTweaks extends InvTweaksObf {
     public static final int AUTOREPLACE_DELAY = 200;
     public static final int POLLING_DELAY = 3;
     public static final int POLLING_TIMEOUT = 1500;
+    public static final int CHEST_ALGORITHM_SWAP_MAX_INTERVAL = 3000;
     public static final int PLAYER_INVENTORY_WINDOW_ID = 0;
-	public static final int SORTING_TIMEOUT = 5000; // TODO Enable timeout
+	public static final int SORTING_TIMEOUT = 2999; // > POLLING_TIMEOUT
 
 	private static InvTweaks instance;
     private InvTweaksConfig config = null;
@@ -44,6 +46,9 @@ public class InvTweaks extends InvTweaksObf {
     private long configLastModified = 0;
 	private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
 	private boolean buttonsAddedToGui = false;
+	private int chestAlgorithm = InvTweaksAlgorithm.DEFAULT;
+	private long chestAlgorithmClickTimestamp = 0; 
+	private boolean chestAlgorithmButtonDown = false;
     
     public InvTweaks(Minecraft mc) {
 
@@ -88,9 +93,13 @@ public class InvTweaks extends InvTweaksObf {
 	    			getMainInventory(),
 	    			getFocusedSlot());
 	    	
-	    	sortingAlgorithm.sortContainer(
-	    			(guiScreen == null) ? getPlayerContainer() : getContainer((GuiContainer) guiScreen),  /* GuiContainer */
-	    			true, InvTweaksAlgorithm.INVENTORY);
+	    	try {
+				sortingAlgorithm.sortContainer(
+						(guiScreen == null) ? getPlayerContainer() : getContainer((GuiContainer) guiScreen),  /* GuiContainer */
+						true, InvTweaksAlgorithm.INVENTORY);
+			} catch (TimeoutException e) {
+				logInGame("Failed to sort inventory: "+e.getMessage());
+			}
 			
 	    	// This needs to be remembered so that the
 	    	// autoreplace feature doesn't trigger
@@ -147,48 +156,70 @@ public class InvTweaks extends InvTweaksObf {
     	if (config == null)
     		return;
     	
+    	synchronized (this) {
+    	
 		//// Middle click
-    	// TODO Doesn't work on chests
     	
     	if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled()) {
-    		
-	    	// Hot reload trigger
-	    	if (getConfigLastModified() != configLastModified)
-	    		loadConfig();
-    		
-        	if (isChestOrDispenser(guiScreen)) {
-        		
-        		// Check if the middle click target the chest or the inventory
-        		// (copied GuiContainer.getSlotAtPosition algorithm)
-        		GuiContainer guiContainer = (GuiContainer) guiScreen;
-    			Container container = getContainer((GuiContainer) guiScreen);
-    			int slotCount = getSlots(container).size();
-    			int deltaX = (guiContainer.width - guiContainer.xSize) / 2,
-    				deltaY =  (guiContainer.height - guiContainer.ySize) / 2;
-    			int mouseX = Mouse.getX() - deltaX, mouseY = Mouse.getY() - deltaY;
-    			boolean chestTargeted = false;
-    			for(int i = 0; i < slotCount - INVENTORY_SIZE; i++) {
-    	            Slot slot = getSlot(container, i);
-    	            if (mouseX >= slot.xDisplayPosition - 1 && mouseX < slot.xDisplayPosition + 16 + 1
-    	            		&& mouseY >= slot.yDisplayPosition - 1 && mouseY < slot.yDisplayPosition + 16 + 1) {
-    	            	chestTargeted = true;
-    	            	break;
-    	            }
-    	        }
-    			
-    			if (chestTargeted) {
-    				sortingAlgorithm.sortContainer(container,
-    						false, InvTweaksAlgorithm.DEFAULT);
-    			}
-    			else {
-    				sortingAlgorithm.sortContainer(getPlayerContainer(),
-    						true, InvTweaksAlgorithm.INVENTORY);
-    			}
-    			
-        	}
-        	else {
-        		onSortingKeyPressed();
-        	}
+    		if (!chestAlgorithmButtonDown) {
+	    		chestAlgorithmButtonDown = true;
+	    		log.info("a");
+		    	// Hot reload trigger
+		    	if (getConfigLastModified() != configLastModified)
+		    		loadConfig();
+	    		
+	        	if (isChestOrDispenser(guiScreen)) {
+	        		
+	        		// Check if the middle click target the chest or the inventory
+	        		// (copied GuiContainer.getSlotAtPosition algorithm)
+	        		GuiContainer guiContainer = (GuiContainer) guiScreen;
+	    			Container container = getContainer((GuiContainer) guiScreen);
+	    			int slotCount = getSlots(container).size();
+	                int mouseX = (Mouse.getEventX() * guiContainer.width) / mc.displayWidth;
+	                int mouseY = guiContainer.height - (Mouse.getEventY() * guiContainer.height) / mc.displayHeight - 1;
+	    			int target = 0; // 0 = nothing, 1 = chest, 2 = inventory
+	    			for(int i = 0; i < slotCount; i++) {
+	    				Slot slot = getSlot(container, i);
+	    		        int k = (guiContainer.width - guiContainer.xSize) / 2;
+	    		        int l = (guiContainer.height - guiContainer.ySize) / 2;
+	    		        if (mouseX-k >= slot.xDisplayPosition - 1 && mouseX-k < slot.xDisplayPosition + 16 + 1 
+	    		        	&& mouseY-l >= slot.yDisplayPosition - 1 && mouseY-l < slot.yDisplayPosition + 16 + 1) {
+	    	            	target = (i < slotCount - INVENTORY_SIZE) ? 1 : 2;
+	    	            	break;
+	    	            }
+	    	        }
+	    			
+	    			
+	    			if (target == 1) {
+	    				long timestamp = System.currentTimeMillis();
+	    				if (timestamp - chestAlgorithmClickTimestamp > CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
+	    					chestAlgorithm = InvTweaksAlgorithm.DEFAULT;
+	    				}
+	    				try {
+							sortingAlgorithm.sortContainer(container, false, chestAlgorithm);
+						} catch (TimeoutException e) {
+							logInGame("Failed to sort container: "+e.getMessage());
+						}
+	    				chestAlgorithm = (chestAlgorithm + 1) % 3;
+	    				chestAlgorithmClickTimestamp = timestamp;
+	    			}
+	    			else if (target == 2) {
+	    				try {
+							sortingAlgorithm.sortContainer(container, true, InvTweaksAlgorithm.INVENTORY);
+						} catch (TimeoutException e) {
+							logInGame("Failed to sort inventory: "+e.getMessage());
+						}
+	    			}
+	    			
+	        	}
+	        	else {
+	        		onSortingKeyPressed();
+	        	}
+    		}
+    	}
+    	else {
+    		log.info("b");
+    		chestAlgorithmButtonDown = false;
     	}
 
 		//// Autoreplace
@@ -213,12 +244,13 @@ public class InvTweaks extends InvTweaksObf {
 		    		
 	    			sortingAlgorithm.autoReplaceSlot(focusedSlot, 
 	    					storedStackId, storedStackDamage);
-	    		
 	    		}
 	    	}
 	    	
     	storedStackId = currentStackId;
     	storedStackDamage = currentStackDamage;
+    	
+    	}
 
     }
 	
@@ -416,7 +448,11 @@ public class InvTweaks extends InvTweaksObf {
 		        	// Sort container
 		        	if (Mouse.isButtonDown(0)) {
 		        		if (!buttonClicked) {
-			        		sortingAlgorithm.sortContainer(container, false, algorithm);
+			        		try {
+								sortingAlgorithm.sortContainer(container, false, algorithm);
+							} catch (TimeoutException e) {
+								logInGame("Failed to sort container: "+e.getMessage());
+							}
 			        		buttonClicked = true;
 		        		}
 		        	}

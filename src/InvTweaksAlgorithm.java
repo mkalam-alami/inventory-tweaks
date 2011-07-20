@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
@@ -15,10 +16,11 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
     
     private static final Logger log = Logger.getLogger("InvTweaks");
 
+    // Do not change values (InvTweaksContainer.chestAlgorithm depend on that)
     public static final int DEFAULT = 0;
-    public static final int INVENTORY = 1;
+    public static final int VERTICAL = 1;
     public static final int HORIZONTAL = 2;
-    public static final int VERTICAL = 3;
+    public static final int INVENTORY = 3;
 
     private static final int MAX_CONTAINER_SIZE = 100;
     private static int[] DEFAULT_LOCK_PRIORITIES = null;
@@ -44,8 +46,9 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 	/**
 	 * Sort inventory
 	 * @return The number of clicks that were needed
+	 * @throws TimeoutException 
      */
-    public final long sortContainer(Container container, boolean inventoryPart, int algorithm) {
+    public final long sortContainer(Container container, boolean inventoryPart, int algorithm) throws TimeoutException {
     	
     	if (config == null)
     		return -1;
@@ -66,8 +69,9 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
     	}
 
 		//// Empty hand (needed in SMP)
-		if (isMultiplayerWorld())
+		if (isMultiplayerWorld()) {
 			inventory.putHoldItemDown();
+		}
 		
 		if (algorithm != DEFAULT) {
 			
@@ -275,6 +279,8 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 					catch (NullPointerException e) {
 						// Nothing: Due to multithreading + 
 						// unsafe accesses, NPE may (very rarely) occur (?).
+					} catch (TimeoutException e) {
+						log.severe("Failed to trigger autoreplace: "+e.getMessage());
 					}
 					
 				}
@@ -292,7 +298,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		}
     }
 
-	private void defaultSorting(InvTweaksContainer inventory) {
+	private void defaultSorting(InvTweaksContainer inventory) throws TimeoutException {
 	
 		log.info("Default sorting.");
 		
@@ -339,6 +345,15 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		int columnSize = getContainerColumnSize(container, rowSize);
 		int spaceWidth;
 		int spaceHeight;
+		int availableSlots = container.getSize();
+		int remainingStacks = 0;
+		for (Integer stacks : stats.values()) {
+			remainingStacks += stacks; 
+		}
+		
+		// No need to compute rules for an empty chest
+		if (distinctItems == 0)
+			return rules;
 		
 		// (Partially) sort stats by decreasing item stack count
 		List<InvTweaksItem> unorderedItems = new ArrayList<InvTweaksItem>(stats.keySet());
@@ -424,27 +439,35 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 			rules.add(new InvTweaksRule(constraint, item.getName(),
 					container.getSize(), rowSize));
 			
-			// Move origin for next rule
-			if (horizontal) {
-				if (column + thisSpaceWidth + spaceWidth <= maxColumn + 1) {
-					column += thisSpaceWidth;
+			// Check if ther's still room for more rules
+			availableSlots -= thisSpaceHeight*thisSpaceWidth;
+			remainingStacks -= stats.get(item);
+			if (availableSlots >= remainingStacks) {
+				// Move origin for next rule
+				if (horizontal) {
+					if (column + thisSpaceWidth + spaceWidth <= maxColumn + 1) {
+						column += thisSpaceWidth;
+					}
+					else {
+						column = '1';
+						row += thisSpaceHeight;
+					}
 				}
 				else {
-					column = '1';
-					row += thisSpaceHeight;
+					if (row + thisSpaceHeight + spaceHeight <= maxRow + 1) {
+						row += thisSpaceHeight;
+					}
+					else {
+						row = 'a';
+						column += thisSpaceWidth;
+					}
 				}
+				if (row > maxRow || column > maxColumn)
+					break;
 			}
 			else {
-				if (row + thisSpaceHeight + spaceHeight <= maxRow + 1) {
-					row += thisSpaceHeight;
-				}
-				else {
-					row = 'a';
-					column += thisSpaceWidth;
-				}
-			}
-			if (row > maxRow || column > maxColumn)
 				break;
+			}
 		}
 		
 		String defaultRule;

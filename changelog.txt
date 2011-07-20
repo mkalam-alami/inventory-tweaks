@@ -3,6 +3,13 @@
 | Changelog                                                    |
 |==============================================================|
 
+[07.21.2011] 1.11 (B1.7.3)
+ * Middle click now works on chests (doesn't crash anymore)
+ * Middle clicking several times swaps between the sorting methods
+ * Fixed a crash when sorting an empty chest
+ * Added a timeout in SMP, to avoid game freezes while sorting
+ * Tweaked a bit the intelligent chest sorting
+
 [07.20.2011] 1.10b (B1.7.3)
  * Fixed a crash when sorting the inventory with an open chest on SMP
  

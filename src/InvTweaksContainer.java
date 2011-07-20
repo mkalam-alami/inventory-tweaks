@@ -1,6 +1,7 @@
 package net.minecraft.src;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
@@ -19,6 +20,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 	private int clickCount = 0;
 	private int offset; // offset of the first sortable item
 	private int size;
+	private int timeSpentWaiting = 0;
 	
 	// Multiplayer
 	private boolean isMultiplayer;
@@ -70,8 +72,9 @@ public class InvTweaksContainer extends InvTweaksObf {
 	 * @param j to slot
 	 * @param priority The rule priority. Use 1 if the stack was not moved using a rule.
 	 * @return true if it has been done successfully.
+	 * @throws TimeoutException 
 	 */
-	public boolean moveStack(int i, int j, int priority) {
+	public boolean moveStack(int i, int j, int priority) throws TimeoutException {
 		
 		if (getLockLevel(i) <= priority) {
 		
@@ -117,8 +120,9 @@ public class InvTweaksContainer extends InvTweaksObf {
 	 * @param i from slot
 	 * @param j to slot
 	 * @return STACK_NOT_EMPTIED if items remain in i, STACK_EMPTIED otherwise.
+	 * @throws TimeoutException 
 	 */
-	public boolean mergeStacks(int i, int j) {
+	public boolean mergeStacks(int i, int j) throws TimeoutException {
 		if (lockLevels[i] <= lockLevels[j]) {
 			return swapOrMerge(i, j, 1) ? STACK_EMPTIED : STACK_NOT_EMPTIED;
 		}
@@ -191,9 +195,10 @@ public class InvTweaksContainer extends InvTweaksObf {
 	 * @param i
 	 * @param j
 	 * @return true if i is now empty
+	 * @throws TimeoutException 
 	 * 
 	 */
-	public boolean swapOrMerge(int i, int j, int priority) {
+	public boolean swapOrMerge(int i, int j, int priority) throws TimeoutException {
 		
 		// Merge stacks
 		if (canBeMerged(i, j)) {
@@ -278,8 +283,9 @@ public class InvTweaksContainer extends InvTweaksObf {
 	/**
 	 * If an item is in hand (= attached to the cursor), puts it down.
 	 * @return false if there is no room to put the item.
+	 * @throws Exception 
 	 */
-	public boolean putHoldItemDown() {
+	public boolean putHoldItemDown() throws TimeoutException {
 		ItemStack holdStack = getHoldStack();
 		if (holdStack != null) {
 			// Try to find an unlocked slot first, to avoid
@@ -331,8 +337,9 @@ public class InvTweaksContainer extends InvTweaksObf {
 	 * @param priority Ignored
 	 * @param oldSlot The stacks previous spot
 	 * @param stack The stack that was in the slot before the operation
+	 * @throws Exception 
 	 */
-	public void click(int slot) {
+	public void click(int slot) throws TimeoutException {
 		clickCount++;
 		
 		if (log.getLevel() == InvTweaks.DEBUG)
@@ -368,14 +375,22 @@ public class InvTweaksContainer extends InvTweaksObf {
 		if (!uselessClick) {
 			int pollingTime = 0;
 			while (areItemStacksEqual(getStackInSlot(slot), stackInSlot)
-					&& pollingTime < InvTweaks.POLLING_TIMEOUT) {
+					 && pollingTime < InvTweaks.POLLING_TIMEOUT) {
 				InvTweaksAlgorithm.trySleep(InvTweaks.POLLING_DELAY);
 				pollingTime += InvTweaks.POLLING_DELAY;
 			}
 			if (pollingTime >= InvTweaks.POLLING_TIMEOUT) {
-				log.warning("Click timout");
+				log.warning("Click timeout");
 			}
+			timeSpentWaiting += pollingTime;
 		}
+		
+		// Freeze protection (to protect from infinite clicking in SMP
+		// due to a mod bug, or the server not responding)
+		if (timeSpentWaiting > InvTweaks.SORTING_TIMEOUT) {
+			throw new TimeoutException("Timeout");
+		}
+		
 	}
 	
 	private int getItemOrder(int itemID, int itemDamage) {

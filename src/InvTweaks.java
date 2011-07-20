@@ -89,8 +89,8 @@ public class InvTweaks extends InvTweaksObf {
 	    			getFocusedSlot());
 	    	
 	    	sortingAlgorithm.sortContainer(
-	    			getPlayerContainer(),
-	    			InvTweaksAlgorithm.INVENTORY);
+	    			(guiScreen == null) ? getPlayerContainer() : getContainer((GuiContainer) guiScreen),  /* GuiContainer */
+	    			true, InvTweaksAlgorithm.INVENTORY);
 			
 	    	// This needs to be remembered so that the
 	    	// autoreplace feature doesn't trigger
@@ -178,11 +178,11 @@ public class InvTweaks extends InvTweaksObf {
     			
     			if (chestTargeted) {
     				sortingAlgorithm.sortContainer(container,
-    						InvTweaksAlgorithm.DEFAULT);
+    						false, InvTweaksAlgorithm.DEFAULT);
     			}
     			else {
     				sortingAlgorithm.sortContainer(getPlayerContainer(),
-    						InvTweaksAlgorithm.INVENTORY);
+    						true, InvTweaksAlgorithm.INVENTORY);
     			}
     			
         	}
@@ -416,8 +416,7 @@ public class InvTweaks extends InvTweaksObf {
 		        	// Sort container
 		        	if (Mouse.isButtonDown(0)) {
 		        		if (!buttonClicked) {
-			        		sortingAlgorithm.sortContainer(
-			        				container, algorithm);
+			        		sortingAlgorithm.sortContainer(container, false, algorithm);
 			        		buttonClicked = true;
 		        		}
 		        	}

@@ -24,7 +24,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 	private boolean isMultiplayer;
 	private EntityPlayer entityPlayer;
 	
-	public InvTweaksContainer(Minecraft mc, int[] lockLevels, Container container) {
+	public InvTweaksContainer(Minecraft mc, int[] lockLevels, Container container, boolean inventoryPart) {
 		super(mc);
 		
 		this.lockLevels = lockLevels;
@@ -33,6 +33,10 @@ public class InvTweaksContainer extends InvTweaksObf {
 		if (container instanceof ContainerPlayer) {
 			this.size = InvTweaks.INVENTORY_SIZE;
 			this.offset = 9; // 5 crafting slots + 4 armor slots
+		}
+		else if (inventoryPart) { 
+			this.size = InvTweaks.INVENTORY_SIZE;
+			this.offset = getSlots(container).size() - InvTweaks.INVENTORY_SIZE;
 		}
 		else {
 			this.size = getSlots(container).size() - InvTweaks.INVENTORY_SIZE;

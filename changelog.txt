@@ -3,6 +3,9 @@
 | Changelog                                                    |
 |==============================================================|
 
+[07.20.2011] 1.10b (B1.7.3)
+ * Fixed a crash when sorting the inventory with an open chest on SMP
+ 
 [07.20.2011] 1.10 (B1.7.3)
  * Added three buttons on chests and dispensers to sort them
  * Added some missing items to item tree

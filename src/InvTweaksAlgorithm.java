@@ -45,7 +45,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 	 * Sort inventory
 	 * @return The number of clicks that were needed
      */
-    public final long sortContainer(Container container, int algorithm) {
+    public final long sortContainer(Container container, boolean inventoryPart, int algorithm) {
     	
     	if (config == null)
     		return -1;
@@ -59,10 +59,10 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
     	InvTweaksContainer inventory;
     	
     	if (algorithm == INVENTORY) {
-    		inventory = new InvTweaksContainer(mc, config.getLockPriorities(), container);
+    		inventory = new InvTweaksContainer(mc, config.getLockPriorities(), container, inventoryPart);
     	}
     	else {
-    		inventory = new InvTweaksContainer(mc, DEFAULT_LOCK_PRIORITIES, container);
+    		inventory = new InvTweaksContainer(mc, DEFAULT_LOCK_PRIORITIES, container, inventoryPart);
     	}
 
 		//// Empty hand (needed in SMP)
@@ -184,7 +184,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 	public void autoReplaceSlot(int slot, int wantedId, int wantedDamage) {
    
 		InvTweaksContainer inventory = new InvTweaksContainer(
-				mc, config.getLockPriorities(), getPlayerContainer());  	
+				mc, config.getLockPriorities(), getPlayerContainer(), true);  	
 		ItemStack candidateStack, replacementStack = null;
 		ItemStack storedStack = createItemStack(wantedId, 1, wantedDamage);
 		int replacementStackSlot = -1;

@@ -5,3 +5,7 @@ For documentation about how to use or install the mod, see the [main page of Inv
 ## Developer information
 
 See the [Wiki](https://github.com/jimeowan/inventory-tweaks/wiki).
+
+[1]: http://www.minecraft.net/
+[2]: http://mojang.com/
+[3]: http://wan.ka.free.fr/?invtweaks

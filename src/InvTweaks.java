@@ -30,6 +30,7 @@ public class InvTweaks extends InvTweaksObf {
     public static final String INGAME_LOG_PREFIX = "InvTweaks: ";
     public static final Level DEFAULT_LOG_LEVEL = Level.WARNING;
     public static final Level DEBUG = Level.INFO;
+    
     public static final int HOT_RELOAD_DELAY = 1000;
     public static final int INVENTORY_SIZE = 36;
 	public static final int INVENTORY_ROW_SIZE = 9;
@@ -39,13 +40,13 @@ public class InvTweaks extends InvTweaksObf {
     public static final int CHEST_ALGORITHM_SWAP_MAX_INTERVAL = 3000;
     public static final int PLAYER_INVENTORY_WINDOW_ID = 0;
 	public static final int SORTING_TIMEOUT = 2999; // > POLLING_TIMEOUT
+    public static final int JIMEOWAN_ID = 54696386;
 
 	private static InvTweaks instance;
     private InvTweaksConfig config = null;
     private InvTweaksAlgorithm sortingAlgorithm = null;
     private long configLastModified = 0;
 	private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
-	private boolean buttonsAddedToGui = false;
 	private int chestAlgorithm = InvTweaksAlgorithm.DEFAULT;
 	private long chestAlgorithmClickTimestamp = 0; 
 	private boolean chestAlgorithmButtonDown = false;
@@ -73,8 +74,7 @@ public class InvTweaks extends InvTweaksObf {
 		return instance;
 	}
 
-    public final void onSortingKeyPressed()
-    {
+    public final void onSortingKeyPressed() {
     	synchronized (this) {
 			
 	    	// Check config loading success & current GUI
@@ -85,85 +85,121 @@ public class InvTweaks extends InvTweaksObf {
 	    		return;
 	    	}
 	    	
-	    	// Hot reload trigger
-	    	if (getConfigLastModified() != configLastModified)
-	    		loadConfig();
-	
-	    	ItemStack selectedItem = getItemStack(
-	    			getMainInventory(),
-	    			getFocusedSlot());
-	    	
-	    	try {
-				sortingAlgorithm.sortContainer(
-						(guiScreen == null) ? getPlayerContainer() : getContainer((GuiContainer) guiScreen),  /* GuiContainer */
-						true, InvTweaksAlgorithm.INVENTORY);
-			} catch (TimeoutException e) {
-				logInGame("Failed to sort inventory: "+e.getMessage());
-			}
-			
-	    	// This needs to be remembered so that the
-	    	// autoreplace feature doesn't trigger
-	    	if (selectedItem != null && 
-	    			getItemStack(getMainInventory(), getFocusedSlot()) == null) {
-	    		storedStackId = 0;
-	    	}
-	    	
+	    	handleSorting(guiScreen);
 		}
     }
 
-    /**
-     * Autoreplace + middle click sorting
-     */
-	@SuppressWarnings("unchecked")
-	public void onTick() {
+    public void onTickInGame() {
+		if (config == null)
+			return;
+		synchronized (this) {
+			GuiScreen guiScreen = getCurrentScreen();
+			handleMiddleClick(guiScreen);
+			handleAutoReplace();
+		}
+	}
+    
+    public void onTickInGUI(GuiScreen guiScreen) {
+		if (config == null)
+			return;
+		synchronized (this) {
+	    	handleChestLayout(guiScreen);
+			handleOptionsMenuLayout(guiScreen);
+		}
+    }
+
+	public void logInGame(String message) {
+    	addChatMessage(INGAME_LOG_PREFIX + message);
+    }
+	
+	private void handleSorting(GuiScreen guiScreen) {
+
+    	// Hot reload trigger
+    	if (getConfigLastModified() != configLastModified)
+    		loadConfig();
+
+    	ItemStack selectedItem = getItemStack(
+    			getMainInventory(),
+    			getFocusedSlot());
     	
-		//// Chest sorting button
+    	try {
+			sortingAlgorithm.sortContainer(
+					(guiScreen == null) ? getPlayerContainer() : getContainer((GuiContainer) guiScreen),  /* GuiContainer */
+					true, InvTweaksAlgorithm.INVENTORY);
+		} catch (TimeoutException e) {
+			logInGame("Failed to sort inventory: "+e.getMessage());
+		}
 		
-    	GuiScreen guiScreen = getCurrentScreen();
-    	if (isChestOrDispenser(guiScreen)) {
-			GuiContainer guiContainer = (GuiContainer) guiScreen;
-			if (buttonsAddedToGui == false) {
+    	// This needs to be remembered so that the
+    	// autoreplace feature doesn't trigger
+    	if (selectedItem != null && 
+    			getItemStack(getMainInventory(), getFocusedSlot()) == null) {
+    		storedStackId = 0;
+    	}
+    	
+	}
 
-				Container container = getContainer(guiContainer);
-				int id = 10,
+	@SuppressWarnings("unchecked")
+	private void handleChestLayout(GuiScreen guiScreen) {
+	
+		boolean isContainer = isChestOrDispenser(guiScreen);
+		
+		if (isContainer || guiScreen instanceof GuiInventory) {
+			
+			int w = 10, h = 10;
+			
+			// Inventory button
+			// FIXME: Will fail if another mod adds a button!
+			if (!isContainer && guiScreen.controlList.size() == 0) {
+				guiScreen.controlList.add(new SettingsButton(
+						JIMEOWAN_ID,
+						guiScreen.width/2 + 73,
+						guiScreen.height/2 - 78,
+						w, h, "..."));
+			}
+			
+			// Chest buttons
+			if (isContainer && guiScreen.controlList.size() == 0) {
+
+				GuiContainer guiContainer = (GuiContainer) guiScreen;
+				int id = JIMEOWAN_ID + 1,
 					x = guiContainer.xSize/2 + guiContainer.width/2 - 17,
-					y = (guiContainer.height - guiContainer.ySize)/2 + 5,
-					w = 10, h = 10;
-
+					y = (guiContainer.height - guiContainer.ySize)/2 + 5;
+				
+				// Sorting buttons
+				
+				Container container = getContainer((GuiContainer) guiScreen);
+	
 				GuiButton button = new SortingButton(
-						id++, x-24, y, w, h, "s",
+						id++, x-37, y, w, h, "s",
 						container, InvTweaksAlgorithm.DEFAULT);
 				guiContainer.controlList.add((GuiButton) button);
-
+	
 				button = new SortingButton(
-						id++, x-12, y, w, h, "v",
+						id++, x-25, y, w, h, "v",
 						container, InvTweaksAlgorithm.VERTICAL);
 				guiContainer.controlList.add((GuiButton) button);
 				
 				button = new SortingButton(
-						id++, x, y, w, h, "h",
+						id++, x-13, y, w, h, "h",
 						container, InvTweaksAlgorithm.HORIZONTAL);
 				guiContainer.controlList.add((GuiButton) button);
 				
-				buttonsAddedToGui = true;
+				// Settings button
+
+				guiScreen.controlList.add(new SettingsButton(
+						JIMEOWAN_ID, x-1, y, w, h, "..."));
+					
 			}
 		}
-		else {
-			buttonsAddedToGui  = false;
-		}
-    	
 
-    	if (config == null)
-    		return;
-    	
-    	synchronized (this) {
-    	
-		//// Middle click
-    	
-    	if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled()) {
-    		if (!chestAlgorithmButtonDown) {
+	}
+
+	private void handleMiddleClick(GuiScreen guiScreen) {
+	
+		if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled()) {
+			if (!chestAlgorithmButtonDown) {
 	    		chestAlgorithmButtonDown = true;
-	    		log.info("a");
 		    	// Hot reload trigger
 		    	if (getConfigLastModified() != configLastModified)
 		    		loadConfig();
@@ -189,7 +225,6 @@ public class InvTweaks extends InvTweaksObf {
 	    	            }
 	    	        }
 	    			
-	    			
 	    			if (target == 1) {
 	    				long timestamp = System.currentTimeMillis();
 	    				if (timestamp - chestAlgorithmClickTimestamp > CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
@@ -213,26 +248,26 @@ public class InvTweaks extends InvTweaksObf {
 	    			
 	        	}
 	        	else {
-	        		onSortingKeyPressed();
+	        		handleSorting(guiScreen);
 	        	}
-    		}
-    	}
-    	else {
-    		log.info("b");
-    		chestAlgorithmButtonDown = false;
-    	}
+			}
+		}
+		else {
+			chestAlgorithmButtonDown = false;
+		}
+	}
 
-		//// Autoreplace
-    	
-    	ItemStack currentStack = getFocusedStack();
-    	int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
-    	int currentStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
+	private void handleAutoReplace() {
+		
+		ItemStack currentStack = getFocusedStack();
+		int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
+		int currentStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
 		int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
 		
-    	// Auto-replace item stack
-    	if (currentStackId != storedStackId
-    			|| currentStackDamage != storedStackDamage) {
-    		
+		// Auto-replace item stack
+		if (currentStackId != storedStackId
+				|| currentStackDamage != storedStackDamage) {
+			
 	    	if (storedFocusedSlot != focusedSlot) { // Filter selection change
 	    		storedFocusedSlot = focusedSlot;
 	    	}
@@ -247,51 +282,85 @@ public class InvTweaks extends InvTweaksObf {
 	    		}
 	    	}
 	    	
-    	storedStackId = currentStackId;
-    	storedStackDamage = currentStackDamage;
-    	
-    	}
-
-    }
-	
-    public void logInGame(String message) {
-    	addChatMessage(INGAME_LOG_PREFIX + message);
-    }
-    
-    public InvTweaksConfig getConfig() {
-		return config;
+		storedStackId = currentStackId;
+		storedStackDamage = currentStackDamage;
+		
 	}
 
 	/**
-     * Checks time of last edit for both configuration files.
-     * @return
-     */
-    private long getConfigLastModified() {
-    	return new File(CONFIG_FILE).lastModified() + 
-    			new File(CONFIG_TREE_FILE).lastModified();
-    }
-    
-    /**
-     * Tries to load mod configuration from file, with error handling.
-     * @param config
-     */
-    private boolean loadConfig() {
+	 * Adds a button nicely, according to the last small button's position.
+	 * (supports the addition of buttons by other mods)
+	 * @param guiScreen
+	 */
+	private void handleOptionsMenuLayout(GuiScreen guiScreen) {
+		
+		if (guiScreen instanceof GuiOptions) {
+			GuiOptions options = (GuiOptions) guiScreen;
 
-    	// Create missing files
-    	
-    	if (!new File(CONFIG_FILE).exists()
-    			&& extractFile(DEFAULT_CONFIG_FILE, CONFIG_FILE)) {
-    		logInGame(CONFIG_FILE+" missing, creating default one.");
+			boolean optionsButtonAdded = false;
+			for (Object controlItem : options.controlList) {
+				if (controlItem instanceof GuiSmallButton
+						&& ((GuiSmallButton) controlItem).id == JIMEOWAN_ID) {
+					optionsButtonAdded = true;
+					break;
+				}
+			}
+			
+			if (!optionsButtonAdded) {
+				int maxY = 0, minX = 0, maxX = 0, maxYX = 0;
+				for (Object controlItem : options.controlList) {
+					if (controlItem instanceof GuiSmallButton ||
+							controlItem instanceof GuiSlider) {
+						int x = ((GuiButton) controlItem).xPosition,
+							y = ((GuiButton) controlItem).yPosition;
+						if (y >= maxY) {
+							if (y == maxY) {
+								maxYX = Math.max(maxYX, x);
+							}
+							else {
+								maxYX = x;
+							}
+							maxY = y;
+						}
+						if (minX > x || minX == 0) {
+							minX = x;
+						}
+						if (maxX < x) {
+							maxX = x;
+						}
+					}
+				}
+				
+				/*options.controlList.add(new OptionsButton(JIMEOWAN_ID, 
+						(maxYX == minX) ? maxX : minX,
+						(maxYX == minX) ? maxY : maxY + 24,
+						150, 20, "Inventory"));*/
+			}
 		}
-    	if (!new File(CONFIG_TREE_FILE).exists()
-    			&& extractFile(DEFAULT_CONFIG_TREE_FILE, CONFIG_TREE_FILE)) {
-    		logInGame(CONFIG_TREE_FILE+" missing, creating default one.");
+	}
+	
+	/**
+	 * Tries to load mod configuration from file, with error handling.
+	 * If it fails, the config attribute will remain null.
+	 * @param config
+	 */
+	private boolean loadConfig() {
+	
+		// Create missing files
+		
+		if (!new File(CONFIG_FILE).exists()
+				&& extractFile(DEFAULT_CONFIG_FILE, CONFIG_FILE)) {
+			logInGame(CONFIG_FILE+" missing, creating default one.");
 		}
-    	
-    	// Load
-    	
-    	String error = null;
-    	
+		if (!new File(CONFIG_TREE_FILE).exists()
+				&& extractFile(DEFAULT_CONFIG_TREE_FILE, CONFIG_TREE_FILE)) {
+			logInGame(CONFIG_TREE_FILE+" missing, creating default one.");
+		}
+		
+		// Load
+		
+		String error = null;
+		
 		try {
 	    	InvTweaksTree.loadTreeFromFile(CONFIG_TREE_FILE);
 	    	if (config == null) {
@@ -306,7 +375,7 @@ public class InvTweaks extends InvTweaksObf {
 		} catch (Exception e) {
 			error = "Error while loading config: "+e.getMessage();
 		}
-
+	
 		if (error != null) {
 			logInGame(error);
 			log.severe(error);
@@ -316,17 +385,26 @@ public class InvTweaks extends InvTweaksObf {
 			configLastModified = getConfigLastModified();
 			return true;
 		}
-    }
+	}
 
-    private void showConfigErrors(InvTweaksConfig config) {
-    	Vector<String> invalid = config.getInvalidKeywords();
-    	if (invalid.size() > 0) {
+	private void showConfigErrors(InvTweaksConfig config) {
+		Vector<String> invalid = config.getInvalidKeywords();
+		if (invalid.size() > 0) {
 			String error = "Invalid keywords found: ";
 			for (String keyword : config.getInvalidKeywords()) {
 				error += keyword+" ";
 			}
 			logInGame(error);
-    	}
+		}
+	}
+
+	/**
+     * Checks time of last edit for both configuration files.
+     * @return
+     */
+    private long getConfigLastModified() {
+    	return new File(CONFIG_FILE).lastModified() + 
+    			new File(CONFIG_TREE_FILE).lastModified();
     }
     
     private boolean extractFile(String resource, String destination) {
@@ -400,9 +478,87 @@ public class InvTweaks extends InvTweaksObf {
 			return false;
 		}
    	}
+    
+    private class SettingsButton extends GuiButton {
+
+		public SettingsButton(int id, int x, int y,
+				int w, int h, String displayString) {
+			super(id, x, y, w, h, displayString);
+		}
+	
+	    public void drawButton(Minecraft minecraft, int i, int j) {
+	    	
+	        if (!enabled2) {
+	            return;
+	        }
+	        
+	        // TODO Refactoring
+	        // Draw little button
+	        // (use the 4 corners of the texture to fit best its small size)
+	        GL11.glBindTexture(3553, minecraft.renderEngine.getTexture("/gui/gui.png"));
+	        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	        boolean flag = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
+	        int k = getHoverState(flag);
+	        drawTexturedModalRect(xPosition, yPosition, 1,
+	        		46 + k * 20 + 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition, yPosition + height / 2, 1,
+	        		46 + k * 20 + 20 - height / 2 - 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition + width / 2, yPosition,
+	        		200 - width / 2 - 1, 46 + k * 20 + 1, width / 2, height / 2);
+	        drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2,
+	        		200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2, 
+	        		width / 2, height / 2);
+	
+	        // Button status specific behaviour
+	    	int textColor = 0xffe0e0e0;
+	        if (!enabled) {
+	        	textColor = 0xffa0a0a0;
+	        }
+	        else if (flag) {
+	        	textColor = 0xffffffa0;
+	        }
+	        
+	        // Display string
+	        drawCenteredString(mc.fontRenderer, displayString, xPosition + 5, yPosition - 1, textColor);
+	    }
+	    
+	    /**
+	     * Sort container
+	     */
+	    public boolean mousePressed(Minecraft minecraft, int i, int j) {
+	    	if (super.mousePressed(minecraft, i, j)) {
+	    		mc.displayGuiScreen(new InvTweaksGuiOptions(getCurrentScreen()));
+	    		return true;
+	    	}
+	    	else {
+	    		return false;
+	    	}
+    		
+	    }
+		
+	}
+
+	/*private class OptionsButton extends GuiButton {
+
+		public OptionsButton(int id, int x, int y,
+				int w, int h, String displayString) {
+			super(id, x, y, w, h, displayString);
+		}
+		
+	    public boolean mousePressed(Minecraft minecraft, int i, int j) {
+	    	if (super.mousePressed(minecraft, i, j)) {
+	    		mc.displayGuiScreen(new InvTweaksGuiOptions(getCurrentScreen()));
+	    		return true;
+	    	}
+	    	else {
+	    		return false;
+	    	}
+	    }
+		
+	}*/
 	
 	private class SortingButton extends GuiButton {
-
+	
 		private boolean buttonClicked = false;
 		private Container container;
 		private int algorithm;
@@ -414,9 +570,9 @@ public class InvTweaks extends InvTweaksObf {
 			this.container = container;
 			this.algorithm = algorithm;
 		}
-
-	    public void drawButton(Minecraft minecraft, int i, int j)
-	    {
+	
+	    public void drawButton(Minecraft minecraft, int i, int j) {
+	    	
 	        if (!enabled2) {
 	            return;
 	        }
@@ -436,30 +592,14 @@ public class InvTweaks extends InvTweaksObf {
 	        drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2,
 	        		200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2, 
 	        		width / 2, height / 2);
-
+	
 	        // Button status specific behaviour
-        	int textColor = 0xffe0e0e0;
+	    	int textColor = 0xffe0e0e0;
 	        if (!enabled) {
-	            textColor = 0xffa0a0a0;
-	        } else {
-		        if (flag)
-		        {
-		        	textColor = 0xffffffa0;
-		        	// Sort container
-		        	if (Mouse.isButtonDown(0)) {
-		        		if (!buttonClicked) {
-			        		try {
-								sortingAlgorithm.sortContainer(container, false, algorithm);
-							} catch (TimeoutException e) {
-								logInGame("Failed to sort container: "+e.getMessage());
-							}
-			        		buttonClicked = true;
-		        		}
-		        	}
-		        	else {
-		        		buttonClicked = false;
-		        	}
-		        }
+	        	textColor = 0xffa0a0a0;
+	        }
+	        else if (flag) {
+	        	textColor = 0xffffffa0;
 	        }
 	        
 	        // Display symbol
@@ -477,6 +617,24 @@ public class InvTweaks extends InvTweaksObf {
 	        	drawRect(xPosition + 4, yPosition + 5, xPosition + 5, yPosition + 6, textColor);
 	        	drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7, textColor);
 	        }
+	    }
+	    
+	    /**
+	     * Sort container
+	     */
+	    public boolean mousePressed(Minecraft minecraft, int i, int j) {
+	    	if (super.mousePressed(minecraft, i, j)) {
+	    		try {
+					sortingAlgorithm.sortContainer(container, false, algorithm);
+				} catch (TimeoutException e) {
+					logInGame("Failed to sort container: "+e.getMessage());
+				}
+	    		return true;
+	    	}
+	    	else {
+	    		return false;
+	    	}
+    		
 	    }
 	}
 

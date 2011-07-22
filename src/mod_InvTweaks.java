@@ -21,14 +21,16 @@ public class mod_InvTweaks extends BaseMod {
     
     public mod_InvTweaks() {
     	
-    	// Register key
     	Minecraft mc = ModLoader.getMinecraftInstance();
+    	
+    	// Register key
     	KeyBinding sortKey = new KeyBinding(
     			"Sort inventory", Keyboard.KEY_R); /* KeyBinding */
     	ModLoader.RegisterKey(this, sortKey, false);
     	
-    	// Register OnTickInGame event
+    	// Register in game hooks
     	ModLoader.SetInGameHook(this, true, true);
+    	ModLoader.SetInGUIHook(this, true, false);
 
     	// Instantiate mod core
     	instance = new InvTweaks(mc);
@@ -39,9 +41,6 @@ public class mod_InvTweaks extends BaseMod {
 		return "1.11 (1.7.3)";
 	}
     
-	/**
-	 * Sort inventory
-	 */
     public final void KeyboardEvent(KeyBinding keyBinding)
     {
     	instance.onSortingKeyPressed();
@@ -49,8 +48,14 @@ public class mod_InvTweaks extends BaseMod {
     
     public boolean OnTickInGame(Minecraft minecraft)
     {
-    	instance.onTick();
+    	instance.onTickInGame();
     	return true; 
+    }
+
+    public boolean OnTickInGUI(Minecraft minecraft, GuiScreen guiScreen)
+    {
+    	instance.onTickInGUI(guiScreen);
+    	return true;
     }
     
 }

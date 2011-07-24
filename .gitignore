@@ -1,6 +1,5 @@
 bin/
 client/
-dist/files/
 !*.zip
 *.java
 *#
@@ -9,3 +8,4 @@ dist/files/
 !*InvTweaks*
 .classpath
 .project
+InvTweaks-*/

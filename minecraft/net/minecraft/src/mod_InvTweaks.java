@@ -15,7 +15,7 @@ import org.lwjgl.input.Keyboard;
 public class mod_InvTweaks extends BaseMod {
 
     @SuppressWarnings("unused")
-	private static final Logger log = Logger.getLogger("mod_InvTweaks");
+	private static final Logger log = Logger.getLogger("InvTweaks");
     
 	private InvTweaks instance;
     
@@ -38,7 +38,7 @@ public class mod_InvTweaks extends BaseMod {
     
 	@Override
 	public String Version() {
-		return "1.11 (1.7.3)";
+		return "1.20 (1.7.3)";
 	}
     
     public final void KeyboardEvent(KeyBinding keyBinding)

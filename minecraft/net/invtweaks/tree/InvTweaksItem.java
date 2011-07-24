@@ -1,4 +1,7 @@
-package net.minecraft.src;
+package net.invtweaks.tree;
+
+import net.invtweaks.InvTweaksObf;
+import net.minecraft.src.ItemStack;
 
 public class InvTweaksItem extends InvTweaksObf 
 		implements Comparable<InvTweaksItem> {

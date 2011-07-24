@@ -7,7 +7,7 @@
 
 1. Vérifiez que ModLoader est bien installé (pour le télécharger : http://www.minecraftforum.net/topic/75440-)
 2. Supprimez toute ancienne version d'Inventory Tweaks
-3. Mettez le Zip dans le dossier "mods" de Minecraft
+3. Mettez le Zip dans le dossier "mods" de Minecraft [OU] Copiez tout le contenu du Zip dans "minecraft.jar"
 4. Lancez le jeu !
 
 ======= [ UTILISATION ] =======

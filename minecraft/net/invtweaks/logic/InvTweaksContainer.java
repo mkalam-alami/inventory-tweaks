@@ -1,10 +1,18 @@
-package net.minecraft.src;
+package net.invtweaks.logic;
 
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
+import net.invtweaks.InvTweaksObf;
+import net.invtweaks.tree.InvTweaksItem;
+import net.invtweaks.tree.InvTweaksTree;
 import net.minecraft.client.Minecraft;
+import net.minecraft.src.Container;
+import net.minecraft.src.ContainerPlayer;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.InvTweaks;
+import net.minecraft.src.ItemStack;
 
 public class InvTweaksContainer extends InvTweaksObf {
 
@@ -14,6 +22,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 	public static final boolean STACK_EMPTIED = false;
 
 	private Container container;
+	private InvTweaksTree tree;
 	private int[] rulePriority;
 	private int[] keywordOrder;
 	private int[] lockLevels;
@@ -26,9 +35,11 @@ public class InvTweaksContainer extends InvTweaksObf {
 	private boolean isMultiplayer;
 	private EntityPlayer entityPlayer;
 	
-	public InvTweaksContainer(Minecraft mc, int[] lockLevels, Container container, boolean inventoryPart) {
+	public InvTweaksContainer(Minecraft mc, InvTweaksTree tree,
+			int[] lockLevels, Container container, boolean inventoryPart) {
 		super(mc);
-		
+
+		this.tree = tree;
 		this.lockLevels = lockLevels;
 		this.container = container;
 		
@@ -394,7 +405,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 	}
 	
 	private int getItemOrder(int itemID, int itemDamage) {
-		List<InvTweaksItem> items = InvTweaksTree.getItems(itemID, itemDamage);
+		List<InvTweaksItem> items = tree.getItems(itemID, itemDamage);
 		return (items != null && items.size() > 0)
 				? items.get(0).getOrder()
 				: Integer.MAX_VALUE;
@@ -410,8 +421,8 @@ public class InvTweaksContainer extends InvTweaksObf {
 		ItemStack removed = getStackInSlot(slot);
 		if (log.getLevel() == InvTweaks.DEBUG) {
 			try {
-				log.info("Removed: "+InvTweaksTree.getItems(
-						getItemID(removed), getItemDamage(removed)).get(0)+" from "+slot);
+				log.info("Removed: "+tree.getItems(getItemID(removed),
+						getItemDamage(removed)).get(0)+" from "+slot);
 			}
 			catch (NullPointerException e) {
 				log.info("Removed: null from "+slot);
@@ -435,8 +446,8 @@ public class InvTweaksContainer extends InvTweaksObf {
 	private void put(ItemStack stack, int slot, int priority) {
 		if (log.getLevel() == InvTweaks.DEBUG) {
 			try {
-				log.info("Put: "+InvTweaksTree.getItems(
-						getItemID(stack), getItemDamage(stack)).get(0)+" in "+slot);
+				log.info("Put: "+tree.getItems(getItemID(stack),
+						getItemDamage(stack)).get(0)+" in "+slot);
 			}
 			catch (NullPointerException e) {
 				log.info("Removed: null");

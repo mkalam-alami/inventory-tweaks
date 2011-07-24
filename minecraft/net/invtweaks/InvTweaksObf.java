@@ -1,9 +1,19 @@
-package net.minecraft.src;
+package net.invtweaks;
 
 import java.io.File;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.src.Container;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.GuiChest;
+import net.minecraft.src.GuiContainer;
+import net.minecraft.src.GuiDispenser;
+import net.minecraft.src.GuiScreen;
+import net.minecraft.src.InventoryPlayer;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.PlayerController;
+import net.minecraft.src.Slot;
 
 public class InvTweaksObf {
 

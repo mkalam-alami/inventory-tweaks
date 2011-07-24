@@ -1,4 +1,4 @@
-package net.minecraft.src;
+package net.invtweaks.config;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.invtweaks.tree.InvTweaksItem;
+import net.invtweaks.tree.InvTweaksTree;
+import net.invtweaks.tree.InvTweaksTreeLoader;
+import net.minecraft.src.InvTweaks;
 
 public class InvTweaksConfig {
 
@@ -22,7 +27,10 @@ public class InvTweaksConfig {
 	private static final String DEBUG = "DEBUG";
 	private static final boolean DEFAULT_AUTOREPLACE_BEHAVIOUR = true;
 	
-	private String file;
+	private String rulesFile;
+	private String treeFile;
+	
+	private InvTweaksTree tree;
 	private int[] lockPriorities;
 	private Vector<Integer> lockedSlots;
 	private Vector<InvTweaksRule> rules;
@@ -35,9 +43,14 @@ public class InvTweaksConfig {
 	 * Creates a new configuration holder.
 	 * The configuration is not yet loaded.
 	 */
-	public InvTweaksConfig(String file) {
-		this.file = file;
+	public InvTweaksConfig(String rulesFile, String treeFile) {
+		this.rulesFile = rulesFile;
+		this.treeFile = treeFile;
 		init();
+	}
+	
+	public InvTweaksTree getTree() {
+		return tree;
 	}
 	
 	public Vector<InvTweaksRule> getRules() {
@@ -76,11 +89,11 @@ public class InvTweaksConfig {
 	}
 
 	public boolean canBeAutoReplaced(int itemID, int itemDamage) {
-		List<InvTweaksItem> items = InvTweaksTree.getItems(itemID, itemDamage);
+		List<InvTweaksItem> items = tree.getItems(itemID, itemDamage);
 		for (String keyword : autoReplaceRules) {
 			if (keyword.equals(AUTOREPLACE_NOTHING))
 				return false;
-			if (InvTweaksTree.matches(items, keyword))
+			if (tree.matches(items, keyword))
 				return true;
 		}
 		return DEFAULT_AUTOREPLACE_BEHAVIOUR;
@@ -93,8 +106,11 @@ public class InvTweaksConfig {
 		// Reset all
 		init();
 		
+		// Load tree
+		tree = new InvTweaksTreeLoader().load(treeFile);
+		
 		// Read file
-		File f = new File(file);
+		File f = new File(rulesFile);
 		char[] bytes = new char[(int) f.length()];
 		FileReader reader = new FileReader(f);
 		reader.read(bytes);
@@ -139,13 +155,13 @@ public class InvTweaksConfig {
 					// Standard rule
 					else {
 						String keyword = words[1];
-						boolean isValidKeyword = InvTweaksTree.isKeywordValid(keyword.toLowerCase());
+						boolean isValidKeyword = tree.isKeywordValid(keyword.toLowerCase());
 						
 						// If invalid keyword, guess something similar
 						if (!isValidKeyword) {
 							Vector<String> wordVariants = getKeywordVariants(keyword);
 							for (String wordVariant : wordVariants) {
-								if (InvTweaksTree.isKeywordValid(wordVariant.toLowerCase())) {
+								if (tree.isKeywordValid(wordVariant.toLowerCase())) {
 									isValidKeyword = true;
 									keyword = wordVariant;
 									break;
@@ -154,7 +170,7 @@ public class InvTweaksConfig {
 						}
 						
 						if (isValidKeyword) {
-							newRule = new InvTweaksRule(words[0], 
+							newRule = new InvTweaksRule(tree, words[0], 
 									keyword.toLowerCase(), InvTweaks.INVENTORY_SIZE,
 									InvTweaks.INVENTORY_ROW_SIZE);
 							rules.add(newRule);
@@ -168,7 +184,7 @@ public class InvTweaksConfig {
 				// Autoreplace rule
 				else if (words[0].equals(AUTOREPLACE)) {
 					words[1] = words[1].toLowerCase();
-					if (InvTweaksTree.isKeywordValid(words[1]) || 
+					if (tree.isKeywordValid(words[1]) || 
 							words[1].equals(AUTOREPLACE_NOTHING)) {
 						autoReplaceRules.add(words[1]);
 					}
@@ -193,7 +209,7 @@ public class InvTweaksConfig {
 		// Default Autoreplace behavior
 		if (autoReplaceRules.isEmpty()) {
 			try {
-				autoReplaceRules.add(InvTweaksTree.getRootCategory().getName());
+				autoReplaceRules.add(tree.getRootCategory().getName());
 			}
 			catch (NullPointerException e) {
 				throw new NullPointerException("No root category is defined.");

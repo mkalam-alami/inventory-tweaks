@@ -1,4 +1,8 @@
-package net.minecraft.src;
+package net.invtweaks.gui;
+
+import net.minecraft.src.GuiButton;
+import net.minecraft.src.GuiScreen;
+import net.minecraft.src.GuiSmallButton;
 
 
 public class InvTweaksGuiOptions extends GuiScreen {

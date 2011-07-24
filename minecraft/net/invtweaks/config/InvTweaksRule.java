@@ -1,7 +1,10 @@
-package net.minecraft.src;
+package net.invtweaks.config;
 
 import java.awt.Point;
 import java.util.logging.Logger;
+
+import net.invtweaks.tree.InvTweaksTree;
+
 
 public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	
@@ -42,7 +45,8 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	private int containerSize;
 	private int containerRowSize;
 	
-	public InvTweaksRule(String constraint, String keyword,
+	public InvTweaksRule(InvTweaksTree tree, 
+			String constraint, String keyword,
 			int containerSize, int containerRowSize) {
 
 		this.keyword = keyword;
@@ -58,8 +62,8 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 		// 3st criteria : the item order in a same category
 		
 		priority = type.getLowestPriority() + 100000 +
-			InvTweaksTree.getKeywordDepth(keyword)*1000 -
-			InvTweaksTree.getKeywordOrder(keyword);
+				tree.getKeywordDepth(keyword)*1000 -
+				tree.getKeywordOrder(keyword);
 		
 	}
 	

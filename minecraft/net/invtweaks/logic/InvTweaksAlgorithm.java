@@ -1,4 +1,4 @@
-package net.minecraft.src;
+package net.invtweaks.logic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +10,16 @@ import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
+import net.invtweaks.InvTweaksObf;
+import net.invtweaks.config.InvTweaksConfig;
+import net.invtweaks.config.InvTweaksRule;
+import net.invtweaks.tree.InvTweaksItem;
+import net.invtweaks.tree.InvTweaksTree;
 import net.minecraft.client.Minecraft;
+import net.minecraft.src.Container;
+import net.minecraft.src.ContainerDispenser;
+import net.minecraft.src.InvTweaks;
+import net.minecraft.src.ItemStack;
 
 public class InvTweaksAlgorithm extends InvTweaksObf {
     
@@ -42,7 +51,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
     public void setConfig(InvTweaksConfig config) {
     	this.config = config;
     }
-
+    
 	/**
 	 * Sort inventory
 	 * @return The number of clicks that were needed
@@ -59,13 +68,13 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
     	
     	long timer = System.nanoTime();
 
+    	InvTweaksTree tree = config.getTree();
     	InvTweaksContainer inventory;
-    	
     	if (algorithm == INVENTORY) {
-    		inventory = new InvTweaksContainer(mc, config.getLockPriorities(), container, inventoryPart);
+    		inventory = new InvTweaksContainer(mc, config.getTree(), config.getLockPriorities(), container, inventoryPart);
     	}
     	else {
-    		inventory = new InvTweaksContainer(mc, DEFAULT_LOCK_PRIORITIES, container, inventoryPart);
+    		inventory = new InvTweaksContainer(mc, config.getTree(), DEFAULT_LOCK_PRIORITIES, container, inventoryPart);
     	}
 
 		//// Empty hand (needed in SMP)
@@ -127,9 +136,9 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		    		
 		    		if (inventory.hasToBeMoved(i) && 
 		    				inventory.getLockLevel(i) < rulePriority) {
-						List<InvTweaksItem> fromItems = InvTweaksTree.getItems(
+						List<InvTweaksItem> fromItems = tree.getItems(
 								getItemID(from), getItemDamage(from));
-		    			if (InvTweaksTree.matches(fromItems, rule.getKeyword())) {
+		    			if (tree.matches(fromItems, rule.getKeyword())) {
 		    				
 		    				int[] preferredPos = rule.getPreferredPositions();
 		    				for (int j = 0; j < preferredPos.length; j++) {
@@ -141,9 +150,9 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		    							break;
 		    						}
 		    						else {
-		    							fromItems = InvTweaksTree.getItems(
+		    							fromItems = tree.getItems(
 		    									getItemID(from), getItemDamage(from));
-		    							if (!InvTweaksTree.matches(
+		    							if (!tree.matches(
 		    									fromItems, rule.getKeyword())) {
 		    								break;
 		    							}
@@ -188,7 +197,8 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 	public void autoReplaceSlot(int slot, int wantedId, int wantedDamage) {
    
 		InvTweaksContainer inventory = new InvTweaksContainer(
-				mc, config.getLockPriorities(), getPlayerContainer(), true);  	
+				mc, config.getTree(), config.getLockPriorities(),
+				getPlayerContainer(), true);  	
 		ItemStack candidateStack, replacementStack = null;
 		ItemStack storedStack = createItemStack(wantedId, 1, wantedDamage);
 		int replacementStackSlot = -1;
@@ -436,7 +446,8 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 			if (!horizontal) {
 				constraint += 'v';
 			}
-			rules.add(new InvTweaksRule(constraint, item.getName(),
+			rules.add(new InvTweaksRule(config.getTree(), 
+					constraint, item.getName(),
 					container.getSize(), rowSize));
 			
 			// Check if ther's still room for more rules
@@ -477,8 +488,8 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		else {
 			defaultRule = "a" + maxColumn + "-" + maxRow + "1v";
 		}
-		rules.add(new InvTweaksRule(defaultRule, 
-				InvTweaksTree.getRootCategory().getName(),
+		rules.add(new InvTweaksRule(config.getTree(), defaultRule, 
+				config.getTree().getRootCategory().getName(),
 				container.getSize(), rowSize));
 		
 		return rules;
@@ -488,6 +499,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 	private Map<InvTweaksItem, Integer> computeContainerStats(InvTweaksContainer container) {
 		Map<InvTweaksItem, Integer> stats = new HashMap<InvTweaksItem, Integer>();
 		Map<Integer, InvTweaksItem> itemSearch = new HashMap<Integer, InvTweaksItem>();
+		InvTweaksTree tree = config.getTree();
 		
 		for (int i = 0; i < container.getSize(); i++) {
 			ItemStack stack = container.getItemStack(i);
@@ -496,8 +508,8 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 						((getMaxStackSize(stack) != 1) ? getItemDamage(stack) : 0);
 				InvTweaksItem item = itemSearch.get(itemSearchKey);
 				if (item == null) {
-					item = InvTweaksTree.getItems(
-							getItemID(stack), getItemDamage(stack)).get(0);
+					item = tree.getItems(getItemID(stack),
+							getItemDamage(stack)).get(0);
 					itemSearch.put(itemSearchKey, item);	
 					stats.put(item, 1);
 				}

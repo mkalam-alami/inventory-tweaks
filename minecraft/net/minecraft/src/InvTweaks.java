@@ -13,6 +13,10 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import net.invtweaks.InvTweaksObf;
+import net.invtweaks.config.InvTweaksConfig;
+import net.invtweaks.gui.InvTweaksGuiOptions;
+import net.invtweaks.logic.InvTweaksAlgorithm;
 import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Mouse;
@@ -23,10 +27,11 @@ public class InvTweaks extends InvTweaksObf {
     private static final Logger log = Logger.getLogger("InvTweaks");
     
     public static final String MINECRAFT_DIR = getMinecraftDir().getPath();
-    public static final String CONFIG_FILE = MINECRAFT_DIR+"/InvTweaksConfig.txt";
-    public static final String CONFIG_TREE_FILE = MINECRAFT_DIR+"/InvTweaksTree.txt";
-    public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.txt";
-    public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.txt";
+    public static final String CONFIG_RULES_FILE = MINECRAFT_DIR+"/InvTweaksConfig.txt";
+    public static final String CONFIG_TREE_FILE = MINECRAFT_DIR+"/InvTweaksTree.xml";
+    public static final String OLD_CONFIG_TREE_FILE = MINECRAFT_DIR+"/InvTweaksTree.txt"; // TODO
+    public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.dat";
+    public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.dat";
     public static final String INGAME_LOG_PREFIX = "InvTweaks: ";
     public static final Level DEFAULT_LOG_LEVEL = Level.WARNING;
     public static final Level DEBUG = Level.INFO;
@@ -57,16 +62,20 @@ public class InvTweaks extends InvTweaksObf {
     	
     	log.setLevel(DEFAULT_LOG_LEVEL);
     	
-    	// Stor instance
+    	// Store instance
     	instance = this;
     	
     	// Load config files
-		loadConfig();
-		
-		// Load algorithm
-    	sortingAlgorithm = new InvTweaksAlgorithm(mc, config);
-    	
-    	log.info("Mod initialItemStacked");
+		if (loadConfig()) {
+			
+			// Load algorithm
+	    	sortingAlgorithm = new InvTweaksAlgorithm(mc, config);
+	    	
+	    	log.info("Mod initialized");
+		}
+		else {
+	    	log.severe("Mod failed to initialize!");
+		}
     	
     }
     
@@ -79,7 +88,7 @@ public class InvTweaks extends InvTweaksObf {
 			
 	    	// Check config loading success & current GUI
 	    	GuiScreen guiScreen = getCurrentScreen();
-	    	if (config == null ||
+	    	if (!isConfigLoaded() ||
 	    			!(guiScreen == null ||
 	    			guiScreen instanceof GuiContainer /* GuiContainer */)) {
 	    		return;
@@ -90,7 +99,7 @@ public class InvTweaks extends InvTweaksObf {
     }
 
     public void onTickInGame() {
-		if (config == null)
+		if (!isConfigLoaded())
 			return;
 		synchronized (this) {
 			GuiScreen guiScreen = getCurrentScreen();
@@ -100,7 +109,7 @@ public class InvTweaks extends InvTweaksObf {
 	}
     
     public void onTickInGUI(GuiScreen guiScreen) {
-		if (config == null)
+		if (!isConfigLoaded())
 			return;
 		synchronized (this) {
 	    	handleChestLayout(guiScreen);
@@ -112,6 +121,10 @@ public class InvTweaks extends InvTweaksObf {
     	addChatMessage(INGAME_LOG_PREFIX + message);
     }
 	
+	public boolean isConfigLoaded() {
+		return config != null;
+	}
+
 	private void handleSorting(GuiScreen guiScreen) {
 
     	// Hot reload trigger
@@ -197,12 +210,18 @@ public class InvTweaks extends InvTweaksObf {
 
 	private void handleMiddleClick(GuiScreen guiScreen) {
 	
+		if (!isConfigLoaded()) {
+			return;
+		}
+		
 		if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled()) {
 			if (!chestAlgorithmButtonDown) {
 	    		chestAlgorithmButtonDown = true;
 		    	// Hot reload trigger
-		    	if (getConfigLastModified() != configLastModified)
-		    		loadConfig();
+		    	if (getConfigLastModified() != configLastModified) {
+		    		if (!loadConfig())
+		    			return;
+		    	}
 	    		
 	        	if (isChestOrDispenser(guiScreen)) {
 	        		
@@ -348,13 +367,19 @@ public class InvTweaks extends InvTweaksObf {
 	
 		// Create missing files
 		
-		if (!new File(CONFIG_FILE).exists()
-				&& extractFile(DEFAULT_CONFIG_FILE, CONFIG_FILE)) {
-			logInGame(CONFIG_FILE+" missing, creating default one.");
+		if (!new File(CONFIG_RULES_FILE).exists()
+				&& extractFile(DEFAULT_CONFIG_FILE, CONFIG_RULES_FILE)) {
+			logInGame(CONFIG_RULES_FILE+" missing, creating default one.");
 		}
 		if (!new File(CONFIG_TREE_FILE).exists()
 				&& extractFile(DEFAULT_CONFIG_TREE_FILE, CONFIG_TREE_FILE)) {
 			logInGame(CONFIG_TREE_FILE+" missing, creating default one.");
+		}
+		
+		// Remove old file
+		
+		if (new File(OLD_CONFIG_TREE_FILE).exists()) {
+			new File(OLD_CONFIG_TREE_FILE).renameTo(new File(OLD_CONFIG_TREE_FILE+".bak"));
 		}
 		
 		// Load
@@ -362,10 +387,10 @@ public class InvTweaks extends InvTweaksObf {
 		String error = null;
 		
 		try {
-	    	InvTweaksTree.loadTreeFromFile(CONFIG_TREE_FILE);
-	    	if (config == null) {
-	    		config = new InvTweaksConfig(CONFIG_FILE);
-	    	}
+			if (config == null) {
+				config = new InvTweaksConfig(
+						CONFIG_RULES_FILE, CONFIG_TREE_FILE);
+			}
 			config.load();
 			log.setLevel(config.getLogLevel());
 			logInGame("Configuration reloaded");
@@ -379,6 +404,7 @@ public class InvTweaks extends InvTweaksObf {
 		if (error != null) {
 			logInGame(error);
 			log.severe(error);
+			config = null;
 		    return false;
 		}
 		else {
@@ -386,29 +412,9 @@ public class InvTweaks extends InvTweaksObf {
 			return true;
 		}
 	}
-
-	private void showConfigErrors(InvTweaksConfig config) {
-		Vector<String> invalid = config.getInvalidKeywords();
-		if (invalid.size() > 0) {
-			String error = "Invalid keywords found: ";
-			for (String keyword : config.getInvalidKeywords()) {
-				error += keyword+" ";
-			}
-			logInGame(error);
-		}
-	}
-
-	/**
-     * Checks time of last edit for both configuration files.
-     * @return
-     */
-    private long getConfigLastModified() {
-    	return new File(CONFIG_FILE).lastModified() + 
-    			new File(CONFIG_TREE_FILE).lastModified();
-    }
-    
-    private boolean extractFile(String resource, String destination) {
-
+	
+	private boolean extractFile(String resource, String destination) {
+	
 		String resourceContents = "";
 		URL resourceUrl = InvTweaks.class.getResource(resource);
 		
@@ -477,7 +483,27 @@ public class InvTweaks extends InvTweaksObf {
 			log.severe("Cannot create "+destination+" file: "+resource+" not found");
 			return false;
 		}
-   	}
+	}
+
+	private void showConfigErrors(InvTweaksConfig config) {
+		Vector<String> invalid = config.getInvalidKeywords();
+		if (invalid.size() > 0) {
+			String error = "Invalid keywords found: ";
+			for (String keyword : config.getInvalidKeywords()) {
+				error += keyword+" ";
+			}
+			logInGame(error);
+		}
+	}
+
+	/**
+     * Checks time of last edit for both configuration files.
+     * @return
+     */
+    private long getConfigLastModified() {
+    	return new File(CONFIG_RULES_FILE).lastModified() + 
+    			new File(CONFIG_TREE_FILE).lastModified();
+    }
     
     private class SettingsButton extends GuiButton {
 

@@ -1,4 +1,4 @@
-package net.minecraft.src;
+package net.invtweaks.tree;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
+
 
 public class InvTweaksCategory {
 
@@ -127,4 +128,9 @@ public class InvTweaksCategory {
 	public String getName() {
 		return name;
 	}
+	
+	public String toString() {
+		return name+" ("+items.size()+" items)";
+	}
+	
 }

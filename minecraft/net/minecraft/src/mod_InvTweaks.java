@@ -58,4 +58,9 @@ public class mod_InvTweaks extends BaseMod {
     	return true;
     }
     
+    public void OnItemPickup(EntityPlayer entityplayer, ItemStack stack)
+    {
+    	instance.onItemPickup(stack);
+    }
+    
 }

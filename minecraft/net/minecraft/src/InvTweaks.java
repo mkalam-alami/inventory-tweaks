@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -15,8 +16,12 @@ import java.util.zip.ZipFile;
 
 import net.invtweaks.InvTweaksObf;
 import net.invtweaks.config.InvTweaksConfig;
+import net.invtweaks.config.InvTweaksRule;
 import net.invtweaks.gui.InvTweaksGuiOptions;
 import net.invtweaks.logic.InvTweaksAlgorithm;
+import net.invtweaks.logic.InvTweaksContainer;
+import net.invtweaks.tree.InvTweaksItem;
+import net.invtweaks.tree.InvTweaksTree;
 import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Mouse;
@@ -26,12 +31,18 @@ public class InvTweaks extends InvTweaksObf {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
     
-    public static final String MINECRAFT_DIR = getMinecraftDir().getPath();
-    public static final String CONFIG_RULES_FILE = MINECRAFT_DIR+"/InvTweaksConfig.txt";
-    public static final String CONFIG_TREE_FILE = MINECRAFT_DIR+"/InvTweaksTree.xml";
-    public static final String OLD_CONFIG_TREE_FILE = MINECRAFT_DIR+"/InvTweaksTree.txt"; // TODO
+    public static final String MINECRAFT_DIR = 
+    	(getMinecraftDir().getAbsolutePath().endsWith(".")) ?
+    			getMinecraftDir().getAbsolutePath().substring(
+    			0, getMinecraftDir().getAbsolutePath().length()-1) :
+    				getMinecraftDir().getAbsolutePath();
+    public static final String CONFIG_RULES_FILE = MINECRAFT_DIR+"InvTweaksConfig.txt";
+    public static final String CONFIG_TREE_FILE = MINECRAFT_DIR+"InvTweaksTree.xml";
+    public static final String OLD_CONFIG_TREE_FILE = MINECRAFT_DIR+"InvTweaksTree.txt"; 
     public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.dat";
     public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.dat";
+    public static final String HELP_URL = "http://wan.ka.free.fr/?invtweaks#doc";
+	
     public static final String INGAME_LOG_PREFIX = "InvTweaks: ";
     public static final Level DEFAULT_LOG_LEVEL = Level.WARNING;
     public static final Level DEBUG = Level.INFO;
@@ -98,7 +109,65 @@ public class InvTweaks extends InvTweaksObf {
 		}
     }
 
-    public void onTickInGame() {
+    public void onItemPickup(ItemStack stack) {
+    	
+    	InvTweaksContainer container = new InvTweaksContainer(mc,
+    			config, getPlayerContainer(), true);
+    	
+    	// Find stack slot
+    	int currentSlot = -1;
+    	for (int i = 0; i < container.getSize(); i++) {
+    		if (container.getItemStack(i) == stack) {
+    			currentSlot = i;
+    			break;
+    		}
+    	}
+    	
+    	if (currentSlot != -1) {
+    	
+	    	// Find preffered slots
+	    	int[] prefferedPositions = null;
+	    	InvTweaksRule matchingRule = null;
+	    	InvTweaksTree tree = config.getTree();
+	    	List<InvTweaksItem> items = tree.getItems(getItemID(stack), getItemDamage(stack));
+	    	for (InvTweaksRule rule : config.getRules()) {
+	    		if (tree.matches(items, rule.getKeyword())) {
+	    			prefferedPositions = rule.getPreferredPositions();
+	    			matchingRule = rule;
+	    			break;
+	    		}
+	    	}
+	    	
+	    	if (prefferedPositions != null) {
+	    		// Find best slot for stack
+	    		for (int newSlot : prefferedPositions) {
+	    			try {
+						if (container.moveStack(currentSlot, newSlot,
+								matchingRule.getPriority())) {
+							break;
+						}
+					} catch (TimeoutException e) {
+						logInGame("Failed to move picked up stack", e);
+					}
+	    		}
+	    		
+	    		// Else, put the slot anywhere
+
+	        	for (int i = 0; i < container.getSize(); i++) {
+	    			try {
+						if (container.moveStack(currentSlot, i, 1)) {
+							break;
+						}
+					} catch (TimeoutException e) {
+						logInGame("Failed to move picked up stack", e);
+					}
+	        	}
+	    		
+	    	}
+    	}
+	}
+
+	public void onTickInGame() {
 		if (!isConfigLoaded())
 			return;
 		synchronized (this) {
@@ -112,13 +181,21 @@ public class InvTweaks extends InvTweaksObf {
 		if (!isConfigLoaded())
 			return;
 		synchronized (this) {
-	    	handleChestLayout(guiScreen);
+	    	handleGUILayout(guiScreen);
 			handleOptionsMenuLayout(guiScreen);
 		}
     }
 
 	public void logInGame(String message) {
-    	addChatMessage(INGAME_LOG_PREFIX + message);
+		String formattedMsg = buildlogString(Level.SEVERE, message);
+		addChatMessage(formattedMsg);
+    	log.info(formattedMsg);
+    }
+	
+	public void logInGame(String message, Exception e) {
+		String formattedMsg = buildlogString(Level.SEVERE, message, e);
+		addChatMessage(formattedMsg);
+    	log.severe(formattedMsg);
     }
 	
 	public boolean isConfigLoaded() {
@@ -153,7 +230,7 @@ public class InvTweaks extends InvTweaksObf {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void handleChestLayout(GuiScreen guiScreen) {
+	private void handleGUILayout(GuiScreen guiScreen) {
 	
 		boolean isContainer = isChestOrDispenser(guiScreen);
 		
@@ -161,48 +238,60 @@ public class InvTweaks extends InvTweaksObf {
 			
 			int w = 10, h = 10;
 			
-			// Inventory button
-			// FIXME: Will fail if another mod adds a button!
-			if (!isContainer && guiScreen.controlList.size() == 0) {
-				guiScreen.controlList.add(new SettingsButton(
-						JIMEOWAN_ID,
-						guiScreen.width/2 + 73,
-						guiScreen.height/2 - 78,
-						w, h, "..."));
+			// Look for the mods buttons
+			boolean customButtonsAdded = false;
+			for (Object o : guiScreen.controlList) {
+				GuiButton button = (GuiButton) o;
+				if (button.id == JIMEOWAN_ID) {
+					customButtonsAdded = true;
+					break;
+				}
 			}
 			
-			// Chest buttons
-			if (isContainer && guiScreen.controlList.size() == 0) {
-
-				GuiContainer guiContainer = (GuiContainer) guiScreen;
-				int id = JIMEOWAN_ID + 1,
-					x = guiContainer.xSize/2 + guiContainer.width/2 - 17,
-					y = (guiContainer.height - guiContainer.ySize)/2 + 5;
+			if (!customButtonsAdded) {
 				
-				// Sorting buttons
+				// Inventory button
+				if (!isContainer) {
+					guiScreen.controlList.add(new SettingsButton(
+							JIMEOWAN_ID,
+							guiScreen.width/2 + 73,
+							guiScreen.height/2 - 78,
+							w, h, "..."));
+				}
 				
-				Container container = getContainer((GuiContainer) guiScreen);
+				// Chest buttons
+				else {
 	
-				GuiButton button = new SortingButton(
-						id++, x-37, y, w, h, "s",
-						container, InvTweaksAlgorithm.DEFAULT);
-				guiContainer.controlList.add((GuiButton) button);
-	
-				button = new SortingButton(
-						id++, x-25, y, w, h, "v",
-						container, InvTweaksAlgorithm.VERTICAL);
-				guiContainer.controlList.add((GuiButton) button);
-				
-				button = new SortingButton(
-						id++, x-13, y, w, h, "h",
-						container, InvTweaksAlgorithm.HORIZONTAL);
-				guiContainer.controlList.add((GuiButton) button);
-				
-				// Settings button
-
-				guiScreen.controlList.add(new SettingsButton(
-						JIMEOWAN_ID, x-1, y, w, h, "..."));
+					GuiContainer guiContainer = (GuiContainer) guiScreen;
+					int id = JIMEOWAN_ID,
+						x = guiContainer.xSize/2 + guiContainer.width/2 - 17,
+						y = (guiContainer.height - guiContainer.ySize)/2 + 5;
 					
+					// Sorting buttons
+					
+					Container container = getContainer((GuiContainer) guiScreen);
+		
+					GuiButton button = new SortingButton(
+							id++, x-37, y, w, h, "s",
+							container, InvTweaksAlgorithm.DEFAULT);
+					guiContainer.controlList.add((GuiButton) button);
+		
+					button = new SortingButton(
+							id++, x-25, y, w, h, "v",
+							container, InvTweaksAlgorithm.VERTICAL);
+					guiContainer.controlList.add((GuiButton) button);
+					
+					button = new SortingButton(
+							id++, x-13, y, w, h, "h",
+							container, InvTweaksAlgorithm.HORIZONTAL);
+					guiContainer.controlList.add((GuiButton) button);
+					
+					// Settings button
+	
+					guiScreen.controlList.add(new SettingsButton(
+							JIMEOWAN_ID, x-1, y, w, h, "..."));
+						
+				}
 			}
 		}
 
@@ -252,7 +341,7 @@ public class InvTweaks extends InvTweaksObf {
 	    				try {
 							sortingAlgorithm.sortContainer(container, false, chestAlgorithm);
 						} catch (TimeoutException e) {
-							logInGame("Failed to sort container: "+e.getMessage());
+							logInGame("Failed to sort container", e);
 						}
 	    				chestAlgorithm = (chestAlgorithm + 1) % 3;
 	    				chestAlgorithmClickTimestamp = timestamp;
@@ -261,7 +350,7 @@ public class InvTweaks extends InvTweaksObf {
 	    				try {
 							sortingAlgorithm.sortContainer(container, true, InvTweaksAlgorithm.INVENTORY);
 						} catch (TimeoutException e) {
-							logInGame("Failed to sort inventory: "+e.getMessage());
+							logInGame("Failed to sort inventory", e);
 						}
 	    			}
 	    			
@@ -505,6 +594,15 @@ public class InvTweaks extends InvTweaksObf {
     			new File(CONFIG_TREE_FILE).lastModified();
     }
     
+	private String buildlogString(Level level, String message, Exception e) {
+    	return buildlogString(level, message) + ": " + e.getMessage();
+    }
+	private String buildlogString(Level level, String message) {
+    	return INGAME_LOG_PREFIX + 
+    		((level.equals(Level.SEVERE)) ? "[ERROR] " : "" ) +
+    		message;
+    }
+    
     private class SettingsButton extends GuiButton {
 
 		public SettingsButton(int id, int x, int y,
@@ -553,6 +651,17 @@ public class InvTweaks extends InvTweaksObf {
 	     */
 	    public boolean mousePressed(Minecraft minecraft, int i, int j) {
 	    	if (super.mousePressed(minecraft, i, j)) {
+	    		// Put hold item down if necessary
+	    		InvTweaksContainer container = new InvTweaksContainer(mc, config, getPlayerContainer(), true);
+	    		if (getHoldStack() != null) {
+	    			try {
+	    				container.putHoldItemDown();
+					} catch (TimeoutException e) {
+						logInGame("Failed to put item down", e);
+					}
+	    		}
+	    			
+				// Display menu
 	    		mc.displayGuiScreen(new InvTweaksGuiOptions(getCurrentScreen()));
 	    		return true;
 	    	}
@@ -653,7 +762,7 @@ public class InvTweaks extends InvTweaksObf {
 	    		try {
 					sortingAlgorithm.sortContainer(container, false, algorithm);
 				} catch (TimeoutException e) {
-					logInGame("Failed to sort container: "+e.getMessage());
+					logInGame("Failed to sort container", e);
 				}
 	    		return true;
 	    	}

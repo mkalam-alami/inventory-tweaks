@@ -5,6 +5,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.invtweaks.InvTweaksObf;
+import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.tree.InvTweaksItem;
 import net.invtweaks.tree.InvTweaksTree;
 import net.minecraft.client.Minecraft;
@@ -20,12 +21,15 @@ public class InvTweaksContainer extends InvTweaksObf {
     
 	public static final boolean STACK_NOT_EMPTIED = true;
 	public static final boolean STACK_EMPTIED = false;
+	
+    private static int[] DEFAULT_LOCK_PRIORITIES = null;
+    private static final int MAX_CONTAINER_SIZE = 100;
 
 	private Container container;
 	private InvTweaksTree tree;
 	private int[] rulePriority;
 	private int[] keywordOrder;
-	private int[] lockLevels;
+	private int[] lockPriorities;
 	private int clickCount = 0;
 	private int offset; // offset of the first sortable item
 	private int size;
@@ -35,25 +39,38 @@ public class InvTweaksContainer extends InvTweaksObf {
 	private boolean isMultiplayer;
 	private EntityPlayer entityPlayer;
 	
-	public InvTweaksContainer(Minecraft mc, InvTweaksTree tree,
-			int[] lockLevels, Container container, boolean inventoryPart) {
+	public InvTweaksContainer(Minecraft mc, InvTweaksConfig config,
+			Container container, boolean inventoryPart) {
 		super(mc);
 
-		this.tree = tree;
-		this.lockLevels = lockLevels;
+		// Init constants
+		
+		if (DEFAULT_LOCK_PRIORITIES == null) {
+			DEFAULT_LOCK_PRIORITIES = new int[MAX_CONTAINER_SIZE];
+			for (int i = 0; i < MAX_CONTAINER_SIZE; i++) {
+				DEFAULT_LOCK_PRIORITIES[i] = 0;
+			}
+		}
+
+		// Init attributes
+		
+		this.tree = config.getTree();
 		this.container = container;
 		
 		if (container instanceof ContainerPlayer) {
 			this.size = InvTweaks.INVENTORY_SIZE;
 			this.offset = 9; // 5 crafting slots + 4 armor slots
+			this.lockPriorities = config.getLockPriorities();
 		}
 		else if (inventoryPart) { 
 			this.size = InvTweaks.INVENTORY_SIZE;
 			this.offset = getSlots(container).size() - InvTweaks.INVENTORY_SIZE;
+			this.lockPriorities = config.getLockPriorities();
 		}
 		else {
 			this.size = getSlots(container).size() - InvTweaks.INVENTORY_SIZE;
 			this.offset = 0;
+			this.lockPriorities = DEFAULT_LOCK_PRIORITIES;
 		}
 		
 		this.rulePriority = new int[size];
@@ -87,7 +104,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 	 */
 	public boolean moveStack(int i, int j, int priority) throws TimeoutException {
 		
-		if (getLockLevel(i) <= priority) {
+		if (getLockPriority(i) <= priority) {
 		
 			if (i == j) {
 				markAsMoved(i, priority);
@@ -97,7 +114,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 			boolean targetEmpty = getStackInSlot(j) == null;
 			
 			// Move to empty slot
-			if (targetEmpty && lockLevels[j] <= priority) {
+			if (targetEmpty && lockPriorities[j] <= priority) {
 				swapOrMerge(i, j, priority);
 				return true;
 			}
@@ -105,7 +122,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 			// Try to swap/merge
 			else if (!targetEmpty) {
 				boolean canBeSwapped = false;
-				if (lockLevels[j] <= priority) {
+				if (lockPriorities[j] <= priority) {
 					if (rulePriority[j] < priority) {
 						canBeSwapped = true;
 					}
@@ -134,7 +151,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 	 * @throws TimeoutException 
 	 */
 	public boolean mergeStacks(int i, int j) throws TimeoutException {
-		if (lockLevels[i] <= lockLevels[j]) {
+		if (lockPriorities[i] <= lockPriorities[j]) {
 			return swapOrMerge(i, j, 1) ? STACK_EMPTIED : STACK_NOT_EMPTIED;
 		}
 		else {
@@ -263,9 +280,9 @@ public class InvTweaksContainer extends InvTweaksObf {
 			// j to i
 			if (jStack != null) {
 				int dropSlot = i;
-				if (lockLevels[j] > lockLevels[i]) {
+				if (lockPriorities[j] > lockPriorities[i]) {
 					for (int k = 0; k < size; k++) {
-						if (getStackInSlot(k) == null && lockLevels[k] == 0) {
+						if (getStackInSlot(k) == null && lockPriorities[k] == 0) {
 							dropSlot = k;
 							break;
 						}
@@ -304,7 +321,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 			for (int step = 1; step <= 2; step++) {
 				for (int i = size-1; i >= 0; i--) {
 					if (getStackInSlot(i) == null
-							&& (lockLevels[i] == 0 || step == 2)) {
+							&& (lockPriorities[i] == 0 || step == 2)) {
 						if (isMultiplayer) {
 							click(i);
 						}
@@ -333,8 +350,8 @@ public class InvTweaksContainer extends InvTweaksObf {
 		return getStackInSlot(i);
 	}
 	
-	public int getLockLevel(int i) {
-		return lockLevels[i];
+	public int getLockPriority(int i) {
+		return lockPriorities[i];
 	}
 
 	public int getSize() {

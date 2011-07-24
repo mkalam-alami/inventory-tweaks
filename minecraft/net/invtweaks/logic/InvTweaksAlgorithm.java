@@ -31,21 +31,12 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
     public static final int HORIZONTAL = 2;
     public static final int INVENTORY = 3;
 
-    private static final int MAX_CONTAINER_SIZE = 100;
-    private static int[] DEFAULT_LOCK_PRIORITIES = null;
     
     private InvTweaksConfig config = null;
     
     public InvTweaksAlgorithm(Minecraft mc, InvTweaksConfig config) {
 		super(mc);
 		setConfig(config);
-		
-		if (DEFAULT_LOCK_PRIORITIES == null) {
-			DEFAULT_LOCK_PRIORITIES = new int[MAX_CONTAINER_SIZE];
-			for (int i = 0; i < MAX_CONTAINER_SIZE; i++) {
-				DEFAULT_LOCK_PRIORITIES[i] = 0;
-			}
-		}
 	}
     
     public void setConfig(InvTweaksConfig config) {
@@ -70,12 +61,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 
     	InvTweaksTree tree = config.getTree();
     	InvTweaksContainer inventory;
-    	if (algorithm == INVENTORY) {
-    		inventory = new InvTweaksContainer(mc, config.getTree(), config.getLockPriorities(), container, inventoryPart);
-    	}
-    	else {
-    		inventory = new InvTweaksContainer(mc, config.getTree(), DEFAULT_LOCK_PRIORITIES, container, inventoryPart);
-    	}
+    	inventory = new InvTweaksContainer(mc, config, container, inventoryPart);
 
 		//// Empty hand (needed in SMP)
 		if (isMultiplayerWorld()) {
@@ -135,7 +121,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 					ItemStack from = inventory.getItemStack(i);
 		    		
 		    		if (inventory.hasToBeMoved(i) && 
-		    				inventory.getLockLevel(i) < rulePriority) {
+		    				inventory.getLockPriority(i) < rulePriority) {
 						List<InvTweaksItem> fromItems = tree.getItems(
 								getItemID(from), getItemDamage(from));
 		    			if (tree.matches(fromItems, rule.getKeyword())) {
@@ -171,7 +157,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 			log.info("Locking stacks.");
 			
 			for (int i = 0; i < inventory.getSize(); i++) {
-				if (inventory.hasToBeMoved(i) && inventory.getLockLevel(i) > 0) {
+				if (inventory.hasToBeMoved(i) && inventory.getLockPriority(i) > 0) {
 					inventory.markAsMoved(i, 1);
 				}
 			}
@@ -197,8 +183,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 	public void autoReplaceSlot(int slot, int wantedId, int wantedDamage) {
    
 		InvTweaksContainer inventory = new InvTweaksContainer(
-				mc, config.getTree(), config.getLockPriorities(),
-				getPlayerContainer(), true);  	
+				mc, config, getPlayerContainer(), true);  	
 		ItemStack candidateStack, replacementStack = null;
 		ItemStack storedStack = createItemStack(wantedId, 1, wantedDamage);
 		int replacementStackSlot = -1;

@@ -3,6 +3,20 @@
 | Changelog                                                    |
 |==============================================================|
 
+[07.24.2011] 1.20 (B1.7.3)
+ * Fixed the columns rule being reversed
+ * The tree file is now in XML for easier editing
+ * Added a special settings menu to inventories
+     Created an option to hide chest buttons [TODO]
+     Created an option to replace the "DISABLEMIDDLECLICK" rule [TODO]
+     Added a link to edit both configuration files
+	 Added a link to the mod's documentation
+ * Added a new special rule "LIMIT", to limit stacking [TODO]
+ * Made picked up items go directly in the slot defined for sorting [TODO]
+ * Autoreplace now triggers a sound [TODO]
+
+|== 1.1X ======================================================|
+
 [07.21.2011] 1.11 (B1.7.3)
  * Middle click now works on chests (doesn't crash anymore)
  * Middle clicking several times swaps between the sorting methods

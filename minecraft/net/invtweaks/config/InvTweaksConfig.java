@@ -53,6 +53,11 @@ public class InvTweaksConfig {
 		return tree;
 	}
 	
+	/**
+	 * Returns all sorting rules, themselves sorted by
+	 * decreasing priority.
+	 * @return
+	 */
 	public Vector<InvTweaksRule> getRules() {
 		return rules;
 	}

@@ -214,7 +214,7 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 				result = new int[containerColumnSize];
 				for (int i = 0; i < containerColumnSize; i++) {
 					result[i] = 
-						index(containerRowSize, reverse ? containerColumnSize-1-i : i, column);
+						index(containerRowSize, reverse ? i : containerColumnSize-1-i, column);
 				}
 			}
 		}

@@ -15,11 +15,11 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.PlayerController;
 import net.minecraft.src.Slot;
 
-public class InvTweaksObf {
+public class Obfuscation {
 
 	protected Minecraft mc;
 	
-	protected InvTweaksObf(Minecraft mc) {
+	protected Obfuscation(Minecraft mc) {
 		this.mc = mc;
 	}
 	

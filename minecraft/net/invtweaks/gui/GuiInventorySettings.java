@@ -7,18 +7,17 @@ import java.util.logging.Logger;
 
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiScreen;
-import net.minecraft.src.GuiSmallButton;
 import net.minecraft.src.InvTweaks;
 
-public class InvTweaksGuiOptions extends GuiScreen {
+public class GuiInventorySettings extends GuiScreen {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
 
 	private final static String SCREEN_TITLE = "Inventory and chests settings";
 
-	private final static int ID_MIDDLE_CLICK = 1;
-	private final static int ID_CHESTS_BUTTONS = 2;
+	//private final static int ID_MIDDLE_CLICK = 1;
+	//private final static int ID_CHESTS_BUTTONS = 2;
 	//private final static int ID_CONVENIENT_SHORTCUTS = 3;
 	//private final static int ID_AUTOREPLACE = 4;
 
@@ -30,7 +29,7 @@ public class InvTweaksGuiOptions extends GuiScreen {
 
 	private GuiScreen parentScreen;
 
-	public InvTweaksGuiOptions(GuiScreen guiscreen) {
+	public GuiInventorySettings(GuiScreen guiscreen) {
 		parentScreen = guiscreen;
 	}
 
@@ -41,15 +40,16 @@ public class InvTweaksGuiOptions extends GuiScreen {
 	public void initGui() {
 
 		// TODO Mod translation?
-		// FIXME Lost items on "..." with item in hand
 
 		int x = width / 2 - 155;
-		int y = height / 6;
+		//int y = height / 6;
 
-		controlList.add(new GuiSmallButton(ID_MIDDLE_CLICK, x, y,
+		// TODO Implement middle click option
+		// TODO Implement chest button toggle
+		/*controlList.add(new GuiSmallButton(ID_MIDDLE_CLICK, x, y,
 				"Middle click: ON"));
 		controlList.add(new GuiSmallButton(ID_CHESTS_BUTTONS, x + 160, y,
-				"Chest buttons: ON"));
+				"Chest buttons: ON"));*/
 		// TODO Implement "Convenient Inventory" shortcuts
 		// TODO Implement autoreplace options
 		/*controlList.add(new GuiSmallButton(ID_CONVENIENT_SHORTCUTS, x, y + 24,

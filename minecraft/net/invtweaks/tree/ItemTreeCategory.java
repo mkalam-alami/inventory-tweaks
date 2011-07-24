@@ -9,30 +9,30 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 
-public class InvTweaksCategory {
+public class ItemTreeCategory {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
 
-	private final Map<Integer, List<InvTweaksItem>> items = new HashMap<Integer, List<InvTweaksItem>>();
+	private final Map<Integer, List<ItemTreeItem>> items = new HashMap<Integer, List<ItemTreeItem>>();
 	private final Vector<String> matchingItems = new Vector<String>();
-	private final Vector<InvTweaksCategory> subCategories = new Vector<InvTweaksCategory>();
+	private final Vector<ItemTreeCategory> subCategories = new Vector<ItemTreeCategory>();
 	private String name;
 	private int order = -1;
 	
-    public InvTweaksCategory(String name) {
+    public ItemTreeCategory(String name) {
     	this.name = name;
 	}
     
-    public boolean contains(InvTweaksItem item) {
-    	List<InvTweaksItem> storedItems = items.get(item.getId());
+    public boolean contains(ItemTreeItem item) {
+    	List<ItemTreeItem> storedItems = items.get(item.getId());
 		if (storedItems != null) {
-			for (InvTweaksItem storedItem : storedItems) {
+			for (ItemTreeItem storedItem : storedItems) {
 				if (storedItem.equals(item))
 					return true;
 			}
 		}
-		for (InvTweaksCategory category : subCategories) {
+		for (ItemTreeCategory category : subCategories) {
 			if (category.contains(item)) {
 				return true;
 			}
@@ -40,15 +40,15 @@ public class InvTweaksCategory {
 		return false;
 	}
 
-	public void addCategory(InvTweaksCategory category) {
+	public void addCategory(ItemTreeCategory category) {
 		subCategories.add(category);
 	}
 	
-	public void addItem(InvTweaksItem item) {
+	public void addItem(ItemTreeItem item) {
 		
 		// Add item to category
 		if (items.get(item.getId()) == null) {
-			List<InvTweaksItem> itemList = new ArrayList<InvTweaksItem>();
+			List<ItemTreeItem> itemList = new ArrayList<ItemTreeItem>();
 			itemList.add(item);
 			items.put(item.getId(), itemList);
 		}
@@ -69,7 +69,7 @@ public class InvTweaksCategory {
 		}
 		else {
 			int order;
-			for (InvTweaksCategory category : subCategories) {
+			for (ItemTreeCategory category : subCategories) {
 				order = category.getCategoryOrder();
 				if (order != -1)
 					return order;
@@ -84,7 +84,7 @@ public class InvTweaksCategory {
 		}
 		else {
 			int result;
-			for (InvTweaksCategory category : subCategories) {
+			for (ItemTreeCategory category : subCategories) {
 				result = category.findCategoryOrder(keyword);
 				if (result != -1) {
 					return result;
@@ -103,7 +103,7 @@ public class InvTweaksCategory {
 		}
 		else {
 			int result;
-			for (InvTweaksCategory category : subCategories) {
+			for (ItemTreeCategory category : subCategories) {
 				result = category.findKeywordDepth(keyword);
 				if (result != -1) {
 					return result+1;
@@ -117,11 +117,11 @@ public class InvTweaksCategory {
 	 * Returns a references to all categories contained in this one.
 	 * @return
 	 */
-	public Collection<InvTweaksCategory> getSubCategories() {
+	public Collection<ItemTreeCategory> getSubCategories() {
 		return subCategories;
 	}
 	
-	public Collection<List<InvTweaksItem>> getItems() {
+	public Collection<List<ItemTreeItem>> getItems() {
 		return items.values();
 	}
 

@@ -9,23 +9,23 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class InvTweaksTreeLoader extends DefaultHandler {
+public class ItemTreeLoader extends DefaultHandler {
 
 	private final static String ATTR_RANGE_MIN = "min";
 	private final static String ATTR_RANGE_MAX = "max";
 	private final static String ATTR_ID = "id";
 	private final static String ATTR_DAMAGE = "damage";
 	
-	private InvTweaksTree tree;
+	private ItemTree tree;
 	
 	private String parentCategory = null;
 	private int itemOrder = 0;
 	
-	public InvTweaksTreeLoader() {
-		tree = new InvTweaksTree();
+	public ItemTreeLoader() {
+		tree = new ItemTree();
 	}
 
-	public InvTweaksTree load(String file) throws Exception {
+	public ItemTree load(String file) throws Exception {
 		tree.reset();
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 		SAXParser parser = parserFactory.newSAXParser();
@@ -44,11 +44,11 @@ public class InvTweaksTreeLoader extends DefaultHandler {
 			
 			if (parentCategory == null) {
 				// Root category
-				tree.setRootCategory(new InvTweaksCategory(name));
+				tree.setRootCategory(new ItemTreeCategory(name));
 			}
 			else {
 				// Normal category
-				tree.addCategory(parentCategory, new InvTweaksCategory(name));
+				tree.addCategory(parentCategory, new ItemTreeCategory(name));
 			}
 			
 			// Handle item ranges
@@ -56,7 +56,7 @@ public class InvTweaksTreeLoader extends DefaultHandler {
 				int rangeMin = Integer.parseInt(rangeMinAttr);
 				int rangeMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_MAX));
 				for (int i = rangeMin; i <= rangeMax; i++) {
-					tree.addItem(name, new InvTweaksItem(name+i, i, -1, itemOrder++));
+					tree.addItem(name, new ItemTreeItem(name+i, i, -1, itemOrder++));
 				}
 			}
 			parentCategory = name;
@@ -69,7 +69,7 @@ public class InvTweaksTreeLoader extends DefaultHandler {
 			if (attributes.getValue(ATTR_DAMAGE) != null) {
 				damage = Integer.parseInt(attributes.getValue(ATTR_DAMAGE));
 			}
-			tree.addItem(parentCategory, new InvTweaksItem(name, id, damage, itemOrder++));
+			tree.addItem(parentCategory, new ItemTreeItem(name, id, damage, itemOrder++));
 		}
 	}
 	

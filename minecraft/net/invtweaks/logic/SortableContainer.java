@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import net.invtweaks.InvTweaksObf;
-import net.invtweaks.config.InvTweaksConfig;
-import net.invtweaks.tree.InvTweaksItem;
-import net.invtweaks.tree.InvTweaksTree;
+import net.invtweaks.Obfuscation;
+import net.invtweaks.config.InventoryConfig;
+import net.invtweaks.tree.ItemTreeItem;
+import net.invtweaks.tree.ItemTree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Container;
 import net.minecraft.src.ContainerPlayer;
@@ -15,7 +15,7 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.InvTweaks;
 import net.minecraft.src.ItemStack;
 
-public class InvTweaksContainer extends InvTweaksObf {
+public class SortableContainer extends Obfuscation {
 
 	private static final Logger log = Logger.getLogger("InvTweaks");
     
@@ -26,7 +26,7 @@ public class InvTweaksContainer extends InvTweaksObf {
     private static final int MAX_CONTAINER_SIZE = 100;
 
 	private Container container;
-	private InvTweaksTree tree;
+	private ItemTree tree;
 	private int[] rulePriority;
 	private int[] keywordOrder;
 	private int[] lockPriorities;
@@ -39,7 +39,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 	private boolean isMultiplayer;
 	private EntityPlayer entityPlayer;
 	
-	public InvTweaksContainer(Minecraft mc, InvTweaksConfig config,
+	public SortableContainer(Minecraft mc, InventoryConfig config,
 			Container container, boolean inventoryPart) {
 		super(mc);
 
@@ -404,7 +404,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 			int pollingTime = 0;
 			while (areItemStacksEqual(getStackInSlot(slot), stackInSlot)
 					 && pollingTime < InvTweaks.POLLING_TIMEOUT) {
-				InvTweaksAlgorithm.trySleep(InvTweaks.POLLING_DELAY);
+				InventoryAlgorithm.trySleep(InvTweaks.POLLING_DELAY);
 				pollingTime += InvTweaks.POLLING_DELAY;
 			}
 			if (pollingTime >= InvTweaks.POLLING_TIMEOUT) {
@@ -422,7 +422,7 @@ public class InvTweaksContainer extends InvTweaksObf {
 	}
 	
 	private int getItemOrder(int itemID, int itemDamage) {
-		List<InvTweaksItem> items = tree.getItems(itemID, itemDamage);
+		List<ItemTreeItem> items = tree.getItems(itemID, itemDamage);
 		return (items != null && items.size() > 0)
 				? items.get(0).getOrder()
 				: Integer.MAX_VALUE;

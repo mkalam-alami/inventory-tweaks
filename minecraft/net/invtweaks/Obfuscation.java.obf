@@ -1,15 +1,16 @@
-package net.minecraft.src;
+package net.invtweaks;
 
 import java.io.File;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.src.*;
 
-public class InvTweaksObf {
+public class Obfuscation {
 
 	protected Minecraft mc;
 	
-	public InvTweaksObf(Minecraft mc) {
+	public Obfuscation(Minecraft mc) {
 		this.mc = mc;
 	}
 	

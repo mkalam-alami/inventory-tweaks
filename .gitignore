@@ -1,11 +1,11 @@
 bin/
 client/
-!*.zip
-*.java
+isom/
+*.zip
+minecraft/net/minecraft/src/*.java
 *#
 *~
 *.rej
-!*InvTweaks*
 .classpath
 .project
 InvTweaks-*/

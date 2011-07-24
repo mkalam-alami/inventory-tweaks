@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -14,20 +15,20 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import net.invtweaks.InvTweaksObf;
-import net.invtweaks.config.InvTweaksConfig;
-import net.invtweaks.config.InvTweaksRule;
-import net.invtweaks.gui.InvTweaksGuiOptions;
-import net.invtweaks.logic.InvTweaksAlgorithm;
-import net.invtweaks.logic.InvTweaksContainer;
-import net.invtweaks.tree.InvTweaksItem;
-import net.invtweaks.tree.InvTweaksTree;
+import net.invtweaks.Obfuscation;
+import net.invtweaks.config.InventoryConfig;
+import net.invtweaks.config.InventoryConfigRule;
+import net.invtweaks.gui.GuiInventorySettings;
+import net.invtweaks.logic.InventoryAlgorithm;
+import net.invtweaks.logic.SortableContainer;
+import net.invtweaks.tree.ItemTreeItem;
+import net.invtweaks.tree.ItemTree;
 import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-public class InvTweaks extends InvTweaksObf {
+public class InvTweaks extends Obfuscation {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
     
@@ -39,8 +40,8 @@ public class InvTweaks extends InvTweaksObf {
     public static final String CONFIG_RULES_FILE = MINECRAFT_DIR+"InvTweaksConfig.txt";
     public static final String CONFIG_TREE_FILE = MINECRAFT_DIR+"InvTweaksTree.xml";
     public static final String OLD_CONFIG_TREE_FILE = MINECRAFT_DIR+"InvTweaksTree.txt"; 
-    public static final String DEFAULT_CONFIG_FILE = "net/invtweaks/DefaultConfig.dat";
-    public static final String DEFAULT_CONFIG_TREE_FILE = "net/invtweaks/DefaultTree.dat";
+    public static final String DEFAULT_CONFIG_FILE = "/net/invtweaks/DefaultConfig.dat";
+    public static final String DEFAULT_CONFIG_TREE_FILE = "/net/invtweaks/DefaultTree.dat";
     public static final String HELP_URL = "http://wan.ka.free.fr/?invtweaks#doc";
 	
     public static final String INGAME_LOG_PREFIX = "InvTweaks: ";
@@ -50,6 +51,7 @@ public class InvTweaks extends InvTweaksObf {
     public static final int HOT_RELOAD_DELAY = 1000;
     public static final int INVENTORY_SIZE = 36;
 	public static final int INVENTORY_ROW_SIZE = 9;
+	public static final int INVENTORY_HOTBAR_SIZE = INVENTORY_ROW_SIZE;
     public static final int AUTOREPLACE_DELAY = 200;
     public static final int POLLING_DELAY = 3;
     public static final int POLLING_TIMEOUT = 1500;
@@ -59,13 +61,15 @@ public class InvTweaks extends InvTweaksObf {
     public static final int JIMEOWAN_ID = 54696386;
 
 	private static InvTweaks instance;
-    private InvTweaksConfig config = null;
-    private InvTweaksAlgorithm sortingAlgorithm = null;
-    private long configLastModified = 0;
+    private InventoryConfig config = null;
+    private InventoryAlgorithm sortingAlgorithm = null;
+    private long storedConfigLastModified = 0;
 	private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
-	private int chestAlgorithm = InvTweaksAlgorithm.DEFAULT;
+	private int chestAlgorithm = InventoryAlgorithm.DEFAULT;
 	private long chestAlgorithmClickTimestamp = 0; 
 	private boolean chestAlgorithmButtonDown = false;
+	private ItemStack[] hotbarClone = new ItemStack[INVENTORY_HOTBAR_SIZE];
+	private Random rand = new Random();
     
     public InvTweaks(Minecraft mc) {
 
@@ -77,11 +81,8 @@ public class InvTweaks extends InvTweaksObf {
     	instance = this;
     	
     	// Load config files
-		if (loadConfig()) {
-			
-			// Load algorithm
-	    	sortingAlgorithm = new InvTweaksAlgorithm(mc, config);
-	    	
+		if (makeSureConfigurationIsLoaded()) {
+	    	sortingAlgorithm = new InventoryAlgorithm(mc, config); // Load algorithm
 	    	log.info("Mod initialized");
 		}
 		else {
@@ -99,11 +100,13 @@ public class InvTweaks extends InvTweaksObf {
 			
 	    	// Check config loading success & current GUI
 	    	GuiScreen guiScreen = getCurrentScreen();
-	    	if (!isConfigLoaded() ||
-	    			!(guiScreen == null ||
-	    			guiScreen instanceof GuiContainer /* GuiContainer */)) {
+	    	
+	    	if (!isConfigLoaded() && !loadConfig()) {
 	    		return;
 	    	}
+			if (guiScreen != null && !(guiScreen instanceof GuiContainer) /* GuiContainer */) {
+				return;
+			}
 	    	
 	    	handleSorting(guiScreen);
 		}
@@ -111,15 +114,21 @@ public class InvTweaks extends InvTweaksObf {
 
     public void onItemPickup(ItemStack stack) {
     	
-    	InvTweaksContainer container = new InvTweaksContainer(mc,
+    	if (!isConfigLoaded() && !loadConfig()) {
+    		return;
+    	}
+    	
+    	SortableContainer container = new SortableContainer(mc,
     			config, getPlayerContainer(), true);
     	
-    	// Find stack slot
+    	// Find stack slot (look in hotbar only)
     	int currentSlot = -1;
-    	for (int i = 0; i < container.getSize(); i++) {
-    		if (container.getItemStack(i) == stack) {
-    			currentSlot = i;
-    			break;
+    	for (int i = 0; i < INVENTORY_HOTBAR_SIZE; i++) { // TODO const
+    		ItemStack currentHotbarStack = container.getItemStack(i+27);
+    		// Don't move already started stacks
+    		if (currentHotbarStack != null && currentHotbarStack.animationsToGo == 5
+    				&& hotbarClone[i] == null) {
+    			currentSlot = i+27;
     		}
     	}
     	
@@ -127,43 +136,47 @@ public class InvTweaks extends InvTweaksObf {
     	
 	    	// Find preffered slots
 	    	int[] prefferedPositions = null;
-	    	InvTweaksRule matchingRule = null;
-	    	InvTweaksTree tree = config.getTree();
-	    	List<InvTweaksItem> items = tree.getItems(getItemID(stack), getItemDamage(stack));
-	    	for (InvTweaksRule rule : config.getRules()) {
+	    	InventoryConfigRule matchingRule = null;
+	    	ItemTree tree = config.getTree();
+	    	List<ItemTreeItem> items = tree.getItems(getItemID(stack), getItemDamage(stack));
+	    	for (InventoryConfigRule rule : config.getRules()) {
 	    		if (tree.matches(items, rule.getKeyword())) {
 	    			prefferedPositions = rule.getPreferredPositions();
 	    			matchingRule = rule;
 	    			break;
 	    		}
 	    	}
-	    	
+
+    		// Find best slot for stack
 	    	if (prefferedPositions != null) {
-	    		// Find best slot for stack
 	    		for (int newSlot : prefferedPositions) {
 	    			try {
-						if (container.moveStack(currentSlot, newSlot,
-								matchingRule.getPriority())) {
+	    				if (container.getItemStack(newSlot) == null
+	    						&& container.moveStack(currentSlot,
+	    								newSlot, matchingRule.getPriority())) {
 							break;
 						}
 					} catch (TimeoutException e) {
 						logInGame("Failed to move picked up stack", e);
 					}
 	    		}
-	    		
-	    		// Else, put the slot anywhere
-
+	    	}
+	    	
+    		// Else, put the slot anywhere
+	    	if (container.hasToBeMoved(currentSlot)) {
 	        	for (int i = 0; i < container.getSize(); i++) {
 	    			try {
-						if (container.moveStack(currentSlot, i, 1)) {
-							break;
-						}
+	    				if (container.getItemStack(i) == null) {
+	    					if (container.moveStack(currentSlot, i, Integer.MAX_VALUE)) {
+	    						break;
+	    					}
+	    				}
 					} catch (TimeoutException e) {
 						logInGame("Failed to move picked up stack", e);
 					}
 	        	}
-	    		
 	    	}
+    		
     	}
 	}
 
@@ -171,6 +184,7 @@ public class InvTweaks extends InvTweaksObf {
 		if (!isConfigLoaded())
 			return;
 		synchronized (this) {
+			cloneHotbar();
 			GuiScreen guiScreen = getCurrentScreen();
 			handleMiddleClick(guiScreen);
 			handleAutoReplace();
@@ -181,13 +195,16 @@ public class InvTweaks extends InvTweaksObf {
 		if (!isConfigLoaded())
 			return;
 		synchronized (this) {
+			if (isChestOrDispenser(guiScreen)) {
+				cloneHotbar();
+			}
 	    	handleGUILayout(guiScreen);
 			handleOptionsMenuLayout(guiScreen);
 		}
     }
 
 	public void logInGame(String message) {
-		String formattedMsg = buildlogString(Level.SEVERE, message);
+		String formattedMsg = buildlogString(Level.INFO, message);
 		addChatMessage(formattedMsg);
     	log.info(formattedMsg);
     }
@@ -202,11 +219,28 @@ public class InvTweaks extends InvTweaksObf {
 		return config != null;
 	}
 
+	/**
+	 * Allows to maintain a clone of the hotbar contents
+	 * to track changes (especially needed by the "on pickup"
+	 * features).
+	 */
+	private void cloneHotbar() {
+		ItemStack[] mainInventory = getMainInventory();
+		for (int i = 0; i < 9; i++) {
+			if (mainInventory[i] != null) {
+				hotbarClone[i] = mainInventory[i].copy();
+			}
+			else {
+				hotbarClone[i] = null;
+			}
+		}
+	}
+	
 	private void handleSorting(GuiScreen guiScreen) {
 
-    	// Hot reload trigger
-    	if (getConfigLastModified() != configLastModified)
-    		loadConfig();
+    	if (!makeSureConfigurationIsLoaded()) {
+    		return;
+    	}
 
     	ItemStack selectedItem = getItemStack(
     			getMainInventory(),
@@ -215,7 +249,7 @@ public class InvTweaks extends InvTweaksObf {
     	try {
 			sortingAlgorithm.sortContainer(
 					(guiScreen == null) ? getPlayerContainer() : getContainer((GuiContainer) guiScreen),  /* GuiContainer */
-					true, InvTweaksAlgorithm.INVENTORY);
+					true, InventoryAlgorithm.INVENTORY);
 		} catch (TimeoutException e) {
 			logInGame("Failed to sort inventory: "+e.getMessage());
 		}
@@ -273,17 +307,17 @@ public class InvTweaks extends InvTweaksObf {
 		
 					GuiButton button = new SortingButton(
 							id++, x-37, y, w, h, "s",
-							container, InvTweaksAlgorithm.DEFAULT);
+							container, InventoryAlgorithm.DEFAULT);
 					guiContainer.controlList.add((GuiButton) button);
 		
 					button = new SortingButton(
 							id++, x-25, y, w, h, "v",
-							container, InvTweaksAlgorithm.VERTICAL);
+							container, InventoryAlgorithm.VERTICAL);
 					guiContainer.controlList.add((GuiButton) button);
 					
 					button = new SortingButton(
 							id++, x-13, y, w, h, "h",
-							container, InvTweaksAlgorithm.HORIZONTAL);
+							container, InventoryAlgorithm.HORIZONTAL);
 					guiContainer.controlList.add((GuiButton) button);
 					
 					// Settings button
@@ -296,21 +330,17 @@ public class InvTweaks extends InvTweaksObf {
 		}
 
 	}
-
-	private void handleMiddleClick(GuiScreen guiScreen) {
 	
-		if (!isConfigLoaded()) {
+	private void handleMiddleClick(GuiScreen guiScreen) {
+		
+		if (!makeSureConfigurationIsLoaded()) {
 			return;
 		}
 		
 		if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled()) {
 			if (!chestAlgorithmButtonDown) {
 	    		chestAlgorithmButtonDown = true;
-		    	// Hot reload trigger
-		    	if (getConfigLastModified() != configLastModified) {
-		    		if (!loadConfig())
-		    			return;
-		    	}
+		    	
 	    		
 	        	if (isChestOrDispenser(guiScreen)) {
 	        		
@@ -336,7 +366,7 @@ public class InvTweaks extends InvTweaksObf {
 	    			if (target == 1) {
 	    				long timestamp = System.currentTimeMillis();
 	    				if (timestamp - chestAlgorithmClickTimestamp > CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
-	    					chestAlgorithm = InvTweaksAlgorithm.DEFAULT;
+	    					chestAlgorithm = InventoryAlgorithm.DEFAULT;
 	    				}
 	    				try {
 							sortingAlgorithm.sortContainer(container, false, chestAlgorithm);
@@ -348,7 +378,7 @@ public class InvTweaks extends InvTweaksObf {
 	    			}
 	    			else if (target == 2) {
 	    				try {
-							sortingAlgorithm.sortContainer(container, true, InvTweaksAlgorithm.INVENTORY);
+							sortingAlgorithm.sortContainer(container, true, InventoryAlgorithm.INVENTORY);
 						} catch (TimeoutException e) {
 							logInGame("Failed to sort inventory", e);
 						}
@@ -447,6 +477,24 @@ public class InvTweaks extends InvTweaksObf {
 		}
 	}
 	
+	private boolean makeSureConfigurationIsLoaded() {
+		long configLastModified = new File(CONFIG_RULES_FILE).lastModified() + 
+			new File(CONFIG_TREE_FILE).lastModified();
+		if (isConfigLoaded()) {
+			// Check time of last edit for both configuration files.
+			if (storedConfigLastModified != configLastModified) {
+				storedConfigLastModified = configLastModified;
+				return loadConfig(); // Reload
+			}
+			else
+				return true;
+		}
+		else {
+			storedConfigLastModified = configLastModified;
+			return loadConfig(); // Reload
+		}
+	}
+
 	/**
 	 * Tries to load mod configuration from file, with error handling.
 	 * If it fails, the config attribute will remain null.
@@ -477,12 +525,12 @@ public class InvTweaks extends InvTweaksObf {
 		
 		try {
 			if (config == null) {
-				config = new InvTweaksConfig(
+				config = new InventoryConfig(
 						CONFIG_RULES_FILE, CONFIG_TREE_FILE);
 			}
 			config.load();
 			log.setLevel(config.getLogLevel());
-			logInGame("Configuration reloaded");
+			logInGame("Configuration loaded");
 			showConfigErrors(config);
 		} catch (FileNotFoundException e) {
 			error = "Config file not found";
@@ -497,7 +545,6 @@ public class InvTweaks extends InvTweaksObf {
 		    return false;
 		}
 		else {
-			configLastModified = getConfigLastModified();
 			return true;
 		}
 	}
@@ -574,7 +621,7 @@ public class InvTweaks extends InvTweaksObf {
 		}
 	}
 
-	private void showConfigErrors(InvTweaksConfig config) {
+	private void showConfigErrors(InventoryConfig config) {
 		Vector<String> invalid = config.getInvalidKeywords();
 		if (invalid.size() > 0) {
 			String error = "Invalid keywords found: ";
@@ -585,14 +632,6 @@ public class InvTweaks extends InvTweaksObf {
 		}
 	}
 
-	/**
-     * Checks time of last edit for both configuration files.
-     * @return
-     */
-    private long getConfigLastModified() {
-    	return new File(CONFIG_RULES_FILE).lastModified() + 
-    			new File(CONFIG_TREE_FILE).lastModified();
-    }
     
 	private String buildlogString(Level level, String message, Exception e) {
     	return buildlogString(level, message) + ": " + e.getMessage();
@@ -652,7 +691,7 @@ public class InvTweaks extends InvTweaksObf {
 	    public boolean mousePressed(Minecraft minecraft, int i, int j) {
 	    	if (super.mousePressed(minecraft, i, j)) {
 	    		// Put hold item down if necessary
-	    		InvTweaksContainer container = new InvTweaksContainer(mc, config, getPlayerContainer(), true);
+	    		SortableContainer container = new SortableContainer(mc, config, getPlayerContainer(), true);
 	    		if (getHoldStack() != null) {
 	    			try {
 	    				container.putHoldItemDown();
@@ -662,7 +701,7 @@ public class InvTweaks extends InvTweaksObf {
 	    		}
 	    			
 				// Display menu
-	    		mc.displayGuiScreen(new InvTweaksGuiOptions(getCurrentScreen()));
+	    		mc.displayGuiScreen(new GuiInventorySettings(getCurrentScreen()));
 	    		return true;
 	    	}
 	    	else {

@@ -10,36 +10,36 @@ import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import net.invtweaks.InvTweaksObf;
-import net.invtweaks.config.InvTweaksConfig;
-import net.invtweaks.config.InvTweaksRule;
-import net.invtweaks.tree.InvTweaksItem;
-import net.invtweaks.tree.InvTweaksTree;
+import net.invtweaks.Obfuscation;
+import net.invtweaks.config.InventoryConfig;
+import net.invtweaks.config.InventoryConfigRule;
+import net.invtweaks.tree.ItemTreeItem;
+import net.invtweaks.tree.ItemTree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Container;
 import net.minecraft.src.ContainerDispenser;
 import net.minecraft.src.InvTweaks;
 import net.minecraft.src.ItemStack;
 
-public class InvTweaksAlgorithm extends InvTweaksObf {
+public class InventoryAlgorithm extends Obfuscation {
     
     private static final Logger log = Logger.getLogger("InvTweaks");
 
-    // Do not change values (InvTweaksContainer.chestAlgorithm depend on that)
+    // Do not change values (SortableContainer.chestAlgorithm depend on that)
     public static final int DEFAULT = 0;
     public static final int VERTICAL = 1;
     public static final int HORIZONTAL = 2;
     public static final int INVENTORY = 3;
 
     
-    private InvTweaksConfig config = null;
+    private InventoryConfig config = null;
     
-    public InvTweaksAlgorithm(Minecraft mc, InvTweaksConfig config) {
+    public InventoryAlgorithm(Minecraft mc, InventoryConfig config) {
 		super(mc);
 		setConfig(config);
 	}
     
-    public void setConfig(InvTweaksConfig config) {
+    public void setConfig(InventoryConfig config) {
     	this.config = config;
     }
     
@@ -59,9 +59,9 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
     	
     	long timer = System.nanoTime();
 
-    	InvTweaksTree tree = config.getTree();
-    	InvTweaksContainer inventory;
-    	inventory = new InvTweaksContainer(mc, config, container, inventoryPart);
+    	ItemTree tree = config.getTree();
+    	SortableContainer inventory;
+    	inventory = new SortableContainer(mc, config, container, inventoryPart);
 
 		//// Empty hand (needed in SMP)
 		if (isMultiplayerWorld()) {
@@ -70,7 +70,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		
 		if (algorithm != DEFAULT) {
 			
-			Vector<InvTweaksRule> rules;
+			Vector<InventoryConfigRule> rules;
 			Vector<Integer> lockedSlots;
 			
 			if (algorithm == INVENTORY) {
@@ -88,7 +88,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		    	    		if (to != null && inventory.canBeMerged(i, j)) {
 		    	    			boolean result = inventory.mergeStacks(i, j);
 		    	    			inventory.markAsNotMoved(j);
-		    	    			if (result == InvTweaksContainer.STACK_EMPTIED) {
+		    	    			if (result == SortableContainer.STACK_EMPTIED) {
 		        	    			break;
 		    	    			}
 		    	    		}
@@ -108,10 +108,10 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 			log.info("Applying rules.");
 	    	
 	    	// Sorts rule by rule, themselves being already sorted by decreasing priority
-			Iterator<InvTweaksRule> rulesIt = rules.iterator();
+			Iterator<InventoryConfigRule> rulesIt = rules.iterator();
 			while (rulesIt.hasNext()) {
 				
-				InvTweaksRule rule = rulesIt.next();
+				InventoryConfigRule rule = rulesIt.next();
 				int rulePriority = rule.getPriority();
 	
 				if (log.getLevel() == InvTweaks.DEBUG)
@@ -122,7 +122,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		    		
 		    		if (inventory.hasToBeMoved(i) && 
 		    				inventory.getLockPriority(i) < rulePriority) {
-						List<InvTweaksItem> fromItems = tree.getItems(
+						List<ItemTreeItem> fromItems = tree.getItems(
 								getItemID(from), getItemDamage(from));
 		    			if (tree.matches(fromItems, rule.getKeyword())) {
 		    				
@@ -182,7 +182,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
      */
 	public void autoReplaceSlot(int slot, int wantedId, int wantedDamage) {
    
-		InvTweaksContainer inventory = new InvTweaksContainer(
+		SortableContainer inventory = new SortableContainer(
 				mc, config, getPlayerContainer(), true);  	
 		ItemStack candidateStack, replacementStack = null;
 		ItemStack storedStack = createItemStack(wantedId, 1, wantedDamage);
@@ -220,12 +220,12 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		     */
 			new Thread(new Runnable() {
 
-				private InvTweaksContainer inventory;
+				private SortableContainer inventory;
 				private int targetedSlot;
 				private int i, expectedItemId;
 				
 				public Runnable init(
-						InvTweaksContainer inventory,
+						SortableContainer inventory,
 						int i, int currentItem) {
 					this.inventory = inventory;
 					this.targetedSlot = currentItem;
@@ -259,6 +259,8 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 						ItemStack stack = inventory.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							inventory.moveStack(i, targetedSlot, Integer.MAX_VALUE);
+			    			mc.theWorld.playSoundAtEntity(getThePlayer(), 
+			    					"mob.slimeattack", 0.35F, 0.7F);
 							// If item are swapped (like for mushroom soups),
 							// put the item back in the inventory if it is in the hotbar
 							if (inventory.getItemStack(i) != null && i >= 27) {
@@ -293,7 +295,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		}
     }
 
-	private void defaultSorting(InvTweaksContainer inventory) throws TimeoutException {
+	private void defaultSorting(SortableContainer inventory) throws TimeoutException {
 	
 		log.info("Default sorting.");
 		
@@ -329,12 +331,12 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		
 	}
 	
-	private Vector<InvTweaksRule> computeLineSortingRules(
-			InvTweaksContainer container, int rowSize, boolean horizontal) {
+	private Vector<InventoryConfigRule> computeLineSortingRules(
+			SortableContainer container, int rowSize, boolean horizontal) {
 		
-		Vector<InvTweaksRule> rules = new Vector<InvTweaksRule>();
-		Map<InvTweaksItem, Integer> stats = computeContainerStats(container);		
-		List<InvTweaksItem> itemOrder = new ArrayList<InvTweaksItem>();
+		Vector<InventoryConfigRule> rules = new Vector<InventoryConfigRule>();
+		Map<ItemTreeItem, Integer> stats = computeContainerStats(container);		
+		List<ItemTreeItem> itemOrder = new ArrayList<ItemTreeItem>();
 
 		int distinctItems = stats.size();
 		int columnSize = getContainerColumnSize(container, rowSize);
@@ -351,11 +353,11 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 			return rules;
 		
 		// (Partially) sort stats by decreasing item stack count
-		List<InvTweaksItem> unorderedItems = new ArrayList<InvTweaksItem>(stats.keySet());
+		List<ItemTreeItem> unorderedItems = new ArrayList<ItemTreeItem>(stats.keySet());
 		boolean hasStacksToOrderFirst = true;
 		while (hasStacksToOrderFirst) {
 			hasStacksToOrderFirst = false;
-			for (InvTweaksItem item : unorderedItems) {
+			for (ItemTreeItem item : unorderedItems) {
 				Integer value = stats.get(item);
 				if (value > ((horizontal) ? rowSize : columnSize)
 						&& !itemOrder.contains(item)) {
@@ -383,10 +385,10 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		char column = '1', maxColumn = (char) (column - 1 + rowSize);
 		
 		// Create rules
-		Iterator<InvTweaksItem> it = itemOrder.iterator();
+		Iterator<ItemTreeItem> it = itemOrder.iterator();
 		while (it.hasNext()) {
 			
-			InvTweaksItem item = it.next();
+			ItemTreeItem item = it.next();
 			
 			// Adapt rule dimensions to fit the amount
 			int thisSpaceWidth = spaceWidth,
@@ -431,7 +433,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 			if (!horizontal) {
 				constraint += 'v';
 			}
-			rules.add(new InvTweaksRule(config.getTree(), 
+			rules.add(new InventoryConfigRule(config.getTree(), 
 					constraint, item.getName(),
 					container.getSize(), rowSize));
 			
@@ -473,7 +475,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		else {
 			defaultRule = "a" + maxColumn + "-" + maxRow + "1v";
 		}
-		rules.add(new InvTweaksRule(config.getTree(), defaultRule, 
+		rules.add(new InventoryConfigRule(config.getTree(), defaultRule, 
 				config.getTree().getRootCategory().getName(),
 				container.getSize(), rowSize));
 		
@@ -481,17 +483,17 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		
 	}
 	
-	private Map<InvTweaksItem, Integer> computeContainerStats(InvTweaksContainer container) {
-		Map<InvTweaksItem, Integer> stats = new HashMap<InvTweaksItem, Integer>();
-		Map<Integer, InvTweaksItem> itemSearch = new HashMap<Integer, InvTweaksItem>();
-		InvTweaksTree tree = config.getTree();
+	private Map<ItemTreeItem, Integer> computeContainerStats(SortableContainer container) {
+		Map<ItemTreeItem, Integer> stats = new HashMap<ItemTreeItem, Integer>();
+		Map<Integer, ItemTreeItem> itemSearch = new HashMap<Integer, ItemTreeItem>();
+		ItemTree tree = config.getTree();
 		
 		for (int i = 0; i < container.getSize(); i++) {
 			ItemStack stack = container.getItemStack(i);
 			if (stack != null) {
 				int itemSearchKey = getItemID(stack)*100000 + 
 						((getMaxStackSize(stack) != 1) ? getItemDamage(stack) : 0);
-				InvTweaksItem item = itemSearch.get(itemSearchKey);
+				ItemTreeItem item = itemSearch.get(itemSearchKey);
 				if (item == null) {
 					item = tree.getItems(getItemID(stack),
 							getItemDamage(stack)).get(0);
@@ -507,7 +509,7 @@ public class InvTweaksAlgorithm extends InvTweaksObf {
 		return stats;
 	}
 	
-	private int getContainerColumnSize(InvTweaksContainer container, int rowSize) {
+	private int getContainerColumnSize(SortableContainer container, int rowSize) {
 		return container.getSize() / rowSize;
 	}
 

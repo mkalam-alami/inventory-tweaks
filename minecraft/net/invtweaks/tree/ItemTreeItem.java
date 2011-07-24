@@ -1,10 +1,10 @@
 package net.invtweaks.tree;
 
-import net.invtweaks.InvTweaksObf;
+import net.invtweaks.Obfuscation;
 import net.minecraft.src.ItemStack;
 
-public class InvTweaksItem extends InvTweaksObf 
-		implements Comparable<InvTweaksItem> {
+public class ItemTreeItem extends Obfuscation 
+		implements Comparable<ItemTreeItem> {
 
 	private String name;
 	private int id;
@@ -17,7 +17,7 @@ public class InvTweaksItem extends InvTweaksObf
 	 * @param damage The item variant or -1
 	 * @param order The item order while sorting
 	 */
-	public InvTweaksItem(String name, int id, int damage, int order) {
+	public ItemTreeItem(String name, int id, int damage, int order) {
 		super(null);
 		this.name = name;
 		this.id = id;
@@ -52,9 +52,9 @@ public class InvTweaksItem extends InvTweaksObf
 	 * They are equal if "o" matches the item constraints (the opposite can be false). 
 	 */
 	public boolean equals(Object o) {
-		if (o == null || !(o instanceof InvTweaksItem))
+		if (o == null || !(o instanceof ItemTreeItem))
 			return false;
-		InvTweaksItem item = (InvTweaksItem) o;
+		ItemTreeItem item = (ItemTreeItem) o;
 		return id == item.getId() &&
 			(damage == -1 || damage == item.getDamage());
 	}
@@ -64,7 +64,7 @@ public class InvTweaksItem extends InvTweaksObf
 	}
 
 	@Override
-	public int compareTo(InvTweaksItem item) {
+	public int compareTo(ItemTreeItem item) {
 		return item.order - order;
 	}
 

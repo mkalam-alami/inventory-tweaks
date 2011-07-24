@@ -3,10 +3,10 @@ package net.invtweaks.config;
 import java.awt.Point;
 import java.util.logging.Logger;
 
-import net.invtweaks.tree.InvTweaksTree;
+import net.invtweaks.tree.ItemTree;
 
 
-public class InvTweaksRule implements Comparable<InvTweaksRule> {
+public class InventoryConfigRule implements Comparable<InventoryConfigRule> {
 	
 	public enum RuleType {
 
@@ -45,7 +45,7 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	private int containerSize;
 	private int containerRowSize;
 	
-	public InvTweaksRule(InvTweaksTree tree, 
+	public InventoryConfigRule(ItemTree tree, 
 			String constraint, String keyword,
 			int containerSize, int containerRowSize) {
 
@@ -102,7 +102,7 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	 * Compares rules priority : positive value
 	 * means 'this' is of greater priority than o
 	 */
-	public int compareTo(InvTweaksRule o) {
+	public int compareTo(InventoryConfigRule o) {
 		return getPriority() - o.getPriority();
 	}
 	
@@ -111,7 +111,7 @@ public class InvTweaksRule implements Comparable<InvTweaksRule> {
 	}
 
 	public int[] getRulePreferredPositions(String constraint) {
-		return InvTweaksRule.getRulePreferredPositions(constraint, containerSize, containerRowSize);
+		return InventoryConfigRule.getRulePreferredPositions(constraint, containerSize, containerRowSize);
 	}
 	
 	public static int[] getRulePreferredPositions(String constraint,

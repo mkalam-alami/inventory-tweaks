@@ -10,12 +10,12 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.invtweaks.tree.InvTweaksItem;
-import net.invtweaks.tree.InvTweaksTree;
-import net.invtweaks.tree.InvTweaksTreeLoader;
+import net.invtweaks.tree.ItemTreeItem;
+import net.invtweaks.tree.ItemTree;
+import net.invtweaks.tree.ItemTreeLoader;
 import net.minecraft.src.InvTweaks;
 
-public class InvTweaksConfig {
+public class InventoryConfig {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
@@ -30,10 +30,10 @@ public class InvTweaksConfig {
 	private String rulesFile;
 	private String treeFile;
 	
-	private InvTweaksTree tree;
+	private ItemTree tree;
 	private int[] lockPriorities;
 	private Vector<Integer> lockedSlots;
-	private Vector<InvTweaksRule> rules;
+	private Vector<InventoryConfigRule> rules;
 	private Vector<String> invalidKeywords;
 	private Vector<String> autoReplaceRules;
 	private boolean middleClickEnabled;
@@ -43,13 +43,13 @@ public class InvTweaksConfig {
 	 * Creates a new configuration holder.
 	 * The configuration is not yet loaded.
 	 */
-	public InvTweaksConfig(String rulesFile, String treeFile) {
+	public InventoryConfig(String rulesFile, String treeFile) {
 		this.rulesFile = rulesFile;
 		this.treeFile = treeFile;
 		init();
 	}
 	
-	public InvTweaksTree getTree() {
+	public ItemTree getTree() {
 		return tree;
 	}
 	
@@ -58,7 +58,7 @@ public class InvTweaksConfig {
 	 * decreasing priority.
 	 * @return
 	 */
-	public Vector<InvTweaksRule> getRules() {
+	public Vector<InventoryConfigRule> getRules() {
 		return rules;
 	}
 	
@@ -94,7 +94,7 @@ public class InvTweaksConfig {
 	}
 
 	public boolean canBeAutoReplaced(int itemID, int itemDamage) {
-		List<InvTweaksItem> items = tree.getItems(itemID, itemDamage);
+		List<ItemTreeItem> items = tree.getItems(itemID, itemDamage);
 		for (String keyword : autoReplaceRules) {
 			if (keyword.equals(AUTOREPLACE_NOTHING))
 				return false;
@@ -112,7 +112,7 @@ public class InvTweaksConfig {
 		init();
 		
 		// Load tree
-		tree = new InvTweaksTreeLoader().load(treeFile);
+		tree = new ItemTreeLoader().load(treeFile);
 		
 		// Read file
 		File f = new File(rulesFile);
@@ -128,7 +128,7 @@ public class InvTweaksConfig {
 		
 		// Parse and sort rules (specific tiles first, then in appearing order)
 		String lineText;
-		InvTweaksRule newRule;
+		InventoryConfigRule newRule;
 		
 		int currentLine = 0;
 		while (currentLine < config.length) {
@@ -148,10 +148,10 @@ public class InvTweaksConfig {
 					
 					// Locking rule
 					if (words[1].equals(LOCKED)) {
-						int[] newLockedSlots = InvTweaksRule.getRulePreferredPositions(
+						int[] newLockedSlots = InventoryConfigRule.getRulePreferredPositions(
 										words[0], InvTweaks.INVENTORY_SIZE,
 										InvTweaks.INVENTORY_ROW_SIZE);
-						int lockPriority = InvTweaksRule.getRuleType(words[0]).getHighestPriority();
+						int lockPriority = InventoryConfigRule.getRuleType(words[0]).getHighestPriority();
 						for (int i : newLockedSlots) {
 							lockPriorities[i] = lockPriority;
 						}
@@ -175,7 +175,7 @@ public class InvTweaksConfig {
 						}
 						
 						if (isValidKeyword) {
-							newRule = new InvTweaksRule(tree, words[0], 
+							newRule = new InventoryConfigRule(tree, words[0], 
 									keyword.toLowerCase(), InvTweaks.INVENTORY_SIZE,
 									InvTweaks.INVENTORY_ROW_SIZE);
 							rules.add(newRule);
@@ -241,7 +241,7 @@ public class InvTweaksConfig {
 			lockPriorities[i] = 0;
 		}
 		lockedSlots = new Vector<Integer>();
-		rules = new Vector<InvTweaksRule>();
+		rules = new Vector<InventoryConfigRule>();
 		invalidKeywords = new Vector<String>();
 		autoReplaceRules = new Vector<String>();
 		middleClickEnabled = true;

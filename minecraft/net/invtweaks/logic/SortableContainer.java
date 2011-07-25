@@ -26,6 +26,7 @@ public class SortableContainer extends Obfuscation {
 	public static final int MOVE_FAILURE = -1;
 	
     private static int[] DEFAULT_LOCK_PRIORITIES = null;
+    private static int[] DEFAULT_STACK_LIMITS = null;
     private static final int MAX_CONTAINER_SIZE = 100;
 
 	private Container container;
@@ -33,6 +34,7 @@ public class SortableContainer extends Obfuscation {
 	private int[] rulePriority;
 	private int[] keywordOrder;
 	private int[] lockPriorities;
+	private int[] stackLimits;
 	private int clickCount = 0;
 	private int offset; // offset of the first sortable item
 	private int size;
@@ -54,7 +56,13 @@ public class SortableContainer extends Obfuscation {
 				DEFAULT_LOCK_PRIORITIES[i] = 0;
 			}
 		}
-
+		if (DEFAULT_STACK_LIMITS == null) {
+			DEFAULT_STACK_LIMITS = new int[MAX_CONTAINER_SIZE];
+			for (int i = 0; i < MAX_CONTAINER_SIZE; i++) {
+				DEFAULT_STACK_LIMITS[i] = 64;
+			}
+		}
+		
 		// Init attributes
 		
 		this.tree = config.getTree();
@@ -64,16 +72,19 @@ public class SortableContainer extends Obfuscation {
 			this.size = InvTweaks.INVENTORY_SIZE;
 			this.offset = 9; // 5 crafting slots + 4 armor slots
 			this.lockPriorities = config.getLockPriorities();
+			this.stackLimits = config.getStackLimits();
 		}
 		else if (inventoryPart) { 
 			this.size = InvTweaks.INVENTORY_SIZE;
 			this.offset = getSlots(container).size() - InvTweaks.INVENTORY_SIZE;
 			this.lockPriorities = config.getLockPriorities();
+			this.stackLimits = config.getStackLimits();
 		}
 		else {
 			this.size = getSlots(container).size() - InvTweaks.INVENTORY_SIZE;
 			this.offset = 0;
 			this.lockPriorities = DEFAULT_LOCK_PRIORITIES;
+			this.stackLimits = DEFAULT_STACK_LIMITS;
 		}
 		
 		this.rulePriority = new int[size];
@@ -183,7 +194,8 @@ public class SortableContainer extends Obfuscation {
 			return false;
 		}
 		return areSameItem(getStackInSlot(i), getStackInSlot(j)) &&
-			getStackSize(getStackInSlot(j)) < getMaxStackSize(getStackInSlot(j));
+			getStackSize(getStackInSlot(j)) < 
+					(Math.min(getMaxStackSize(getStackInSlot(j)), stackLimits[j]));
 	}
 
 	public boolean isOrderedBefore(int i, int j) {
@@ -238,7 +250,7 @@ public class SortableContainer extends Obfuscation {
 		if (canBeMerged(i, j)) {
 			
 			int sum = getStackSize(getStackInSlot(i)) + getStackSize(getStackInSlot(j));
-			int max = getMaxStackSize(getStackInSlot(j));
+			int max = Math.min(getMaxStackSize(getStackInSlot(j)), stackLimits[j]);
 			
 			if (sum <= max) {
 				remove(i);
@@ -257,9 +269,12 @@ public class SortableContainer extends Obfuscation {
 			}
 			else {
 				if (isMultiplayer) {
-					click(i);
-					click(j);
-					click(i);
+					// If limit is < 64 and stacking would go higher, do nothing
+					if (max != getMaxStackSize(getStackInSlot(j))) {
+						click(i);
+						click(j);
+						click(i);
+					}
 				}
 				else {
 					setStackSize(getStackInSlot(i), sum - max);

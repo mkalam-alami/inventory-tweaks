@@ -14,7 +14,7 @@
 ======= [ BENUTZUNG ] =======
 
 * Die Standart-Taste für die Sortierung ist R, du kannst die Taste in den Optionen von Minecraft ändern. Die Mittlere Maustaste funktioniert auch.
-* Beim ersten Start werden Zwei Konfigurations-Datein im Root-Ordner von Minecraft angelegt. Öffne diese, um zu lernen, wie man diesen Mod verwendet.
+* Beim ersten Start werden Zwei Konfigurations-Datein im "config" von Minecraft angelegt. Öffne diese, um zu lernen, wie man diesen Mod verwendet.
 
 ========= [ LINKS ] =========
 

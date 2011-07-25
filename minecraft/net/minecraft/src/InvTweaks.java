@@ -550,9 +550,13 @@ public class InvTweaks extends Obfuscation {
 		String error = null;
 		
 		try {
+			sortingAlgorithm.setConfig(config);
 			if (config == null) {
 				config = new InventoryConfig(
 						CONFIG_RULES_FILE, CONFIG_TREE_FILE);
+				if (sortingAlgorithm != null) {
+					sortingAlgorithm.setConfig(config);
+				}
 			}
 			config.load();
 			log.setLevel(config.getLogLevel());

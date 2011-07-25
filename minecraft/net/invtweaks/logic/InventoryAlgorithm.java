@@ -32,7 +32,6 @@ public class InventoryAlgorithm extends Obfuscation {
     public static final int HORIZONTAL = 2;
     public static final int INVENTORY = 3;
 
-    
     private InventoryConfig config = null;
     
     public InventoryAlgorithm(Minecraft mc, InventoryConfig config) {
@@ -80,7 +79,6 @@ public class InventoryAlgorithm extends Obfuscation {
 				
 		    	//// Merge stacks to fill the ones in locked slots
 				log.info("Merging stacks.");
-				
 		    	for (int i = inventory.getSize()-1; i >= 0; i--) {
 		    		ItemStack from = inventory.getItemStack(i);
 		    		if (from != null) {

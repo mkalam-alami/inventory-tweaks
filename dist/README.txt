@@ -13,7 +13,7 @@
 ======= [ USE ] =======
 
 * Default sorting key is R, but you can map it in the Options menu. The middle click also works.
-* At first launch, two configuration files will appear in the minecraft root folder. Open them to learn how to customize the mod!
+* At first launch, two configuration files will appear in the minecraft "config" folder. Open them to learn how to customize the mod!
 
 ====== [ LINKS ] ======
 

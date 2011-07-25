@@ -26,6 +26,7 @@ public class InventoryConfig {
 	public static final String PROP_SHOWCHESTBUTTONS = "showChestButtons";
 	
 	private static final String LOCKED = "LOCKED";
+	private static final String LIMIT = "LIMIT";
 	private static final String AUTOREPLACE = "AUTOREPLACE";
 	private static final String AUTOREPLACE_NOTHING = "nothing";
 	private static final String DEBUG = "DEBUG";
@@ -37,6 +38,7 @@ public class InventoryConfig {
 	private Properties properties;
 	private ItemTree tree;
 	private int[] lockPriorities;
+	private int[] stackLimits;
 	private Vector<Integer> lockedSlots;
 	private Vector<InventoryConfigRule> rules;
 	private Vector<String> invalidKeywords;
@@ -154,6 +156,27 @@ public class InventoryConfig {
 			
 			}
 			
+			else if (words.length == 3) {
+
+				// Standard rules format with extra word
+				if (lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]* [\\w]*$")
+						|| lineText.matches("^[a-d][1-9]-[a-d][1-9]v? [\\w]* [\\w]*$")) {
+
+					words[0] = words[0].toLowerCase();
+					
+					// Stack limit
+					if (words[1].equals(LIMIT)) {
+						int[] newLockedSlots = InventoryConfigRule.getRulePreferredPositions(
+										words[0], InvTweaks.INVENTORY_SIZE,
+										InvTweaks.INVENTORY_ROW_SIZE);
+						for (int i : newLockedSlots) {
+							stackLimits[i] = Integer.parseInt(words[2]);
+						}
+					}
+				
+				}
+			}
+			
 			else if (words.length == 1) {
 				
 				if (words[0].equals(DEBUG)) {
@@ -237,10 +260,18 @@ public class InventoryConfig {
 	
 	/**
 	 * @return The locked slots array with locked priorities.
-	 * Not a copy.
+	 * WARNING: Not a copy.
 	 */
 	public int[] getLockPriorities() {
 		return lockPriorities;
+	}
+
+	/**
+	 * @return The inventory slots array with stack limits.
+	 * WARNING: Not a copy.
+	 */
+	public int[] getStackLimits() {
+		return stackLimits;
 	}
 	
 	/**
@@ -280,6 +311,10 @@ public class InventoryConfig {
 		lockPriorities = new int[InvTweaks.INVENTORY_SIZE];
 		for (int i = 0; i < lockPriorities.length; i++) {
 			lockPriorities[i] = 0;
+		}
+		stackLimits = new int[InvTweaks.INVENTORY_SIZE];
+		for (int i = 0; i < stackLimits.length; i++) {
+			stackLimits[i] = 64;
 		}
 		
 		properties = new Properties();

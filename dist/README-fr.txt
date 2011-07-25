@@ -13,7 +13,7 @@
 ======= [ UTILISATION ] =======
 
 * La touche par défaut est R, mais vous pouvez la changer dans le menu des options. Le clic du milieu marche aussi.
-* Au premier lancement du mod, deux fichiers de configuration apparaîtront dans le dossier racine de Minecraft. Jetez-y un oeil pour découvrir comment personnaliser le mod !
+* Au premier lancement du mod, plusieurs fichiers de configuration apparaîtront dans le dossier "config" de Minecraft. Jetez-y un oeil pour découvrir comment personnaliser le mod !
 
 ====== [ LIENS ] ======
 

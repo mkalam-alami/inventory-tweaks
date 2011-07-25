@@ -3,7 +3,7 @@
 | Changelog                                                    |
 |==============================================================|
 
-[07.24.2011] 1.20 (B1.7.3)
+[07.24.2011] 1.20 Beta (B1.7.3)
  * Fixed the columns rule being reversed
  * Moved the configuration files to the "config" folder
  * The tree file is now in XML for easier editing
@@ -12,10 +12,11 @@
      Created an option to replace the "DISABLEMIDDLECLICK" rule
      Added a link to edit both configuration files
 	 Added a link to the mod's documentation
- * Added a new special rule "LIMIT", to limit stacking [TODO]
+ * Added a new special rule "LIMIT", to limit stacking
  * Made picked up items go directly in the slot defined for sorting
  * Autoreplace now triggers a sound
  * Fixed a bug regarding autoreplace customization
+ * Better error handling
 
 |== 1.1X ======================================================|
 

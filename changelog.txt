@@ -13,7 +13,7 @@
 	 Added a link to the mod's documentation
  * Added a new special rule "LIMIT", to limit stacking [TODO]
  * Made picked up items go directly in the slot defined for sorting
- * Autoreplace now triggers a sound [TODO]
+ * Autoreplace now triggers a sound
 
 |== 1.1X ======================================================|
 

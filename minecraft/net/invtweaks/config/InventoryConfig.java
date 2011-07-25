@@ -1,17 +1,15 @@
 package net.invtweaks.config;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.invtweaks.tree.ItemTreeItem;
 import net.invtweaks.tree.ItemTree;
+import net.invtweaks.tree.ItemTreeItem;
 import net.invtweaks.tree.ItemTreeLoader;
 import net.minecraft.src.InvTweaks;
 
@@ -104,7 +102,7 @@ public class InventoryConfig {
 		return DEFAULT_AUTOREPLACE_BEHAVIOUR;
 	}
 	
-	public void load() throws FileNotFoundException, IOException, Exception{
+	public void load() throws Exception {
 
 		synchronized (this) {
 		

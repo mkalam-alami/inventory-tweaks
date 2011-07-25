@@ -21,6 +21,9 @@ public class SortableContainer extends Obfuscation {
     
 	public static final boolean STACK_NOT_EMPTIED = true;
 	public static final boolean STACK_EMPTIED = false;
+
+	public static final int MOVE_TO_EMPTY_SLOT = -2;
+	public static final int MOVE_FAILURE = -1;
 	
     private static int[] DEFAULT_LOCK_PRIORITIES = null;
     private static final int MAX_CONTAINER_SIZE = 100;
@@ -99,24 +102,26 @@ public class SortableContainer extends Obfuscation {
 	 * @param i from slot
 	 * @param j to slot
 	 * @param priority The rule priority. Use 1 if the stack was not moved using a rule.
-	 * @return true if it has been done successfully.
+	 * @return  MOVE_FAILURE if it failed,
+	 * 			MOVE_TO_EMPTY_SLOT if the j slot was empty,
+	 * 			n if the j stack has been put in the n slot.
 	 * @throws TimeoutException 
 	 */
-	public boolean moveStack(int i, int j, int priority) throws TimeoutException {
+	public int moveStack(int i, int j, int priority) throws TimeoutException {
 		
 		if (getLockPriority(i) <= priority) {
 		
 			if (i == j) {
 				markAsMoved(i, priority);
-				return true;
+				return i;
 			}
 			
-			boolean targetEmpty = getStackInSlot(j) == null;
+			boolean targetEmpty = (getStackInSlot(j) == null);
 			
 			// Move to empty slot
 			if (targetEmpty && lockPriorities[j] <= priority) {
 				swapOrMerge(i, j, priority);
-				return true;
+				return MOVE_TO_EMPTY_SLOT;
 			}
 
 			// Try to swap/merge
@@ -133,14 +138,13 @@ public class SortableContainer extends Obfuscation {
 					}
 				}
 				if (canBeSwapped || canBeMerged(i, j)) {
-					swapOrMerge(i, j, priority);
-					return true;
+					return swapOrMerge(i, j, priority);
 				}
 			}
 			
 		}
 		
-		return false;
+		return MOVE_FAILURE;
 	}
 
 	/**
@@ -152,7 +156,7 @@ public class SortableContainer extends Obfuscation {
 	 */
 	public boolean mergeStacks(int i, int j) throws TimeoutException {
 		if (lockPriorities[i] <= lockPriorities[j]) {
-			return swapOrMerge(i, j, 1) ? STACK_EMPTIED : STACK_NOT_EMPTIED;
+			return (swapOrMerge(i, j, 1) == 0) ? STACK_EMPTIED : STACK_NOT_EMPTIED;
 		}
 		else {
 			return STACK_NOT_EMPTIED;
@@ -222,11 +226,13 @@ public class SortableContainer extends Obfuscation {
 	 * If the stacks are able to be merged, the biggest part will then be in j.
 	 * @param i
 	 * @param j
-	 * @return true if i is now empty
+	 * @return  MOVE_FAILURE if it failed,
+	 * 		 	MOVE_TO_EMPTY_SLOT if j was empty or stacks are merge into one,
+	 * 			n if j is now in n (at least partially)
 	 * @throws TimeoutException 
 	 * 
 	 */
-	public boolean swapOrMerge(int i, int j, int priority) throws TimeoutException {
+	public int swapOrMerge(int i, int j, int priority) throws TimeoutException {
 		
 		// Merge stacks
 		if (canBeMerged(i, j)) {
@@ -235,7 +241,6 @@ public class SortableContainer extends Obfuscation {
 			int max = getMaxStackSize(getStackInSlot(j));
 			
 			if (sum <= max) {
-				
 				remove(i);
 				if (isMultiplayer) {
 					click(i);
@@ -248,7 +253,7 @@ public class SortableContainer extends Obfuscation {
 				else {
 					setStackSize(getStackInSlot(j), sum);
 				}
-				return true;
+				return MOVE_TO_EMPTY_SLOT;
 			}
 			else {
 				if (isMultiplayer) {
@@ -261,7 +266,7 @@ public class SortableContainer extends Obfuscation {
 					setStackSize(getStackInSlot(j), max);
 				}
 				put(getStackInSlot(j), j, priority);
-				return false;
+				return i;
 			}
 		}
 		
@@ -292,10 +297,10 @@ public class SortableContainer extends Obfuscation {
 					click(dropSlot);
 				}
 				put(jStack, dropSlot, -1);
-				return false;
+				return dropSlot;
 			}
 			else {
-				return true;
+				return MOVE_TO_EMPTY_SLOT;
 			}
 		}
 	}

@@ -1,9 +1,12 @@
 package net.invtweaks.tree;
 
 import java.io.File;
+import java.util.LinkedList;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import net.minecraft.src.InvTweaks;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -18,8 +21,8 @@ public class ItemTreeLoader extends DefaultHandler {
 	
 	private ItemTree tree;
 	
-	private String parentCategory = null;
 	private int itemOrder = 0;
+	private LinkedList<String> categoryStack = new LinkedList<String>();
 	
 	public ItemTreeLoader() {
 		tree = new ItemTree();
@@ -27,9 +30,14 @@ public class ItemTreeLoader extends DefaultHandler {
 
 	public ItemTree load(String file) throws Exception {
 		tree.reset();
+		categoryStack.clear();
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 		SAXParser parser = parserFactory.newSAXParser();
 		parser.parse(new File(file), this);
+		if (!categoryStack.isEmpty()) {
+			InvTweaks.getInstance().logInGame("Warning: The tree file seems to be broken " +
+					"(is '" + categoryStack.getLast() + "' closed correctly?)");
+		}
 		return tree;
 	}
 	
@@ -42,13 +50,14 @@ public class ItemTreeLoader extends DefaultHandler {
 		// Category
 		if (attributes.getLength() == 0 || rangeMinAttr != null) {
 			
-			if (parentCategory == null) {
+			if (categoryStack.isEmpty()) {
 				// Root category
 				tree.setRootCategory(new ItemTreeCategory(name));
 			}
 			else {
 				// Normal category
-				tree.addCategory(parentCategory, new ItemTreeCategory(name));
+				tree.addCategory(categoryStack.getLast(),
+						new ItemTreeCategory(name));
 			}
 			
 			// Handle item ranges
@@ -59,7 +68,7 @@ public class ItemTreeLoader extends DefaultHandler {
 					tree.addItem(name, new ItemTreeItem(name+i, i, -1, itemOrder++));
 				}
 			}
-			parentCategory = name;
+			categoryStack.add(name);
 		}
 		
 		// Item
@@ -69,14 +78,16 @@ public class ItemTreeLoader extends DefaultHandler {
 			if (attributes.getValue(ATTR_DAMAGE) != null) {
 				damage = Integer.parseInt(attributes.getValue(ATTR_DAMAGE));
 			}
-			tree.addItem(parentCategory, new ItemTreeItem(name, id, damage, itemOrder++));
+			tree.addItem(categoryStack.getLast(), new ItemTreeItem(name, id, damage, itemOrder++));
 		}
 	}
 	
 	@Override
-	public void endElement(String arg0, String arg1, String arg2)
+	public void endElement(String uri, String localName, String name)
 			throws SAXException {
-		
+		if (name.equals(categoryStack.getLast())) {
+			categoryStack.removeLast();
+		}
 	}
 	
 }

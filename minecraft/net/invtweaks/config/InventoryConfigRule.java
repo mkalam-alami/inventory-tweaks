@@ -75,7 +75,7 @@ public class InventoryConfigRule implements Comparable<InventoryConfigRule> {
 	 * An array of preferred positions (from the most to the less preferred).
 	 * @return
 	 */
-	public int[] getPreferredPositions() {
+	public int[] getPreferredSlots() {
 		return preferredPositions;
 	}
 

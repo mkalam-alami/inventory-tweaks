@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
-import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -21,8 +20,8 @@ import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.gui.GuiInventorySettings;
 import net.invtweaks.logic.InventoryAlgorithm;
 import net.invtweaks.logic.SortableContainer;
-import net.invtweaks.tree.ItemTreeItem;
 import net.invtweaks.tree.ItemTree;
+import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Mouse;
@@ -69,7 +68,6 @@ public class InvTweaks extends Obfuscation {
 	private long chestAlgorithmClickTimestamp = 0; 
 	private boolean chestAlgorithmButtonDown = false;
 	private ItemStack[] hotbarClone = new ItemStack[INVENTORY_HOTBAR_SIZE];
-	private Random rand = new Random();
     
     public InvTweaks(Minecraft mc) {
 
@@ -123,7 +121,7 @@ public class InvTweaks extends Obfuscation {
     	
     	// Find stack slot (look in hotbar only)
     	int currentSlot = -1;
-    	for (int i = 0; i < INVENTORY_HOTBAR_SIZE; i++) { // TODO const
+    	for (int i = 0; i < INVENTORY_HOTBAR_SIZE; i++) {
     		ItemStack currentHotbarStack = container.getItemStack(i+27);
     		// Don't move already started stacks
     		if (currentHotbarStack != null && currentHotbarStack.animationsToGo == 5
@@ -141,7 +139,7 @@ public class InvTweaks extends Obfuscation {
 	    	List<ItemTreeItem> items = tree.getItems(getItemID(stack), getItemDamage(stack));
 	    	for (InventoryConfigRule rule : config.getRules()) {
 	    		if (tree.matches(items, rule.getKeyword())) {
-	    			prefferedPositions = rule.getPreferredPositions();
+	    			prefferedPositions = rule.getPreferredSlots();
 	    			matchingRule = rule;
 	    			break;
 	    		}
@@ -151,10 +149,17 @@ public class InvTweaks extends Obfuscation {
 	    	if (prefferedPositions != null) {
 	    		for (int newSlot : prefferedPositions) {
 	    			try {
-	    				if (container.getItemStack(newSlot) == null
-	    						&& container.moveStack(currentSlot,
-	    								newSlot, matchingRule.getPriority())) {
+	    				// Already in the best slot!
+						if (newSlot == currentSlot) {
+							container.markAsMoved(newSlot, Integer.MAX_VALUE);
 							break;
+						}
+						// Is the slot available?
+						else if (container.getItemStack(newSlot) == null) {
+							if (container.moveStack(currentSlot, newSlot,
+									matchingRule.getPriority()) != SortableContainer.MOVE_FAILURE) {
+								break;
+							}
 						}
 					} catch (TimeoutException e) {
 						logInGame("Failed to move picked up stack", e);
@@ -167,7 +172,8 @@ public class InvTweaks extends Obfuscation {
 	        	for (int i = 0; i < container.getSize(); i++) {
 	    			try {
 	    				if (container.getItemStack(i) == null) {
-	    					if (container.moveStack(currentSlot, i, Integer.MAX_VALUE)) {
+	    					if (container.moveStack(currentSlot, i, Integer.MAX_VALUE)
+	    							!= SortableContainer.MOVE_FAILURE) {
 	    						break;
 	    					}
 	    				}
@@ -333,15 +339,15 @@ public class InvTweaks extends Obfuscation {
 	
 	private void handleMiddleClick(GuiScreen guiScreen) {
 		
-		if (!makeSureConfigurationIsLoaded()) {
-			return;
-		}
-		
 		if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled()) {
+			
+			if (!makeSureConfigurationIsLoaded()) {
+				return;
+			}
+			
 			if (!chestAlgorithmButtonDown) {
 	    		chestAlgorithmButtonDown = true;
 		    	
-	    		
 	        	if (isChestOrDispenser(guiScreen)) {
 	        		
 	        		// Check if the middle click target the chest or the inventory

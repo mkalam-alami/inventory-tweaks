@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import net.invtweaks.Obfuscation;
 import net.invtweaks.config.InventoryConfig;
 import net.invtweaks.config.InventoryConfigRule;
+import net.invtweaks.config.InventoryConfigRule.RuleType;
 import net.invtweaks.tree.ItemTreeItem;
 import net.invtweaks.tree.ItemTree;
 import net.minecraft.client.Minecraft;
@@ -61,7 +62,7 @@ public class InventoryAlgorithm extends Obfuscation {
 
     	ItemTree tree = config.getTree();
     	SortableContainer inventory;
-    	inventory = new SortableContainer(mc, config, container, inventoryPart);
+    	inventory = new SortableContainer(mc, config, container, inventoryPart); // TODO rename to container
 
 		//// Empty hand (needed in SMP)
 		if (isMultiplayerWorld()) {
@@ -117,33 +118,37 @@ public class InventoryAlgorithm extends Obfuscation {
 				if (log.getLevel() == InvTweaks.DEBUG)
 					log.info("Rule : "+rule.getKeyword()+"("+rulePriority+")");
 	
+				// For every item in the inventory
 				for (int i = 0; i < inventory.getSize(); i++) {
 					ItemStack from = inventory.getItemStack(i);
-		    		
+
+					// If the rule is strong enough to move the item and it matches the item
 		    		if (inventory.hasToBeMoved(i) && 
 		    				inventory.getLockPriority(i) < rulePriority) {
 						List<ItemTreeItem> fromItems = tree.getItems(
 								getItemID(from), getItemDamage(from));
 		    			if (tree.matches(fromItems, rule.getKeyword())) {
 		    				
-		    				int[] preferredPos = rule.getPreferredPositions();
-		    				for (int j = 0; j < preferredPos.length; j++) {
-		    					int k = preferredPos[j];
-		    					
-		    					if (inventory.moveStack(i, k, rulePriority)) {
-		    						from = inventory.getItemStack(i);
-		    						if (from == null || i == k) {
+		    				// Test preffered slots
+		    				int[] preferredSlots = rule.getPreferredSlots();
+		    				int stackToMove = i;
+		    				for (int j = 0; j < preferredSlots.length; j++) {
+		    					int k = preferredSlots[j];
+		    					int moveResult = inventory.moveStack(stackToMove, k, rulePriority);
+		    					if (moveResult != SortableContainer.MOVE_FAILURE) {
+		    						if (moveResult == SortableContainer.MOVE_TO_EMPTY_SLOT
+		    								|| stackToMove == k) {
 		    							break;
 		    						}
 		    						else {
-		    							fromItems = tree.getItems(
-		    									getItemID(from), getItemDamage(from));
-		    							if (!tree.matches(
-		    									fromItems, rule.getKeyword())) {
+		    							from = inventory.getItemStack(moveResult);
+		    							fromItems = tree.getItems(getItemID(from), getItemDamage(from));
+		    							if (!tree.matches(fromItems, rule.getKeyword())) {
 		    								break;
 		    							}
 		    							else {
-		    								j--;
+			    							stackToMove = moveResult;
+		    								j = -1;
 		    							}
 		    						}
 			    				}
@@ -185,26 +190,59 @@ public class InventoryAlgorithm extends Obfuscation {
 		SortableContainer inventory = new SortableContainer(
 				mc, config, getPlayerContainer(), true);  	
 		ItemStack candidateStack, replacementStack = null;
-		ItemStack storedStack = createItemStack(wantedId, 1, wantedDamage);
 		int replacementStackSlot = -1;
 
 		// Search replacement
-		for (int i = 0; i < InvTweaks.INVENTORY_SIZE; i++) {
+		if (config.canBeAutoReplaced(wantedId, wantedDamage)) {
+			
+			List<InventoryConfigRule> matchingRules = new ArrayList<InventoryConfigRule>();
+			List<InventoryConfigRule> rules = config.getRules();
+			ItemTree tree = config.getTree();
+			List<ItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
+
+			// Find rules that match the slot
+			for (ItemTreeItem item : items) {
+				// Fake rules that match the exact item first
+				matchingRules.add(new InventoryConfigRule(
+						tree, "D"+(slot-27), item.getName(),
+						InvTweaks.INVENTORY_SIZE, InvTweaks.INVENTORY_ROW_SIZE));
+			}
+			for (InventoryConfigRule rule : rules) {
+				if (rule.getType() == RuleType.TILE || rule.getType() == RuleType.COLUMN) {
+					for (int preferredSlot : rule.getPreferredSlots()) {
+						if (slot == preferredSlot) {
+							matchingRules.add(rule);
+							break;
+						}
+					}
+				}
+			}
+
 			// Look only for a matching stack
-			candidateStack = inventory.getItemStack(i);
-			if (candidateStack != null && 
-					inventory.areSameItem(storedStack, candidateStack) &&
-					config.canBeAutoReplaced(
-							getItemID(candidateStack),
-							getItemDamage(candidateStack))) {
-				// Choose stack of lowest sItemStacke and (in case of tools) highest damage
-				if (replacementStack == null ||
-						getStackSize(replacementStack) > getStackSize(candidateStack) ||
-						(getStackSize(replacementStack) == getStackSize(candidateStack) &&
-								getMaxStackSize(replacementStack) == 1 &&
-								getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
-					replacementStack = candidateStack;
-					replacementStackSlot = i;
+			// First, look for the same item,
+			// else one that matches the slot's rules
+			for (InventoryConfigRule rule : matchingRules) {
+				for (int i = 0; i < InvTweaks.INVENTORY_SIZE; i++) {
+					candidateStack = inventory.getItemStack(i);
+					if (candidateStack != null) {
+						List<ItemTreeItem> candidateItems = tree.getItems(
+								getItemID(candidateStack),
+								getItemDamage(candidateStack));
+						if (tree.matches(candidateItems, rule.getKeyword())) {
+							// Choose stack of lowest size and (in case of tools) highest damage
+							if (replacementStack == null || 
+									getStackSize(replacementStack) > getStackSize(candidateStack) ||
+									(getStackSize(replacementStack) == getStackSize(candidateStack) &&
+											getMaxStackSize(replacementStack) == 1 &&
+											getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
+								replacementStack = candidateStack;
+								replacementStackSlot = i;
+							}
+						}
+					}
+				}
+				if (replacementStack != null) {
+					break;
 				}
 			}
 		}
@@ -258,18 +296,23 @@ public class InventoryAlgorithm extends Obfuscation {
 					try {
 						ItemStack stack = inventory.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId) {
-							inventory.moveStack(i, targetedSlot, Integer.MAX_VALUE);
-			    			mc.theWorld.playSoundAtEntity(getThePlayer(), 
-			    					"mob.slimeattack", 0.35F, 0.7F);
-							// If item are swapped (like for mushroom soups),
-							// put the item back in the inventory if it is in the hotbar
-							if (inventory.getItemStack(i) != null && i >= 27) {
-								for (int j = 0; j < InvTweaks.INVENTORY_SIZE; j++) {
-									if (inventory.getItemStack(j) == null) {
-										inventory.moveStack(i, j, Integer.MAX_VALUE);
-										break;
+							if (inventory.moveStack(i, targetedSlot, Integer.MAX_VALUE)
+									!= SortableContainer.MOVE_FAILURE) {
+				    			mc.theWorld.playSoundAtEntity(getThePlayer(), 
+				    					"mob.slimeattack", 0.35F, 0.7F);
+								// If item are swapped (like for mushroom soups),
+								// put the item back in the inventory if it is in the hotbar
+								if (inventory.getItemStack(i) != null && i >= 27) {
+									for (int j = 0; j < InvTweaks.INVENTORY_SIZE; j++) {
+										if (inventory.getItemStack(j) == null) {
+											inventory.moveStack(i, j, Integer.MAX_VALUE);
+											break;
+										}
 									}
 								}
+							}
+							else {
+								log.warning("Failed to move stack for autoreplace, despite of prior tests.");
 							}
 						}
 					}
@@ -312,7 +355,7 @@ public class InventoryAlgorithm extends Obfuscation {
 			for (int i : remaining) {
 				if (inventory.hasToBeMoved(i)) {
 					for (int j = 0; j < inventory.getSize(); j++) {
-						if (inventory.moveStack(i, j, 1)) {
+						if (inventory.moveStack(i, j, 1) != -1) {
 							nextRemaining.remove((Object) j);
 							break;
 						}

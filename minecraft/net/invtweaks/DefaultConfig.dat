@@ -24,7 +24,7 @@ D LOCKED
 # * The rectangle rules "A1-C3", "C3-A1", "A3-C1" and "C1-A3" don't behave exactly the same!
 
 # AVAILABLE KEYWORDS
-# You can use any of the keywords found in the InvTweaksTree.txt file.
+# You can use any of the keywords found in the InvTweaksTree.xml file.
 
 # MODIFIERS
 # r = Reverse sort order for a row/column (ex: "Ar sword" sorts from right to left)
@@ -35,7 +35,6 @@ D LOCKED
 #                 Is overriden by more specific rules ("D LOCKED" is overriden by "D1 torch" or "1 swords")
 # "AUTOREPLACE" = Allows to customize what can be automatically replaced (ex: "AUTOREPLACE tools" restricts the item replacement to tools).
 #                 You can disable completely the feature using "AUTOREPLACE nothing".
-# "DISABLEMIDDLECLICK" = Using this, pressing the middle click will do nothing - at least with this mod! (ex: "DISABLEMIDDLECLICK")
 
 # INVENTORY GRID
 #     1   2   3   4   5   6   7   8   9

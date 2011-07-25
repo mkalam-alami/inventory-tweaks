@@ -31,7 +31,7 @@ public class mod_InvTweaks extends BaseMod {
     	// Register in game hooks
     	ModLoader.SetInGameHook(this, true, true);
     	ModLoader.SetInGUIHook(this, true, false);
-
+    	
     	// Instantiate mod core
     	instance = new InvTweaks(mc);
     }

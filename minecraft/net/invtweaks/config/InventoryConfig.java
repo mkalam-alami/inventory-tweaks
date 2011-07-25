@@ -1,9 +1,13 @@
 package net.invtweaks.config;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,24 +21,26 @@ public class InventoryConfig {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
+
+	public static final String PROP_ENABLEMIDDLECLICK = "enableMiddleClick";
+	public static final String PROP_SHOWCHESTBUTTONS = "showChestButtons";
 	
 	private static final String LOCKED = "LOCKED";
 	private static final String AUTOREPLACE = "AUTOREPLACE";
 	private static final String AUTOREPLACE_NOTHING = "nothing";
-	private static final String DISABLEMIDDLECLICK = "DISABLEMIDDLECLICK";
 	private static final String DEBUG = "DEBUG";
 	private static final boolean DEFAULT_AUTOREPLACE_BEHAVIOUR = true;
 	
 	private String rulesFile;
 	private String treeFile;
 	
+	private Properties properties;
 	private ItemTree tree;
 	private int[] lockPriorities;
 	private Vector<Integer> lockedSlots;
 	private Vector<InventoryConfigRule> rules;
 	private Vector<String> invalidKeywords;
 	private Vector<String> autoReplaceRules;
-	private boolean middleClickEnabled;
 	private boolean debugEnabled;
 	
 	/**
@@ -47,67 +53,20 @@ public class InventoryConfig {
 		init();
 	}
 	
-	public ItemTree getTree() {
-		return tree;
-	}
-	
-	/**
-	 * Returns all sorting rules, themselves sorted by
-	 * decreasing priority.
-	 * @return
-	 */
-	public Vector<InventoryConfigRule> getRules() {
-		return rules;
-	}
-	
-	/**
-	 * Returns all invalid keywords wrote in the config file.
-	 */
-	public Vector<String> getInvalidKeywords() {
-		return invalidKeywords;
-	}
-	
-	/**
-	 * @return The locked slots array with locked priorities.
-	 * Not a copy.
-	 */
-	public int[] getLockPriorities() {
-		return lockPriorities;
-	}
-	
-	/**
-	 * @return The locked slots only
-	 * TODO Order by decreasing priority
-	 */
-	public Vector<Integer> getLockedSlots() {
-		return lockedSlots;
-	}
-	
-	public boolean isMiddleClickEnabled() {
-		return middleClickEnabled;
-	}
-
-	public Level getLogLevel() {
-		return (this.debugEnabled) ? Level.INFO : Level.WARNING;
-	}
-
-	public boolean canBeAutoReplaced(int itemID, int itemDamage) {
-		List<ItemTreeItem> items = tree.getItems(itemID, itemDamage);
-		for (String keyword : autoReplaceRules) {
-			if (keyword.equals(AUTOREPLACE_NOTHING))
-				return false;
-			if (tree.matches(items, keyword))
-				return true;
-		}
-		return DEFAULT_AUTOREPLACE_BEHAVIOUR;
-	}
-	
 	public void load() throws Exception {
-
+	
 		synchronized (this) {
 		
 		// Reset all
 		init();
+		
+		// Load properties
+		File configPropsFile = getPropertyFile();
+		if (configPropsFile != null) {
+			FileInputStream fis = new FileInputStream(configPropsFile);
+			properties.load(fis);
+		}
+		save(); // Needed to append non-saved properties to the file
 		
 		// Load tree
 		tree = new ItemTreeLoader().load(treeFile);
@@ -130,14 +89,14 @@ public class InventoryConfig {
 		
 		int currentLine = 0;
 		while (currentLine < config.length) {
-
+	
 			String[] words = config[currentLine].split(" ");
 			lineText = config[currentLine].toLowerCase();
 			currentLine++;
-
+	
 			// Parse valid lines only
 			if (words.length == 2) {
-
+	
 				// Standard rules format
 				if (lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$")
 						|| lineText.matches("^[a-d][1-9]-[a-d][1-9]v? [\\w]*$")) {
@@ -197,11 +156,7 @@ public class InventoryConfig {
 			
 			else if (words.length == 1) {
 				
-				// Disable middle click
-				if (words[0].equals(DISABLEMIDDLECLICK)) {
-					middleClickEnabled = false;
-				}
-				else if (words[0].equals(DEBUG)) {
+				if (words[0].equals(DEBUG)) {
 					debugEnabled = true;
 				}
 				
@@ -233,16 +188,98 @@ public class InventoryConfig {
 		
 	}
 
+	/**
+	 * Saves properties
+	 */
+	public void save() {
+		File configPropsFile = getPropertyFile();
+		if (configPropsFile.exists()) {
+			try {
+				FileOutputStream fos = new FileOutputStream(configPropsFile);
+				properties.store(fos, "Inventory Tweaks Configuration");
+				fos.flush();
+				fos.close();
+			} catch (IOException e) {
+				InvTweaks.logInGameStatic("Failed to save config file "
+						+ InvTweaks.CONFIG_PROPS_FILE);
+			}
+		}
+	}
+
+	public String getProperty(String key) {
+		return properties.getProperty(key);
+	}
+
+	public void setProperty(String key, String value) {
+		properties.setProperty(key, value);
+		save();
+	}
+
+	public ItemTree getTree() {
+		return tree;
+	}
+	
+	/**
+	 * Returns all sorting rules, themselves sorted by
+	 * decreasing priority.
+	 * @return
+	 */
+	public Vector<InventoryConfigRule> getRules() {
+		return rules;
+	}
+	
+	/**
+	 * Returns all invalid keywords wrote in the config file.
+	 */
+	public Vector<String> getInvalidKeywords() {
+		return invalidKeywords;
+	}
+	
+	/**
+	 * @return The locked slots array with locked priorities.
+	 * Not a copy.
+	 */
+	public int[] getLockPriorities() {
+		return lockPriorities;
+	}
+	
+	/**
+	 * @return The locked slots only
+	 * TODO Order by decreasing priority
+	 */
+	public Vector<Integer> getLockedSlots() {
+		return lockedSlots;
+	}
+
+	public Level getLogLevel() {
+		return (this.debugEnabled) ? Level.INFO : Level.WARNING;
+	}
+
+	public boolean canBeAutoReplaced(int itemID, int itemDamage) {
+		List<ItemTreeItem> items = tree.getItems(itemID, itemDamage);
+		for (String keyword : autoReplaceRules) {
+			if (keyword.equals(AUTOREPLACE_NOTHING))
+				return false;
+			if (tree.matches(items, keyword))
+				return true;
+		}
+		return DEFAULT_AUTOREPLACE_BEHAVIOUR;
+	}
+	
 	private void init() {
 		lockPriorities = new int[InvTweaks.INVENTORY_SIZE];
 		for (int i = 0; i < lockPriorities.length; i++) {
 			lockPriorities[i] = 0;
 		}
+		
+		properties = new Properties();
+		properties.setProperty(PROP_ENABLEMIDDLECLICK, "true");
+		properties.setProperty(PROP_SHOWCHESTBUTTONS, "true");
+		
 		lockedSlots = new Vector<Integer>();
 		rules = new Vector<InventoryConfigRule>();
 		invalidKeywords = new Vector<String>();
 		autoReplaceRules = new Vector<String>();
-		middleClickEnabled = true;
 		debugEnabled = false;
 	}
 	
@@ -284,4 +321,24 @@ public class InventoryConfig {
 		
 		return variants;
 	}
+
+	/**
+	 * Returns the file when the properties are stored,
+	 * after making sure the file exists. 
+	 * @return May return null in case of failure while creating the file.
+	 */
+	private File getPropertyFile() {
+		File configPropsFile = new File(InvTweaks.CONFIG_PROPS_FILE);
+		if (!configPropsFile.exists()) {
+			try {
+				configPropsFile.createNewFile();
+			} catch (IOException e) {
+				InvTweaks.logInGameStatic("Failed to create the config file "
+						+ InvTweaks.CONFIG_PROPS_FILE);
+				return null;
+			}
+		}
+		return configPropsFile;
+	}
+	
 }

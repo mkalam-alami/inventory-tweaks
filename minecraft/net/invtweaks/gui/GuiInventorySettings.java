@@ -5,8 +5,10 @@ import java.io.File;
 import java.net.URL;
 import java.util.logging.Logger;
 
+import net.invtweaks.config.InventoryConfig;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiScreen;
+import net.minecraft.src.GuiSmallButton;
 import net.minecraft.src.InvTweaks;
 
 public class GuiInventorySettings extends GuiScreen {
@@ -16,8 +18,14 @@ public class GuiInventorySettings extends GuiScreen {
 
 	private final static String SCREEN_TITLE = "Inventory and chests settings";
 
-	//private final static int ID_MIDDLE_CLICK = 1;
-	//private final static int ID_CHESTS_BUTTONS = 2;
+	// TODO Mod translation?
+	private final static String MIDDLE_CLICK = "Middle click";
+	private final static String CHEST_BUTTONS = "Chest buttons";
+	private final static String ON = ": ON";
+	private final static String OFF = ": OFF";
+	
+	private final static int ID_MIDDLE_CLICK = 1;
+	private final static int ID_CHESTS_BUTTONS = 2;
 	//private final static int ID_CONVENIENT_SHORTCUTS = 3;
 	//private final static int ID_AUTOREPLACE = 4;
 
@@ -28,9 +36,12 @@ public class GuiInventorySettings extends GuiScreen {
 	private final static int ID_DONE = 200;
 
 	private GuiScreen parentScreen;
+	private InventoryConfig config;
+	
 
-	public GuiInventorySettings(GuiScreen guiscreen) {
-		parentScreen = guiscreen;
+	public GuiInventorySettings(GuiScreen guiscreen, InventoryConfig config) {
+		this.parentScreen = guiscreen;
+		this.config = config;
 	}
 
 	// Lead to retrieve the world's path?
@@ -39,17 +50,19 @@ public class GuiInventorySettings extends GuiScreen {
 	@SuppressWarnings("unchecked")
 	public void initGui() {
 
-		// TODO Mod translation?
 
 		int x = width / 2 - 155;
-		//int y = height / 6;
+		int y = height / 6;
 
-		// TODO Implement middle click option
-		// TODO Implement chest button toggle
-		/*controlList.add(new GuiSmallButton(ID_MIDDLE_CLICK, x, y,
-				"Middle click: ON"));
+		controlList.add(new GuiSmallButton(ID_MIDDLE_CLICK, x, y,
+				computeBooleanButtonLabel(
+						InventoryConfig.PROP_ENABLEMIDDLECLICK,
+						MIDDLE_CLICK)));
 		controlList.add(new GuiSmallButton(ID_CHESTS_BUTTONS, x + 160, y,
-				"Chest buttons: ON"));*/
+				computeBooleanButtonLabel(
+						InventoryConfig.PROP_SHOWCHESTBUTTONS,
+						CHEST_BUTTONS)));
+
 		// TODO Implement "Convenient Inventory" shortcuts
 		// TODO Implement autoreplace options
 		/*controlList.add(new GuiSmallButton(ID_CONVENIENT_SHORTCUTS, x, y + 24,
@@ -77,28 +90,39 @@ public class GuiInventorySettings extends GuiScreen {
 			}
 		}
 
-		// Disable unimplemented buttons
-		for (Object o : controlList) {
-			GuiButton button = (GuiButton) o;
-			if (button.id < 100) {
-				button.enabled = false;
-			}
-		}
+	}
 
+	public void drawScreen(int i, int j, float f) {
+		drawDefaultBackground();
+		drawCenteredString(fontRenderer, SCREEN_TITLE, width / 2, 20, 0xffffff);
+		super.drawScreen(i, j, f);
 	}
 
 	protected void actionPerformed(GuiButton guibutton) {
 
 		switch (guibutton.id) {
 
+		// Toggle middle click shortcut
+		case ID_MIDDLE_CLICK:
+			toggleBooleanButton(guibutton, 
+					InventoryConfig.PROP_ENABLEMIDDLECLICK,
+					MIDDLE_CLICK);
+			break;
+			
+		// Toggle chest buttons
+		case ID_CHESTS_BUTTONS:
+			toggleBooleanButton(guibutton, 
+					InventoryConfig.PROP_SHOWCHESTBUTTONS,
+					CHEST_BUTTONS);
+			break;
+		
 		// Open rules configuration in external editor
 		case ID_EDITRULES:
 			try {
 				Desktop.getDesktop().browse(
 						new File(InvTweaks.CONFIG_RULES_FILE).toURI());
 			} catch (Exception e) {
-				InvTweaks.getInstance().logInGame(
-						"Failed to open rules file", e);
+				InvTweaks.logInGameStatic("Failed to open rules file", e);
 			}
 			break;
 
@@ -108,8 +132,7 @@ public class GuiInventorySettings extends GuiScreen {
 				Desktop.getDesktop().browse(
 						new File(InvTweaks.CONFIG_TREE_FILE).toURI());
 			} catch (Exception e) {
-				InvTweaks.getInstance().logInGame(
-						"Failed to open tree file", e);
+				InvTweaks.logInGameStatic("Failed to open tree file", e);
 			}
 			break;
 			
@@ -119,22 +142,26 @@ public class GuiInventorySettings extends GuiScreen {
 				Desktop.getDesktop().browse(
 						new URL(InvTweaks.HELP_URL).toURI());
 			} catch (Exception e) {
-				InvTweaks.getInstance().logInGame(
-						"Failed to open help", e);
+				InvTweaks.logInGameStatic("Failed to open help", e);
 			}
 			break;
 			
 		case ID_DONE:
 			mc.displayGuiScreen(parentScreen);
-			
 		}
 
 	}
 
-	public void drawScreen(int i, int j, float f) {
-		drawDefaultBackground();
-		drawCenteredString(fontRenderer, SCREEN_TITLE, width / 2, 20, 0xffffff);
-		super.drawScreen(i, j, f);
+	private void toggleBooleanButton(GuiButton guibutton,
+			String property, String label) {
+		Boolean enabled = !new Boolean(config.getProperty(property));
+		config.setProperty(property, enabled.toString());
+		guibutton.displayString = label + ((enabled) ? ON : OFF);
+	}
+
+	private String computeBooleanButtonLabel(String property, String label) {
+		Boolean enabled = new Boolean(config.getProperty(property));
+		return label + ((enabled) ? ON : OFF);
 	}
 
 }

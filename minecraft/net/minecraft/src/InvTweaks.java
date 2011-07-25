@@ -36,9 +36,12 @@ public class InvTweaks extends Obfuscation {
     			getMinecraftDir().getAbsolutePath().substring(
     			0, getMinecraftDir().getAbsolutePath().length()-1) :
     				getMinecraftDir().getAbsolutePath();
-    public static final String CONFIG_RULES_FILE = MINECRAFT_DIR+"InvTweaksConfig.txt";
-    public static final String CONFIG_TREE_FILE = MINECRAFT_DIR+"InvTweaksTree.xml";
-    public static final String OLD_CONFIG_TREE_FILE = MINECRAFT_DIR+"InvTweaksTree.txt"; 
+    public static final String MINECRAFT_CONFIG_DIR = MINECRAFT_DIR+"config"+File.separatorChar;
+    public static final String CONFIG_PROPS_FILE = MINECRAFT_CONFIG_DIR+"InvTweaks.cfg";
+    public static final String CONFIG_RULES_FILE = MINECRAFT_CONFIG_DIR+"InvTweaksRules.txt";
+    public static final String CONFIG_TREE_FILE = MINECRAFT_CONFIG_DIR+"InvTweaksTree.xml";
+    public static final String OLD_CONFIG_RULES_FILE = MINECRAFT_DIR+"InvTweaksRules.txt";
+    public static final String OLD_CONFIG_TREE_FILE = MINECRAFT_DIR+"InvTweaksTree.txt";
     public static final String DEFAULT_CONFIG_FILE = "/net/invtweaks/DefaultConfig.dat";
     public static final String DEFAULT_CONFIG_TREE_FILE = "/net/invtweaks/DefaultTree.dat";
     public static final String HELP_URL = "http://wan.ka.free.fr/?invtweaks#doc";
@@ -209,6 +212,10 @@ public class InvTweaks extends Obfuscation {
 		}
     }
 
+	public boolean isConfigLoaded() {
+		return config != null;
+	}
+
 	public void logInGame(String message) {
 		String formattedMsg = buildlogString(Level.INFO, message);
 		addChatMessage(formattedMsg);
@@ -221,8 +228,12 @@ public class InvTweaks extends Obfuscation {
     	log.severe(formattedMsg);
     }
 	
-	public boolean isConfigLoaded() {
-		return config != null;
+	public static void logInGameStatic(String message) {
+		InvTweaks.getInstance().logInGame(message);
+	}
+
+	public static void logInGameStatic(String message, Exception e) {
+		InvTweaks.getInstance().logInGame(message, e);
 	}
 
 	/**
@@ -301,36 +312,38 @@ public class InvTweaks extends Obfuscation {
 				
 				// Chest buttons
 				else {
-	
+
 					GuiContainer guiContainer = (GuiContainer) guiScreen;
 					int id = JIMEOWAN_ID,
 						x = guiContainer.xSize/2 + guiContainer.width/2 - 17,
 						y = (guiContainer.height - guiContainer.ySize)/2 + 5;
+
+					// Settings button
+					guiScreen.controlList.add(new SettingsButton(
+							id++, x-1, y, w, h, "..."));
 					
 					// Sorting buttons
-					
-					Container container = getContainer((GuiContainer) guiScreen);
-		
-					GuiButton button = new SortingButton(
-							id++, x-37, y, w, h, "s",
-							container, InventoryAlgorithm.DEFAULT);
-					guiContainer.controlList.add((GuiButton) button);
-		
-					button = new SortingButton(
-							id++, x-25, y, w, h, "v",
-							container, InventoryAlgorithm.VERTICAL);
-					guiContainer.controlList.add((GuiButton) button);
-					
-					button = new SortingButton(
-							id++, x-13, y, w, h, "h",
-							container, InventoryAlgorithm.HORIZONTAL);
-					guiContainer.controlList.add((GuiButton) button);
-					
-					// Settings button
-	
-					guiScreen.controlList.add(new SettingsButton(
-							JIMEOWAN_ID, x-1, y, w, h, "..."));
+					if (!config.getProperty(
+						InventoryConfig.PROP_SHOWCHESTBUTTONS).equals("false")) {
 						
+						Container container = getContainer((GuiContainer) guiScreen);
+			
+						GuiButton button = new SortingButton(
+								id++, x-37, y, w, h, "s",
+								container, InventoryAlgorithm.DEFAULT);
+						guiContainer.controlList.add((GuiButton) button);
+			
+						button = new SortingButton(
+								id++, x-25, y, w, h, "v",
+								container, InventoryAlgorithm.VERTICAL);
+						guiContainer.controlList.add((GuiButton) button);
+						
+						button = new SortingButton(
+								id++, x-13, y, w, h, "h",
+								container, InventoryAlgorithm.HORIZONTAL);
+						guiContainer.controlList.add((GuiButton) button);
+						
+					}
 				}
 			}
 		}
@@ -339,7 +352,8 @@ public class InvTweaks extends Obfuscation {
 	
 	private void handleMiddleClick(GuiScreen guiScreen) {
 		
-		if (Mouse.isButtonDown(2) && config.isMiddleClickEnabled()) {
+		if (Mouse.isButtonDown(2) && !config.getProperty(
+				InventoryConfig.PROP_ENABLEMIDDLECLICK).equals("false")) {
 			
 			if (!makeSureConfigurationIsLoaded()) {
 				return;
@@ -507,7 +521,17 @@ public class InvTweaks extends Obfuscation {
 	 * @param config
 	 */
 	private boolean loadConfig() {
-	
+
+		// Compatibility: Move/Remove old files
+
+		if (new File(OLD_CONFIG_RULES_FILE).exists()) {
+			backupFile(new File(OLD_CONFIG_RULES_FILE), CONFIG_RULES_FILE);
+			new File(OLD_CONFIG_RULES_FILE).renameTo(new File(CONFIG_TREE_FILE));
+		}
+		if (new File(OLD_CONFIG_TREE_FILE).exists()) {
+			backupFile(new File(OLD_CONFIG_TREE_FILE), CONFIG_TREE_FILE);
+		}
+		
 		// Create missing files
 		
 		if (!new File(CONFIG_RULES_FILE).exists()
@@ -517,12 +541,6 @@ public class InvTweaks extends Obfuscation {
 		if (!new File(CONFIG_TREE_FILE).exists()
 				&& extractFile(DEFAULT_CONFIG_TREE_FILE, CONFIG_TREE_FILE)) {
 			logInGame(CONFIG_TREE_FILE+" missing, creating default one.");
-		}
-		
-		// Remove old file
-		
-		if (new File(OLD_CONFIG_TREE_FILE).exists()) {
-			new File(OLD_CONFIG_TREE_FILE).renameTo(new File(OLD_CONFIG_TREE_FILE+".bak"));
 		}
 		
 		// Load
@@ -553,6 +571,22 @@ public class InvTweaks extends Obfuscation {
 		else {
 			return true;
 		}
+	}
+
+	private void backupFile(File file, String baseName) {
+		String newFileName = baseName;
+		if (new File(baseName).exists()) {
+			if (new File(baseName + ".bak").exists()) {
+				int i = 1;
+				while (new File(baseName + ".bak" + i).exists()) {
+					i++;
+				}
+				newFileName = baseName + ".bak" + i;
+			} else {
+				newFileName = baseName + ".bak";
+			}
+		}
+		file.renameTo(new File(newFileName));
 	}
 	
 	private boolean extractFile(String resource, String destination) {
@@ -707,7 +741,8 @@ public class InvTweaks extends Obfuscation {
 	    		}
 	    			
 				// Display menu
-	    		mc.displayGuiScreen(new GuiInventorySettings(getCurrentScreen()));
+	    		mc.displayGuiScreen(new GuiInventorySettings(
+	    				getCurrentScreen(), config));
 	    		return true;
 	    	}
 	    	else {

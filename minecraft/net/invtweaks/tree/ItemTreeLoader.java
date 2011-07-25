@@ -35,7 +35,7 @@ public class ItemTreeLoader extends DefaultHandler {
 		SAXParser parser = parserFactory.newSAXParser();
 		parser.parse(new File(file), this);
 		if (!categoryStack.isEmpty()) {
-			InvTweaks.getInstance().logInGame("Warning: The tree file seems to be broken " +
+			InvTweaks.logInGameStatic("Warning: The tree file seems to be broken " +
 					"(is '" + categoryStack.getLast() + "' closed correctly?)");
 		}
 		return tree;

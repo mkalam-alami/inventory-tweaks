@@ -192,62 +192,61 @@ public class InventoryAlgorithm extends Obfuscation {
 		ItemStack candidateStack, replacementStack = null;
 		int replacementStackSlot = -1;
 
-		// Search replacement
-		if (config.canBeAutoReplaced(wantedId, wantedDamage)) {
-			
-			List<InventoryConfigRule> matchingRules = new ArrayList<InventoryConfigRule>();
-			List<InventoryConfigRule> rules = config.getRules();
-			ItemTree tree = config.getTree();
-			List<ItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
+		//// Search replacement
+		
+		List<InventoryConfigRule> matchingRules = new ArrayList<InventoryConfigRule>();
+		List<InventoryConfigRule> rules = config.getRules();
+		ItemTree tree = config.getTree();
+		List<ItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
 
-			// Find rules that match the slot
-			for (ItemTreeItem item : items) {
-				// Fake rules that match the exact item first
-				matchingRules.add(new InventoryConfigRule(
-						tree, "D"+(slot-27), item.getName(),
-						InvTweaks.INVENTORY_SIZE, InvTweaks.INVENTORY_ROW_SIZE));
-			}
-			for (InventoryConfigRule rule : rules) {
-				if (rule.getType() == RuleType.TILE || rule.getType() == RuleType.COLUMN) {
-					for (int preferredSlot : rule.getPreferredSlots()) {
-						if (slot == preferredSlot) {
-							matchingRules.add(rule);
-							break;
-						}
+		// Find rules that match the slot
+		for (ItemTreeItem item : items) {
+			// Fake rules that match the exact item first
+			matchingRules.add(new InventoryConfigRule(
+					tree, "D"+(slot-27), item.getName(),
+					InvTweaks.INVENTORY_SIZE, InvTweaks.INVENTORY_ROW_SIZE));
+		}
+		for (InventoryConfigRule rule : rules) {
+			if (rule.getType() == RuleType.TILE || rule.getType() == RuleType.COLUMN) {
+				for (int preferredSlot : rule.getPreferredSlots()) {
+					if (slot == preferredSlot) {
+						matchingRules.add(rule);
+						break;
 					}
-				}
-			}
-
-			// Look only for a matching stack
-			// First, look for the same item,
-			// else one that matches the slot's rules
-			for (InventoryConfigRule rule : matchingRules) {
-				for (int i = 0; i < InvTweaks.INVENTORY_SIZE; i++) {
-					candidateStack = inventory.getItemStack(i);
-					if (candidateStack != null) {
-						List<ItemTreeItem> candidateItems = tree.getItems(
-								getItemID(candidateStack),
-								getItemDamage(candidateStack));
-						if (tree.matches(candidateItems, rule.getKeyword())) {
-							// Choose stack of lowest size and (in case of tools) highest damage
-							if (replacementStack == null || 
-									getStackSize(replacementStack) > getStackSize(candidateStack) ||
-									(getStackSize(replacementStack) == getStackSize(candidateStack) &&
-											getMaxStackSize(replacementStack) == 1 &&
-											getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
-								replacementStack = candidateStack;
-								replacementStackSlot = i;
-							}
-						}
-					}
-				}
-				if (replacementStack != null) {
-					break;
 				}
 			}
 		}
+
+		// Look only for a matching stack
+		// First, look for the same item,
+		// else one that matches the slot's rules
+		for (InventoryConfigRule rule : matchingRules) {
+			for (int i = 0; i < InvTweaks.INVENTORY_SIZE; i++) {
+				candidateStack = inventory.getItemStack(i);
+				if (candidateStack != null) {
+					List<ItemTreeItem> candidateItems = tree.getItems(
+							getItemID(candidateStack),
+							getItemDamage(candidateStack));
+					if (tree.matches(candidateItems, rule.getKeyword())) {
+						// Choose stack of lowest size and (in case of tools) highest damage
+						if (replacementStack == null || 
+								getStackSize(replacementStack) > getStackSize(candidateStack) ||
+								(getStackSize(replacementStack) == getStackSize(candidateStack) &&
+										getMaxStackSize(replacementStack) == 1 &&
+										getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
+							replacementStack = candidateStack;
+							replacementStackSlot = i;
+						}
+					}
+				}
+			}
+			if (replacementStack != null) {
+				break;
+			}
+		}
 		
-		// Proceed to replacement
+		//// Proceed to replacement
+	
 		if (replacementStack != null) {
 			
 			log.info("Automatic stack replacement.");

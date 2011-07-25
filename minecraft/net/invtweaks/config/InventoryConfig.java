@@ -255,15 +255,25 @@ public class InventoryConfig {
 		return (this.debugEnabled) ? Level.INFO : Level.WARNING;
 	}
 
-	public boolean canBeAutoReplaced(int itemID, int itemDamage) {
+	public boolean autoreplaceEnabled(int itemID, int itemDamage) {
 		List<ItemTreeItem> items = tree.getItems(itemID, itemDamage);
+		boolean found = false;
 		for (String keyword : autoReplaceRules) {
 			if (keyword.equals(AUTOREPLACE_NOTHING))
 				return false;
 			if (tree.matches(items, keyword))
-				return true;
+				found = true;
 		}
-		return DEFAULT_AUTOREPLACE_BEHAVIOUR;
+		if (found)
+			return true;
+		else {
+			if (autoReplaceRules.isEmpty()) {
+				return DEFAULT_AUTOREPLACE_BEHAVIOUR;
+			}
+			else {
+				return false;
+			}	
+		}
 	}
 	
 	private void init() {

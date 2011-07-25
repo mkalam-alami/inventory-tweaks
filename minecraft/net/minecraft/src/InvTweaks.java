@@ -434,9 +434,11 @@ public class InvTweaks extends Obfuscation {
 	    			&&
 	    			(getCurrentScreen() == null || // Filter open inventory or other window
 	    			getCurrentScreen() instanceof GuiEditSign /* GuiEditSign */)) { 
-		    		
-	    			sortingAlgorithm.autoReplaceSlot(focusedSlot, 
-	    					storedStackId, storedStackDamage);
+
+		    		if (config.autoreplaceEnabled(storedStackId, storedStackId)) {
+		    			sortingAlgorithm.autoReplaceSlot(focusedSlot, 
+		    					storedStackId, storedStackDamage);
+		    		}
 	    		}
 	    	}
 	    	

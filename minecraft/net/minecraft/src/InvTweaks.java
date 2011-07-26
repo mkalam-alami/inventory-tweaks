@@ -542,7 +542,9 @@ public class InvTweaks extends Obfuscation {
 		// Compatibility: Move/Remove old files
 
 		if (new File(OLD_CONFIG_RULES_FILE).exists()) {
-			backupFile(new File(OLD_CONFIG_RULES_FILE), CONFIG_RULES_FILE);
+			if (new File(CONFIG_RULES_FILE).exists()) {
+				backupFile(new File(CONFIG_RULES_FILE), CONFIG_RULES_FILE);
+			}
 			new File(OLD_CONFIG_RULES_FILE).renameTo(new File(CONFIG_TREE_FILE));
 		}
 		if (new File(OLD_CONFIG_TREE_FILE).exists()) {

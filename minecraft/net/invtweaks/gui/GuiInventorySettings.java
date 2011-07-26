@@ -64,7 +64,7 @@ public class GuiInventorySettings extends GuiScreen {
 				computeBooleanButtonLabel(
 						InventoryConfig.PROP_SHOWCHESTBUTTONS,
 						CHEST_BUTTONS)));
-		controlList.add(new GuiSmallButton(ID_AUTOREPLACE_SOUND, x + 160, y,
+		controlList.add(new GuiSmallButton(ID_AUTOREPLACE_SOUND, x, y + 24,
 				computeBooleanButtonLabel(
 						InventoryConfig.PROP_ENABLEAUTOREPLACESOUND,
 						AUTOREPLACE_SOUND)));

@@ -7,14 +7,15 @@
  * Fixed the columns rule being reversed
  * Moved the configuration files to the "config" folder
  * The tree file is now in XML for easier editing
+ * Autoreplace and sorting now trigger a sound
  * Added a special settings menu to inventories
-     Created an option to hide chest buttons
-     Created an option to replace the "DISABLEMIDDLECLICK" rule
+     Added an option to hide chest buttons
+     Added an option to replace the "DISABLEMIDDLECLICK" rule
+     Added an option to disable autoreplace's sound
      Added a link to edit both configuration files
 	 Added a link to the mod's documentation
- * Added a new special rule "LIMIT", to limit stacking
+ * Added a new special rule "FROZEN"
  * Made picked up items go directly in the slot defined for sorting
- * Autoreplace now triggers a sound
  * Fixed a bug regarding autoreplace customization
  * Better error handling
 

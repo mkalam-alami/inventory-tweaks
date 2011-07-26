@@ -18,8 +18,8 @@
 # Default tag: <categoryName> (don't forget to close it with </categoryName>)
 # By item range: <categoryName min="##" max="##" />
   
-# THE FILE IS BROKEN =(
-# Just delete it, the default file will be reloaded next time you sort something.
+# THE FILE IS BROKEN AND I DON'T KNOW WHAT TO DO =(
+# Just delete this file, the default tree will be reloaded next time you sort something.
 -->
 
 <stuff>

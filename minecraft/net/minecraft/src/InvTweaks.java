@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.TimeoutException;
@@ -123,27 +124,38 @@ public class InvTweaks extends Obfuscation {
     	
     	// Find stack slot (look in hotbar only)
     	int currentSlot = -1;
-    	for (int i = 0; i < INVENTORY_HOTBAR_SIZE; i++) {
-    		ItemStack currentHotbarStack = container.getItemStack(i+27);
-    		// Don't move already started stacks
-    		if (currentHotbarStack != null && currentHotbarStack.animationsToGo == 5
-    				&& hotbarClone[i] == null) {
-    			currentSlot = i+27;
-    		}
-    	}
+    	do {
+    		// In SMP, wait for inventory update
+	    	if (isMultiplayerWorld() && currentSlot == -1) {
+	    		try {
+					Thread.sleep(InvTweaks.POLLING_DELAY);
+				} catch (InterruptedException e) {
+					// Do nothing (sleep interrupted)
+				}
+	    	}
+	    	for (int i = 0; i < INVENTORY_HOTBAR_SIZE; i++) {
+	    		ItemStack currentHotbarStack = container.getItemStack(i+27);
+	    		// Don't move already started stacks
+	    		if (currentHotbarStack != null && currentHotbarStack.animationsToGo == 5
+	    				&& hotbarClone[i] == null) {
+	    			currentSlot = i+27;
+	    		}
+	    	}
+    	} while (isMultiplayerWorld() && currentSlot == -1);
     	
     	if (currentSlot != -1) {
     	
 	    	// Find preffered slots
-	    	int[] prefferedPositions = null;
+	    	List<Integer> prefferedPositions = new LinkedList<Integer>();
 	    	InventoryConfigRule matchingRule = null;
 	    	ItemTree tree = config.getTree();
 	    	List<ItemTreeItem> items = tree.getItems(getItemID(stack), getItemDamage(stack));
 	    	for (InventoryConfigRule rule : config.getRules()) {
 	    		if (tree.matches(items, rule.getKeyword())) {
-	    			prefferedPositions = rule.getPreferredSlots();
+	    			for (int slot : rule.getPreferredSlots()) {
+	    				prefferedPositions.add(slot);
+	    			}
 	    			matchingRule = rule;
-	    			break;
 	    		}
 	    	}
 
@@ -257,7 +269,7 @@ public class InvTweaks extends Obfuscation {
     	if (!makeSureConfigurationIsLoaded()) {
     		return;
     	}
-
+    	
     	ItemStack selectedItem = getItemStack(
     			getMainInventory(),
     			getFocusedSlot());
@@ -269,6 +281,10 @@ public class InvTweaks extends Obfuscation {
 		} catch (TimeoutException e) {
 			logInGame("Failed to sort inventory: "+e.getMessage());
 		}
+		
+		// Play click
+		mc.theWorld.playSoundAtEntity(getThePlayer(), 
+				"random.click", 0.2F, 1.8F);
 		
     	// This needs to be remembered so that the
     	// autoreplace feature doesn't trigger
@@ -385,11 +401,17 @@ public class InvTweaks extends Obfuscation {
 		    	        }
 		    			
 		    			if (target == 1) {
+		    				
+		    				// Play click
+		    				mc.theWorld.playSoundAtEntity(getThePlayer(), 
+		    						"random.click", 0.2F, 1.8F);
+		    				
 		    				long timestamp = System.currentTimeMillis();
 		    				if (timestamp - chestAlgorithmClickTimestamp > CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
 		    					chestAlgorithm = InventoryAlgorithms.DEFAULT;
 		    				}
 		    				try {
+		    					
 								inventoryAlgorithms.sortContainer(container, false, chestAlgorithm);
 							} catch (TimeoutException e) {
 								logInGame("Failed to sort container", e);
@@ -398,11 +420,7 @@ public class InvTweaks extends Obfuscation {
 		    				chestAlgorithmClickTimestamp = timestamp;
 		    			}
 		    			else if (target == 2) {
-		    				try {
-								inventoryAlgorithms.sortContainer(container, true, InventoryAlgorithms.INVENTORY);
-							} catch (TimeoutException e) {
-								logInGame("Failed to sort inventory", e);
-							}
+		    				handleSorting(guiScreen);
 		    			}
 		    			
 		        	}

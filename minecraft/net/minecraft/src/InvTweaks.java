@@ -528,12 +528,10 @@ public class InvTweaks extends Obfuscation {
 		}
 		
 		// Load rules + tree files
-		long configLastModified = new File(CONFIG_RULES_FILE).lastModified() + 
-			new File(CONFIG_TREE_FILE).lastModified();
+		long configLastModified = computeConfigLastModified();
 		if (isConfigLoaded()) {
 			// Check time of last edit for both configuration files.
 			if (storedConfigLastModified != configLastModified) {
-				storedConfigLastModified = configLastModified;
 				return loadConfig(); // Reload
 			}
 			else {
@@ -546,6 +544,11 @@ public class InvTweaks extends Obfuscation {
 		}
 	}
 
+	private long computeConfigLastModified() {
+		return new File(CONFIG_RULES_FILE).lastModified() + 
+			new File(CONFIG_TREE_FILE).lastModified();
+	}
+	
 	/**
 	 * Tries to load mod configuration from file, with error handling.
 	 * If it fails, the config attribute will remain null.
@@ -559,7 +562,7 @@ public class InvTweaks extends Obfuscation {
 			if (new File(CONFIG_RULES_FILE).exists()) {
 				backupFile(new File(CONFIG_RULES_FILE), CONFIG_RULES_FILE);
 			}
-			new File(OLD_CONFIG_RULES_FILE).renameTo(new File(CONFIG_TREE_FILE));
+			new File(OLD_CONFIG_RULES_FILE).renameTo(new File(CONFIG_RULES_FILE));
 		}
 		if (new File(OLD_CONFIG_TREE_FILE).exists()) {
 			backupFile(new File(OLD_CONFIG_TREE_FILE), CONFIG_TREE_FILE);
@@ -575,7 +578,9 @@ public class InvTweaks extends Obfuscation {
 				&& extractFile(DEFAULT_CONFIG_TREE_FILE, CONFIG_TREE_FILE)) {
 			logInGame(CONFIG_TREE_FILE+" missing, creating default one.");
 		}
-		
+
+		storedConfigLastModified = computeConfigLastModified();
+				
 		// Load
 		
 		String error = null;

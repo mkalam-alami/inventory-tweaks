@@ -17,14 +17,16 @@ import net.invtweaks.tree.ItemTreeItem;
 import net.invtweaks.tree.ItemTreeLoader;
 import net.minecraft.src.InvTweaks;
 
-public class InventoryConfig {
+public class InvTweaksConfig {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
 
 	public static final String PROP_ENABLEMIDDLECLICK = "enableMiddleClick";
 	public static final String PROP_SHOWCHESTBUTTONS = "showChestButtons";
+	public static final String PROP_ENABLESORTINGONPICKUP = "enableSortingOnPickup";
 	public static final String PROP_ENABLEAUTOREPLACESOUND = "enableAutoreplaceSound";
+	public static final String PROP_ENABLESORTINGSOUND = "enableSortingSound";
 	
 	private static final String LOCKED = "LOCKED";
 	private static final String FROZEN = "FROZEN";
@@ -45,12 +47,14 @@ public class InventoryConfig {
 	private Vector<String> invalidKeywords;
 	private Vector<String> autoReplaceRules;
 	private boolean debugEnabled;
+
+	private long storedConfigLastModified;
 	
 	/**
 	 * Creates a new configuration holder.
 	 * The configuration is not yet loaded.
 	 */
-	public InventoryConfig(String rulesFile, String treeFile) {
+	public InvTweaksConfig(String rulesFile, String treeFile) {
 		this.rulesFile = rulesFile;
 		this.treeFile = treeFile;
 		init();
@@ -64,12 +68,8 @@ public class InventoryConfig {
 		init();
 		
 		// Load properties
-		File configPropsFile = getPropertyFile();
-		if (configPropsFile != null) {
-			FileInputStream fis = new FileInputStream(configPropsFile);
-			properties.load(fis);
-		}
-		save(); // Needed to append non-saved properties to the file
+		loadProperties();
+		saveProperties(); // Needed to append non-saved properties to the file
 		
 		// Load tree
 		tree = new ItemTreeLoader().load(treeFile);
@@ -202,10 +202,23 @@ public class InventoryConfig {
 		
 	}
 
+	public boolean refreshProperties() throws IOException {
+		// Check time of last edit
+		long configLastModified = new File(InvTweaks.CONFIG_PROPS_FILE).lastModified();
+		if (storedConfigLastModified != configLastModified) {
+			storedConfigLastModified = configLastModified;
+			loadProperties();
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	/**
 	 * Saves properties
 	 */
-	public void save() {
+	public void saveProperties() {
 		File configPropsFile = getPropertyFile();
 		if (configPropsFile.exists()) {
 			try {
@@ -213,6 +226,7 @@ public class InventoryConfig {
 				properties.store(fos, "Inventory Tweaks Configuration");
 				fos.flush();
 				fos.close();
+				storedConfigLastModified = new File(InvTweaks.CONFIG_PROPS_FILE).lastModified();
 			} catch (IOException e) {
 				InvTweaks.logInGameStatic("Failed to save config file "
 						+ InvTweaks.CONFIG_PROPS_FILE);
@@ -226,7 +240,7 @@ public class InventoryConfig {
 
 	public void setProperty(String key, String value) {
 		properties.setProperty(key, value);
-		save();
+		saveProperties();
 	}
 
 	public ItemTree getTree() {
@@ -312,7 +326,9 @@ public class InventoryConfig {
 		properties = new Properties();
 		properties.setProperty(PROP_ENABLEMIDDLECLICK, "true");
 		properties.setProperty(PROP_SHOWCHESTBUTTONS, "true");
+		properties.setProperty(PROP_ENABLESORTINGONPICKUP, "true");
 		properties.setProperty(PROP_ENABLEAUTOREPLACESOUND, "true");
+		properties.setProperty(PROP_ENABLESORTINGSOUND, "true");
 		
 		lockedSlots = new Vector<Integer>();
 		rules = new Vector<InventoryConfigRule>();
@@ -321,6 +337,15 @@ public class InventoryConfig {
 		debugEnabled = false;
 	}
 	
+	private void loadProperties() throws IOException {
+		File configPropsFile = getPropertyFile();
+		if (configPropsFile != null) {
+			FileInputStream fis = new FileInputStream(configPropsFile);
+			properties.load(fis);
+			fis.close();
+		}
+	}
+
 	/**
 	 * Compute keyword variants to also match bad keywords.
 	 * torches => torch

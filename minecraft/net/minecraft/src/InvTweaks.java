@@ -16,7 +16,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import net.invtweaks.Obfuscation;
-import net.invtweaks.config.InventoryConfig;
+import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.gui.GuiInventorySettings;
 import net.invtweaks.logic.InventoryAlgorithms;
@@ -64,7 +64,7 @@ public class InvTweaks extends Obfuscation {
     public static final int JIMEOWAN_ID = 54696386;
 
 	private static InvTweaks instance;
-    private InventoryConfig config = null;
+    private InvTweaksConfig config = null;
     private InventoryAlgorithms inventoryAlgorithms = null;
     private long storedConfigLastModified = 0;
 	private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
@@ -116,6 +116,9 @@ public class InvTweaks extends Obfuscation {
     public void onItemPickup(ItemStack stack) {
     	
     	if (!isConfigLoaded() && !loadConfig()) {
+    		return;
+    	}
+    	if (config.getProperty(InvTweaksConfig.PROP_ENABLESORTINGONPICKUP).equals("false")) {
     		return;
     	}
     	
@@ -281,10 +284,8 @@ public class InvTweaks extends Obfuscation {
 		} catch (TimeoutException e) {
 			logInGame("Failed to sort inventory: "+e.getMessage());
 		}
-		
-		// Play click
-		mc.theWorld.playSoundAtEntity(getThePlayer(), 
-				"random.click", 0.2F, 1.8F);
+
+		playClick();
 		
     	// This needs to be remembered so that the
     	// autoreplace feature doesn't trigger
@@ -339,7 +340,7 @@ public class InvTweaks extends Obfuscation {
 					
 					// Sorting buttons
 					if (!config.getProperty(
-						InventoryConfig.PROP_SHOWCHESTBUTTONS).equals("false")) {
+						InvTweaksConfig.PROP_SHOWCHESTBUTTONS).equals("false")) {
 						
 						Container container = getContainer((GuiContainer) guiScreen);
 			
@@ -374,7 +375,7 @@ public class InvTweaks extends Obfuscation {
 			}
 			
 			if (!config.getProperty(
-					InventoryConfig.PROP_ENABLEMIDDLECLICK).equals("false")) {
+					InvTweaksConfig.PROP_ENABLEMIDDLECLICK).equals("false")) {
 				
 				if (!chestAlgorithmButtonDown) {
 		    		chestAlgorithmButtonDown = true;
@@ -514,7 +515,19 @@ public class InvTweaks extends Obfuscation {
 		}
 	}
 	
+	// TODO Only reload modified file
 	private boolean makeSureConfigurationIsLoaded() {
+		
+		// Load properties
+		try {
+			if (config != null && config.refreshProperties()) {
+				logInGame("Mod properties loaded");
+			}
+		} catch (IOException e) {
+			logInGame("Failed to refresh properties from file", e);
+		}
+		
+		// Load rules + tree files
 		long configLastModified = new File(CONFIG_RULES_FILE).lastModified() + 
 			new File(CONFIG_TREE_FILE).lastModified();
 		if (isConfigLoaded()) {
@@ -523,8 +536,9 @@ public class InvTweaks extends Obfuscation {
 				storedConfigLastModified = configLastModified;
 				return loadConfig(); // Reload
 			}
-			else
+			else {
 				return true;
+			}
 		}
 		else {
 			storedConfigLastModified = configLastModified;
@@ -568,7 +582,7 @@ public class InvTweaks extends Obfuscation {
 		
 		try {
 			if (config == null) {
-				config = new InventoryConfig(CONFIG_RULES_FILE, CONFIG_TREE_FILE);
+				config = new InvTweaksConfig(CONFIG_RULES_FILE, CONFIG_TREE_FILE);
 		    	inventoryAlgorithms = new InventoryAlgorithms(mc, config); // Load algorithm
 			}
 			config.load();
@@ -678,7 +692,14 @@ public class InvTweaks extends Obfuscation {
 		}
 	}
 
-	private void showConfigErrors(InventoryConfig config) {
+	private void playClick() {
+		if (!config.getProperty(InvTweaksConfig.PROP_ENABLESORTINGSOUND).equals("false")) {
+			mc.theWorld.playSoundAtEntity(getThePlayer(), 
+					"random.click", 0.2F, 1.8F);
+		}
+	}
+
+	private void showConfigErrors(InvTweaksConfig config) {
 		Vector<String> invalid = config.getInvalidKeywords();
 		if (invalid.size() > 0) {
 			String error = "Invalid keywords found: ";

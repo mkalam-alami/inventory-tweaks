@@ -8,14 +8,16 @@
  * Moved the configuration files to the "config" folder
  * The tree file is now in XML for easier editing
  * Autoreplace and sorting now trigger a sound
+ * Made picked up items go directly in the slot defined for sorting
  * Added a special settings menu to inventories
      Added an option to hide chest buttons
-     Added an option to replace the "DISABLEMIDDLECLICK" rule
-     Added an option to disable autoreplace's sound
+     Added an option instead of the "DISABLEMIDDLECLICK" rule
+     Added an option to disable sorting of picked up items
      Added a link to edit both configuration files
 	 Added a link to the mod's documentation
+ * Set up InvTweaks.cfg to store all previous properties
+ * Soud can also be disabled in InvTweaks.cfg
  * Added a new special rule "FROZEN"
- * Made picked up items go directly in the slot defined for sorting
  * Fixed a bug regarding autoreplace customization
  * Better error handling
 

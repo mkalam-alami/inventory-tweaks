@@ -11,7 +11,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.invtweaks.Obfuscation;
-import net.invtweaks.config.InventoryConfig;
+import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.config.InventoryConfigRule.RuleType;
 import net.invtweaks.tree.ItemTreeItem;
@@ -32,14 +32,14 @@ public class InventoryAlgorithms extends Obfuscation {
     public static final int HORIZONTAL = 2;
     public static final int INVENTORY = 3;
 
-    private InventoryConfig config = null;
+    private InvTweaksConfig config = null;
     
-    public InventoryAlgorithms(Minecraft mc, InventoryConfig config) {
+    public InventoryAlgorithms(Minecraft mc, InvTweaksConfig config) {
 		super(mc);
 		setConfig(config);
 	}
     
-    public void setConfig(InventoryConfig config) {
+    public void setConfig(InvTweaksConfig config) {
     	this.config = config;
     }
     
@@ -295,7 +295,7 @@ public class InventoryAlgorithms extends Obfuscation {
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (inventory.moveStack(i, targetedSlot, Integer.MAX_VALUE)
 									!= SortableContainer.MOVE_FAILURE) {
-								if (!config.getProperty(InventoryConfig.PROP_ENABLEAUTOREPLACESOUND).equals("false")) {
+								if (!config.getProperty(InvTweaksConfig.PROP_ENABLEAUTOREPLACESOUND).equals("false")) {
 					    			mc.theWorld.playSoundAtEntity(getThePlayer(), 
 					    					"mob.chickenplop", 0.15F, 0.2F);
 								}

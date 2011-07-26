@@ -54,7 +54,9 @@ public class mod_InvTweaks extends BaseMod {
 
     public boolean OnTickInGUI(Minecraft minecraft, GuiScreen guiScreen)
     {
-    	instance.onTickInGUI(guiScreen);
+    	if (instance != null) {
+    		instance.onTickInGUI(guiScreen);
+    	}
     	return true;
     }
     

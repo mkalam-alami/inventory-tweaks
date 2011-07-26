@@ -5,7 +5,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.logging.Logger;
 
-import net.invtweaks.config.InventoryConfig;
+import net.invtweaks.config.InvTweaksConfig;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.GuiSmallButton;
@@ -21,13 +21,13 @@ public class GuiInventorySettings extends GuiScreen {
 	// TODO Mod translation?
 	private final static String MIDDLE_CLICK = "Middle click";
 	private final static String CHEST_BUTTONS = "Chest buttons";
-	private final static String AUTOREPLACE_SOUND = "Autoreplace sound";
+	private final static String SORT_ON_PICKUP = "Sort on pickup";
 	private final static String ON = ": ON";
 	private final static String OFF = ": OFF";
 	
 	private final static int ID_MIDDLE_CLICK = 1;
 	private final static int ID_CHESTS_BUTTONS = 2;
-	private final static int ID_AUTOREPLACE_SOUND = 3;
+	private final static int ID_SORT_ON_PICKUP = 3;
 	//private final static int ID_CONVENIENT_SHORTCUTS = 3;
 	//private final static int ID_AUTOREPLACE = 4;
 
@@ -38,10 +38,10 @@ public class GuiInventorySettings extends GuiScreen {
 	private final static int ID_DONE = 200;
 
 	private GuiScreen parentScreen;
-	private InventoryConfig config;
+	private InvTweaksConfig config;
 	
 
-	public GuiInventorySettings(GuiScreen guiscreen, InventoryConfig config) {
+	public GuiInventorySettings(GuiScreen guiscreen, InvTweaksConfig config) {
 		this.parentScreen = guiscreen;
 		this.config = config;
 	}
@@ -58,16 +58,16 @@ public class GuiInventorySettings extends GuiScreen {
 
 		controlList.add(new GuiSmallButton(ID_MIDDLE_CLICK, x, y,
 				computeBooleanButtonLabel(
-						InventoryConfig.PROP_ENABLEMIDDLECLICK,
+						InvTweaksConfig.PROP_ENABLEMIDDLECLICK,
 						MIDDLE_CLICK)));
 		controlList.add(new GuiSmallButton(ID_CHESTS_BUTTONS, x + 160, y,
 				computeBooleanButtonLabel(
-						InventoryConfig.PROP_SHOWCHESTBUTTONS,
+						InvTweaksConfig.PROP_SHOWCHESTBUTTONS,
 						CHEST_BUTTONS)));
-		controlList.add(new GuiSmallButton(ID_AUTOREPLACE_SOUND, x, y + 24,
+		controlList.add(new GuiSmallButton(ID_SORT_ON_PICKUP, x, y + 24,
 				computeBooleanButtonLabel(
-						InventoryConfig.PROP_ENABLEAUTOREPLACESOUND,
-						AUTOREPLACE_SOUND)));
+						InvTweaksConfig.PROP_ENABLESORTINGONPICKUP,
+						SORT_ON_PICKUP)));
 
 		// TODO Implement "Convenient Inventory" shortcuts
 		// TODO Implement autoreplace options
@@ -111,22 +111,22 @@ public class GuiInventorySettings extends GuiScreen {
 		// Toggle middle click shortcut
 		case ID_MIDDLE_CLICK:
 			toggleBooleanButton(guibutton, 
-					InventoryConfig.PROP_ENABLEMIDDLECLICK,
+					InvTweaksConfig.PROP_ENABLEMIDDLECLICK,
 					MIDDLE_CLICK);
 			break;
 			
 		// Toggle chest buttons
 		case ID_CHESTS_BUTTONS:
 			toggleBooleanButton(guibutton, 
-					InventoryConfig.PROP_SHOWCHESTBUTTONS,
+					InvTweaksConfig.PROP_SHOWCHESTBUTTONS,
 					CHEST_BUTTONS);
 			break;
 
 		// Toggle autoreplace sound
-		case ID_AUTOREPLACE_SOUND:
+		case ID_SORT_ON_PICKUP:
 			toggleBooleanButton(guibutton, 
-					InventoryConfig.PROP_ENABLEAUTOREPLACESOUND,
-					AUTOREPLACE_SOUND);
+					InvTweaksConfig.PROP_ENABLESORTINGONPICKUP,
+					SORT_ON_PICKUP);
 			break;
 			
 		// Open rules configuration in external editor

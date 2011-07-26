@@ -5,7 +5,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.invtweaks.Obfuscation;
-import net.invtweaks.config.InventoryConfig;
+import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.tree.ItemTreeItem;
 import net.invtweaks.tree.ItemTree;
 import net.minecraft.client.Minecraft;
@@ -44,7 +44,7 @@ public class SortableContainer extends Obfuscation {
 	private boolean isMultiplayer;
 	private EntityPlayer entityPlayer;
 	
-	public SortableContainer(Minecraft mc, InventoryConfig config,
+	public SortableContainer(Minecraft mc, InvTweaksConfig config,
 			Container container, boolean inventoryPart) {
 		super(mc);
 

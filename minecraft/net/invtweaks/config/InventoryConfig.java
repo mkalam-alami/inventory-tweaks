@@ -24,21 +24,22 @@ public class InventoryConfig {
 
 	public static final String PROP_ENABLEMIDDLECLICK = "enableMiddleClick";
 	public static final String PROP_SHOWCHESTBUTTONS = "showChestButtons";
+	public static final String PROP_ENABLEAUTOREPLACESOUND = "enableAutoreplaceSound";
 	
 	private static final String LOCKED = "LOCKED";
-	private static final String LIMIT = "LIMIT";
+	private static final String FREEZE = "FROZEN"; // TODO Rename const
 	private static final String AUTOREPLACE = "AUTOREPLACE";
 	private static final String AUTOREPLACE_NOTHING = "nothing";
 	private static final String DEBUG = "DEBUG";
 	private static final boolean DEFAULT_AUTOREPLACE_BEHAVIOUR = true;
-	
+
 	private String rulesFile;
 	private String treeFile;
 	
 	private Properties properties;
 	private ItemTree tree;
 	private int[] lockPriorities;
-	private int[] stackLimits;
+	private boolean[] frozenSlots;
 	private Vector<Integer> lockedSlots;
 	private Vector<InventoryConfigRule> rules;
 	private Vector<String> invalidKeywords;
@@ -116,6 +117,17 @@ public class InventoryConfig {
 						}
 					}
 					
+					// Freeze rule
+					else if (words[1].equals(FREEZE)) {
+						int[] newLockedSlots = InventoryConfigRule.getRulePreferredPositions(
+										words[0], InvTweaks.INVENTORY_SIZE,
+										InvTweaks.INVENTORY_ROW_SIZE);
+						for (int i : newLockedSlots) {
+							frozenSlots[i] = true;
+						}
+					}
+				
+					
 					// Standard rule
 					else {
 						String keyword = words[1];
@@ -154,27 +166,6 @@ public class InventoryConfig {
 					}
 				}
 			
-			}
-			
-			else if (words.length == 3) {
-
-				// Standard rules format with extra word
-				if (lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]* [\\w]*$")
-						|| lineText.matches("^[a-d][1-9]-[a-d][1-9]v? [\\w]* [\\w]*$")) {
-
-					words[0] = words[0].toLowerCase();
-					
-					// Stack limit
-					if (words[1].equals(LIMIT)) {
-						int[] newLockedSlots = InventoryConfigRule.getRulePreferredPositions(
-										words[0], InvTweaks.INVENTORY_SIZE,
-										InvTweaks.INVENTORY_ROW_SIZE);
-						for (int i : newLockedSlots) {
-							stackLimits[i] = Integer.parseInt(words[2]);
-						}
-					}
-				
-				}
 			}
 			
 			else if (words.length == 1) {
@@ -267,11 +258,11 @@ public class InventoryConfig {
 	}
 
 	/**
-	 * @return The inventory slots array with stack limits.
+	 * @return The inventory slots array indicating which ones are frozen.
 	 * WARNING: Not a copy.
 	 */
-	public int[] getStackLimits() {
-		return stackLimits;
+	public boolean[] getFrozenSlots() {
+		return frozenSlots;
 	}
 	
 	/**
@@ -312,14 +303,16 @@ public class InventoryConfig {
 		for (int i = 0; i < lockPriorities.length; i++) {
 			lockPriorities[i] = 0;
 		}
-		stackLimits = new int[InvTweaks.INVENTORY_SIZE];
-		for (int i = 0; i < stackLimits.length; i++) {
-			stackLimits[i] = 64;
+		frozenSlots = new boolean[InvTweaks.INVENTORY_SIZE];
+		for (int i = 0; i < frozenSlots.length; i++) {
+			frozenSlots[i] = false;
 		}
 		
+		// Default property values
 		properties = new Properties();
 		properties.setProperty(PROP_ENABLEMIDDLECLICK, "true");
 		properties.setProperty(PROP_SHOWCHESTBUTTONS, "true");
+		properties.setProperty(PROP_ENABLEAUTOREPLACESOUND, "true");
 		
 		lockedSlots = new Vector<Integer>();
 		rules = new Vector<InventoryConfigRule>();
@@ -339,7 +332,7 @@ public class InventoryConfig {
 		
 		if (keyword.endsWith("es")) // ex: torches => torch
 			variants.add(keyword.substring(0, keyword.length()-2));
-		else if (keyword.endsWith("s")) // ex: wools => wool
+		if (keyword.endsWith("s")) // ex: wools => wool
 			variants.add(keyword.substring(0, keyword.length()-1));
 		
 		if (keyword.contains("en")) // ex: wooden => wood

@@ -26,7 +26,7 @@ public class SortableContainer extends Obfuscation {
 	public static final int MOVE_FAILURE = -1;
 	
     private static int[] DEFAULT_LOCK_PRIORITIES = null;
-    private static int[] DEFAULT_STACK_LIMITS = null;
+    private static boolean[] DEFAULT_FROZEN_SLOTS = null;
     private static final int MAX_CONTAINER_SIZE = 100;
 
 	private Container container;
@@ -34,7 +34,7 @@ public class SortableContainer extends Obfuscation {
 	private int[] rulePriority;
 	private int[] keywordOrder;
 	private int[] lockPriorities;
-	private int[] stackLimits;
+	private boolean[] frozenSlots;
 	private int clickCount = 0;
 	private int offset; // offset of the first sortable item
 	private int size;
@@ -56,10 +56,10 @@ public class SortableContainer extends Obfuscation {
 				DEFAULT_LOCK_PRIORITIES[i] = 0;
 			}
 		}
-		if (DEFAULT_STACK_LIMITS == null) {
-			DEFAULT_STACK_LIMITS = new int[MAX_CONTAINER_SIZE];
+		if (DEFAULT_FROZEN_SLOTS == null) {
+			DEFAULT_FROZEN_SLOTS = new boolean[MAX_CONTAINER_SIZE];
 			for (int i = 0; i < MAX_CONTAINER_SIZE; i++) {
-				DEFAULT_STACK_LIMITS[i] = 64;
+				DEFAULT_FROZEN_SLOTS[i] = false;
 			}
 		}
 		
@@ -72,19 +72,19 @@ public class SortableContainer extends Obfuscation {
 			this.size = InvTweaks.INVENTORY_SIZE;
 			this.offset = 9; // 5 crafting slots + 4 armor slots
 			this.lockPriorities = config.getLockPriorities();
-			this.stackLimits = config.getStackLimits();
+			this.frozenSlots = config.getFrozenSlots();
 		}
 		else if (inventoryPart) { 
 			this.size = InvTweaks.INVENTORY_SIZE;
 			this.offset = getSlots(container).size() - InvTweaks.INVENTORY_SIZE;
 			this.lockPriorities = config.getLockPriorities();
-			this.stackLimits = config.getStackLimits();
+			this.frozenSlots = config.getFrozenSlots();
 		}
 		else {
 			this.size = getSlots(container).size() - InvTweaks.INVENTORY_SIZE;
 			this.offset = 0;
 			this.lockPriorities = DEFAULT_LOCK_PRIORITIES;
-			this.stackLimits = DEFAULT_STACK_LIMITS;
+			this.frozenSlots = DEFAULT_FROZEN_SLOTS;
 		}
 		
 		this.rulePriority = new int[size];
@@ -120,6 +120,10 @@ public class SortableContainer extends Obfuscation {
 	 */
 	public int moveStack(int i, int j, int priority) throws TimeoutException {
 		
+		if (frozenSlots[j] || frozenSlots[i]) {
+			return MOVE_FAILURE;
+		}
+		
 		if (getLockPriority(i) <= priority) {
 		
 			if (i == j) {
@@ -130,7 +134,9 @@ public class SortableContainer extends Obfuscation {
 			boolean targetEmpty = (getStackInSlot(j) == null);
 			
 			// Move to empty slot
-			if (targetEmpty && lockPriorities[j] <= priority) {
+			if (targetEmpty &&
+					lockPriorities[j] <= priority &&
+					!frozenSlots[j]) {
 				swapOrMerge(i, j, priority);
 				return MOVE_TO_EMPTY_SLOT;
 			}
@@ -166,6 +172,9 @@ public class SortableContainer extends Obfuscation {
 	 * @throws TimeoutException 
 	 */
 	public boolean mergeStacks(int i, int j) throws TimeoutException {
+		if (frozenSlots[j] || frozenSlots[i]) {
+			return STACK_NOT_EMPTIED;
+		}
 		if (lockPriorities[i] <= lockPriorities[j]) {
 			return (swapOrMerge(i, j, 1) == 0) ? STACK_EMPTIED : STACK_NOT_EMPTIED;
 		}
@@ -194,8 +203,7 @@ public class SortableContainer extends Obfuscation {
 			return false;
 		}
 		return areSameItem(getStackInSlot(i), getStackInSlot(j)) &&
-			getStackSize(getStackInSlot(j)) < 
-					(Math.min(getMaxStackSize(getStackInSlot(j)), stackLimits[j]));
+			getStackSize(getStackInSlot(j)) < getMaxStackSize(getStackInSlot(j));
 	}
 
 	public boolean isOrderedBefore(int i, int j) {
@@ -246,11 +254,15 @@ public class SortableContainer extends Obfuscation {
 	 */
 	public int swapOrMerge(int i, int j, int priority) throws TimeoutException {
 		
+		if (frozenSlots[j] || frozenSlots[i]) {
+			return MOVE_FAILURE;
+		}
+		
 		// Merge stacks
 		if (canBeMerged(i, j)) {
-			
+				
 			int sum = getStackSize(getStackInSlot(i)) + getStackSize(getStackInSlot(j));
-			int max = Math.min(getMaxStackSize(getStackInSlot(j)), stackLimits[j]);
+			int max = getMaxStackSize(getStackInSlot(j));
 			
 			if (sum <= max) {
 				remove(i);
@@ -341,7 +353,8 @@ public class SortableContainer extends Obfuscation {
 			for (int step = 1; step <= 2; step++) {
 				for (int i = size-1; i >= 0; i--) {
 					if (getStackInSlot(i) == null
-							&& (lockPriorities[i] == 0 || step == 2)) {
+							&& (lockPriorities[i] == 0 && !frozenSlots[i])
+								|| step == 2) {
 						if (isMultiplayer) {
 							click(i);
 						}
@@ -424,7 +437,7 @@ public class SortableContainer extends Obfuscation {
 			int pollingTime = 0;
 			while (areItemStacksEqual(getStackInSlot(slot), stackInSlot)
 					 && pollingTime < InvTweaks.POLLING_TIMEOUT) {
-				InventoryAlgorithm.trySleep(InvTweaks.POLLING_DELAY);
+				InventoryAlgorithms.trySleep(InvTweaks.POLLING_DELAY);
 				pollingTime += InvTweaks.POLLING_DELAY;
 			}
 			if (pollingTime >= InvTweaks.POLLING_TIMEOUT) {

@@ -22,7 +22,7 @@ import net.minecraft.src.ContainerDispenser;
 import net.minecraft.src.InvTweaks;
 import net.minecraft.src.ItemStack;
 
-public class InventoryAlgorithm extends Obfuscation {
+public class InventoryAlgorithms extends Obfuscation {
     
     private static final Logger log = Logger.getLogger("InvTweaks");
 
@@ -34,7 +34,7 @@ public class InventoryAlgorithm extends Obfuscation {
 
     private InventoryConfig config = null;
     
-    public InventoryAlgorithm(Minecraft mc, InventoryConfig config) {
+    public InventoryAlgorithms(Minecraft mc, InventoryConfig config) {
 		super(mc);
 		setConfig(config);
 	}
@@ -295,8 +295,10 @@ public class InventoryAlgorithm extends Obfuscation {
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (inventory.moveStack(i, targetedSlot, Integer.MAX_VALUE)
 									!= SortableContainer.MOVE_FAILURE) {
-				    			mc.theWorld.playSoundAtEntity(getThePlayer(), 
-				    					"mob.slimeattack", 0.35F, 0.7F);
+								if (!config.getProperty(InventoryConfig.PROP_ENABLEAUTOREPLACESOUND).equals("false")) {
+					    			mc.theWorld.playSoundAtEntity(getThePlayer(), 
+					    					"mob.chickenplop", 0.15F, 0.2F);
+								}
 								// If item are swapped (like for mushroom soups),
 								// put the item back in the inventory if it is in the hotbar
 								if (inventory.getItemStack(i) != null && i >= 27) {

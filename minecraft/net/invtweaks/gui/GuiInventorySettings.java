@@ -21,11 +21,13 @@ public class GuiInventorySettings extends GuiScreen {
 	// TODO Mod translation?
 	private final static String MIDDLE_CLICK = "Middle click";
 	private final static String CHEST_BUTTONS = "Chest buttons";
+	private final static String AUTOREPLACE_SOUND = "Autoreplace sound";
 	private final static String ON = ": ON";
 	private final static String OFF = ": OFF";
 	
 	private final static int ID_MIDDLE_CLICK = 1;
 	private final static int ID_CHESTS_BUTTONS = 2;
+	private final static int ID_AUTOREPLACE_SOUND = 3;
 	//private final static int ID_CONVENIENT_SHORTCUTS = 3;
 	//private final static int ID_AUTOREPLACE = 4;
 
@@ -62,6 +64,10 @@ public class GuiInventorySettings extends GuiScreen {
 				computeBooleanButtonLabel(
 						InventoryConfig.PROP_SHOWCHESTBUTTONS,
 						CHEST_BUTTONS)));
+		controlList.add(new GuiSmallButton(ID_AUTOREPLACE_SOUND, x + 160, y,
+				computeBooleanButtonLabel(
+						InventoryConfig.PROP_ENABLEAUTOREPLACESOUND,
+						AUTOREPLACE_SOUND)));
 
 		// TODO Implement "Convenient Inventory" shortcuts
 		// TODO Implement autoreplace options
@@ -115,7 +121,14 @@ public class GuiInventorySettings extends GuiScreen {
 					InventoryConfig.PROP_SHOWCHESTBUTTONS,
 					CHEST_BUTTONS);
 			break;
-		
+
+		// Toggle autoreplace sound
+		case ID_AUTOREPLACE_SOUND:
+			toggleBooleanButton(guibutton, 
+					InventoryConfig.PROP_ENABLEAUTOREPLACESOUND,
+					AUTOREPLACE_SOUND);
+			break;
+			
 		// Open rules configuration in external editor
 		case ID_EDITRULES:
 			try {

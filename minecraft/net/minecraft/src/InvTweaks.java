@@ -18,7 +18,7 @@ import net.invtweaks.Obfuscation;
 import net.invtweaks.config.InventoryConfig;
 import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.gui.GuiInventorySettings;
-import net.invtweaks.logic.InventoryAlgorithm;
+import net.invtweaks.logic.InventoryAlgorithms;
 import net.invtweaks.logic.SortableContainer;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
@@ -32,10 +32,10 @@ public class InvTweaks extends Obfuscation {
     private static final Logger log = Logger.getLogger("InvTweaks");
     
     public static final String MINECRAFT_DIR = 
-    	(getMinecraftDir().getAbsolutePath().endsWith(".")) ?
+    	((getMinecraftDir().getAbsolutePath().endsWith(".")) ?
     			getMinecraftDir().getAbsolutePath().substring(
     			0, getMinecraftDir().getAbsolutePath().length()-1) :
-    				getMinecraftDir().getAbsolutePath();
+    				getMinecraftDir().getAbsolutePath())+File.separatorChar;
     public static final String MINECRAFT_CONFIG_DIR = MINECRAFT_DIR+"config"+File.separatorChar;
     public static final String CONFIG_PROPS_FILE = MINECRAFT_CONFIG_DIR+"InvTweaks.cfg";
     public static final String CONFIG_RULES_FILE = MINECRAFT_CONFIG_DIR+"InvTweaksRules.txt";
@@ -64,10 +64,10 @@ public class InvTweaks extends Obfuscation {
 
 	private static InvTweaks instance;
     private InventoryConfig config = null;
-    private InventoryAlgorithm sortingAlgorithm = null;
+    private InventoryAlgorithms inventoryAlgorithms = null;
     private long storedConfigLastModified = 0;
 	private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
-	private int chestAlgorithm = InventoryAlgorithm.DEFAULT;
+	private int chestAlgorithm = InventoryAlgorithms.DEFAULT;
 	private long chestAlgorithmClickTimestamp = 0; 
 	private boolean chestAlgorithmButtonDown = false;
 	private ItemStack[] hotbarClone = new ItemStack[INVENTORY_HOTBAR_SIZE];
@@ -83,7 +83,6 @@ public class InvTweaks extends Obfuscation {
     	
     	// Load config files
 		if (makeSureConfigurationIsLoaded()) {
-	    	sortingAlgorithm = new InventoryAlgorithm(mc, config); // Load algorithm
 	    	log.info("Mod initialized");
 		}
 		else {
@@ -264,9 +263,9 @@ public class InvTweaks extends Obfuscation {
     			getFocusedSlot());
     	
     	try {
-			sortingAlgorithm.sortContainer(
+			inventoryAlgorithms.sortContainer(
 					(guiScreen == null) ? getPlayerContainer() : getContainer((GuiContainer) guiScreen),  /* GuiContainer */
-					true, InventoryAlgorithm.INVENTORY);
+					true, InventoryAlgorithms.INVENTORY);
 		} catch (TimeoutException e) {
 			logInGame("Failed to sort inventory: "+e.getMessage());
 		}
@@ -330,17 +329,17 @@ public class InvTweaks extends Obfuscation {
 			
 						GuiButton button = new SortingButton(
 								id++, x-37, y, w, h, "s",
-								container, InventoryAlgorithm.DEFAULT);
+								container, InventoryAlgorithms.DEFAULT);
 						guiContainer.controlList.add((GuiButton) button);
 			
 						button = new SortingButton(
 								id++, x-25, y, w, h, "v",
-								container, InventoryAlgorithm.VERTICAL);
+								container, InventoryAlgorithms.VERTICAL);
 						guiContainer.controlList.add((GuiButton) button);
 						
 						button = new SortingButton(
 								id++, x-13, y, w, h, "h",
-								container, InventoryAlgorithm.HORIZONTAL);
+								container, InventoryAlgorithms.HORIZONTAL);
 						guiContainer.controlList.add((GuiButton) button);
 						
 					}
@@ -352,62 +351,65 @@ public class InvTweaks extends Obfuscation {
 	
 	private void handleMiddleClick(GuiScreen guiScreen) {
 		
-		if (Mouse.isButtonDown(2) && !config.getProperty(
-				InventoryConfig.PROP_ENABLEMIDDLECLICK).equals("false")) {
-			
+		if (Mouse.isButtonDown(2)) {
+
 			if (!makeSureConfigurationIsLoaded()) {
 				return;
 			}
 			
-			if (!chestAlgorithmButtonDown) {
-	    		chestAlgorithmButtonDown = true;
-		    	
-	        	if (isChestOrDispenser(guiScreen)) {
-	        		
-	        		// Check if the middle click target the chest or the inventory
-	        		// (copied GuiContainer.getSlotAtPosition algorithm)
-	        		GuiContainer guiContainer = (GuiContainer) guiScreen;
-	    			Container container = getContainer((GuiContainer) guiScreen);
-	    			int slotCount = getSlots(container).size();
-	                int mouseX = (Mouse.getEventX() * guiContainer.width) / mc.displayWidth;
-	                int mouseY = guiContainer.height - (Mouse.getEventY() * guiContainer.height) / mc.displayHeight - 1;
-	    			int target = 0; // 0 = nothing, 1 = chest, 2 = inventory
-	    			for(int i = 0; i < slotCount; i++) {
-	    				Slot slot = getSlot(container, i);
-	    		        int k = (guiContainer.width - guiContainer.xSize) / 2;
-	    		        int l = (guiContainer.height - guiContainer.ySize) / 2;
-	    		        if (mouseX-k >= slot.xDisplayPosition - 1 && mouseX-k < slot.xDisplayPosition + 16 + 1 
-	    		        	&& mouseY-l >= slot.yDisplayPosition - 1 && mouseY-l < slot.yDisplayPosition + 16 + 1) {
-	    	            	target = (i < slotCount - INVENTORY_SIZE) ? 1 : 2;
-	    	            	break;
-	    	            }
-	    	        }
-	    			
-	    			if (target == 1) {
-	    				long timestamp = System.currentTimeMillis();
-	    				if (timestamp - chestAlgorithmClickTimestamp > CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
-	    					chestAlgorithm = InventoryAlgorithm.DEFAULT;
-	    				}
-	    				try {
-							sortingAlgorithm.sortContainer(container, false, chestAlgorithm);
-						} catch (TimeoutException e) {
-							logInGame("Failed to sort container", e);
-						}
-	    				chestAlgorithm = (chestAlgorithm + 1) % 3;
-	    				chestAlgorithmClickTimestamp = timestamp;
-	    			}
-	    			else if (target == 2) {
-	    				try {
-							sortingAlgorithm.sortContainer(container, true, InventoryAlgorithm.INVENTORY);
-						} catch (TimeoutException e) {
-							logInGame("Failed to sort inventory", e);
-						}
-	    			}
-	    			
-	        	}
-	        	else {
-	        		handleSorting(guiScreen);
-	        	}
+			if (!config.getProperty(
+					InventoryConfig.PROP_ENABLEMIDDLECLICK).equals("false")) {
+				
+				if (!chestAlgorithmButtonDown) {
+		    		chestAlgorithmButtonDown = true;
+			    	
+		        	if (isChestOrDispenser(guiScreen)) {
+		        		
+		        		// Check if the middle click target the chest or the inventory
+		        		// (copied GuiContainer.getSlotAtPosition algorithm)
+		        		GuiContainer guiContainer = (GuiContainer) guiScreen;
+		    			Container container = getContainer((GuiContainer) guiScreen);
+		    			int slotCount = getSlots(container).size();
+		                int mouseX = (Mouse.getEventX() * guiContainer.width) / mc.displayWidth;
+		                int mouseY = guiContainer.height - (Mouse.getEventY() * guiContainer.height) / mc.displayHeight - 1;
+		    			int target = 0; // 0 = nothing, 1 = chest, 2 = inventory
+		    			for(int i = 0; i < slotCount; i++) {
+		    				Slot slot = getSlot(container, i);
+		    		        int k = (guiContainer.width - guiContainer.xSize) / 2;
+		    		        int l = (guiContainer.height - guiContainer.ySize) / 2;
+		    		        if (mouseX-k >= slot.xDisplayPosition - 1 && mouseX-k < slot.xDisplayPosition + 16 + 1 
+		    		        	&& mouseY-l >= slot.yDisplayPosition - 1 && mouseY-l < slot.yDisplayPosition + 16 + 1) {
+		    	            	target = (i < slotCount - INVENTORY_SIZE) ? 1 : 2;
+		    	            	break;
+		    	            }
+		    	        }
+		    			
+		    			if (target == 1) {
+		    				long timestamp = System.currentTimeMillis();
+		    				if (timestamp - chestAlgorithmClickTimestamp > CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
+		    					chestAlgorithm = InventoryAlgorithms.DEFAULT;
+		    				}
+		    				try {
+								inventoryAlgorithms.sortContainer(container, false, chestAlgorithm);
+							} catch (TimeoutException e) {
+								logInGame("Failed to sort container", e);
+							}
+		    				chestAlgorithm = (chestAlgorithm + 1) % 3;
+		    				chestAlgorithmClickTimestamp = timestamp;
+		    			}
+		    			else if (target == 2) {
+		    				try {
+								inventoryAlgorithms.sortContainer(container, true, InventoryAlgorithms.INVENTORY);
+							} catch (TimeoutException e) {
+								logInGame("Failed to sort inventory", e);
+							}
+		    			}
+		    			
+		        	}
+		        	else {
+		        		handleSorting(guiScreen);
+		        	}
+				}
 			}
 		}
 		else {
@@ -436,7 +438,7 @@ public class InvTweaks extends Obfuscation {
 	    			getCurrentScreen() instanceof GuiEditSign /* GuiEditSign */)) { 
 
 		    		if (config.autoreplaceEnabled(storedStackId, storedStackId)) {
-		    			sortingAlgorithm.autoReplaceSlot(focusedSlot, 
+		    			inventoryAlgorithms.autoReplaceSlot(focusedSlot, 
 		    					storedStackId, storedStackDamage);
 		    		}
 	    		}
@@ -490,11 +492,6 @@ public class InvTweaks extends Obfuscation {
 						}
 					}
 				}
-				
-				/*options.controlList.add(new OptionsButton(JIMEOWAN_ID, 
-						(maxYX == minX) ? maxX : minX,
-						(maxYX == minX) ? maxY : maxY + 24,
-						150, 20, "Inventory"));*/
 			}
 		}
 	}
@@ -550,13 +547,9 @@ public class InvTweaks extends Obfuscation {
 		String error = null;
 		
 		try {
-			sortingAlgorithm.setConfig(config);
 			if (config == null) {
-				config = new InventoryConfig(
-						CONFIG_RULES_FILE, CONFIG_TREE_FILE);
-				if (sortingAlgorithm != null) {
-					sortingAlgorithm.setConfig(config);
-				}
+				config = new InventoryConfig(CONFIG_RULES_FILE, CONFIG_TREE_FILE);
+		    	inventoryAlgorithms = new InventoryAlgorithms(mc, config); // Load algorithm
 			}
 			config.load();
 			log.setLevel(config.getLogLevel());
@@ -580,17 +573,15 @@ public class InvTweaks extends Obfuscation {
 	}
 
 	private void backupFile(File file, String baseName) {
-		String newFileName = baseName;
-		if (new File(baseName).exists()) {
-			if (new File(baseName + ".bak").exists()) {
-				int i = 1;
-				while (new File(baseName + ".bak" + i).exists()) {
-					i++;
-				}
-				newFileName = baseName + ".bak" + i;
-			} else {
-				newFileName = baseName + ".bak";
+		String newFileName;
+		if (new File(baseName + ".bak").exists()) {
+			int i = 1;
+			while (new File(baseName + ".bak" + i).exists()) {
+				i++;
 			}
+			newFileName = baseName + ".bak" + i;
+		} else {
+			newFileName = baseName + ".bak";
 		}
 		file.renameTo(new File(newFileName));
 	}
@@ -758,26 +749,7 @@ public class InvTweaks extends Obfuscation {
 	    }
 		
 	}
-
-	/*private class OptionsButton extends GuiButton {
-
-		public OptionsButton(int id, int x, int y,
-				int w, int h, String displayString) {
-			super(id, x, y, w, h, displayString);
-		}
-		
-	    public boolean mousePressed(Minecraft minecraft, int i, int j) {
-	    	if (super.mousePressed(minecraft, i, j)) {
-	    		mc.displayGuiScreen(new InvTweaksGuiOptions(getCurrentScreen()));
-	    		return true;
-	    	}
-	    	else {
-	    		return false;
-	    	}
-	    }
-		
-	}*/
-	
+    
 	private class SortingButton extends GuiButton {
 	
 		private boolean buttonClicked = false;
@@ -846,7 +818,7 @@ public class InvTweaks extends Obfuscation {
 	    public boolean mousePressed(Minecraft minecraft, int i, int j) {
 	    	if (super.mousePressed(minecraft, i, j)) {
 	    		try {
-					sortingAlgorithm.sortContainer(container, false, algorithm);
+					inventoryAlgorithms.sortContainer(container, false, algorithm);
 				} catch (TimeoutException e) {
 					logInGame("Failed to sort container", e);
 				}

@@ -130,7 +130,7 @@ public class ItemTreeCategory {
 	}
 	
 	public String toString() {
-		return name+" ("+items.size()+" items)";
+		return name+" ("+subCategories.size()+" cats, "+items.size()+" items)";
 	}
 	
 }

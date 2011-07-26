@@ -27,7 +27,7 @@ public class InventoryConfig {
 	public static final String PROP_ENABLEAUTOREPLACESOUND = "enableAutoreplaceSound";
 	
 	private static final String LOCKED = "LOCKED";
-	private static final String FREEZE = "FROZEN"; // TODO Rename const
+	private static final String FROZEN = "FROZEN";
 	private static final String AUTOREPLACE = "AUTOREPLACE";
 	private static final String AUTOREPLACE_NOTHING = "nothing";
 	private static final String DEBUG = "DEBUG";
@@ -118,7 +118,7 @@ public class InventoryConfig {
 					}
 					
 					// Freeze rule
-					else if (words[1].equals(FREEZE)) {
+					else if (words[1].equals(FROZEN)) {
 						int[] newLockedSlots = InventoryConfigRule.getRulePreferredPositions(
 										words[0], InvTweaks.INVENTORY_SIZE,
 										InvTweaks.INVENTORY_ROW_SIZE);

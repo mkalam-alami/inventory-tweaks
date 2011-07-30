@@ -18,29 +18,8 @@ D LOCKED
 #   * a whole row (ex: "D sword")
 #   * a whole column (ex: "1 sword")
 #   * a rectangle, defined by two slots (ex: "A5-C9 stuff")
-# Rows are, by default, sorted from left to right, and columns from bottom to top.
-
-# TIPS
-# * You don't need to restart the game to reload your configuration: just press the sort key.
-# * The rectangle rules "A1-C3", "C3-A1", "A3-C1" and "C1-A3" don't behave exactly the same!
-
-# AVAILABLE KEYWORDS
-# You can use any of the keywords found in the InvTweaksTree.xml file.
-
-# MODIFIERS
-# r = Reverse sort order for a row/column (ex: "Ar sword" sorts from right to left)
-# v = For rectangle rules. Sorts vertically instead of horizontally (ex: "A1-B8v blocks")
-
-# MULTIPLE CONFIGURATIONS
-# Any word followed by a colon ':' defines a new configuration (ex: "Default:").
-# You can then swap between the configurations by holding the sorting key for 1 second.
-
-# SPECIAL RULES
-# "LOCKED" = Locks a part of the inventory so that stuff doesn't go there (ex: "D LOCKED").
-#            Is overriden by more specific rules ("D LOCKED" is overriden by "D1 torch" or "1 swords").
-# "FROZEN" = Completely ignores the slot during sorting (ex: "D8 FREEZE").
-# "AUTOREPLACE" = Allows to customize what can be automatically replaced (ex: "AUTOREPLACE tools" restricts the item replacement to tools).
-#                 You can disable completely the feature using "AUTOREPLACE nothing".
+# All the keywords you can use can be found in the InvTweaksTree.xml file.
+# Note: you don't need to restart the game to reload your configuration, just press the sorting key.
 
 # INVENTORY GRID
 #     1   2   3   4   5   6   7   8   9
@@ -49,3 +28,21 @@ D LOCKED
 # C [C1][C2][C3][C4][C5][C6][C7][C8][C9]
 #  
 # D [D1][D2][D3][D4][D5][D6][D7][D8][D9]
+
+# MULTIPLE CONFIGURATIONS
+# Any word followed by a colon ':' defines a new configuration (ex: "Fighting:").
+# You can then swap between the configurations by holding the sorting key for 1 second.
+
+# ADVANCED RULES
+# r modifier         = Reverse the sorting order for a row/column (ex: "Ar sword" sorts from right to left)
+# v modifier         = For rectangle rules. Sorts vertically instead of horizontally (ex: "A1-B8v blocks")
+# "LOCKED" rule      = Locks a part of the inventory so that stuff doesn't go there (ex: "D LOCKED").
+#                      Is overriden by more specific rules ("D LOCKED" is overriden by "D1 torch" or "1 swords").
+# "FROZEN" rule      = Completely ignores the slot during sorting (ex: "D8 FREEZE").
+# "AUTOREPLACE" rule = Allows to customize what can be automatically replaced
+#                      (ex: "AUTOREPLACE tools" restricts the item replacement to tools).
+#                      You can disable completely the feature using "AUTOREPLACE nothing".
+
+# TIPS
+# * Rows are, by default, sorted from left to right, and columns from bottom to top.
+# * The rectangle rules "A1-C3", "C3-A1", "A3-C1" and "C1-A3" don't behave exactly the same!

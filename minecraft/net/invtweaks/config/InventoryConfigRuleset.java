@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import net.invtweaks.Const;
 import net.invtweaks.tree.ItemTree;
-import net.minecraft.src.InvTweaks;
 
 public class InventoryConfigRuleset {
 
@@ -17,7 +17,7 @@ public class InventoryConfigRuleset {
 	private int[] lockPriorities;
 	private boolean[] frozenSlots;
 	private Vector<Integer> lockedSlots;
-	private Vector<InventoryConfigRule> rules;
+    private Vector<InventoryConfigRule> rules;
 	private Vector<String> autoReplaceRules;
 	private boolean debugEnabled;
 	
@@ -31,11 +31,11 @@ public class InventoryConfigRuleset {
 		this.tree = tree;
 		this.name = name;
 		
-		lockPriorities = new int[InvTweaks.INVENTORY_SIZE];
+		lockPriorities = new int[Const.INVENTORY_SIZE];
 		for (int i = 0; i < lockPriorities.length; i++) {
 			lockPriorities[i] = 0;
 		}
-		frozenSlots = new boolean[InvTweaks.INVENTORY_SIZE];
+		frozenSlots = new boolean[Const.INVENTORY_SIZE];
 		for (int i = 0; i < frozenSlots.length; i++) {
 			frozenSlots[i] = false;
 		}
@@ -69,10 +69,12 @@ public class InventoryConfigRuleset {
 				
 				// Locking rule
 				if (words[1].equals(InvTweaksConfig.LOCKED)) {
-					int[] newLockedSlots = InventoryConfigRule.getRulePreferredPositions(
-									words[0], InvTweaks.INVENTORY_SIZE,
-									InvTweaks.INVENTORY_ROW_SIZE);
-					int lockPriority = InventoryConfigRule.getRuleType(words[0]).getHighestPriority();
+					int[] newLockedSlots = InventoryConfigRule
+					        .getRulePreferredPositions(
+								words[0], Const.INVENTORY_SIZE,
+								Const.INVENTORY_ROW_SIZE);
+					int lockPriority = InventoryConfigRule.
+					        getRuleType(words[0]).getHighestPriority();
 					for (int i : newLockedSlots) {
 						lockPriorities[i] = lockPriority;
 					}
@@ -81,9 +83,10 @@ public class InventoryConfigRuleset {
 				
 				// Freeze rule
 				else if (words[1].equals(InvTweaksConfig.FROZEN)) {
-					int[] newLockedSlots = InventoryConfigRule.getRulePreferredPositions(
-									words[0], InvTweaks.INVENTORY_SIZE,
-									InvTweaks.INVENTORY_ROW_SIZE);
+					int[] newLockedSlots = InventoryConfigRule
+					        .getRulePreferredPositions(
+								words[0], Const.INVENTORY_SIZE,
+								Const.INVENTORY_ROW_SIZE);
 					for (int i : newLockedSlots) {
 						frozenSlots[i] = true;
 					}
@@ -109,8 +112,8 @@ public class InventoryConfigRuleset {
 					
 					if (isValidKeyword) {
 						newRule = new InventoryConfigRule(tree, words[0], 
-								keyword.toLowerCase(), InvTweaks.INVENTORY_SIZE,
-								InvTweaks.INVENTORY_ROW_SIZE);
+								keyword.toLowerCase(), Const.INVENTORY_SIZE,
+								Const.INVENTORY_ROW_SIZE);
 						rules.add(newRule);
 						return null;
 					}

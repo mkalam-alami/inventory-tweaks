@@ -10,16 +10,16 @@ import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
+import net.invtweaks.Const;
 import net.invtweaks.Obfuscation;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.config.InventoryConfigRule.RuleType;
-import net.invtweaks.tree.ItemTreeItem;
 import net.invtweaks.tree.ItemTree;
+import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Container;
 import net.minecraft.src.ContainerDispenser;
-import net.minecraft.src.InvTweaks;
 import net.minecraft.src.ItemStack;
 
 public class InventoryAlgorithms extends Obfuscation {
@@ -113,7 +113,7 @@ public class InventoryAlgorithms extends Obfuscation {
 				InventoryConfigRule rule = rulesIt.next();
 				int rulePriority = rule.getPriority();
 	
-				if (log.getLevel() == InvTweaks.DEBUG)
+				if (log.getLevel() == Const.DEBUG)
 					log.info("Rule : "+rule.getKeyword()+"("+rulePriority+")");
 	
 				// For every item in the inventory
@@ -170,7 +170,7 @@ public class InventoryAlgorithms extends Obfuscation {
 		//// Sort remaining
 		defaultSorting(inventory);
 
-		if (log.getLevel() == InvTweaks.DEBUG) {
+		if (log.getLevel() == Const.DEBUG) {
 			timer = System.nanoTime()-timer;
 			log.info("Sorting done in "
 					+ inventory.getClickCount() + " clicks and "
@@ -202,7 +202,7 @@ public class InventoryAlgorithms extends Obfuscation {
 			// Fake rules that match the exact item first
 			matchingRules.add(new InventoryConfigRule(
 					tree, "D"+(slot-27), item.getName(),
-					InvTweaks.INVENTORY_SIZE, InvTweaks.INVENTORY_ROW_SIZE));
+					Const.INVENTORY_SIZE, Const.INVENTORY_ROW_SIZE));
 		}
 		for (InventoryConfigRule rule : rules) {
 			if (rule.getType() == RuleType.TILE || rule.getType() == RuleType.COLUMN) {
@@ -219,7 +219,7 @@ public class InventoryAlgorithms extends Obfuscation {
 		// First, look for the same item,
 		// else one that matches the slot's rules
 		for (InventoryConfigRule rule : matchingRules) {
-			for (int i = 0; i < InvTweaks.INVENTORY_SIZE; i++) {
+			for (int i = 0; i < Const.INVENTORY_SIZE; i++) {
 				candidateStack = inventory.getItemStack(i);
 				if (candidateStack != null) {
 					List<ItemTreeItem> candidateItems = tree.getItems(
@@ -277,16 +277,16 @@ public class InventoryAlgorithms extends Obfuscation {
 						int pollingTime = 0;
 						setHasInventoryChanged(false);
 						while(!hasInventoryChanged()
-								&& pollingTime < InvTweaks.POLLING_TIMEOUT) {
-							trySleep(InvTweaks.POLLING_DELAY);
+								&& pollingTime < Const.POLLING_TIMEOUT) {
+							trySleep(Const.POLLING_DELAY);
 						}
-						if (pollingTime < InvTweaks.AUTOREPLACE_DELAY)
-							trySleep(InvTweaks.AUTOREPLACE_DELAY - pollingTime);
-						if (pollingTime >= InvTweaks.POLLING_TIMEOUT)
+						if (pollingTime < Const.AUTOREPLACE_DELAY)
+							trySleep(Const.AUTOREPLACE_DELAY - pollingTime);
+						if (pollingTime >= Const.POLLING_TIMEOUT)
 							log.warning("Autoreplace timout");
 					}
 					else {
-						trySleep(InvTweaks.AUTOREPLACE_DELAY);
+						trySleep(Const.AUTOREPLACE_DELAY);
 					}
 					
 					// In POLLING_DELAY ms, things might have changed
@@ -295,14 +295,14 @@ public class InventoryAlgorithms extends Obfuscation {
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (inventory.moveStack(i, targetedSlot, Integer.MAX_VALUE)
 									!= SortableContainer.MOVE_FAILURE) {
-								if (!config.getProperty(InvTweaksConfig.PROP_ENABLEAUTOREPLACESOUND).equals("false")) {
+								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTOREPLACE_SOUND).equals("false")) {
 					    			mc.theWorld.playSoundAtEntity(getThePlayer(), 
 					    					"mob.chickenplop", 0.15F, 0.2F);
 								}
 								// If item are swapped (like for mushroom soups),
 								// put the item back in the inventory if it is in the hotbar
 								if (inventory.getItemStack(i) != null && i >= 27) {
-									for (int j = 0; j < InvTweaks.INVENTORY_SIZE; j++) {
+									for (int j = 0; j < Const.INVENTORY_SIZE; j++) {
 										if (inventory.getItemStack(j) == null) {
 											inventory.moveStack(i, j, Integer.MAX_VALUE);
 											break;

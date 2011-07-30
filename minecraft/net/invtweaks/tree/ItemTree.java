@@ -9,6 +9,13 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+/**
+ * Contains the whole hierarchy of categories and items, as defined
+ * in the XML item tree. Is used to recognize keywords and store
+ * item orders.
+ * @author Jimeo Wan
+ *
+ */
 public class ItemTree {
 
     public static final int MAX_CATEGORY_RANGE = 1000;

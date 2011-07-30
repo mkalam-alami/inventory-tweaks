@@ -12,6 +12,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * Loads the item tree by parsing the XML file.
+ * @author Jimeo Wan
+ *
+ */
 public class ItemTreeLoader extends DefaultHandler {
 
     private final static String ATTR_RANGE_MIN = "min";

@@ -12,9 +12,16 @@ import net.minecraft.src.GuiDispenser;
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.InventoryPlayer;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.KeyBinding;
 import net.minecraft.src.PlayerController;
 import net.minecraft.src.Slot;
 
+/**
+ * Obfuscation layer, used to centralize most calls to Minecraft code.
+ * Eases transitions when Minecraft then MCP is updated.
+ * @author Jimeo Wan
+ *
+ */
 public class Obfuscation {
 
     protected Minecraft mc;
@@ -197,6 +204,10 @@ public class Obfuscation {
     protected boolean isChestOrDispenser(GuiScreen guiScreen) {
         return (guiScreen instanceof GuiChest /* GuiChest */
         || guiScreen instanceof GuiDispenser /* GuiDispenser */);
+    }
+    
+    protected int getKeycode(KeyBinding keyBinding) {
+        return keyBinding.keyCode;
     }
 
 }

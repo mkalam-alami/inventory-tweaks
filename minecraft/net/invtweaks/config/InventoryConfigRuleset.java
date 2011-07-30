@@ -8,6 +8,14 @@ import java.util.logging.Logger;
 import net.invtweaks.Const;
 import net.invtweaks.tree.ItemTree;
 
+/**
+ * Stores a whole configuration defined by rules.
+ * Several of them can be stored in the global configuration,
+ * as the mod supports several rule configurations.
+ * 
+ * @author Jimeo Wan
+ *
+ */
 public class InventoryConfigRuleset {
 
 	@SuppressWarnings("unused")

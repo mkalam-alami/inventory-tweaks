@@ -18,6 +18,12 @@ import net.invtweaks.tree.ItemTreeItem;
 import net.invtweaks.tree.ItemTreeLoader;
 import net.minecraft.src.InvTweaks;
 
+/**
+ * The global mod's configuration.
+ * 
+ * @author Jimeo Wan
+ *
+ */
 public class InvTweaksConfig {
 
     @SuppressWarnings("unused")
@@ -216,7 +222,7 @@ public class InvTweaksConfig {
     }
 
     /**
-     * @return The locked slots only TODO Order by decreasing priority
+     * @return The locked slots only
      */
     public Vector<Integer> getLockedSlots() {
         return rulesets.get(currentRuleset).getLockedSlots();

@@ -1,24 +1,16 @@
 package net.minecraft.src;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import net.invtweaks.Const;
 import net.invtweaks.Obfuscation;
 import net.invtweaks.config.InvTweaksConfig;
+import net.invtweaks.config.InvTweaksConfigManager;
 import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.gui.GuiInventorySettings;
 import net.invtweaks.logic.InventoryAlgorithms;
@@ -39,15 +31,9 @@ public class InvTweaks extends Obfuscation {
     private static KeyBinding sortKeyBinding = new KeyBinding("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
 
     /**
-     * The mod's configuration.
+     * The configuration loader.
      */
-    private InvTweaksConfig config = null;
-    private long storedConfigLastModified = 0;
-    
-    /**
-     * The mod's logic for sorting and moving items.
-     */
-    private InventoryAlgorithms inventoryAlgorithms = null;
+    private InvTweaksConfigManager cfgManager = null;
     
     /**
      * Attributes to remember the status of chest sorting
@@ -78,7 +64,6 @@ public class InvTweaks extends Obfuscation {
      * @param mc
      */
     public InvTweaks(Minecraft mc) {
-
         super(mc);
 
         log.setLevel(Const.DEFAULT_LOG_LEVEL);
@@ -87,7 +72,8 @@ public class InvTweaks extends Obfuscation {
         instance = this;
 
         // Load config files
-        if (makeSureConfigurationIsLoaded()) {
+        cfgManager = new InvTweaksConfigManager(mc);
+        if (cfgManager.makeSureConfigurationIsLoaded()) {
             log.info("Mod initialized");
         } else {
             log.severe("Mod failed to initialize!");
@@ -102,7 +88,7 @@ public class InvTweaks extends Obfuscation {
     public final void onSortingKeyPressed() {
         synchronized (this) {
 
-            if (!makeSureConfigurationIsLoaded()) {
+            if (!cfgManager.makeSureConfigurationIsLoaded()) {
                 return;
             }
 
@@ -123,15 +109,17 @@ public class InvTweaks extends Obfuscation {
      */
     public void onItemPickup() {
 
-        if (!makeSureConfigurationIsLoaded()) {
+        if (!cfgManager.makeSureConfigurationIsLoaded()) {
             return;
         }
-
+        InvTweaksConfig config = cfgManager.getConfig();
+        
         // Handle option to disable this feature
-        if (config.getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP).equals("false")) {
+        if (cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP).equals("false")) {
             return;
         }
 
+        
         SortableContainer container = new SortableContainer(mc, config,
                 getPlayerContainer(), true);
 
@@ -285,8 +273,10 @@ public class InvTweaks extends Obfuscation {
 
     private boolean onTick() {
 
-        if (!makeSureConfigurationIsLoaded())
+        if (!cfgManager.makeSureConfigurationIsLoaded()) {
             return false;
+        }
+        InvTweaksConfig config = cfgManager.getConfig();
 
         // Clone the hotbar to be able to monitor changes on it
         GuiScreen currentScreen = getCurrentScreen();
@@ -295,7 +285,7 @@ public class InvTweaks extends Obfuscation {
         }
 
         // If the key is hold for 1s, switch config
-        if (Keyboard.isKeyDown(sortKeyBinding.keyCode)) { // TODO Obf layer
+        if (Keyboard.isKeyDown(getKeycode(sortKeyBinding))) {
             long currentTime = System.currentTimeMillis();
             if (sortingKeyPressedDate == 0) {
                 sortingKeyPressedDate = currentTime;
@@ -340,7 +330,7 @@ public class InvTweaks extends Obfuscation {
         ItemStack selectedItem = getItemStack(getMainInventory(), getFocusedSlot());
 
         try {
-            inventoryAlgorithms.sortContainer((guiScreen == null) ? getPlayerContainer() : getContainer((GuiContainer) guiScreen), /* GuiContainer */
+            cfgManager.getInventoryAlgorithms().sortContainer((guiScreen == null) ? getPlayerContainer() : getContainer((GuiContainer) guiScreen), /* GuiContainer */
             true, InventoryAlgorithms.INVENTORY);
         } catch (TimeoutException e) {
             logInGame("Failed to sort inventory: " + e.getMessage());
@@ -359,6 +349,7 @@ public class InvTweaks extends Obfuscation {
     @SuppressWarnings("unchecked")
     private void handleGUILayout(GuiScreen guiScreen) {
 
+        InvTweaksConfig config = cfgManager.getConfig();
         boolean isContainer = isChestOrDispenser(guiScreen);
 
         if (isContainer || guiScreen instanceof GuiInventory) {
@@ -424,9 +415,10 @@ public class InvTweaks extends Obfuscation {
 
         if (Mouse.isButtonDown(2)) {
 
-            if (!makeSureConfigurationIsLoaded()) {
+            if (!cfgManager.makeSureConfigurationIsLoaded()) {
                 return;
             }
+            InvTweaksConfig config = cfgManager.getConfig();
 
             // Convenient Inventory compatibility: Disable middle clicking
             // (Only once, by registering a new property. The player can then
@@ -508,7 +500,8 @@ public class InvTweaks extends Obfuscation {
                                 chestAlgorithm = InventoryAlgorithms.DEFAULT;
                             }
                             try {
-                                inventoryAlgorithms.sortContainer(container, false, chestAlgorithm);
+                                cfgManager.getInventoryAlgorithms().sortContainer(
+                                        container, false, chestAlgorithm);
                             } catch (TimeoutException e) {
                                 logInGameError("Failed to sort container", e);
                             }
@@ -533,9 +526,9 @@ public class InvTweaks extends Obfuscation {
         ItemStack currentStack = getFocusedStack();
         int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
         int currentStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
-        int focusedSlot = getFocusedSlot() + 27; // Convert to container slots
-                                                 // index
-
+        int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
+        InvTweaksConfig config = cfgManager.getConfig();
+        
         // Auto-replace item stack
         if (currentStackId != storedStackId || currentStackDamage != storedStackDamage) {
 
@@ -550,7 +543,7 @@ public class InvTweaks extends Obfuscation {
                     getCurrentScreen() instanceof GuiEditSign /* GuiEditSign */)) {
 
                 if (config.autoreplaceEnabled(storedStackId, storedStackId)) {
-                    inventoryAlgorithms.autoReplaceSlot(focusedSlot, storedStackId, storedStackDamage);
+                    cfgManager.getInventoryAlgorithms().autoReplaceSlot(focusedSlot, storedStackId, storedStackDamage);
                 }
             }
         }
@@ -560,202 +553,9 @@ public class InvTweaks extends Obfuscation {
 
     }
 
-    // TODO Only reload modified file(s)
-    private boolean makeSureConfigurationIsLoaded() {
-
-        // Load properties
-        try {
-            if (config != null && config.refreshProperties()) {
-                logInGame("Mod properties loaded");
-            }
-        } catch (IOException e) {
-            logInGameError("Failed to refresh properties from file", e);
-        }
-
-        // Load rules + tree files
-        long configLastModified = computeConfigLastModified();
-        if (config != null) {
-            // Check time of last edit for both configuration files.
-            if (storedConfigLastModified != configLastModified) {
-                return loadConfig(); // Reload
-            } else {
-                return true;
-            }
-        } else {
-            storedConfigLastModified = configLastModified;
-            return loadConfig(); // Reload
-        }
-    }
-
-    private long computeConfigLastModified() {
-        return new File(Const.CONFIG_RULES_FILE).lastModified()
-        + new File(Const.CONFIG_TREE_FILE).lastModified();
-    }
-
-    /**
-     * Tries to load mod configuration from file, with error handling. If it
-     * fails, the config attribute will remain null.
-     * 
-     * @param config
-     */
-    private boolean loadConfig() {
-
-        // Compatibility: Move/Remove old files
-
-        if (new File(Const.OLD_CONFIG_RULES_FILE).exists()) {
-            if (new File(Const.CONFIG_RULES_FILE).exists()) {
-                backupFile(new File(Const.CONFIG_RULES_FILE), Const.CONFIG_RULES_FILE);
-            }
-            new File(Const.OLD_CONFIG_RULES_FILE).renameTo(new File(Const.CONFIG_RULES_FILE));
-        }
-        if (new File(Const.OLD_CONFIG_TREE_FILE).exists()) {
-            backupFile(new File(Const.OLD_CONFIG_TREE_FILE), Const.CONFIG_TREE_FILE);
-        }
-
-        // Create missing files
-
-        if (!new File(Const.CONFIG_RULES_FILE).exists() && 
-                extractFile(Const.DEFAULT_CONFIG_FILE, Const.CONFIG_RULES_FILE)) {
-            logInGame(Const.CONFIG_RULES_FILE + " missing, creating default one.");
-        }
-        if (!new File(Const.CONFIG_TREE_FILE).exists() && 
-                extractFile(Const.DEFAULT_CONFIG_TREE_FILE, Const.CONFIG_TREE_FILE)) {
-            logInGame(Const.CONFIG_TREE_FILE + " missing, creating default one.");
-        }
-
-        storedConfigLastModified = computeConfigLastModified();
-
-        // Load
-
-        String error = null;
-
-        try {
-            
-            // Configuration creation
-            if (config == null) {
-                config = new InvTweaksConfig(Const.CONFIG_RULES_FILE, Const.CONFIG_TREE_FILE);
-                inventoryAlgorithms = new InventoryAlgorithms(mc, config); // Load
-                                                                           // algorithm
-            }
-            
-            // Configuration loading
-            config.load();
-            
-            log.setLevel(config.getLogLevel());
-            logInGame("Configuration loaded");
-            showConfigErrors(config);
-        } catch (FileNotFoundException e) {
-            error = "Config file not found";
-        } catch (Exception e) {
-            error = "Error while loading config: " + e.getMessage();
-        }
-
-        if (error != null) {
-            logInGame(error);
-            log.severe(error);
-            config = null;
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private void backupFile(File file, String baseName) {
-        String newFileName;
-        if (new File(baseName + ".bak").exists()) {
-            int i = 1;
-            while (new File(baseName + ".bak" + i).exists()) {
-                i++;
-            }
-            newFileName = baseName + ".bak" + i;
-        } else {
-            newFileName = baseName + ".bak";
-        }
-        file.renameTo(new File(newFileName));
-    }
-
-    private boolean extractFile(String resource, String destination) {
-
-        String resourceContents = "";
-        URL resourceUrl = InvTweaks.class.getResource(resource);
-
-        // Extraction from minecraft.jar
-        if (resourceUrl != null) {
-            try {
-                Object o = resourceUrl.getContent();
-                if (o instanceof InputStream) {
-                    InputStream content = (InputStream) o;
-                    while (content.available() > 0) {
-                        byte[] bytes = new byte[content.available()];
-                        content.read(bytes);
-                        resourceContents += new String(bytes);
-                    }
-                }
-            } catch (IOException e) {
-                resourceUrl = null;
-            }
-        }
-
-        // Extraction from mods folder
-        if (resourceUrl == null) {
-
-            File modFolder = new File(Const.MINECRAFT_DIR + File.separatorChar + "mods");
-
-            File[] zips = modFolder.listFiles();
-            if (zips != null && zips.length > 0) {
-                for (File zip : zips) {
-                    try {
-                        ZipFile invTweaksZip = new ZipFile(zip);
-                        ZipEntry zipResource = invTweaksZip.getEntry(resource);
-                        if (zipResource != null) {
-                            InputStream content = invTweaksZip.getInputStream(zipResource);
-                            while (content.available() > 0) {
-                                byte[] bytes = new byte[content.available()];
-                                content.read(bytes);
-                                resourceContents += new String(bytes);
-                            }
-                            break;
-                        }
-                    } catch (Exception e) {
-                        log.warning("Failed to extract " + resource + " from mod: " + e.getMessage());
-                    }
-                }
-            }
-        }
-
-        // Write to destination
-        if (!resourceContents.isEmpty()) {
-            try {
-                FileWriter f = new FileWriter(destination);
-                f.write(resourceContents);
-                f.close();
-                return true;
-            } catch (IOException e) {
-                logInGame("The mod won't work, because " + destination + " creation failed!");
-                log.severe("Cannot create " + destination + " file: " + e.getMessage());
-                return false;
-            }
-        } else {
-            logInGame("The mod won't work, because " + resource + " could not be found!");
-            log.severe("Cannot create " + destination + " file: " + resource + " not found");
-            return false;
-        }
-    }
-
     private void playClick() {
-        if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_SOUND).equals("false")) {
+        if (!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_SOUND).equals("false")) {
             mc.theWorld.playSoundAtEntity(getThePlayer(), "random.click", 0.2F, 1.8F);
-        }
-    }
-
-    private void showConfigErrors(InvTweaksConfig config) {
-        Vector<String> invalid = config.getInvalidKeywords();
-        if (invalid.size() > 0) {
-            String error = "Invalid keywords found: ";
-            for (String keyword : config.getInvalidKeywords()) {
-                error += keyword + " ";
-            }
-            logInGame(error);
         }
     }
 
@@ -812,6 +612,7 @@ public class InvTweaks extends Obfuscation {
          * Sort container
          */
         public boolean mousePressed(Minecraft minecraft, int i, int j) {
+            InvTweaksConfig config = cfgManager.getConfig();
             if (super.mousePressed(minecraft, i, j)) {
                 // Put hold item down if necessary
                 SortableContainer container = new SortableContainer(mc, config, getPlayerContainer(), true);
@@ -893,7 +694,7 @@ public class InvTweaks extends Obfuscation {
         public boolean mousePressed(Minecraft minecraft, int i, int j) {
             if (super.mousePressed(minecraft, i, j)) {
                 try {
-                    inventoryAlgorithms.sortContainer(container, false, algorithm);
+                    cfgManager.getInventoryAlgorithms().sortContainer(container, false, algorithm);
                 } catch (TimeoutException e) {
                     logInGameError("Failed to sort container", e);
                 }

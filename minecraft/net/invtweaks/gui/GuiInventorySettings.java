@@ -12,6 +12,12 @@ import net.minecraft.src.GuiScreen;
 import net.minecraft.src.GuiSmallButton;
 import net.minecraft.src.InvTweaks;
 
+/**
+ * The inventory and chest settings menu.
+ * 
+ * @author Jimeo Wan
+ *
+ */
 public class GuiInventorySettings extends GuiScreen {
 
     @SuppressWarnings("unused")

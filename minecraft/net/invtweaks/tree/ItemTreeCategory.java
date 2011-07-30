@@ -8,6 +8,11 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+/**
+ * Representation of a category in the item tree, i.e. a group of items.
+ * @author Jimeo Wan
+ *
+ */
 public class ItemTreeCategory {
 
     @SuppressWarnings("unused")

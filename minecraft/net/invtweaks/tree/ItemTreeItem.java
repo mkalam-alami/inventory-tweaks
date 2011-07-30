@@ -3,6 +3,11 @@ package net.invtweaks.tree;
 import net.invtweaks.Obfuscation;
 import net.minecraft.src.ItemStack;
 
+/**
+ * Representation of an item in the item tree.
+ * @author Jimeo Wan
+ *
+ */
 public class ItemTreeItem extends Obfuscation implements Comparable<ItemTreeItem> {
 
     private String name;

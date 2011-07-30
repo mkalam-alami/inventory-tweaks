@@ -22,6 +22,12 @@ import net.minecraft.src.Container;
 import net.minecraft.src.ContainerDispenser;
 import net.minecraft.src.ItemStack;
 
+/**
+ * Set of algorithms used for sorting and the auto-refilling of the hotbar.
+ * 
+ * @author Jimeo Wan
+ *
+ */
 public class InventoryAlgorithms extends Obfuscation {
     
     private static final Logger log = Logger.getLogger("InvTweaks");
@@ -48,7 +54,7 @@ public class InventoryAlgorithms extends Obfuscation {
 	 * @return The number of clicks that were needed
 	 * @throws TimeoutException 
      */
-    public final long sortContainer(Container container, boolean inventoryPart, int algorithm) throws TimeoutException {
+    public final long sortContainer(Container minecraftContainer, boolean inventoryPart, int algorithm) throws TimeoutException {
     	
     	if (config == null)
     		return -1;
@@ -60,12 +66,12 @@ public class InventoryAlgorithms extends Obfuscation {
     	long timer = System.nanoTime();
 
     	ItemTree tree = config.getTree();
-    	SortableContainer inventory;
-    	inventory = new SortableContainer(mc, config, container, inventoryPart); // TODO rename to container
+    	SortableContainer container = new SortableContainer(mc, config,
+    	        minecraftContainer, inventoryPart);
 
 		//// Empty hand (needed in SMP)
 		if (isMultiplayerWorld()) {
-			inventory.putHoldItemDown();
+			container.putHoldItemDown();
 		}
 		
 		if (algorithm != DEFAULT) {
@@ -75,19 +81,20 @@ public class InventoryAlgorithms extends Obfuscation {
 			
 			if (algorithm == INVENTORY) {
 				rules = config.getRules();
+				// TODO Get locked slots by decreasing priority to improve algorithm
 				lockedSlots = config.getLockedSlots();
 				
 		    	//// Merge stacks to fill the ones in locked slots
 				log.info("Merging stacks.");
-		    	for (int i = inventory.getSize()-1; i >= 0; i--) {
-		    		ItemStack from = inventory.getItemStack(i);
+		    	for (int i = container.getSize()-1; i >= 0; i--) {
+		    		ItemStack from = container.getItemStack(i);
 		    		if (from != null) {
 		    	    	for (Integer j : lockedSlots) {
-		    	    		ItemStack to = inventory.getItemStack(j);
-		    	    		if (to != null && inventory.canBeMerged(i, j)) {
-		    	    			boolean result = inventory.mergeStacks(i, j);
-		    	    			inventory.markAsNotMoved(j);
-		    	    			if (result == SortableContainer.STACK_EMPTIED) {
+		    	    		ItemStack to = container.getItemStack(j);
+		    	    		if (to != null && container.canBeMerged(i, j)) {
+		    	    			int result = container.swapOrMerge(i, j, Integer.MAX_VALUE);
+		    	    			container.markAsNotMoved(j);
+		    	    			if (result == SortableContainer.MOVE_OK_OLD_SLOT_EMPTY) {
 		        	    			break;
 		    	    			}
 		    	    		}
@@ -97,8 +104,8 @@ public class InventoryAlgorithms extends Obfuscation {
 				
 			}
 			else {
-				int rowSize = (container instanceof ContainerDispenser) ? 3 : 9;
-				rules = computeLineSortingRules(inventory,
+				int rowSize = (minecraftContainer instanceof ContainerDispenser) ? 3 : 9;
+				rules = computeLineSortingRules(container,
 						rowSize, (algorithm == HORIZONTAL));
 				lockedSlots = new Vector<Integer>();
 			}
@@ -117,12 +124,12 @@ public class InventoryAlgorithms extends Obfuscation {
 					log.info("Rule : "+rule.getKeyword()+"("+rulePriority+")");
 	
 				// For every item in the inventory
-				for (int i = 0; i < inventory.getSize(); i++) {
-					ItemStack from = inventory.getItemStack(i);
+				for (int i = 0; i < container.getSize(); i++) {
+					ItemStack from = container.getItemStack(i);
 
 					// If the rule is strong enough to move the item and it matches the item
-		    		if (inventory.hasToBeMoved(i) && 
-		    				inventory.getLockPriority(i) < rulePriority) {
+		    		if (container.hasToBeMoved(i) && 
+		    				container.getLockPriority(i) < rulePriority) {
 						List<ItemTreeItem> fromItems = tree.getItems(
 								getItemID(from), getItemDamage(from));
 		    			if (tree.matches(fromItems, rule.getKeyword())) {
@@ -132,14 +139,14 @@ public class InventoryAlgorithms extends Obfuscation {
 		    				int stackToMove = i;
 		    				for (int j = 0; j < preferredSlots.length; j++) {
 		    					int k = preferredSlots[j];
-		    					int moveResult = inventory.moveStack(stackToMove, k, rulePriority);
+		    					int moveResult = container.moveStack(stackToMove, k, rulePriority);
 		    					if (moveResult != SortableContainer.MOVE_FAILURE) {
-		    						if (moveResult == SortableContainer.MOVE_TO_EMPTY_SLOT
+		    						if (moveResult == SortableContainer.MOVE_OK_OLD_SLOT_EMPTY
 		    								|| stackToMove == k) {
 		    							break;
 		    						}
 		    						else {
-		    							from = inventory.getItemStack(moveResult);
+		    							from = container.getItemStack(moveResult);
 		    							fromItems = tree.getItems(getItemID(from), getItemDamage(from));
 		    							if (!tree.matches(fromItems, rule.getKeyword())) {
 		    								break;
@@ -159,25 +166,25 @@ public class InventoryAlgorithms extends Obfuscation {
 			//// Don't move locked stacks
 			log.info("Locking stacks.");
 			
-			for (int i = 0; i < inventory.getSize(); i++) {
-				if (inventory.hasToBeMoved(i) && inventory.getLockPriority(i) > 0) {
-					inventory.markAsMoved(i, 1);
+			for (int i = 0; i < container.getSize(); i++) {
+				if (container.hasToBeMoved(i) && container.getLockPriority(i) > 0) {
+					container.markAsMoved(i, 1);
 				}
 			}
 
 		}
 		
 		//// Sort remaining
-		defaultSorting(inventory);
+		defaultSorting(container);
 
 		if (log.getLevel() == Const.DEBUG) {
 			timer = System.nanoTime()-timer;
 			log.info("Sorting done in "
-					+ inventory.getClickCount() + " clicks and "
+					+ container.getClickCount() + " clicks and "
 					+ timer + "ns");
 		}
 
-    	return inventory.getClickCount();
+    	return container.getClickCount();
     }
     
     /**

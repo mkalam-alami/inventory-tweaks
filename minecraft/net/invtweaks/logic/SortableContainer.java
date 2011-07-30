@@ -15,6 +15,22 @@ import net.minecraft.src.ContainerPlayer;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 
+/**
+ * Core of the sorting behaviour. Allows to move items in a container
+ * (inventory or chest) with respect to the mod's configuration.
+ * 
+ * Here are the different layers of functions, from high to low levels:
+ * moveStack
+ *   |- swapOrMerge
+ *       |- remove
+ *           |- putStackInSlot
+ *       |- put
+ *           |- putStackInSlot
+ *       |- click (SMP only)
+ * 
+ * @author Jimeo Wan
+ *
+ */
 public class SortableContainer extends Obfuscation {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
@@ -22,7 +38,7 @@ public class SortableContainer extends Obfuscation {
     public static final boolean STACK_NOT_EMPTIED = true;
     public static final boolean STACK_EMPTIED = false;
 
-    public static final int MOVE_TO_EMPTY_SLOT = -2;
+    public static final int MOVE_OK_OLD_SLOT_EMPTY = -2;
     public static final int MOVE_FAILURE = -1;
 
     private static int[] DEFAULT_LOCK_PRIORITIES = null;
@@ -104,13 +120,9 @@ public class SortableContainer extends Obfuscation {
      * occupied but i is of grater priority (even if they are of same ID).
      * CONTRACT: i slot must not be null.
      * 
-     * @param i
-     *            from slot
-     * @param j
-     *            to slot
-     * @param priority
-     *            The rule priority. Use 1 if the stack was not moved using a
-     *            rule.
+     * @param i from slot
+     * @param j to slot
+     * @param priority  The rule priority. Use 1 if the stack was not moved using a rule.
      * @return MOVE_FAILURE if it failed, MOVE_TO_EMPTY_SLOT if the j slot was
      *         empty, n if the j stack has been put in the n slot.
      * @throws TimeoutException
@@ -133,7 +145,7 @@ public class SortableContainer extends Obfuscation {
             // Move to empty slot
             if (targetEmpty && lockPriorities[j] <= priority && !frozenSlots[j]) {
                 swapOrMerge(i, j, priority);
-                return MOVE_TO_EMPTY_SLOT;
+                return MOVE_OK_OLD_SLOT_EMPTY;
             }
 
             // Try to swap/merge
@@ -159,116 +171,41 @@ public class SortableContainer extends Obfuscation {
     }
 
     /**
-     * Merge from stack i to stack j, only if i is not under a greater lock than
-     * j.
-     * 
-     * @param i
-     *            from slot
-     * @param j
-     *            to slot
-     * @return STACK_NOT_EMPTIED if items remain in i, STACK_EMPTIED otherwise.
-     * @throws TimeoutException
-     */
-    public boolean mergeStacks(int i, int j) throws TimeoutException {
-        if (frozenSlots[j] || frozenSlots[i]) {
-            return STACK_NOT_EMPTIED;
-        }
-        if (lockPriorities[i] <= lockPriorities[j]) {
-            return (swapOrMerge(i, j, 1) == 0) ? STACK_EMPTIED : STACK_NOT_EMPTIED;
-        } else {
-            return STACK_NOT_EMPTIED;
-        }
-    }
-
-    public boolean hasToBeMoved(int slot) {
-        return getStackInSlot(slot) != null && rulePriority[slot] == -1;
-    }
-
-    /**
-     * Note: asserts stacks are not null
-     */
-    public boolean areSameItem(ItemStack stack1, ItemStack stack2) {
-        // Note: may be invalid if a stackable item can take damage
-        // (currently never the case in vanilla, an never should be)
-        return getItemID(stack1) == getItemID(stack2) && (getItemDamage(stack1) == getItemDamage(stack2) // same
-                                                                                                         // item
-                                                                                                         // variant
-                || getMaxStackSize(stack1) == 1); // except if unstackable
-    }
-
-    public boolean canBeMerged(int i, int j) {
-        if (i == j || getStackInSlot(i) == null || getStackInSlot(j) == null) {
-            return false;
-        }
-        return areSameItem(getStackInSlot(i), getStackInSlot(j)) && getStackSize(getStackInSlot(j)) < getMaxStackSize(getStackInSlot(j));
-    }
-
-    public boolean isOrderedBefore(int i, int j) {
-
-        if (getStackInSlot(j) == null) {
-            return true;
-        } else if (getStackInSlot(i) == null || keywordOrder[i] == -1) {
-            return false;
-        } else {
-            if (keywordOrder[i] == keywordOrder[j]) {
-                // Items of same keyword orders can have different IDs,
-                // in the case of categories defined by a range of IDs
-                if (getItemID(getStackInSlot(i)) == getItemID(getStackInSlot(j))) {
-                    if (getStackSize(getStackInSlot(i)) == getStackSize(getStackInSlot(j))) {
-                        // Highest damage first for tools, else lowest damage.
-                        // No tool ordering for same ID in multiplayer (cannot
-                        // swap directly)
-                        return (getItemDamage(getStackInSlot(i)) > getItemDamage(getStackInSlot(j)) && getMaxStackSize(getStackInSlot(j)) == 1 && !isMultiplayer)
-                                || (getItemDamage(getStackInSlot(i)) < getItemDamage(getStackInSlot(j)) && getMaxStackSize(getStackInSlot(j)) > 1);
-                    } else {
-                        return getStackSize(getStackInSlot(i)) > getStackSize(getStackInSlot(j));
-                    }
-                } else {
-                    return getItemID(getStackInSlot(i)) > getItemID(getStackInSlot(j));
-                }
-            } else {
-                return keywordOrder[i] < keywordOrder[j];
-            }
-        }
-    }
-
-    /**
      * Swaps two stacks, i.e. clicks to i, then j, then back to i if necessary.
      * If the stacks are able to be merged, the biggest part will then be in j.
      * 
      * @param i
      * @param j
      * @return MOVE_FAILURE if it failed, MOVE_TO_EMPTY_SLOT if j was empty or
-     *         stacks are merge into one, n if j is now in n (at least
-     *         partially)
+     *         stacks are merged into one, n if j is now in n (at least partially)
      * @throws TimeoutException
      * 
      */
     public int swapOrMerge(int i, int j, int priority) throws TimeoutException {
-
+    
         if (frozenSlots[j] || frozenSlots[i]) {
             return MOVE_FAILURE;
         }
-
+    
         // Merge stacks
         if (canBeMerged(i, j)) {
-
+    
             int sum = getStackSize(getStackInSlot(i)) + getStackSize(getStackInSlot(j));
             int max = getMaxStackSize(getStackInSlot(j));
-
+    
             if (sum <= max) {
                 remove(i);
                 if (isMultiplayer) {
                     click(i);
                 }
-
+    
                 put(getStackInSlot(j), j, priority);
                 if (isMultiplayer) {
                     click(j);
                 } else {
                     setStackSize(getStackInSlot(j), sum);
                 }
-                return MOVE_TO_EMPTY_SLOT;
+                return MOVE_OK_OLD_SLOT_EMPTY;
             } else {
                 if (isMultiplayer) {
                     click(i);
@@ -282,10 +219,10 @@ public class SortableContainer extends Obfuscation {
                 return i;
             }
         }
-
+    
         // Swap stacks
         else {
-
+    
             // i to j
             ItemStack jStack = getStackInSlot(j);
             ItemStack iStack = remove(i);
@@ -294,7 +231,7 @@ public class SortableContainer extends Obfuscation {
                 click(j);
             }
             put(iStack, j, priority);
-
+    
             // j to i
             if (jStack != null) {
                 int dropSlot = i;
@@ -312,9 +249,71 @@ public class SortableContainer extends Obfuscation {
                 put(jStack, dropSlot, -1);
                 return dropSlot;
             } else {
-                return MOVE_TO_EMPTY_SLOT;
+                return MOVE_OK_OLD_SLOT_EMPTY;
             }
         }
+    }
+
+    /**
+     * (Multiplayer only) Click on the interface. Slower than manual swapping,
+     * but works in multiplayer.
+     * 
+     * @param slot The targeted slot
+     * @param priority Ignored
+     * @param oldSlot The stacks previous spot
+     * @param stack The stack that was in the slot before the operation
+     * @throws Exception
+     */
+    public void click(int slot) throws TimeoutException {
+        clickCount++;
+    
+        if (log.getLevel() == Const.DEBUG)
+            log.info("Click on " + slot);
+    
+        // After clicking, we'll need to wait for server answer before
+        // continuing.
+        // We'll do this by listening to any change in the slot, but this
+        // implies we
+        // check first if the click will indeed produce a change.
+        boolean uselessClick = false;
+        ItemStack stackInSlot = (getStackInSlot(slot) != null) ? copy(getStackInSlot(slot)) : null;
+        ItemStack stackInHand = getHoldStack();
+    
+        // Useless if empty stacks
+        if (stackInHand == null && stackInSlot == null)
+            uselessClick = true;
+        // Useless if destination stack is full
+        else if (stackInHand != null && stackInSlot != null && areSameItem(stackInHand, stackInSlot)
+                && getStackSize(stackInSlot) == getMaxStackSize(stackInSlot)) {
+            uselessClick = true;
+        }
+    
+        // Click!
+        clickInventory(getPlayerController(), getWindowId(container), // Select container
+                slot + offset, // Targeted slot
+                0, // Left-click
+                false, // Shift not held
+                entityPlayer);
+    
+        // Wait for inventory update
+        if (!uselessClick) {
+            int pollingTime = 0;
+            while (areItemStacksEqual(getStackInSlot(slot), stackInSlot) && pollingTime < Const.POLLING_TIMEOUT) {
+                InventoryAlgorithms.trySleep(Const.POLLING_DELAY);
+                pollingTime += Const.POLLING_DELAY;
+            }
+            if (pollingTime >= Const.POLLING_TIMEOUT) {
+                log.warning("Click timeout");
+            }
+            timeSpentWaiting += pollingTime;
+        }
+    
+        // Freeze protection (to protect from infinite clicking in SMP
+        // due to a mod bug, or the server not responding)
+        if (timeSpentWaiting > Const.SORTING_TIMEOUT) {
+            throw new TimeoutException("Timeout");
+        }
+    
     }
 
     public void markAsMoved(int i, int priority) {
@@ -354,6 +353,58 @@ public class SortableContainer extends Obfuscation {
         return true;
     }
 
+    public boolean canBeMerged(int i, int j) {
+        if (i == j || getStackInSlot(i) == null || getStackInSlot(j) == null) {
+            return false;
+        }
+        return areSameItem(getStackInSlot(i), getStackInSlot(j)) && getStackSize(getStackInSlot(j)) < getMaxStackSize(getStackInSlot(j));
+    }
+
+    public boolean hasToBeMoved(int slot) {
+        return getStackInSlot(slot) != null && rulePriority[slot] == -1;
+    }
+
+    /**
+     * Note: asserts stacks are not null
+     */
+    public boolean areSameItem(ItemStack stack1, ItemStack stack2) {
+        // Note: may be invalid if a stackable item can take damage
+        // (currently never the case in vanilla, an never should be)
+        return getItemID(stack1) == getItemID(stack2) && (getItemDamage(stack1) == getItemDamage(stack2) // same
+                                                                                                         // item
+                                                                                                         // variant
+                || getMaxStackSize(stack1) == 1); // except if unstackable
+    }
+
+    public boolean isOrderedBefore(int i, int j) {
+
+        if (getStackInSlot(j) == null) {
+            return true;
+        } else if (getStackInSlot(i) == null || keywordOrder[i] == -1) {
+            return false;
+        } else {
+            if (keywordOrder[i] == keywordOrder[j]) {
+                // Items of same keyword orders can have different IDs,
+                // in the case of categories defined by a range of IDs
+                if (getItemID(getStackInSlot(i)) == getItemID(getStackInSlot(j))) {
+                    if (getStackSize(getStackInSlot(i)) == getStackSize(getStackInSlot(j))) {
+                        // Highest damage first for tools, else lowest damage.
+                        // No tool ordering for same ID in multiplayer (cannot
+                        // swap directly)
+                        return (getItemDamage(getStackInSlot(i)) > getItemDamage(getStackInSlot(j)) && getMaxStackSize(getStackInSlot(j)) == 1 && !isMultiplayer)
+                                || (getItemDamage(getStackInSlot(i)) < getItemDamage(getStackInSlot(j)) && getMaxStackSize(getStackInSlot(j)) > 1);
+                    } else {
+                        return getStackSize(getStackInSlot(i)) > getStackSize(getStackInSlot(j));
+                    }
+                } else {
+                    return getItemID(getStackInSlot(i)) > getItemID(getStackInSlot(j));
+                }
+            } else {
+                return keywordOrder[i] < keywordOrder[j];
+            }
+        }
+    }
+
     public int getClickCount() {
         if (isMultiplayer) {
             return clickCount;
@@ -373,81 +424,14 @@ public class SortableContainer extends Obfuscation {
         return size;
     }
 
-    /**
-     * (Multiplayer only) Click on the interface. Slower than manual swapping,
-     * but works in multiplayer.
-     * 
-     * @param slot
-     *            The targeted slot
-     * @param priority
-     *            Ignored
-     * @param oldSlot
-     *            The stacks previous spot
-     * @param stack
-     *            The stack that was in the slot before the operation
-     * @throws Exception
-     */
-    public void click(int slot) throws TimeoutException {
-        clickCount++;
-
-        if (log.getLevel() == Const.DEBUG)
-            log.info("Click on " + slot);
-
-        // After clicking, we'll need to wait for server answer before
-        // continuing.
-        // We'll do this by listening to any change in the slot, but this
-        // implies we
-        // check first if the click will indeed produce a change.
-        boolean uselessClick = false;
-        ItemStack stackInSlot = (getStackInSlot(slot) != null) ? copy(getStackInSlot(slot)) : null;
-        ItemStack stackInHand = getHoldStack();
-
-        // Useless if empty stacks
-        if (stackInHand == null && stackInSlot == null)
-            uselessClick = true;
-        // Useless if destination stack is full
-        else if (stackInHand != null && stackInSlot != null && areSameItem(stackInHand, stackInSlot)
-                && getStackSize(stackInSlot) == getMaxStackSize(stackInSlot)) {
-            uselessClick = true;
-        }
-
-        // Click!
-        clickInventory(getPlayerController(), getWindowId(container), // Select
-                                                                      // container
-                slot + offset, // Targeted slot
-                0, // Left-click
-                false, // Shift not held
-                entityPlayer);
-
-        // Wait for inventory update
-        if (!uselessClick) {
-            int pollingTime = 0;
-            while (areItemStacksEqual(getStackInSlot(slot), stackInSlot) && pollingTime < Const.POLLING_TIMEOUT) {
-                InventoryAlgorithms.trySleep(Const.POLLING_DELAY);
-                pollingTime += Const.POLLING_DELAY;
-            }
-            if (pollingTime >= Const.POLLING_TIMEOUT) {
-                log.warning("Click timeout");
-            }
-            timeSpentWaiting += pollingTime;
-        }
-
-        // Freeze protection (to protect from infinite clicking in SMP
-        // due to a mod bug, or the server not responding)
-        if (timeSpentWaiting > Const.SORTING_TIMEOUT) {
-            throw new TimeoutException("Timeout");
-        }
-
-    }
-
     private int getItemOrder(int itemID, int itemDamage) {
         List<ItemTreeItem> items = tree.getItems(itemID, itemDamage);
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
     /**
-     * SP: Removes the stack from the given slot SMP: Registers the action
-     * without actually doing it.
+     * SP: Removes the stack from the given slot.
+     * SMP: Registers the action without actually doing it.
      * 
      * @param slot
      * @return The removed stack
@@ -470,8 +454,8 @@ public class SortableContainer extends Obfuscation {
     }
 
     /**
-     * SP: Puts a stack in the given slot. WARNING: Any existing stack will be
-     * overriden! SMP: Registers the action without actually doing it.
+     * SP: Puts a stack in the given slot. WARNING: Any existing stack will be overriden!
+     * SMP: Registers the action without actually doing it.
      * 
      * @param stack
      * @param slot

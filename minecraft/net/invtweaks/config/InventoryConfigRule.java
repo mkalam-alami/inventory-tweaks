@@ -5,6 +5,14 @@ import java.util.logging.Logger;
 
 import net.invtweaks.tree.ItemTree;
 
+/**
+ * Stores a sorting rule, as a target plus a keyword.
+ * The target is provided as an array of preferred slots
+ * (ex: target "1", i.e. first column, is stored as [0, 9, 18, 27])
+ * 
+ * @author Jimeo Wan
+ *
+ */
 public class InventoryConfigRule implements Comparable<InventoryConfigRule> {
 
     public enum RuleType {

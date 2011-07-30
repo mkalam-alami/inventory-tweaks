@@ -28,12 +28,12 @@ public class ItemTreeLoader extends DefaultHandler {
         tree = new ItemTree();
     }
 
-    public ItemTree load(String file) throws Exception {
+    public ItemTree load(String filePath) throws Exception {
         tree.reset();
         categoryStack.clear();
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         SAXParser parser = parserFactory.newSAXParser();
-        parser.parse(new File(file), this);
+        parser.parse(new File(filePath), this);
         if (!categoryStack.isEmpty()) {
             InvTweaks.logInGameStatic("Warning: The tree file seems to be broken "
                     + "(is '" + categoryStack.getLast() + "' closed correctly?)");

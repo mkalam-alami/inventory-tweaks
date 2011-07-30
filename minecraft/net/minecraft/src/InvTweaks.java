@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -92,24 +93,6 @@ public class InvTweaks extends Obfuscation {
             log.severe("Mod failed to initialize!");
         }
 
-    }
-
-    /**
-     * Returns the mods single instance.
-     * @return
-     */
-    public static InvTweaks getInstance() {
-        return instance;
-    }
-
-    /**
-     * Returns the binding for the sort key.
-     * Object maintained by Minecraft so that it's keycode is actually
-     * what has been configured by the player (not always the R key).
-     * @return
-     */
-    public static KeyBinding getSortKeyBinding() {
-        return sortKeyBinding;
     }
 
     /**
@@ -262,10 +245,6 @@ public class InvTweaks extends Obfuscation {
         }
     }
 
-    public boolean isConfigLoaded() {
-        return config != null;
-    }
-
     public void logInGame(String message) {
         String formattedMsg = buildlogString(Level.INFO, message);
         addChatMessage(formattedMsg);
@@ -286,9 +265,27 @@ public class InvTweaks extends Obfuscation {
         InvTweaks.getInstance().logInGameError(message, e);
     }
 
+    /**
+     * Returns the mods single instance.
+     * @return
+     */
+    public static InvTweaks getInstance() {
+        return instance;
+    }
+
+    /**
+     * Returns the binding for the sort key.
+     * Object maintained by Minecraft so that it's keycode is actually
+     * what has been configured by the player (not always the R key).
+     * @return
+     */
+    public static KeyBinding getSortKeyBinding() {
+        return sortKeyBinding;
+    }
+
     private boolean onTick() {
 
-        if (!isConfigLoaded())
+        if (!makeSureConfigurationIsLoaded())
             return false;
 
         // Clone the hotbar to be able to monitor changes on it
@@ -422,6 +419,7 @@ public class InvTweaks extends Obfuscation {
 
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void handleMiddleClick(GuiScreen guiScreen) {
 
         if (Mouse.isButtonDown(2)) {
@@ -430,7 +428,47 @@ public class InvTweaks extends Obfuscation {
                 return;
             }
 
-            if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK).equals("false")) {
+            // Convenient Inventory compatibility: Disable middle clicking
+            // (Only once, by registering a new property. The player can then
+            // change this by editing both mods' configuration files).
+            String ciCompatibility = config.getProperty(InvTweaksConfig.PROP_CONVENIENT_INVENTORY_COMPATIBILITY);
+            if (ciCompatibility == null) {
+                try {
+                    Class convenientInventory = Class.forName("ConvenientInventory");
+                    boolean defaultCISortingShortcutEnabled = false;
+                    
+                    // Look for the default sorting shortcut (middle click) in CI settings.
+                    Field actionMapField =  convenientInventory.getDeclaredField("actionMap");
+                    actionMapField.setAccessible(true);
+                    List<Integer> actionMap[][] = (List[][]) actionMapField.get(null);
+                    if (actionMap[7] != null) { // 7 = SORT
+                        for (List<Integer> combo : actionMap[7]) {
+                            if (combo != null && combo.size() == 1
+                                    && combo.get(0) == 2) { // 2 = Middle click
+                                defaultCISortingShortcutEnabled = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // If CI's middle click is enabled, disable InvTweaks shortcut
+                    if (defaultCISortingShortcutEnabled) {
+                        config.setProperty(InvTweaksConfig.PROP_CONVENIENT_INVENTORY_COMPATIBILITY, "true");
+                    }
+                    
+                }
+                catch (ClassNotFoundException e) {
+                    logInGameError("not founf", null); //XXXXXXXXXXXXX
+                    // Failed to find Convenient Inventory class, not a problem
+                }
+                catch (Exception e) {
+                    logInGameError("Failed to manage Convenient Inventory compatibility", e);
+                }
+            }
+            
+            // Check that middle click sorting is allowed
+            if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK).equals("false")
+                    && (ciCompatibility == null || !ciCompatibility.equals("true"))) {
 
                 if (!chestAlgorithmButtonDown) {
                     chestAlgorithmButtonDown = true;
@@ -536,7 +574,7 @@ public class InvTweaks extends Obfuscation {
 
         // Load rules + tree files
         long configLastModified = computeConfigLastModified();
-        if (isConfigLoaded()) {
+        if (config != null) {
             // Check time of last edit for both configuration files.
             if (storedConfigLastModified != configLastModified) {
                 return loadConfig(); // Reload
@@ -560,7 +598,6 @@ public class InvTweaks extends Obfuscation {
      * 
      * @param config
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
     private boolean loadConfig() {
 
         // Compatibility: Move/Remove old files
@@ -603,51 +640,6 @@ public class InvTweaks extends Obfuscation {
             
             // Configuration loading
             config.load();
-            
-            // Convenient Inventory compatibility: Disable middle clicking
-            // (Only once, by registering a new property. The player can then
-            // change this by editing both mods' configuration files).
-            if (config.getProperty(InvTweaksConfig.PROP_CONVENIENT_INVENTORY_COMPATIBILITY) == null) {
-                try {
-                    
-                    Class convenientInventory = Class.forName("ConvenientInventory");
-                    boolean defaultCISortingShortcutEnabled = false;
-                    logInGame("1"); //XXXXXXXXXXXXX
-                    // Look for the default sorting shortcut (middle click) in CI settings.
-                    List<LinkedList<Integer>> actionMap[][] = (List[][]) convenientInventory.
-                            getField("actionMap").get(null);
-                    if (actionMap[7] != null) { // 7 = SORT
-                        logInGame("2"); //XXXXXXXXXXXXX
-                        for (List<LinkedList<Integer>> combo : actionMap[7]) {
-                            logInGame("3"); //XXXXXXXXXXXXX
-                            if (combo != null && combo.size() == 1) {
-                                logInGame("4"); //XXXXXXXXXXXXX
-                                LinkedList<Integer> buttons = combo.get(0);
-                                if (buttons != null && buttons.size() == 1
-                                        && buttons.get(0) == 2) { // 2 = Middle click
-                                    logInGame("5"); //XXXXXXXXXXXXX
-                                    defaultCISortingShortcutEnabled = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    
-                    // If CI's middle click is enabled, disable InvTweaks shortcut
-                    if (defaultCISortingShortcutEnabled) {
-                        config.setProperty(InvTweaksConfig.PROP_ENABLE_AUTOREPLACE_SOUND, "false");
-                        config.setProperty(InvTweaksConfig.PROP_CONVENIENT_INVENTORY_COMPATIBILITY, "true");
-                    }
-                    
-                }
-                catch (ClassNotFoundException e) {
-                    logInGame("not founf"); //XXXXXXXXXXXXX
-                    // Failed to find Convenient Inventory class, not a problem
-                }
-                catch (Exception e) {
-                    logInGameError("Failed to manage Convenient Inventory compatibility", e);
-                }
-            }
             
             log.setLevel(config.getLogLevel());
             logInGame("Configuration loaded");

@@ -281,12 +281,9 @@ public class SortableContainer extends Obfuscation {
 			}
 			else {
 				if (isMultiplayer) {
-					// If limit is < 64 and stacking would go higher, do nothing
-					if (max != getMaxStackSize(getStackInSlot(j))) {
-						click(i);
-						click(j);
-						click(i);
-					}
+					click(i);
+					click(j);
+					click(i);
 				}
 				else {
 					setStackSize(getStackInSlot(i), sum - max);

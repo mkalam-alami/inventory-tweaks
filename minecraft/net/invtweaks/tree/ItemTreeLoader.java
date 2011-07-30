@@ -65,7 +65,8 @@ public class ItemTreeLoader extends DefaultHandler {
 				int rangeMin = Integer.parseInt(rangeMinAttr);
 				int rangeMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_MAX));
 				for (int i = rangeMin; i <= rangeMax; i++) {
-					tree.addItem(name, new ItemTreeItem(name+i, i, -1, itemOrder++));
+					tree.addItem(name, new ItemTreeItem((name+i).toLowerCase(),
+							i, -1, itemOrder++));
 				}
 			}
 			categoryStack.add(name);
@@ -78,7 +79,8 @@ public class ItemTreeLoader extends DefaultHandler {
 			if (attributes.getValue(ATTR_DAMAGE) != null) {
 				damage = Integer.parseInt(attributes.getValue(ATTR_DAMAGE));
 			}
-			tree.addItem(categoryStack.getLast(), new ItemTreeItem(name, id, damage, itemOrder++));
+			tree.addItem(categoryStack.getLast(), new ItemTreeItem(name.toLowerCase(),
+					id, damage, itemOrder++));
 		}
 	}
 	

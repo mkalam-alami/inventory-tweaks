@@ -5,6 +5,7 @@
 
 ====== [ SETTINGS ] ======
 
+Default:
 D LOCKED
 
 ======== [ HELP ] ========
@@ -29,6 +30,10 @@ D LOCKED
 # MODIFIERS
 # r = Reverse sort order for a row/column (ex: "Ar sword" sorts from right to left)
 # v = For rectangle rules. Sorts vertically instead of horizontally (ex: "A1-B8v blocks")
+
+# MULTIPLE CONFIGURATIONS
+# Any word followed by a colon ':' defines a new configuration (ex: "Default:").
+# You can then swap between the configurations by holding the sorting key for 1 second.
 
 # SPECIAL RULES
 # "LOCKED" = Locks a part of the inventory so that stuff doesn't go there (ex: "D LOCKED").

@@ -4,8 +4,6 @@ import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
 
-import org.lwjgl.input.Keyboard;
-
 /**
  * @author Jimeo Wan (jimeo.wan at gmail.com)
  * Website: {@link http://wan.ka.free.fr/?invtweaks}
@@ -22,11 +20,9 @@ public class mod_InvTweaks extends BaseMod {
     public mod_InvTweaks() {
     	
     	Minecraft mc = ModLoader.getMinecraftInstance();
-    	
+
     	// Register key
-    	KeyBinding sortKey = new KeyBinding(
-    			"Sort inventory", Keyboard.KEY_R); /* KeyBinding */
-    	ModLoader.RegisterKey(this, sortKey, false);
+    	ModLoader.RegisterKey(this, InvTweaks.getSortKeyBinding(), false);
     	
     	// Register in game hooks
     	ModLoader.SetInGameHook(this, true, true);
@@ -34,6 +30,7 @@ public class mod_InvTweaks extends BaseMod {
     	
     	// Instantiate mod core
     	instance = new InvTweaks(mc);
+    	
     }
     
 	@Override
@@ -54,9 +51,7 @@ public class mod_InvTweaks extends BaseMod {
 
     public boolean OnTickInGUI(Minecraft minecraft, GuiScreen guiScreen)
     {
-    	if (instance != null) {
-    		instance.onTickInGUI(guiScreen);
-    	}
+    	instance.onTickInGUI(guiScreen);
     	return true;
     }
     

@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collections;
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -27,26 +27,22 @@ public class InvTweaksConfig {
 	public static final String PROP_ENABLESORTINGONPICKUP = "enableSortingOnPickup";
 	public static final String PROP_ENABLEAUTOREPLACESOUND = "enableAutoreplaceSound";
 	public static final String PROP_ENABLESORTINGSOUND = "enableSortingSound";
-	
-	private static final String LOCKED = "LOCKED";
-	private static final String FROZEN = "FROZEN";
-	private static final String AUTOREPLACE = "AUTOREPLACE";
-	private static final String AUTOREPLACE_NOTHING = "nothing";
-	private static final String DEBUG = "DEBUG";
-	private static final boolean DEFAULT_AUTOREPLACE_BEHAVIOUR = true;
+
+	public static final String LOCKED = "LOCKED";
+	public static final String FROZEN = "FROZEN";
+	public static final String AUTOREPLACE = "AUTOREPLACE";
+	public static final String AUTOREPLACE_NOTHING = "nothing";
+	public static final String DEBUG = "DEBUG";
+	public static final boolean DEFAULT_AUTOREPLACE_BEHAVIOUR = true;
 
 	private String rulesFile;
 	private String treeFile;
 	
 	private Properties properties;
 	private ItemTree tree;
-	private int[] lockPriorities;
-	private boolean[] frozenSlots;
-	private Vector<Integer> lockedSlots;
-	private Vector<InventoryConfigRule> rules;
+	private Vector<InventoryConfigRuleset> rulesets;
+	private int currentRuleset;
 	private Vector<String> invalidKeywords;
-	private Vector<String> autoReplaceRules;
-	private boolean debugEnabled;
 
 	private long storedConfigLastModified;
 	
@@ -81,122 +77,46 @@ public class InvTweaksConfig {
 		reader.read(bytes);
 		
 		// Split lines into an array
-		String[] config = String.valueOf(bytes)
+		String[] configLines = String.valueOf(bytes)
 				.replace("\r\n", "\n")
 				.replace('\r', '\n')
 				.split("\n");
 		
-		// Parse and sort rules (specific tiles first, then in appearing order)
-		String lineText;
-		InventoryConfigRule newRule;
+		// Register rules in various configurations (rulesets)
+		InventoryConfigRuleset ruleset = new InventoryConfigRuleset(tree, "Default");
+		boolean defaultRuleset = true, defaultRulesetEmpty = true;
+		String invalidKeyword;
 		
-		int currentLine = 0;
-		while (currentLine < config.length) {
-	
-			String[] words = config[currentLine].split(" ");
-			lineText = config[currentLine].toLowerCase();
-			currentLine++;
-	
-			// Parse valid lines only
-			if (words.length == 2) {
-	
-				// Standard rules format
-				if (lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$")
-						|| lineText.matches("^[a-d][1-9]-[a-d][1-9]v? [\\w]*$")) {
-					
-					words[0] = words[0].toLowerCase();
-					
-					// Locking rule
-					if (words[1].equals(LOCKED)) {
-						int[] newLockedSlots = InventoryConfigRule.getRulePreferredPositions(
-										words[0], InvTweaks.INVENTORY_SIZE,
-										InvTweaks.INVENTORY_ROW_SIZE);
-						int lockPriority = InventoryConfigRule.getRuleType(words[0]).getHighestPriority();
-						for (int i : newLockedSlots) {
-							lockPriorities[i] = lockPriority;
-						}
-					}
-					
-					// Freeze rule
-					else if (words[1].equals(FROZEN)) {
-						int[] newLockedSlots = InventoryConfigRule.getRulePreferredPositions(
-										words[0], InvTweaks.INVENTORY_SIZE,
-										InvTweaks.INVENTORY_ROW_SIZE);
-						for (int i : newLockedSlots) {
-							frozenSlots[i] = true;
-						}
-					}
-				
-					
-					// Standard rule
-					else {
-						String keyword = words[1];
-						boolean isValidKeyword = tree.isKeywordValid(keyword.toLowerCase());
-						
-						// If invalid keyword, guess something similar
-						if (!isValidKeyword) {
-							Vector<String> wordVariants = getKeywordVariants(keyword);
-							for (String wordVariant : wordVariants) {
-								if (tree.isKeywordValid(wordVariant.toLowerCase())) {
-									isValidKeyword = true;
-									keyword = wordVariant;
-									break;
-								}
-							}
-						}
-						
-						if (isValidKeyword) {
-							newRule = new InventoryConfigRule(tree, words[0], 
-									keyword.toLowerCase(), InvTweaks.INVENTORY_SIZE,
-									InvTweaks.INVENTORY_ROW_SIZE);
-							rules.add(newRule);
-						}
-						else {
-							invalidKeywords.add(keyword.toLowerCase());
-						}
-					}
+		for (String line : configLines) {
+			// Change ruleset
+			if (line.matches("^[\\w]*\\:$")) {
+				// Make sure not to add an empty default config to the rulesets
+				if (!defaultRuleset || !defaultRulesetEmpty) {
+					ruleset.finalize();
+					rulesets.add(ruleset);
 				}
-	
-				// Autoreplace rule
-				else if (words[0].equals(AUTOREPLACE)) {
-					words[1] = words[1].toLowerCase();
-					if (tree.isKeywordValid(words[1]) || 
-							words[1].equals(AUTOREPLACE_NOTHING)) {
-						autoReplaceRules.add(words[1]);
-					}
-				}
-			
+				ruleset = new InventoryConfigRuleset(tree, 
+						line.substring(0, line.length()-1));
 			}
 			
-			else if (words.length == 1) {
-				
-				if (words[0].equals(DEBUG)) {
-					debugEnabled = true;
-				}
-				
-			}
-			
-		}
-		
-		// Default Autoreplace behavior
-		if (autoReplaceRules.isEmpty()) {
+			// Register line
 			try {
-				autoReplaceRules.add(tree.getRootCategory().getName());
+				invalidKeyword = ruleset.registerLine(line);
+				if (defaultRuleset) {
+					defaultRulesetEmpty = false;
+				}
+				if (invalidKeyword != null) {
+					invalidKeywords.add(invalidKeyword);
+				}
 			}
-			catch (NullPointerException e) {
-				throw new NullPointerException("No root category is defined.");
-			}
-		}
-		
-		// Sort rules by priority, highest first
-		Collections.sort(rules, Collections.reverseOrder());
-		
-		// Compute ordered locked slots
-		for (int i = 0; i < lockPriorities.length; i++) {
-			if (lockPriorities[i] > 0) {
-				lockedSlots.add(i);
+			catch (InvalidParameterException e) {
+				// Invalid line (comments), no problem
 			}
 		}
+
+		ruleset.finalize();
+		rulesets.add(ruleset);
+		currentRuleset = 0;
 		
 		}
 		
@@ -246,6 +166,25 @@ public class InvTweaksConfig {
 	public ItemTree getTree() {
 		return tree;
 	}
+
+	public String getCurrentRulesetName() {
+		return rulesets.get(currentRuleset).getName();
+	}
+	
+	public String switchConfig() {
+		if (!rulesets.isEmpty()) {
+			if (currentRuleset == -1) {
+				currentRuleset = 0;
+			}
+			else {
+				currentRuleset = (currentRuleset + 1) % rulesets.size();
+			}
+			return rulesets.get(currentRuleset).getName();
+		}
+		else {
+			return null;
+		}
+	}
 	
 	/**
 	 * Returns all sorting rules, themselves sorted by
@@ -253,7 +192,7 @@ public class InvTweaksConfig {
 	 * @return
 	 */
 	public Vector<InventoryConfigRule> getRules() {
-		return rules;
+		return rulesets.get(currentRuleset).getRules();
 	}
 	
 	/**
@@ -268,7 +207,7 @@ public class InvTweaksConfig {
 	 * WARNING: Not a copy.
 	 */
 	public int[] getLockPriorities() {
-		return lockPriorities;
+		return rulesets.get(currentRuleset).getLockPriorities();
 	}
 
 	/**
@@ -276,7 +215,7 @@ public class InvTweaksConfig {
 	 * WARNING: Not a copy.
 	 */
 	public boolean[] getFrozenSlots() {
-		return frozenSlots;
+		return rulesets.get(currentRuleset).getFrozenSlots();
 	}
 	
 	/**
@@ -284,15 +223,18 @@ public class InvTweaksConfig {
 	 * TODO Order by decreasing priority
 	 */
 	public Vector<Integer> getLockedSlots() {
-		return lockedSlots;
+		return rulesets.get(currentRuleset).getLockedSlots();
 	}
 
 	public Level getLogLevel() {
-		return (this.debugEnabled) ? Level.INFO : Level.WARNING;
+		return (rulesets.get(currentRuleset).isDebugEnabled()) 
+				? Level.INFO : Level.WARNING;
 	}
 
 	public boolean autoreplaceEnabled(int itemID, int itemDamage) {
 		List<ItemTreeItem> items = tree.getItems(itemID, itemDamage);
+		Vector<String> autoReplaceRules = rulesets.
+				get(currentRuleset).getAutoReplaceRules();
 		boolean found = false;
 		for (String keyword : autoReplaceRules) {
 			if (keyword.equals(AUTOREPLACE_NOTHING))
@@ -313,14 +255,8 @@ public class InvTweaksConfig {
 	}
 	
 	private void init() {
-		lockPriorities = new int[InvTweaks.INVENTORY_SIZE];
-		for (int i = 0; i < lockPriorities.length; i++) {
-			lockPriorities[i] = 0;
-		}
-		frozenSlots = new boolean[InvTweaks.INVENTORY_SIZE];
-		for (int i = 0; i < frozenSlots.length; i++) {
-			frozenSlots[i] = false;
-		}
+		rulesets = new Vector<InventoryConfigRuleset>();
+		currentRuleset = -1;
 		
 		// Default property values
 		properties = new Properties();
@@ -329,12 +265,8 @@ public class InvTweaksConfig {
 		properties.setProperty(PROP_ENABLESORTINGONPICKUP, "true");
 		properties.setProperty(PROP_ENABLEAUTOREPLACESOUND, "true");
 		properties.setProperty(PROP_ENABLESORTINGSOUND, "true");
-		
-		lockedSlots = new Vector<Integer>();
-		rules = new Vector<InventoryConfigRule>();
+
 		invalidKeywords = new Vector<String>();
-		autoReplaceRules = new Vector<String>();
-		debugEnabled = false;
 	}
 	
 	private void loadProperties() throws IOException {
@@ -346,44 +278,6 @@ public class InvTweaksConfig {
 		}
 	}
 
-	/**
-	 * Compute keyword variants to also match bad keywords.
-	 * torches => torch
-	 * diamondSword => sworddiamond
-	 * woodenPlank => woodPlank plankwooden plankwood
-	 */
-	private Vector<String> getKeywordVariants(String keyword) {
-		Vector<String> variants = new Vector<String>();
-		
-		if (keyword.endsWith("es")) // ex: torches => torch
-			variants.add(keyword.substring(0, keyword.length()-2));
-		if (keyword.endsWith("s")) // ex: wools => wool
-			variants.add(keyword.substring(0, keyword.length()-1));
-		
-		if (keyword.contains("en")) // ex: wooden => wood
-			variants.add(keyword.replaceAll("en", ""));
-		else {
-			if (keyword.contains("wood"))
-				variants.add(keyword.replaceAll("wood", "wooden"));
-			if (keyword.contains("gold"))
-				variants.add(keyword.replaceAll("gold", "golden"));
-		}
-		
-		// Swap words
-		if (keyword.matches("\\w*[A-Z]\\w*")) {
-			byte[] keywordBytes = keyword.getBytes();
-			for (int i = 0; i < keywordBytes.length; i++) {
-				if (keywordBytes[i] >= 'A' && keywordBytes[i] <= 'Z') {
-					String swapped = (keyword.substring(i) + 
-							keyword.substring(0, i)).toLowerCase();
-					variants.add(swapped);
-					variants.addAll(getKeywordVariants(swapped));
-				}
-			}
-		}
-		
-		return variants;
-	}
 
 	/**
 	 * Returns the file when the properties are stored,

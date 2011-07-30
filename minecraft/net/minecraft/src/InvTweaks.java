@@ -25,6 +25,7 @@ import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -51,7 +52,7 @@ public class InvTweaks extends Obfuscation {
     public static final Level DEFAULT_LOG_LEVEL = Level.WARNING;
     public static final Level DEBUG = Level.INFO;
     
-    public static final int HOT_RELOAD_DELAY = 1000;
+    public static final int RULESET_SWAP_DELAY = 1000;
     public static final int INVENTORY_SIZE = 36;
 	public static final int INVENTORY_ROW_SIZE = 9;
 	public static final int INVENTORY_HOTBAR_SIZE = INVENTORY_ROW_SIZE;
@@ -63,8 +64,11 @@ public class InvTweaks extends Obfuscation {
 	public static final int SORTING_TIMEOUT = 2999; // > POLLING_TIMEOUT
     public static final int JIMEOWAN_ID = 54696386;
 
-	private static InvTweaks instance;
-    private InvTweaksConfig config = null;
+    private static InvTweaks instance;
+    private static KeyBinding sortKeyBinding = 
+    	new KeyBinding("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
+    
+	private InvTweaksConfig config = null;
     private InventoryAlgorithms inventoryAlgorithms = null;
     private long storedConfigLastModified = 0;
 	private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
@@ -72,7 +76,8 @@ public class InvTweaks extends Obfuscation {
 	private long chestAlgorithmClickTimestamp = 0; 
 	private boolean chestAlgorithmButtonDown = false;
 	private ItemStack[] hotbarClone = new ItemStack[INVENTORY_HOTBAR_SIZE];
-    
+	private long sortingKeyPressedDate = 0;
+	
     public InvTweaks(Minecraft mc) {
 
     	super(mc);
@@ -96,19 +101,25 @@ public class InvTweaks extends Obfuscation {
 		return instance;
 	}
 
+	public static KeyBinding getSortKeyBinding() {
+		return sortKeyBinding;
+	}
+
+
     public final void onSortingKeyPressed() {
     	synchronized (this) {
 			
 	    	// Check config loading success & current GUI
 	    	GuiScreen guiScreen = getCurrentScreen();
 	    	
-	    	if (!isConfigLoaded() && !loadConfig()) {
+	    	if (!makeSureConfigurationIsLoaded()) {
 	    		return;
 	    	}
 			if (guiScreen != null && !(guiScreen instanceof GuiContainer) /* GuiContainer */) {
 				return;
 			}
-	    	
+
+			// Sorting!
 	    	handleSorting(guiScreen);
 		}
     }
@@ -204,22 +215,20 @@ public class InvTweaks extends Obfuscation {
 	}
 
 	public void onTickInGame() {
-		if (!isConfigLoaded())
-			return;
 		synchronized (this) {
-			cloneHotbar();
+			if (!onTick()) {
+				return;
+			}
 			GuiScreen guiScreen = getCurrentScreen();
 			handleMiddleClick(guiScreen);
 			handleAutoReplace();
 		}
 	}
     
-    public void onTickInGUI(GuiScreen guiScreen) {
-		if (!isConfigLoaded())
-			return;
+	public void onTickInGUI(GuiScreen guiScreen) {
 		synchronized (this) {
-			if (isChestOrDispenser(guiScreen)) {
-				cloneHotbar();
+			if (!onTick()) {
+				return;
 			}
 	    	handleGUILayout(guiScreen);
 			handleOptionsMenuLayout(guiScreen);
@@ -250,6 +259,45 @@ public class InvTweaks extends Obfuscation {
 		InvTweaks.getInstance().logInGame(message, e);
 	}
 
+	private boolean onTick() {
+		
+		if (!isConfigLoaded())
+			return false;
+		
+		// Clone the hotbar to be able to monitor changes on it
+		GuiScreen currentScreen = getCurrentScreen();
+		if (currentScreen == null || currentScreen instanceof GuiInventory) {
+			cloneHotbar();
+		}
+	
+		// If the key is hold for 1s, switch config
+		if (Keyboard.isKeyDown(sortKeyBinding.keyCode)) { // TODO Obf layer
+			long currentTime = System.currentTimeMillis();
+			if (sortingKeyPressedDate == 0) {
+				sortingKeyPressedDate = currentTime;
+			}
+			else if (currentTime - sortingKeyPressedDate > RULESET_SWAP_DELAY) {
+				String previousRuleset = config.getCurrentRulesetName();
+				String newRuleset = config.switchConfig();
+				if (newRuleset == null) {
+					logInGame("Failed to switch the configuration", null);
+				}
+				// Log only if there is more than 1 ruleset
+				else if (!previousRuleset.equals(newRuleset)) { 
+					logInGame("'"+newRuleset+"' enabled");
+					handleSorting(currentScreen);
+				}
+				sortingKeyPressedDate = currentTime;
+			}
+		}
+		else {
+			sortingKeyPressedDate = 0;
+		}
+		
+		return true;
+		
+	}
+
 	/**
 	 * Allows to maintain a clone of the hotbar contents
 	 * to track changes (especially needed by the "on pickup"
@@ -268,10 +316,6 @@ public class InvTweaks extends Obfuscation {
 	}
 	
 	private void handleSorting(GuiScreen guiScreen) {
-
-    	if (!makeSureConfigurationIsLoaded()) {
-    		return;
-    	}
     	
     	ItemStack selectedItem = getItemStack(
     			getMainInventory(),
@@ -412,7 +456,6 @@ public class InvTweaks extends Obfuscation {
 		    					chestAlgorithm = InventoryAlgorithms.DEFAULT;
 		    				}
 		    				try {
-		    					
 								inventoryAlgorithms.sortContainer(container, false, chestAlgorithm);
 							} catch (TimeoutException e) {
 								logInGame("Failed to sort container", e);
@@ -515,7 +558,7 @@ public class InvTweaks extends Obfuscation {
 		}
 	}
 	
-	// TODO Only reload modified file
+	// TODO Only reload modified file(s)
 	private boolean makeSureConfigurationIsLoaded() {
 		
 		// Load properties
@@ -717,7 +760,12 @@ public class InvTweaks extends Obfuscation {
 
     
 	private String buildlogString(Level level, String message, Exception e) {
-    	return buildlogString(level, message) + ": " + e.getMessage();
+		if (e != null) {
+			return buildlogString(level, message) + ": " + e.getMessage();
+		}
+		else {
+			return buildlogString(level, message) + ": (unknown error)";
+		}
     }
 	private String buildlogString(Level level, String message) {
     	return INGAME_LOG_PREFIX + 
@@ -876,5 +924,4 @@ public class InvTweaks extends Obfuscation {
     		
 	    }
 	}
-
 }

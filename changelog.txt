@@ -3,6 +3,10 @@
 | Changelog                                                    |
 |==============================================================|
 
+[07.31.2011] 1.22 (B1.7.3)
+ * Fixed the middle click glitches on chests
+ * Middle click is automatically disabled when using Convenient Inventory
+ 
 [07.30.2011] 1.21 (B1.7.3)
  * Fixed the bug making a lot of keywords not work
  * Added support for multiple configurations

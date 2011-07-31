@@ -80,9 +80,9 @@ public class InventoryAlgorithms extends Obfuscation {
 			Vector<Integer> lockedSlots;
 			
 			if (algorithm == INVENTORY) {
-				rules = config.getRules();
 				// TODO Get locked slots by decreasing priority to improve algorithm
 				lockedSlots = config.getLockedSlots();
+                rules = config.getRules();
 				
 		    	//// Merge stacks to fill the ones in locked slots
 				log.info("Merging stacks.");

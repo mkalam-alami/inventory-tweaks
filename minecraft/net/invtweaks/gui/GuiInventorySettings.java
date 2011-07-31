@@ -5,6 +5,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.logging.Logger;
 
+import org.lwjgl.util.Point;
+
 import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.minecraft.src.GuiButton;
@@ -25,7 +27,6 @@ public class GuiInventorySettings extends GuiScreen {
 
     private final static String SCREEN_TITLE = "Inventory and chests settings";
 
-    // TODO Mod translation?
     private final static String MIDDLE_CLICK = "Middle click";
     private final static String CHEST_BUTTONS = "Chest buttons";
     private final static String SORT_ON_PICKUP = "Sort on pickup";
@@ -35,8 +36,6 @@ public class GuiInventorySettings extends GuiScreen {
     private final static int ID_MIDDLE_CLICK = 1;
     private final static int ID_CHESTS_BUTTONS = 2;
     private final static int ID_SORT_ON_PICKUP = 3;
-    // private final static int ID_CONVENIENT_SHORTCUTS = 3;
-    // private final static int ID_AUTOREPLACE = 4;
 
     private final static int ID_EDITRULES = 100;
     private final static int ID_EDITTREE = 101;
@@ -55,43 +54,52 @@ public class GuiInventorySettings extends GuiScreen {
     @SuppressWarnings("unchecked")
     public void initGui() {
 
-        int x = width / 2 - 155;
-        int y = height / 6;
+        Point p = new Point();
+        int i = 0;
 
+        // Create large buttons
+        
+        moveToButtonCoords(0, p);
+        controlList.add(new GuiButton(ID_EDITRULES, p.getX() + 55, height / 6 + 96, "Open the sorting rules file..."));
+        controlList.add(new GuiButton(ID_EDITTREE, p.getX() + 55, height / 6 + 120, "Open the item tree file..."));
+        controlList.add(new GuiButton(ID_HELP, p.getX() + 55, height / 6 + 144, "Open help in browser..."));
+
+        controlList.add(new GuiButton(ID_DONE, p.getX() + 55, height / 6 + 168, "Done"));
+
+        // Create settings buttons
+        
         String ciCompatibility = config.getProperty(InvTweaksConfig.PROP_CONVENIENT_INVENTORY_COMPATIBILITY);
         if (ciCompatibility == null || !ciCompatibility.equals("true")) {
-            controlList.add(new GuiSmallButton(ID_MIDDLE_CLICK, x, y, computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, MIDDLE_CLICK)));
+            moveToButtonCoords(i++, p);
+            controlList.add(new GuiSmallButton(ID_MIDDLE_CLICK, p.getX(), p.getY(),
+                    computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, MIDDLE_CLICK)));
         }
-        
-        controlList.add(new GuiSmallButton(ID_CHESTS_BUTTONS, x + 160, y, computeBooleanButtonLabel(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS,
+
+        moveToButtonCoords(i++, p);
+        controlList.add(new GuiSmallButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(),
+                computeBooleanButtonLabel(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS,
                 CHEST_BUTTONS)));
-        controlList.add(new GuiSmallButton(ID_SORT_ON_PICKUP, x, y + 24, computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP,
+
+        moveToButtonCoords(i++, p);
+        controlList.add(new GuiSmallButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), 
+                computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP,
                 SORT_ON_PICKUP)));
-
-        // TODO Implement "Convenient Inventory"-like shortcuts
-        // TODO Implement autoreplace options
-        /*
-         * controlList.add(new GuiSmallButton(ID_CONVENIENT_SHORTCUTS, x, y +
-         * 24, "Convenient shortcuts: OFF")); controlList.add(new
-         * GuiSmallButton(ID_AUTOREPLACE, x + 160, y + 24, "Autoreplace: ALL"));
-         */
-
-        controlList.add(new GuiButton(ID_EDITRULES, x + 55, height / 6 + 96, "Open the sorting rules file..."));
-        controlList.add(new GuiButton(ID_EDITTREE, x + 55, height / 6 + 120, "Open the item tree file..."));
-        controlList.add(new GuiButton(ID_HELP, x + 55, height / 6 + 144, "Open help in browser..."));
-
-        controlList.add(new GuiButton(ID_DONE, x + 55, height / 6 + 168, "Done"));
-
-        // Check if "external links" are supported
+        
+        // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
                 GuiButton button = (GuiButton) o;
-                if (button.id >= 100 && button.id < 200) {
+                if (button.id == ID_EDITRULES || button.id < ID_EDITTREE) {
                     button.enabled = false;
                 }
             }
         }
 
+    }
+
+    private void moveToButtonCoords(int buttonOrder, Point p) {
+        p.setX(width / 2 - 155 + (buttonOrder % 2) * 160);
+        p.setY(height / 6 + (buttonOrder / 2) * 24);
     }
 
     public void drawScreen(int i, int j, float f) {

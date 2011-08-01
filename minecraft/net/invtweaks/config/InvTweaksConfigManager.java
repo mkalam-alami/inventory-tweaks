@@ -112,9 +112,9 @@ public class InvTweaksConfigManager {
             initializedField.setAccessible(true);
             Boolean initialized = (Boolean) initializedField.get(null);
             if (!initialized) {
-                Method initiliazeMethod = convenientInventory.getDeclaredMethod("initialize");
-                initiliazeMethod.setAccessible(true);
-                initiliazeMethod.invoke(null);
+                Method initializeMethod = convenientInventory.getDeclaredMethod("initialize");
+                initializeMethod.setAccessible(true);
+                initializeMethod.invoke(null);
             }
             
             // Look for the default sorting shortcut (middle click) in CI settings.

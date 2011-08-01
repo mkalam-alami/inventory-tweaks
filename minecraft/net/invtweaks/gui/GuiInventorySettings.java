@@ -74,7 +74,7 @@ public class GuiInventorySettings extends GuiScreen {
         GuiButton middleClickBtn = new GuiSmallButton(ID_MIDDLE_CLICK, p.getX(), p.getY(),
                 computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, MIDDLE_CLICK));
         controlList.add(middleClickBtn);
-        if (middleClick == InvTweaksConfig.VALUE_CI_COMPATIBILITY) {
+        if (middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: middle click not available
             middleClickBtn.enabled = false;
         }

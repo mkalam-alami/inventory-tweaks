@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -56,7 +55,6 @@ public class InvTweaks extends Obfuscation {
      */
     private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
     private ItemStack[] hotbarClone = new ItemStack[Const.INVENTORY_HOTBAR_SIZE];
-
     
     /**
      * Creates an instance of the mod, and loads the configuration
@@ -75,7 +73,6 @@ public class InvTweaks extends Obfuscation {
         cfgManager = new InvTweaksConfigManager(mc);
         if (cfgManager.makeSureConfigurationIsLoaded()) {
             log.info("Mod initialized");
-            resolveConvenientInventoryConflicts();
         } else {
             log.severe("Mod failed to initialize!");
         }
@@ -219,7 +216,7 @@ public class InvTweaks extends Obfuscation {
             handleAutoReplace();
         }
     }
-
+    
     /**
      * To be called on each tick when a menu is open.
      * Handles the GUi additions and the middle clicking.
@@ -536,59 +533,6 @@ public class InvTweaks extends Obfuscation {
         return Const.INGAME_LOG_PREFIX + ((level.equals(Level.SEVERE)) ? "[ERROR] " : "") + message;
     }
 
-    /**
-     * Check potential conflicts with Convenient Inventory
-     * (regarding the middle click shortcut), and solve them
-     * (by disabling middle click for InvTweaks)
-     */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void resolveConvenientInventoryConflicts() {
-        
-        boolean defaultCISortingShortcutEnabled = false;
-        
-        try {
-            // Find CI class
-            Class convenientInventory = Class.forName("ConvenientInventory");
-            
-            // Look for the default sorting shortcut (middle click) in CI settings.
-            Field actionMapField =  convenientInventory.getDeclaredField("actionMap");
-            actionMapField.setAccessible(true);
-            List<Integer> actionMap[][] = (List[][]) actionMapField.get(null);
-            if (actionMap[7] != null) { // 7 = SORT
-                for (List<Integer> combo : actionMap[7]) {
-                    if (combo != null && combo.size() == 1
-                            && combo.get(0) == 2) { // 2 = Middle click
-                        defaultCISortingShortcutEnabled = true;
-                        break;
-                    }
-                }
-            }
-            
-        }
-        catch (ClassNotFoundException e) {
-            logInGameError("not founf", null); //XXXXXXXXXXXXX
-            // Failed to find Convenient Inventory class, not a problem
-        }
-        catch (Exception e) {
-            logInGameError("Failed to manage Convenient Inventory compatibility", e);
-        }
-        
-        // If CI's middle click is enabled, disable InvTweaks shortcut
-        InvTweaksConfig config = cfgManager.getConfig();
-        String middleClickProp = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
-        if (defaultCISortingShortcutEnabled && 
-                !middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            cfgManager.getConfig().setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
-                    InvTweaksConfig.VALUE_CI_COMPATIBILITY);
-        }
-        // If the conflict is now resolved, re-enable the shortcut
-        else if (!defaultCISortingShortcutEnabled &&
-                middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            cfgManager.getConfig().setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
-                    InvTweaksConfig.VALUE_TRUE);
-        }
-    }
-
     private class SettingsButton extends GuiButton {
 
         public SettingsButton(int id, int x, int y, int w, int h, String displayString) {
@@ -641,6 +585,9 @@ public class InvTweaks extends Obfuscation {
                         logInGameError("Failed to put item down", e);
                     }
                 }
+                
+                // Refresh config
+                cfgManager.makeSureConfigurationIsLoaded();
 
                 // Display menu
                 mc.displayGuiScreen(new GuiInventorySettings(getCurrentScreen(), config));

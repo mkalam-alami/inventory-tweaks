@@ -27,7 +27,7 @@ public class ItemTreeCategory {
     private int order = -1;
 
     public ItemTreeCategory(String name) {
-        this.name = name;
+        this.name = (name != null) ? name.toLowerCase() : null;
     }
 
     public boolean contains(ItemTreeItem item) {

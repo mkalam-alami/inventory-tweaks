@@ -34,8 +34,11 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_SORTING_ON_PICKUP = "enableSortingOnPickup";
     public static final String PROP_ENABLE_AUTOREPLACE_SOUND = "enableAutoreplaceSound";
     public static final String PROP_ENABLE_SORTING_SOUND = "enableSortingSound";
-    public static final String PROP_CONVENIENT_INVENTORY_COMPATIBILITY = "convenientInventoryCompatibility";
 
+    public static final String VALUE_TRUE = "true";
+    public static final String VALUE_FALSE = "false";
+    public static final String VALUE_CI_COMPATIBILITY = "convenientInventoryCompatibility";
+    
     public static final String LOCKED = "LOCKED";
     public static final String FROZEN = "FROZEN";
     public static final String AUTOREPLACE = "AUTOREPLACE";
@@ -72,8 +75,7 @@ public class InvTweaksConfig {
 
             // Load properties
             loadProperties();
-            saveProperties(); // Needed to append non-saved properties to the
-                              // file
+            saveProperties(); // Needed to append non-saved properties to the file
 
             // Load tree
             tree = new ItemTreeLoader().load(treeFile);
@@ -260,11 +262,11 @@ public class InvTweaksConfig {
 
         // Default property values
         properties = new Properties();
-        properties.setProperty(PROP_ENABLE_MIDDLE_CLICK, "true");
-        properties.setProperty(PROP_SHOW_CHEST_BUTTONS, "true");
-        properties.setProperty(PROP_ENABLE_SORTING_ON_PICKUP, "true");
-        properties.setProperty(PROP_ENABLE_AUTOREPLACE_SOUND, "true");
-        properties.setProperty(PROP_ENABLE_SORTING_SOUND, "true");
+        properties.setProperty(PROP_ENABLE_MIDDLE_CLICK, VALUE_TRUE);
+        properties.setProperty(PROP_SHOW_CHEST_BUTTONS, VALUE_TRUE);
+        properties.setProperty(PROP_ENABLE_SORTING_ON_PICKUP, VALUE_TRUE);
+        properties.setProperty(PROP_ENABLE_AUTOREPLACE_SOUND, VALUE_TRUE);
+        properties.setProperty(PROP_ENABLE_SORTING_SOUND, VALUE_TRUE);
 
         invalidKeywords = new Vector<String>();
     }

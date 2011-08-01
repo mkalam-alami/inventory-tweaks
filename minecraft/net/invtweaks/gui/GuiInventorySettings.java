@@ -32,6 +32,7 @@ public class GuiInventorySettings extends GuiScreen {
     private final static String SORT_ON_PICKUP = "Sort on pickup";
     private final static String ON = ": ON";
     private final static String OFF = ": OFF";
+    private final static String DISABLE_CI = ": Disable CI's first";
 
     private final static int ID_MIDDLE_CLICK = 1;
     private final static int ID_CHESTS_BUTTONS = 2;
@@ -68,11 +69,14 @@ public class GuiInventorySettings extends GuiScreen {
 
         // Create settings buttons
         
-        String ciCompatibility = config.getProperty(InvTweaksConfig.PROP_CONVENIENT_INVENTORY_COMPATIBILITY);
-        if (ciCompatibility == null || !ciCompatibility.equals("true")) {
-            moveToButtonCoords(i++, p);
-            controlList.add(new GuiSmallButton(ID_MIDDLE_CLICK, p.getX(), p.getY(),
-                    computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, MIDDLE_CLICK)));
+        String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
+        moveToButtonCoords(i++, p);
+        GuiButton middleClickBtn = new GuiSmallButton(ID_MIDDLE_CLICK, p.getX(), p.getY(),
+                computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, MIDDLE_CLICK));
+        controlList.add(middleClickBtn);
+        if (middleClick == InvTweaksConfig.VALUE_CI_COMPATIBILITY) {
+            // Convenient Inventory compatibility: middle click not available
+            middleClickBtn.enabled = false;
         }
 
         moveToButtonCoords(i++, p);
@@ -163,12 +167,18 @@ public class GuiInventorySettings extends GuiScreen {
     private void toggleBooleanButton(GuiButton guibutton, String property, String label) {
         Boolean enabled = !new Boolean(config.getProperty(property));
         config.setProperty(property, enabled.toString());
-        guibutton.displayString = label + ((enabled) ? ON : OFF);
+        guibutton.displayString = computeBooleanButtonLabel(property, label);
     }
 
     private String computeBooleanButtonLabel(String property, String label) {
-        Boolean enabled = new Boolean(config.getProperty(property));
-        return label + ((enabled) ? ON : OFF);
+        String propertyValue = config.getProperty(property);
+        if (propertyValue.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+            return label + DISABLE_CI;
+        }
+        else {
+            Boolean enabled = new Boolean(propertyValue);
+            return label + ((enabled) ? ON : OFF);
+        }
     }
 
 }

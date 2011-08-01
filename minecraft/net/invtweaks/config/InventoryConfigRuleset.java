@@ -103,8 +103,8 @@ public class InventoryConfigRuleset {
 			
 				// Standard rule
 				else {
-					String keyword = words[1];
-					boolean isValidKeyword = tree.isKeywordValid(keyword.toLowerCase());
+					String keyword = words[1].toLowerCase();
+					boolean isValidKeyword = tree.isKeywordValid(keyword);
 					
 					// If invalid keyword, guess something similar
 					if (!isValidKeyword) {

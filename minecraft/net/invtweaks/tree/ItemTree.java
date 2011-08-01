@@ -193,7 +193,7 @@ public class ItemTree {
     protected void addCategory(String parentCategory, 
             ItemTreeCategory newCategory) throws NullPointerException {
         // Build tree
-        categories.get(parentCategory).addCategory(newCategory);
+        categories.get(parentCategory.toLowerCase()).addCategory(newCategory);
 
         // Register category
         categories.put(newCategory.getName(), newCategory);
@@ -202,7 +202,7 @@ public class ItemTree {
     protected void addItem(String parentCategory,
             ItemTreeItem newItem) throws NullPointerException {
         // Build tree
-        categories.get(parentCategory).addItem(newItem);
+        categories.get(parentCategory.toLowerCase()).addItem(newItem);
 
         // Register item
         if (itemsByName.containsKey(newItem.getName())) {

@@ -84,48 +84,6 @@ public class InvTweaks extends Obfuscation {
     }
 
     /**
-     * Check potential conflicts with Convenient Inventory
-     * (regarding the middle click shortcut), and solve them
-     * (by disabling middle click for InvTweaks)
-     */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void resolveConvenientInventoryConflicts() {
-        
-        try {
-            Class convenientInventory = Class.forName("ConvenientInventory");
-            boolean defaultCISortingShortcutEnabled = false;
-            
-            // Look for the default sorting shortcut (middle click) in CI settings.
-            Field actionMapField =  convenientInventory.getDeclaredField("actionMap");
-            actionMapField.setAccessible(true);
-            List<Integer> actionMap[][] = (List[][]) actionMapField.get(null);
-            if (actionMap[7] != null) { // 7 = SORT
-                for (List<Integer> combo : actionMap[7]) {
-                    if (combo != null && combo.size() == 1
-                            && combo.get(0) == 2) { // 2 = Middle click
-                        defaultCISortingShortcutEnabled = true;
-                        break;
-                    }
-                }
-            }
-            
-            // If CI's middle click is enabled, disable InvTweaks shortcut
-            if (defaultCISortingShortcutEnabled) {
-                cfgManager.getConfig().setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
-                        InvTweaksConfig.VALUE_CI_COMPATIBILITY);
-            }
-            
-        }
-        catch (ClassNotFoundException e) {
-            logInGameError("not founf", null); //XXXXXXXXXXXXX
-            // Failed to find Convenient Inventory class, not a problem
-        }
-        catch (Exception e) {
-            logInGameError("Failed to manage Convenient Inventory compatibility", e);
-        }
-    }
-
-    /**
      * To be called every time the sorting key is pressed.
      * Sorts the inventory.
      */
@@ -576,6 +534,59 @@ public class InvTweaks extends Obfuscation {
 
     private String buildlogString(Level level, String message) {
         return Const.INGAME_LOG_PREFIX + ((level.equals(Level.SEVERE)) ? "[ERROR] " : "") + message;
+    }
+
+    /**
+     * Check potential conflicts with Convenient Inventory
+     * (regarding the middle click shortcut), and solve them
+     * (by disabling middle click for InvTweaks)
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private void resolveConvenientInventoryConflicts() {
+        
+        boolean defaultCISortingShortcutEnabled = false;
+        
+        try {
+            // Find CI class
+            Class convenientInventory = Class.forName("ConvenientInventory");
+            
+            // Look for the default sorting shortcut (middle click) in CI settings.
+            Field actionMapField =  convenientInventory.getDeclaredField("actionMap");
+            actionMapField.setAccessible(true);
+            List<Integer> actionMap[][] = (List[][]) actionMapField.get(null);
+            if (actionMap[7] != null) { // 7 = SORT
+                for (List<Integer> combo : actionMap[7]) {
+                    if (combo != null && combo.size() == 1
+                            && combo.get(0) == 2) { // 2 = Middle click
+                        defaultCISortingShortcutEnabled = true;
+                        break;
+                    }
+                }
+            }
+            
+        }
+        catch (ClassNotFoundException e) {
+            logInGameError("not founf", null); //XXXXXXXXXXXXX
+            // Failed to find Convenient Inventory class, not a problem
+        }
+        catch (Exception e) {
+            logInGameError("Failed to manage Convenient Inventory compatibility", e);
+        }
+        
+        // If CI's middle click is enabled, disable InvTweaks shortcut
+        InvTweaksConfig config = cfgManager.getConfig();
+        String middleClickProp = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
+        if (defaultCISortingShortcutEnabled && 
+                !middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+            cfgManager.getConfig().setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
+                    InvTweaksConfig.VALUE_CI_COMPATIBILITY);
+        }
+        // If the conflict is now resolved, re-enable the shortcut
+        else if (!defaultCISortingShortcutEnabled &&
+                middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+            cfgManager.getConfig().setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
+                    InvTweaksConfig.VALUE_TRUE);
+        }
     }
 
     private class SettingsButton extends GuiButton {

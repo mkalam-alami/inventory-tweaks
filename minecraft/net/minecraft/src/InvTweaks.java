@@ -421,7 +421,7 @@ public class InvTweaks extends Obfuscation {
             InvTweaksConfig config = cfgManager.getConfig();
 
             // Check that middle click sorting is allowed
-            if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK)
+            if (config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK)
                     .equals(InvTweaksConfig.VALUE_TRUE)) {
 
                 if (!chestAlgorithmButtonDown) {

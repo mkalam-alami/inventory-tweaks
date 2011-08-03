@@ -38,7 +38,7 @@ D LOCKED
 # v modifier         = For rectangle rules. Sorts vertically instead of horizontally (ex: "A1-B8v blocks")
 # "LOCKED" rule      = Locks a part of the inventory so that stuff doesn't go there (ex: "D LOCKED").
 #                      Is overriden by more specific rules ("D LOCKED" is overriden by "D1 torch" or "1 swords").
-# "FROZEN" rule      = Completely ignores the slot during sorting (ex: "D8 FREEZE").
+# "FROZEN" rule      = Completely ignores the slot during sorting (ex: "D8 FROZEN").
 # "AUTOREPLACE" rule = Allows to customize what can be automatically replaced
 #                      (ex: "AUTOREPLACE tools" restricts the item replacement to tools).
 #                      You can disable completely the feature using "AUTOREPLACE nothing".

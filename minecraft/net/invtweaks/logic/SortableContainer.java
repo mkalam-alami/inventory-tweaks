@@ -5,8 +5,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.invtweaks.Const;
-import net.invtweaks.Obfuscation;
 import net.invtweaks.config.InvTweaksConfig;
+import net.invtweaks.framework.Obfuscation;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;

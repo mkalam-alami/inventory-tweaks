@@ -1,4 +1,4 @@
-package net.invtweaks;
+package net.invtweaks.framework;
 
 import java.io.File;
 import java.util.List;
@@ -58,7 +58,7 @@ public class Obfuscation {
      * Returns the Minecraft folder ensuring: - It is an absolute path - It ends
      * with a folder separator
      */
-    protected static String getMinecraftDir() {
+    public static String getMinecraftDir() {
         String absolutePath = Minecraft.getMinecraftDir().getAbsolutePath();
         if (absolutePath.endsWith(".")) {
             return absolutePath.substring(0, absolutePath.length() - 1);

@@ -7,10 +7,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.invtweaks.Const;
-import net.invtweaks.Obfuscation;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InvTweaksConfigManager;
 import net.invtweaks.config.InventoryConfigRule;
+import net.invtweaks.framework.Obfuscation;
 import net.invtweaks.gui.GuiInventorySettings;
 import net.invtweaks.logic.InventoryAlgorithms;
 import net.invtweaks.logic.SortableContainer;

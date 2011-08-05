@@ -7,10 +7,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.invtweaks.Const;
-import net.invtweaks.Obfuscation;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InvTweaksConfigManager;
 import net.invtweaks.config.InventoryConfigRule;
+import net.invtweaks.Obfuscation;
 import net.invtweaks.gui.GuiInventorySettings;
 import net.invtweaks.logic.InventoryAlgorithms;
 import net.invtweaks.logic.SortableContainer;
@@ -213,7 +213,7 @@ public class InvTweaks extends Obfuscation {
             if (!onTick()) {
                 return;
             }
-            handleAutoReplace();
+            handleAutoRefill();
         }
     }
     
@@ -340,7 +340,7 @@ public class InvTweaks extends Obfuscation {
         playClick();
 
         // This needs to be remembered so that the
-        // autoreplace feature doesn't trigger
+        // auto-refill feature doesn't trigger
         if (selectedItem != null && getItemStack(getMainInventory(), getFocusedSlot()) == null) {
             storedStackId = 0;
         }
@@ -353,7 +353,9 @@ public class InvTweaks extends Obfuscation {
         InvTweaksConfig config = cfgManager.getConfig();
         boolean isContainer = isChestOrDispenser(guiScreen);
 
-        if (isContainer || guiScreen instanceof GuiInventory) {
+        if (isContainer || guiScreen instanceof GuiInventory
+                || guiScreen.getClass().getSimpleName()
+                        .equals("GuiInventoryMoreSlots") /* Aether mod */) {
 
             int w = 10, h = 10;
 
@@ -483,7 +485,7 @@ public class InvTweaks extends Obfuscation {
         }
     }
 
-    private void handleAutoReplace() {
+    private void handleAutoRefill() {
 
         ItemStack currentStack = getFocusedStack();
         int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
@@ -491,7 +493,7 @@ public class InvTweaks extends Obfuscation {
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
         InvTweaksConfig config = cfgManager.getConfig();
         
-        // Auto-replace item stack
+        // Auto-refill item stack
         if (currentStackId != storedStackId || currentStackDamage != storedStackDamage) {
 
             if (storedFocusedSlot != focusedSlot) { // Filter selection change
@@ -504,8 +506,8 @@ public class InvTweaks extends Obfuscation {
                                                       // or other window
                     getCurrentScreen() instanceof GuiEditSign /* GuiEditSign */)) {
 
-                if (config.autoreplaceEnabled(storedStackId, storedStackId)) {
-                    cfgManager.getInventoryAlgorithms().autoReplaceSlot(focusedSlot, storedStackId, storedStackDamage);
+                if (config.isAutoRefillEnabled(storedStackId, storedStackId)) {
+                    cfgManager.getInventoryAlgorithms().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
                 }
             }
         }

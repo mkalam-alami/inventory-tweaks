@@ -5,10 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -79,78 +76,11 @@ public class InvTweaksConfigManager {
         } else {
             storedConfigLastModified = configLastModified;
             if (loadConfig()) { // Reload
-                resolveConvenientInventoryConflicts();
                 return true;
             }
             else {
                 return false;
             }
-        }
-    }
-
-    /**
-     * Check potential conflicts with Convenient Inventory (regarding the middle
-	 * click shortcut), and solve them (by disabling middle click for InvTweaks).
-	 * Should be called only once by game since CI only loads on startup.
-     */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public void resolveConvenientInventoryConflicts() {
-        
-        if (config == null) {
-            return;
-        }
-        
-        boolean defaultCISortingShortcutEnabled = false;
-        
-        try {
-            // Find CI class
-            Class convenientInventory = Class.forName("ConvenientInventory");
-            
-            // Force mod's initialization if necessary
-            // (some tweaks are needed here and below because nothing is publicly visible)
-            Field initializedField =  convenientInventory.getDeclaredField("initialized");
-            initializedField.setAccessible(true);
-            Boolean initialized = (Boolean) initializedField.get(null);
-            if (!initialized) {
-                Method initializeMethod = convenientInventory.getDeclaredMethod("initialize");
-                initializeMethod.setAccessible(true);
-                initializeMethod.invoke(null);
-            }
-            
-            // Look for the default sorting shortcut (middle click) in CI settings.
-            Field actionMapField =  convenientInventory.getDeclaredField("actionMap");
-            actionMapField.setAccessible(true);
-            List<Integer> actionMap[][] = (List[][]) actionMapField.get(null);
-            if (actionMap != null && actionMap[7] != null) { // 7 = SORT
-                for (List<Integer> combo : actionMap[7]) {
-                    if (combo != null && combo.size() == 1
-                            && combo.get(0) == 2) { // 2 = Middle click
-                        defaultCISortingShortcutEnabled = true;
-                        break;
-                    }
-                }
-            }
-            
-        }
-        catch (ClassNotFoundException e) {
-            // Failed to find Convenient Inventory class, not a problem
-        }
-        catch (Exception e) {
-            InvTweaks.logInGameErrorStatic("Failed to manage Convenient Inventory compatibility", e);
-        }
-        
-        // If CI's middle click is enabled, disable InvTweaks shortcut
-        String middleClickProp = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
-        if (defaultCISortingShortcutEnabled && 
-                !middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            config.setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
-                    InvTweaksConfig.VALUE_CI_COMPATIBILITY);
-        }
-        // If the conflict is now resolved, re-enable the shortcut
-        else if (!defaultCISortingShortcutEnabled &&
-                middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            config.setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
-                    InvTweaksConfig.VALUE_TRUE);
         }
     }
 

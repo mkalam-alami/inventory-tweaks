@@ -24,7 +24,7 @@ public class Const {
     public static final int INVENTORY_SIZE = 36;
     public static final int INVENTORY_ROW_SIZE = 9;
     public static final int INVENTORY_HOTBAR_SIZE = INVENTORY_ROW_SIZE;
-    public static final int AUTOREPLACE_DELAY = 200;
+    public static final int AUTO_REFILL_DELAY = 200;
     public static final int POLLING_DELAY = 3;
     public static final int POLLING_TIMEOUT = 1500;
     public static final int CHEST_ALGORITHM_SWAP_MAX_INTERVAL = 3000;

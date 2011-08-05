@@ -121,12 +121,12 @@ public class GuiInventorySettings extends GuiScreen {
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, MIDDLE_CLICK);
             break;
 
-        // Toggle chest buttons
+        // Toggle chest buttons&
         case ID_CHESTS_BUTTONS:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, CHEST_BUTTONS);
             break;
 
-        // Toggle autoreplace sound
+        // Toggle auto-refill sound
         case ID_SORT_ON_PICKUP:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, SORT_ON_PICKUP);
             break;
@@ -134,7 +134,7 @@ public class GuiInventorySettings extends GuiScreen {
         // Open rules configuration in external editor
         case ID_EDITRULES:
             try {
-                Desktop.getDesktop().browse(new File(Const.CONFIG_RULES_FILE).toURI());
+                Desktop.getDesktop().open(new File(Const.CONFIG_RULES_FILE));
             } catch (Exception e) {
                 InvTweaks.logInGameErrorStatic("Failed to open rules file", e);
             }
@@ -143,7 +143,7 @@ public class GuiInventorySettings extends GuiScreen {
         // Open tree configuration in external editor
         case ID_EDITTREE:
             try {
-                Desktop.getDesktop().browse(new File(Const.CONFIG_TREE_FILE).toURI());
+                Desktop.getDesktop().open(new File(Const.CONFIG_TREE_FILE));
             } catch (Exception e) {
                 InvTweaks.logInGameErrorStatic("Failed to open tree file", e);
             }

@@ -188,9 +188,9 @@ public class InventoryAlgorithms extends Obfuscation {
     }
     
     /**
-     * Autoreplace + middle click sorting
+     * Auto-refill + middle click sorting
      */
-	public void autoReplaceSlot(int slot, int wantedId, int wantedDamage) {
+	public void autoRefillSlot(int slot, int wantedId, int wantedDamage) {
    
 		SortableContainer inventory = new SortableContainer(
 				mc, config, getPlayerContainer(), true);  	
@@ -254,7 +254,7 @@ public class InventoryAlgorithms extends Obfuscation {
 	
 		if (replacementStack != null) {
 			
-			log.info("Automatic stack replacement.");
+			log.info("Automatic stack refill.");
 			
 		    /*
 		     * This allows to have a short feedback 
@@ -287,13 +287,13 @@ public class InventoryAlgorithms extends Obfuscation {
 								&& pollingTime < Const.POLLING_TIMEOUT) {
 							trySleep(Const.POLLING_DELAY);
 						}
-						if (pollingTime < Const.AUTOREPLACE_DELAY)
-							trySleep(Const.AUTOREPLACE_DELAY - pollingTime);
+						if (pollingTime < Const.AUTO_REFILL_DELAY)
+							trySleep(Const.AUTO_REFILL_DELAY - pollingTime);
 						if (pollingTime >= Const.POLLING_TIMEOUT)
-							log.warning("Autoreplace timout");
+							log.warning("Auto-refill timout");
 					}
 					else {
-						trySleep(Const.AUTOREPLACE_DELAY);
+						trySleep(Const.AUTO_REFILL_DELAY);
 					}
 					
 					// In POLLING_DELAY ms, things might have changed
@@ -302,7 +302,7 @@ public class InventoryAlgorithms extends Obfuscation {
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (inventory.moveStack(i, targetedSlot, Integer.MAX_VALUE)
 									!= SortableContainer.MOVE_FAILURE) {
-								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTOREPLACE_SOUND).equals("false")) {
+								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_REFILL_SOUND).equals("false")) {
 					    			mc.theWorld.playSoundAtEntity(getThePlayer(), 
 					    					"mob.chickenplop", 0.15F, 0.2F);
 								}
@@ -318,7 +318,7 @@ public class InventoryAlgorithms extends Obfuscation {
 								}
 							}
 							else {
-								log.warning("Failed to move stack for autoreplace, despite of prior tests.");
+								log.warning("Failed to move stack for auto-refill, despite of prior tests.");
 							}
 						}
 					}
@@ -326,7 +326,7 @@ public class InventoryAlgorithms extends Obfuscation {
 						// Nothing: Due to multithreading + 
 						// unsafe accesses, NPE may (very rarely) occur (?).
 					} catch (TimeoutException e) {
-						log.severe("Failed to trigger autoreplace: "+e.getMessage());
+						log.severe("Failed to trigger auto-refill: "+e.getMessage());
 					}
 					
 				}

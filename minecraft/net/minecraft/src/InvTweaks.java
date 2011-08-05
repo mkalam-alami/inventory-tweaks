@@ -353,7 +353,9 @@ public class InvTweaks extends Obfuscation {
         InvTweaksConfig config = cfgManager.getConfig();
         boolean isContainer = isChestOrDispenser(guiScreen);
 
-        if (isContainer || guiScreen instanceof GuiInventory) {
+        if (isContainer || guiScreen instanceof GuiInventory
+                || guiScreen.getClass().getSimpleName()
+                        .equals("GuiInventoryMoreSlots") /* Aether mod */) {
 
             int w = 10, h = 10;
 

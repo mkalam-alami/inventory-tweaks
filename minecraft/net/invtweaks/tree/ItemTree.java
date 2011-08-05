@@ -84,6 +84,11 @@ public class ItemTree {
                 }
             }
         }
+        
+        // Everything is stuff
+        if (keyword.equals(rootCategory)) {
+            return true;
+        }
 
         return false;
     }

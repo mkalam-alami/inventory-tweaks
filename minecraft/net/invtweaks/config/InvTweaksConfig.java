@@ -52,7 +52,8 @@ public class InvTweaksConfig {
     private Properties properties;
     private ItemTree tree;
     private Vector<InventoryConfigRuleset> rulesets;
-    private int currentRuleset;
+    private int currentRuleset = 0;
+    private String currentRulesetName = null;
     private Vector<String> invalidKeywords;
 
     private long storedConfigLastModified;
@@ -91,7 +92,7 @@ public class InvTweaksConfig {
                     .replace("\r\n", "\n").replace('\r', '\n').split("\n");
 
             // Register rules in various configurations (rulesets)
-            InventoryConfigRuleset ruleset = new InventoryConfigRuleset(tree, "Default");
+            InventoryConfigRuleset activeRuleset = new InventoryConfigRuleset(tree, "Default");
             boolean defaultRuleset = true, defaultRulesetEmpty = true;
             String invalidKeyword;
 
@@ -101,16 +102,16 @@ public class InvTweaksConfig {
                     // Make sure not to add an empty default config to the
                     // rulesets
                     if (!defaultRuleset || !defaultRulesetEmpty) {
-                        ruleset.finalize();
-                        rulesets.add(ruleset);
+                        activeRuleset.finalize();
+                        rulesets.add(activeRuleset);
                     }
-                    ruleset = new InventoryConfigRuleset(tree, 
+                    activeRuleset = new InventoryConfigRuleset(tree, 
                             line.substring(0, line.length() - 1));
                 }
 
                 // Register line
                 try {
-                    invalidKeyword = ruleset.registerLine(line);
+                    invalidKeyword = activeRuleset.registerLine(line);
                     if (defaultRuleset) {
                         defaultRulesetEmpty = false;
                     }
@@ -122,9 +123,31 @@ public class InvTweaksConfig {
                 }
             }
 
-            ruleset.finalize();
-            rulesets.add(ruleset);
+            // Finalize
+            activeRuleset.finalize();
+            rulesets.add(activeRuleset);
+            
+            // If a specific ruleset was loaded, 
+            // try to choose the same again, else load the first one
             currentRuleset = 0;
+            if (currentRulesetName != null) {
+                int rulesetIndex = 0;
+                for (InventoryConfigRuleset ruleset : rulesets) {
+                    if (ruleset.getName().equals(currentRulesetName)) {
+                        currentRuleset = rulesetIndex;
+                        break;
+                    }
+                    rulesetIndex++;
+                }
+            }
+            if (currentRuleset == 0) {
+                if (!rulesets.isEmpty()) {
+                    currentRulesetName = rulesets.get(currentRuleset).getName();
+                }
+                else {
+                    currentRulesetName = null;
+                }
+            }
 
         }
 
@@ -175,7 +198,7 @@ public class InvTweaksConfig {
     }
 
     public String getCurrentRulesetName() {
-        return rulesets.get(currentRuleset).getName();
+        return currentRulesetName;
     }
 
     public String switchConfig() {
@@ -185,10 +208,11 @@ public class InvTweaksConfig {
             } else {
                 currentRuleset = (currentRuleset + 1) % rulesets.size();
             }
-            return rulesets.get(currentRuleset).getName();
+            currentRulesetName = rulesets.get(currentRuleset).getName();
         } else {
-            return null;
+            currentRulesetName = null;
         }
+        return currentRulesetName;
     }
 
     /**

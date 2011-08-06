@@ -1,0 +1,337 @@
+package net.invtweaks.framework;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
+
+import net.invtweaks.Const;
+import net.invtweaks.logic.InventoryAlgorithms;
+import net.minecraft.client.Minecraft;
+import net.minecraft.src.Container;
+import net.minecraft.src.ContainerChest;
+import net.minecraft.src.ContainerDispenser;
+import net.minecraft.src.ContainerFurnace;
+import net.minecraft.src.ContainerPlayer;
+import net.minecraft.src.ContainerWorkbench;
+import net.minecraft.src.GuiContainer;
+import net.minecraft.src.GuiScreen;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.Slot;
+
+/**
+ * Allows to perform various operations on the inventory
+ * and/or containers, that work in both single and multiplayer.
+ * 
+ * @author Jimeo Wan
+ *
+ */
+public class ContainerManager extends Obfuscation {
+	
+    // TODO: Throw errors when the container isn't available anymore
+    
+    public static final int INVENTORY_SIZE = 36;
+    public static final int DEFAULT_TIMEOUT = 500;
+    
+    public enum ContainerSection{
+        /** The player's inventory */ INVENTORY,
+        /** The chest or dispenser contents */ CHEST,
+        /** The crafting input */ CRAFTING_IN,
+        /** The crafting output */ CRAFTING_OUT,
+        /** The armor slots */ ARMOR,
+        /** The furnace input */ FURNACE_IN,
+        /** The furnace output */ FURNACE_OUT,
+        /** The furnace fuel */ FURNACE_FUEL,
+        /** Any other type of slot. For unknown container types (such as
+         * mod containers), only INVENTORY and OTHER sections are defined. */
+        OTHER
+    }
+
+    private static final Logger log = Logger.getLogger("InvTweaks Framework");
+    
+    private Container container;
+    private Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
+    
+    
+    /**
+     * Creates an container manager linked to the currently available container:
+     * - If a container GUI is open, the manager gives access to this container contents.
+     * - If no GUI is open, the manager works as if the player's inventory was open. 
+     * @param mc Minecraft
+     */
+    @SuppressWarnings({"unchecked"})
+    public ContainerManager(Minecraft mc) {
+        super(mc);
+        
+        GuiScreen currentScreen = getCurrentScreen();
+        if (currentScreen instanceof GuiContainer) {
+            this.container = getContainer((GuiContainer) currentScreen);
+        }
+        else {
+            this.container = getPlayerContainer();
+        }
+        
+        List<Slot> slots = container.slots;
+        int size = slots.size();
+
+        try {
+            // Inventory: 4 crafting slots, then 4 armor slots, then inventory
+            if (container instanceof ContainerPlayer) {
+                slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 0));
+                slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 5));
+                slotRefs.put(ContainerSection.ARMOR, slots.subList(4, 8));
+                slotRefs.put(ContainerSection.INVENTORY, slots.subList(8, 44));
+            }
+            
+            // Chest/Dispenser
+            if ((container instanceof ContainerChest)
+                    || (container instanceof ContainerDispenser)) {
+                slotRefs.put(ContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
+                slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
+            }
+            
+            // Furnace
+            if ((container instanceof ContainerFurnace)) {
+                slotRefs.put(ContainerSection.FURNACE_IN, slots.subList(0, 1));
+                slotRefs.put(ContainerSection.FURNACE_FUEL, slots.subList(1, 2));
+                slotRefs.put(ContainerSection.FURNACE_OUT, slots.subList(2, 3));
+                slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
+            }
+
+            // Workbench
+            if ((container instanceof ContainerWorkbench)) {
+                slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(0, 0));
+                slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(1, 10));
+                slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
+            }
+            
+            // Unkown
+            else {
+                throw new Exception();
+            }
+        }
+        catch (Exception e) {
+            // Assuming the container ends with the inventory,
+            // just like all vanilla containers.
+            if (size >= INVENTORY_SIZE) {
+                slotRefs.put(ContainerSection.OTHER, slots.subList(0, size-INVENTORY_SIZE));
+                slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
+            }
+            else {
+                slotRefs.put(ContainerSection.OTHER, slots.subList(0, size));
+            }
+        }
+        
+    }
+    
+    /**
+     * Moves a stack from source to destination, adapting the behavior 
+     * according to the context:
+     * - If destination is empty, the source stack is moved.
+     * - If the items can be merged, as much items are possible are put
+     *   in the destination, and the eventual remains go back to the source.
+     * - If the items cannot be merged, they are swapped.
+     * @param srcSection The source section
+     * @param srcIndex The destination slot
+     * @param destSection The destination section
+     * @param destIndex The destination slot
+     * @throws TimeoutException 
+     */
+	public void move(ContainerSection srcSection, int srcIndex,
+            ContainerSection destSection, int destIndex) throws TimeoutException {
+	    
+        if ((srcSection == destSection && srcIndex == destIndex)
+                || getSlotStack(srcSection, srcIndex) == null) {
+            return;
+        }
+
+        boolean destinationEmpty = getSlotStack(destSection, destIndex) == null;
+
+        leftClick(srcSection, srcIndex);
+        leftClick(destSection, destIndex);
+        if (!destinationEmpty) {
+            leftClick(srcSection, srcIndex);
+        }
+    }
+	    
+	/**
+     * Moves some items from source to destination.
+	 * @param srcSection The source section
+	 * @param srcIndex The destination slot
+     * @param destSection The destination section
+     * @param destIndex The destination slot
+	 * @param amount The amount of items to move. If <= 0, does nothing.
+	 * If > to the source stack size, moves as much as possible from the stack size.
+	 * If not all can be moved to the destination, only moves as much as possible.
+	 * @return false if the destination slot is already occupied
+	 * by a different item (meaning items cannot be moved to destination).
+	 * @throws TimeoutException 
+	 */
+	public boolean moveSome(ContainerSection srcSection, int srcIndex,
+	        ContainerSection destSection, int destIndex,
+	        int amount) throws TimeoutException {
+
+        ItemStack source = getSlotStack(srcSection, srcIndex);
+	    if (source == null || srcSection == destSection && srcIndex == destIndex) {
+            return true;
+        }
+
+        ItemStack destination = getSlotStack(srcSection, srcIndex);
+        int sourceSize = getStackSize(source);
+        int movedAmount = Math.min(amount, sourceSize);
+	    
+	    if (source != null && (destination == null
+	            || source.isItemEqual(destination))) {
+
+	        leftClick(srcSection, srcIndex);
+	        for (int i = 0; i < movedAmount; i++) {
+	            rightClick(destSection, destIndex);
+	        }
+	        if (movedAmount < sourceSize) {
+	            leftClick(srcSection, srcIndex);
+	        }
+	        return true;
+	    }
+	    else {
+	        return false;
+	    }
+	    
+	}
+
+	public void leftClick(ContainerSection section, int index) throws TimeoutException {
+        click(section, index, false);
+    }
+
+    public void rightClick(ContainerSection section, int index) throws TimeoutException {
+        click(section, index, true);
+    }
+
+    public void click(ContainerSection section, int index, boolean rightClick) throws TimeoutException {
+        
+        int slot = indexToSlot(section, index);
+        int timeSpentWaiting = 0;
+        
+        if (slot != -1) {
+
+            boolean uselessClick = false;
+            ItemStack stackInSlot = null;
+            if (isMultiplayerWorld()) {
+                // After clicking, we'll need to wait for server answer before continuing.
+                // We'll do this by listening to any change in the slot, but this implies we
+                // check first if the click will indeed produce a change.
+                stackInSlot = (getSlotStack(section, index) != null)
+                        ? copy(getSlotStack(section, index)) : null;
+                ItemStack stackInHand = getHoldStack();
+            
+                // Useless if empty stacks
+                if (stackInHand == null && stackInSlot == null)
+                    uselessClick = true;
+                // Useless if destination stack is full
+                else if (stackInHand != null && stackInSlot != null
+                        && stackInHand.isItemEqual(stackInSlot)
+                        && getStackSize(stackInSlot) == getMaxStackSize(stackInSlot)) {
+                    uselessClick = true;
+                }
+            }
+        
+            // Click!
+            clickInventory(getPlayerController(),
+                    getWindowId(container), // Select container
+                    slot, // Targeted slot
+                    (rightClick) ? 1 : 0, // Click #
+                    false, // Shift not held
+                    getThePlayer());
+        
+            // Wait for inventory update
+            if (isMultiplayerWorld()) {
+                if (!uselessClick) {
+                    int pollingTime = 0;
+                    while (areItemStacksEqual(getSlotStack(section, index), stackInSlot)
+                            && pollingTime < Const.POLLING_TIMEOUT) {
+                        InventoryAlgorithms.trySleep(Const.POLLING_DELAY);
+                        pollingTime += Const.POLLING_DELAY;
+                    }
+                    if (pollingTime >= Const.POLLING_TIMEOUT) {
+                        log.warning("Click timeout");
+                    }
+                    timeSpentWaiting += pollingTime;
+                }
+            
+                // Freeze protection (to protect from infinite clicking in SMP
+                // due to a mod bug, or the server not responding)
+                if (timeSpentWaiting > Const.SORTING_TIMEOUT) {
+                    throw new TimeoutException("Timeout");
+                }
+            }
+        }
+    }
+
+    public boolean isSectionAvailable(ContainerSection section) {
+        return slotRefs.containsKey(section);
+    }
+
+    public List<Slot> getSectionSlots(ContainerSection section) {
+        return slotRefs.get(section); 
+    }
+
+    /**
+     * Returns the size of a section of the container.
+     * @param slot
+     * @return The size, or 0 if there is no such section.
+     */
+    public int getSectionSize(ContainerSection section) {
+        if (isSectionAvailable(section)) {
+            return slotRefs.get(section).size();  
+        }
+        else {
+            return 0;
+        }
+    }
+
+    /**
+     * @param slot
+     * @return true if the specified slot exists and is empty, false otherwise.
+     */
+    public boolean isSlotEmpty(ContainerSection section, int slot) {
+        if (isSectionAvailable(section)) {
+            return getSlotStack(section, slot) == null;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns an ItemStack from the wanted section and slot.
+     * @param section
+     * @param slot
+     * @return An ItemStack or null.
+     */
+    public ItemStack getSlotStack(ContainerSection section, int index) 
+            throws NullPointerException, IndexOutOfBoundsException {
+        return getSlotStack(container, indexToSlot(section, index));  
+    }
+
+    /**
+     * Converts section/index values to slot ID.
+     * @param section
+     * @param index
+     * @return -1 if not found
+     */
+    private int indexToSlot(ContainerSection section, int index) {
+        if (isSectionAvailable(section)) {
+            Slot slot = slotRefs.get(section).get(index);
+            if (slot != null) {
+                return slot.slotNumber;
+            }
+            else {
+                return -1;
+            }
+        }
+        else {
+            return -1;
+        }
+    }
+    
+}

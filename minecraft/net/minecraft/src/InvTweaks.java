@@ -12,7 +12,9 @@ import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InvTweaksConfigManager;
 import net.invtweaks.config.InventoryConfigRule;
+import net.invtweaks.framework.ContainerManager;
 import net.invtweaks.framework.Obfuscation;
+import net.invtweaks.framework.ContainerManager.ContainerSection;
 import net.invtweaks.gui.GuiInventorySettings;
 import net.invtweaks.logic.InventoryAlgorithms;
 import net.invtweaks.logic.SortableContainer;
@@ -88,19 +90,27 @@ public class InvTweaks extends Obfuscation {
      */
     public final void onSortingKeyPressed() {
         synchronized (this) {
-
+            ContainerManager im = new ContainerManager(mc);
+            try {
+                im.moveSome(ContainerSection.INVENTORY, 0,
+                        ContainerSection.CRAFTING_IN, 0, 1);
+            } catch (TimeoutException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+/*
             if (!cfgManager.makeSureConfigurationIsLoaded()) {
                 return;
             }
 
             // Check config loading success & current GUI
             GuiScreen guiScreen = getCurrentScreen();
-            if (guiScreen != null && !(guiScreen instanceof GuiContainer) /* GuiContainer */) {
+            if (guiScreen != null && !(guiScreen instanceof GuiContainer)) {
                 return;
             }
 
             // Sorting!
-            handleSorting(guiScreen);
+            handleSorting(guiScreen);*/
         }
     }
 

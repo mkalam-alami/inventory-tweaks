@@ -5,6 +5,7 @@ import java.util.logging.Level;
 
 import net.invtweaks.framework.Obfuscation;
 
+
 public class Const {
     
     public static final String MINECRAFT_DIR = Obfuscation.getMinecraftDir();

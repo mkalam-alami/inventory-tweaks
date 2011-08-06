@@ -18,7 +18,8 @@ import net.minecraft.src.Slot;
 
 /**
  * Obfuscation layer, used to centralize most calls to Minecraft code.
- * Eases transitions when Minecraft then MCP is updated.
+ * Eases transitions when Minecraft then MCP are updated.
+ * 
  * @author Jimeo Wan
  *
  */

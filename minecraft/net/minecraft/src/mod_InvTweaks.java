@@ -2,6 +2,7 @@ package net.minecraft.src;
 
 import java.util.logging.Logger;
 
+import net.invtweaks.Const;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -38,7 +39,7 @@ public class mod_InvTweaks extends BaseMod {
 
     @Override
     public String Version() {
-        return "1.22 (1.7.3)";
+        return Const.MOD_VERSION;
     }
 
     /**

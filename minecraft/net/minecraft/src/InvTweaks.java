@@ -1,16 +1,18 @@
 package net.minecraft.src;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.invtweaks.Const;
+import net.invtweaks.Obfuscation;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InvTweaksConfigManager;
 import net.invtweaks.config.InventoryConfigRule;
-import net.invtweaks.Obfuscation;
 import net.invtweaks.gui.GuiInventorySettings;
 import net.invtweaks.logic.InventoryAlgorithms;
 import net.invtweaks.logic.SortableContainer;
@@ -229,6 +231,7 @@ public class InvTweaks extends Obfuscation {
             }
             handleGUILayout(guiScreen);
             handleMiddleClick(guiScreen);
+            handleShortcuts(guiScreen);
         }
     }
 
@@ -515,6 +518,74 @@ public class InvTweaks extends Obfuscation {
         storedStackId = currentStackId;
         storedStackDamage = currentStackDamage;
 
+    }
+    
+    // XXX:Work in progress (currently only a POC of shortcuts without modifying the Minecraft code) 
+    private Map<Integer, Boolean> clickModifiers = new HashMap<Integer, Boolean>();
+    private void handleShortcuts(GuiScreen guiScreen) {
+        
+        if (!(guiScreen instanceof GuiContainer)) {
+            return;
+        }
+        
+        if (Mouse.isButtonDown(0)) {
+            if (!clickModifiers.get(0)) {
+                clickModifiers.put(0, true);
+                if (clickModifiers.get(Keyboard.KEY_LCONTROL)) {
+                    int x = (Mouse.getEventX() * guiScreen.width) / mc.displayWidth;
+                    int y = guiScreen.height - (Mouse.getEventY() * guiScreen.height) / mc.displayHeight - 1;
+                    Slot slot = getSlotAtPosition((GuiContainer) guiScreen, x, y);
+                    if (slot != null) {
+                        SortableContainer container = new SortableContainer(mc, 
+                                cfgManager.getConfig(),
+                                ((GuiContainer) guiScreen).inventorySlots, false);
+                        try {
+                            int i = container.putHoldItemDown();
+                            // If stack in hand
+                            if (i != -1 && container.getItemStack(i) != null) {
+                                container.moveStack(i, slot.slotNumber+1-9, Integer.MAX_VALUE);
+                            }
+                            // If stack in slot
+                            else if (container.getItemStack(slot.slotNumber-9) != null) {
+                                container.moveStack(slot.slotNumber-9, slot.slotNumber+1-9, Integer.MAX_VALUE);
+                            }
+                        } catch (TimeoutException e) {
+                            // TODO Auto-generated catch block
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            clickModifiers.put(0, false);
+        }
+        
+        // Register modifiers status
+        if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+            if (!clickModifiers.get(Keyboard.KEY_LCONTROL)) {
+                clickModifiers.put(Keyboard.KEY_LCONTROL, true);
+            }
+        }
+        else {
+            clickModifiers.put(Keyboard.KEY_LCONTROL, false);
+        }
+        
+    }
+    private Slot getSlotAtPosition(GuiContainer guiContainer, int i, int j) {  // Copied from GuiContainer
+        for (int k = 0; k < guiContainer.inventorySlots.slots.size(); k++) {
+            Slot slot = (Slot)guiContainer.inventorySlots.slots.get(k);
+            if (getIsMouseOverSlot(guiContainer, slot, i, j)) {
+                return slot;
+            }
+        }
+        return null;
+    }
+    private boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int i, int j) { // Copied from GuiContainer
+        int k = (guiContainer.width - guiContainer.xSize) / 2;
+        int l = (guiContainer.height - guiContainer.ySize) / 2;
+        i -= k;
+        j -= l;
+        return i >= slot.xDisplayPosition - 1 && i < slot.xDisplayPosition + 16 + 1 && j >= slot.yDisplayPosition - 1 && j < slot.yDisplayPosition + 16 + 1;
     }
 
     private void playClick() {

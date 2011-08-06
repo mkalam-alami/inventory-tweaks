@@ -132,10 +132,11 @@ public class InventoryConfigRuleset {
 			}
 
 			// Autoreplace rule
-			else if (words[0].equals(InvTweaksConfig.AUTOREPLACE)) {
+			else if (words[0].equals(InvTweaksConfig.AUTOREFILL)
+			        || words[0].equals("AUTOREPLACE") /* Retro-compatibility */) {
 				words[1] = words[1].toLowerCase();
 				if (tree.isKeywordValid(words[1]) || 
-						words[1].equals(InvTweaksConfig.AUTOREPLACE_NOTHING)) {
+						words[1].equals(InvTweaksConfig.AUTOREFILL_NOTHING)) {
 					autoReplaceRules.add(words[1]);
 				}
 				return null;

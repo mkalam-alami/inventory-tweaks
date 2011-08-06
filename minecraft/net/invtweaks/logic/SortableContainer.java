@@ -88,12 +88,14 @@ public class SortableContainer extends Obfuscation {
             this.offset = 9; // 5 crafting slots + 4 armor slots
             this.lockPriorities = config.getLockPriorities();
             this.frozenSlots = config.getFrozenSlots();
-        } else if (inventoryPart) {
+        }
+        else if (inventoryPart) {
             this.size = Const.INVENTORY_SIZE;
             this.offset = getSlots(container).size() - Const.INVENTORY_SIZE;
             this.lockPriorities = config.getLockPriorities();
             this.frozenSlots = config.getFrozenSlots();
-        } else {
+        }
+        else {
             this.size = getSlots(container).size() - Const.INVENTORY_SIZE;
             this.offset = 0;
             this.lockPriorities = DEFAULT_LOCK_PRIORITIES;
@@ -327,10 +329,10 @@ public class SortableContainer extends Obfuscation {
     /**
      * If an item is in hand (= attached to the cursor), puts it down.
      * 
-     * @return false if there is no room to put the item.
+     * @return -1 if there is no room to put the item, or the hand is not holding anything.
      * @throws Exception
      */
-    public boolean putHoldItemDown() throws TimeoutException {
+    public int putHoldItemDown() throws TimeoutException {
         ItemStack holdStack = getHoldStack();
         if (holdStack != null) {
             // Try to find an unlocked slot first, to avoid
@@ -344,13 +346,13 @@ public class SortableContainer extends Obfuscation {
                             putStackInSlot(i, holdStack);
                             setHoldStack(null);
                         }
-                        return true;
+                        return i;
                     }
                 }
             }
-            return false;
+            return -1;
         }
-        return true;
+        return -1;
     }
 
     public boolean canBeMerged(int i, int j) {

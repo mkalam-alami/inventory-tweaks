@@ -43,8 +43,8 @@ public class InvTweaksConfig {
     
     public static final String LOCKED = "LOCKED";
     public static final String FROZEN = "FROZEN";
-    public static final String AUTOREPLACE = "AUTOREPLACE";
-    public static final String AUTOREPLACE_NOTHING = "nothing";
+    public static final String AUTOREFILL = "AUTOREFILL";
+    public static final String AUTOREFILL_NOTHING = "nothing";
     public static final String DEBUG = "DEBUG";
     public static final boolean DEFAULT_AUTOREPLACE_BEHAVIOUR = true;
 
@@ -271,7 +271,7 @@ public class InvTweaksConfig {
         Vector<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();
         boolean found = false;
         for (String keyword : autoReplaceRules) {
-            if (keyword.equals(AUTOREPLACE_NOTHING))
+            if (keyword.equals(AUTOREFILL_NOTHING))
                 return false;
             if (tree.matches(items, keyword))
                 found = true;

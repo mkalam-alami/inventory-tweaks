@@ -13,9 +13,9 @@ import java.util.logging.Logger;
 import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InventoryConfigRule;
+import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.library.ContainerSectionManager;
 import net.invtweaks.library.Obfuscation;
-import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
@@ -113,7 +113,7 @@ public class SortingHandler extends Obfuscation {
             this.rulePriority[i] = -1;
             ItemStack stack = containerMgr.getItemStack(i);
             if (stack != null) {
-                this.keywordOrder[i] = getItemOrder(getItemID(stack), getItemDamage(stack));
+                this.keywordOrder[i] = getItemOrder(stack);
             } else {
                 this.keywordOrder[i] = -1;
             }
@@ -236,32 +236,6 @@ public class SortingHandler extends Obfuscation {
         
     }
 
-    /**
-     * If an item is in hand (= attached to the cursor), puts it down.
-     * 
-     * @return -1 if there is no room to put the item, or the hand is not holding anything.
-     * @throws Exception
-     */
-    private int putHoldItemDown() throws TimeoutException {
-        ItemStack holdStack = getHoldStack();
-        if (holdStack != null) {
-            // Try to find an unlocked slot first, to avoid
-            // impacting too much the sorting
-            for (int step = 1; step <= 2; step++) {
-                for (int i = size - 1; i >= 0; i--) {
-                    if (containerMgr.getItemStack(i) == null
-                            && (lockPriorities[i] == 0 && !frozenSlots[i])
-                            || step == 2) {
-                        containerMgr.leftClick(i);
-                        return i;
-                    }
-                }
-            }
-            return -1;
-        }
-        return -1;
-    }
-
     private void defaultSorting() throws TimeoutException {
     
         log.info("Default sorting.");
@@ -299,6 +273,32 @@ public class SortingHandler extends Obfuscation {
     }
 
     /**
+     * If an item is in hand (= attached to the cursor), puts it down.
+     * 
+     * @return -1 if there is no room to put the item, or the hand is not holding anything.
+     * @throws Exception
+     */
+    private int putHoldItemDown() throws TimeoutException {
+        ItemStack holdStack = getHoldStack();
+        if (holdStack != null) {
+            // Try to find an unlocked slot first, to avoid
+            // impacting too much the sorting
+            for (int step = 1; step <= 2; step++) {
+                for (int i = size - 1; i >= 0; i--) {
+                    if (containerMgr.getItemStack(i) == null
+                            && (lockPriorities[i] == 0 && !frozenSlots[i])
+                            || step == 2) {
+                        containerMgr.leftClick(i);
+                        return i;
+                    }
+                }
+            }
+            return -1;
+        }
+        return -1;
+    }
+
+    /**
      * Tries to move a stack from i to j, and swaps them if j is already
      * occupied but i is of greater priority (even if they are of same ID).
      * 
@@ -319,11 +319,13 @@ public class SortingHandler extends Obfuscation {
             return -1;
         }
 
+        //log.info("Moving " + i + " (" + from + ") to " + j + " (" + to + ") ");
+
         if (lockPriorities[i] <= priority) {
 
             if (i == j) {
                 markAsMoved(i, priority);
-                return i;
+                return j;
             }
             
             // Move to empty slot
@@ -331,7 +333,7 @@ public class SortingHandler extends Obfuscation {
                 rulePriority[i] = -1;
                 keywordOrder[i] = -1;
                 rulePriority[j] = priority;
-                keywordOrder[j] = getItemOrder(getItemID(from), getItemDamage(from));
+                keywordOrder[j] = getItemOrder(from);
                 containerMgr.move(i, j); 
                 return j;
             }
@@ -350,32 +352,35 @@ public class SortingHandler extends Obfuscation {
                 }
                 if (canBeSwapped || from.isItemEqual(to)) {
                     
-                    rulePriority[i] = -1;
-                    keywordOrder[i] = -1;
+                    keywordOrder[j] = keywordOrder[i];
                     rulePriority[j] = priority;
-                    keywordOrder[j] = getItemOrder(getItemID(from), getItemDamage(from));
-                    containerMgr.move(i, j); 
-                    
-                    int dropSlot = i;
-                    if (lockPriorities[j] > lockPriorities[i]) {
-                        for (int k = 0; k < size; k++) {
-                            if (containerMgr.getItemStack(k) == null
-                                    && lockPriorities[k] == 0) {
-                                dropSlot = k;
-                                break;
+                    rulePriority[i] = -1;
+                    rulePriority[i] = -1;
+                    containerMgr.move(i, j);
+
+                    ItemStack remains = containerMgr.getItemStack(i);
+
+                    if (remains != null) {
+                        int dropSlot = i;
+                        if (lockPriorities[j] > lockPriorities[i]) {
+                            for (int k = 0; k < size; k++) {
+                                if (containerMgr.getItemStack(k) == null
+                                        && lockPriorities[k] == 0) {
+                                    dropSlot = k;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    if (i != dropSlot) {
-                        containerMgr.move(i, dropSlot);
-                        ItemStack remains = containerMgr.getItemStack(dropSlot);
-                        if (remains != null) {
-                            rulePriority[dropSlot] = -1;
-                            keywordOrder[dropSlot] = getItemOrder(getItemID(remains), getItemDamage(remains));
+                        if (dropSlot != i) {
+                            containerMgr.move(i, dropSlot);
                         }
+                        rulePriority[dropSlot] = -1;
+                        keywordOrder[dropSlot] = getItemOrder(remains);
+                        return dropSlot;
                     }
-                    
-                    return dropSlot;
+                    else {
+                        return j;
+                    }
                 }
             }
 
@@ -429,8 +434,9 @@ public class SortingHandler extends Obfuscation {
         }
     }
 
-    private int getItemOrder(int itemID, int itemDamage) {
-        List<ItemTreeItem> items = tree.getItems(itemID, itemDamage);
+    private int getItemOrder(ItemStack item) {
+        List<ItemTreeItem> items = tree.getItems(
+                getItemID(item), getItemDamage(item));
         return (items != null && items.size() > 0)
                 ? items.get(0).getOrder()
                 : Integer.MAX_VALUE;

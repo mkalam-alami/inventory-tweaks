@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Properties;
@@ -32,7 +34,7 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_MIDDLE_CLICK = "enableMiddleClick";
     public static final String PROP_SHOW_CHEST_BUTTONS = "showChestButtons";
     public static final String PROP_ENABLE_SORTING_ON_PICKUP = "enableSortingOnPickup";
-    public static final String PROP_ENABLE_AUTOREPLACE_SOUND = "enableAutoreplaceSound";
+    public static final String PROP_ENABLE_AUTO_REFILL_SOUND = "enableAutoRefillSound";
     public static final String PROP_ENABLE_SORTING_SOUND = "enableSortingSound";
 
     public static final String VALUE_TRUE = "true";
@@ -44,7 +46,7 @@ public class InvTweaksConfig {
     public static final String AUTOREPLACE = "AUTOREPLACE";
     public static final String AUTOREPLACE_NOTHING = "nothing";
     public static final String DEBUG = "DEBUG";
-    public static final boolean DEFAULT_AUTOREPLACE_BEHAVIOUR = true;
+    public static final boolean DEFAULT_AUTO_REFILL_BEHAVIOUR = true;
 
     private String rulesFile;
     private String treeFile;
@@ -191,6 +193,11 @@ public class InvTweaksConfig {
     public void setProperty(String key, String value) {
         properties.setProperty(key, value);
         saveProperties();
+        
+        //
+        if (key.equals(PROP_ENABLE_MIDDLE_CLICK)) {
+            resolveConvenientInventoryConflicts();
+        }
     }
 
     public ItemTree getTree() {
@@ -259,7 +266,7 @@ public class InvTweaksConfig {
                 ? Level.INFO : Level.WARNING;
     }
 
-    public boolean autoreplaceEnabled(int itemID, int itemDamage) {
+    public boolean isAutoRefillEnabled(int itemID, int itemDamage) {
         List<ItemTreeItem> items = tree.getItems(itemID, itemDamage);
         Vector<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();
         boolean found = false;
@@ -273,10 +280,85 @@ public class InvTweaksConfig {
             return true;
         else {
             if (autoReplaceRules.isEmpty()) {
-                return DEFAULT_AUTOREPLACE_BEHAVIOUR;
+                return DEFAULT_AUTO_REFILL_BEHAVIOUR;
             } else {
                 return false;
             }
+        }
+    }
+
+    /**
+     * Check potential conflicts with Convenient Inventory (regarding the middle
+     * click shortcut), and solve them according to the CI version.
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void resolveConvenientInventoryConflicts() {
+        
+        boolean defaultCISortingShortcutEnabled = false;
+        
+        try {
+            // Find CI class
+            Class convenientInventory = Class.forName("ConvenientInventory");
+            
+            // Latest versions of CI: disable CI sorting thanks to 
+            // the specific field provided for InvTweaks
+            Field middleClickField = convenientInventory.getDeclaredField("middleClickEnabled");
+            if (middleClickField != null) {
+                boolean middleClickSorting = getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK)
+                        .equals(InvTweaksConfig.VALUE_TRUE);
+                middleClickField.setAccessible(true);
+                middleClickField.setBoolean(null, !middleClickSorting);
+            }
+            
+            // Older versions of CI: disable InvTweaks middle click
+            else {
+                
+                // Force mod's initialization if necessary
+                // (some tweaks are needed here and below because nothing is publicly visible)
+                Field initializedField =  convenientInventory.getDeclaredField("initialized");
+                initializedField.setAccessible(true);
+                Boolean initialized = (Boolean) initializedField.get(null);
+                if (!initialized) {
+                    Method initializeMethod = convenientInventory.getDeclaredMethod("initialize");
+                    initializeMethod.setAccessible(true);
+                    initializeMethod.invoke(null);
+                }
+                
+                // Look for the default sorting shortcut (middle click) in CI settings.
+                Field actionMapField =  convenientInventory.getDeclaredField("actionMap");
+                actionMapField.setAccessible(true);
+                List<Integer> actionMap[][] = (List[][]) actionMapField.get(null);
+                if (actionMap != null && actionMap[7] != null) { // 7 = SORT
+                    for (List<Integer> combo : actionMap[7]) {
+                        if (combo != null && combo.size() == 1
+                                && combo.get(0) == 2) { // 2 = Middle click
+                            defaultCISortingShortcutEnabled = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+        }
+        catch (ClassNotFoundException e) {
+            // Failed to find Convenient Inventory class, not a problem
+        }
+        catch (Exception e) {
+            InvTweaks.logInGameErrorStatic("Failed to manage Convenient Inventory compatibility", e);
+        }
+        
+        // If CI's middle click is enabled, disable InvTweaks shortcut
+        String middleClickProp = getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
+        if (defaultCISortingShortcutEnabled && 
+                !middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+            setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
+                    InvTweaksConfig.VALUE_CI_COMPATIBILITY);
+        }
+        // If the conflict is now resolved, re-enable the shortcut
+        else if (!defaultCISortingShortcutEnabled &&
+                middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+            setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
+                    InvTweaksConfig.VALUE_TRUE);
         }
     }
 
@@ -289,7 +371,7 @@ public class InvTweaksConfig {
         properties.setProperty(PROP_ENABLE_MIDDLE_CLICK, VALUE_TRUE);
         properties.setProperty(PROP_SHOW_CHEST_BUTTONS, VALUE_TRUE);
         properties.setProperty(PROP_ENABLE_SORTING_ON_PICKUP, VALUE_TRUE);
-        properties.setProperty(PROP_ENABLE_AUTOREPLACE_SOUND, VALUE_TRUE);
+        properties.setProperty(PROP_ENABLE_AUTO_REFILL_SOUND, VALUE_TRUE);
         properties.setProperty(PROP_ENABLE_SORTING_SOUND, VALUE_TRUE);
 
         invalidKeywords = new Vector<String>();
@@ -301,6 +383,14 @@ public class InvTweaksConfig {
             FileInputStream fis = new FileInputStream(configPropsFile);
             properties.load(fis);
             fis.close();
+            resolveConvenientInventoryConflicts();
+        }
+        
+        // Retro-compatibility: rename autoreplace
+        if (properties.contains("enableAutoreplaceSound")) {
+            properties.setProperty(PROP_ENABLE_AUTO_REFILL_SOUND, 
+                    (String) properties.get("enableAutoreplaceSound"));
+            properties.remove("enableAutoreplaceSound");
         }
     }
 

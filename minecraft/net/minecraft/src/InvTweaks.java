@@ -15,8 +15,8 @@ import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.gui.GuiSettingsButton;
 import net.invtweaks.gui.GuiSortingButton;
 import net.invtweaks.library.ContainerManager.ContainerSection;
-import net.invtweaks.library.GuiContainerHelper;
 import net.invtweaks.library.ContainerSectionManager;
+import net.invtweaks.library.GuiContainerHelper;
 import net.invtweaks.library.Obfuscation;
 import net.invtweaks.logic.SortingHandler;
 import net.invtweaks.tree.ItemTree;
@@ -96,7 +96,8 @@ public class InvTweaks extends Obfuscation {
 
             // Check config loading success & current GUI
             GuiScreen guiScreen = getCurrentScreen();
-            if (guiScreen != null && !(guiScreen instanceof GuiContainer)) {
+            if (guiScreen != null && !(guiScreen instanceof GuiContainer) /* GuiContainer */) {
+
                 return;
             }
 
@@ -115,7 +116,6 @@ public class InvTweaks extends Obfuscation {
             return;
         }
         InvTweaksConfig config = cfgManager.getConfig();
-
         // Handle option to disable this feature
         if (cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP).equals("false")) {
             return;
@@ -219,7 +219,7 @@ public class InvTweaks extends Obfuscation {
             if (!onTick()) {
                 return;
             }
-            handleAutoReplace();
+            handleAutoRefill();
         }
     }
     
@@ -348,7 +348,7 @@ public class InvTweaks extends Obfuscation {
         playClick();
 
         // This needs to be remembered so that the
-        // autoreplace feature doesn't trigger
+        // auto-refill feature doesn't trigger
         if (selectedItem != null && getMainInventory()[getFocusedSlot()] == null) {
             storedStackId = 0;
         }
@@ -415,6 +415,7 @@ public class InvTweaks extends Obfuscation {
                         button = new GuiSortingButton(cfgManager,
                                 id++, x - 13, y, w, h, "h",
                                 SortingHandler.ALGORITHM_HORIZONTAL);
+
                         guiContainer.controlList.add((GuiButton) button);
 
                     }
@@ -496,7 +497,7 @@ public class InvTweaks extends Obfuscation {
         }
     }
 
-    private void handleAutoReplace() {
+    private void handleAutoRefill() {
 
         ItemStack currentStack = getFocusedStack();
         int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
@@ -504,22 +505,17 @@ public class InvTweaks extends Obfuscation {
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
         InvTweaksConfig config = cfgManager.getConfig();
         
-        // Auto-replace item stack
         if (currentStackId != storedStackId || currentStackDamage != storedStackDamage) {
 
             if (storedFocusedSlot != focusedSlot) { // Filter selection change
                 storedFocusedSlot = focusedSlot;
-            } else if ((currentStack == null || getItemID(currentStack) == 281 && storedStackId == 282) // Handle
-                                                                                                        // eaten
-                                                                                                        // mushroom
-                                                                                                        // soup
-                    && (getCurrentScreen() == null || // Filter open inventory
-                                                      // or other window
+            } else if ((currentStack == null || getItemID(currentStack) == 281 && storedStackId == 282)  // Handle eaten mushroom soup
+                    && (getCurrentScreen() == null || // Filter open inventory or other window
                     getCurrentScreen() instanceof GuiEditSign /* GuiEditSign */)) {
 
-                if (config.autoreplaceEnabled(storedStackId, storedStackId)) {
+                if (config.isAutoRefillEnabled(storedStackId, storedStackId)) {
                     try {
-                        cfgManager.getInventoryAlgorithms().autoReplaceSlot(focusedSlot, storedStackId, storedStackDamage);
+                        cfgManager.getInventoryAlgorithms().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
                     } catch (Exception e) {
                         logInGameError("Failed to trigger auto-refill", e);
                     }

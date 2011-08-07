@@ -42,7 +42,7 @@ public class AutoRefillHandler extends Obfuscation {
      * Auto-refill
 	 * @throws Exception 
      */
-	public void autoReplaceSlot(int slot, int wantedId, int wantedDamage) throws Exception {
+	public void autoRefillSlot(int slot, int wantedId, int wantedDamage) throws Exception {
    
 		ContainerSectionManager container = new ContainerSectionManager(
 		        mc, ContainerSection.INVENTORY);
@@ -140,13 +140,13 @@ public class AutoRefillHandler extends Obfuscation {
 								&& pollingTime < Const.POLLING_TIMEOUT) {
 							trySleep(Const.POLLING_DELAY);
 						}
-						if (pollingTime < Const.AUTOREPLACE_DELAY)
-							trySleep(Const.AUTOREPLACE_DELAY - pollingTime);
+						if (pollingTime < Const.AUTO_REFILL_DELAY)
+							trySleep(Const.AUTO_REFILL_DELAY - pollingTime);
 						if (pollingTime >= Const.POLLING_TIMEOUT)
 							log.warning("Autoreplace timout");
 					}
 					else {
-						trySleep(Const.AUTOREPLACE_DELAY);
+						trySleep(Const.AUTO_REFILL_DELAY);
 					}
 					
 					// In POLLING_DELAY ms, things might have changed
@@ -154,7 +154,7 @@ public class AutoRefillHandler extends Obfuscation {
 						ItemStack stack = containerMgr.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (containerMgr.move(i, targetedSlot)) {
-								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTOREPLACE_SOUND).equals("false")) {
+								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_REFILL_SOUND).equals("false")) {
 					    			mc.theWorld.playSoundAtEntity(getThePlayer(), 
 					    					"mob.chickenplop", 0.15F, 0.2F);
 								}

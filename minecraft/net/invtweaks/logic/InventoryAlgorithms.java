@@ -1,12 +1,7 @@
 package net.invtweaks.logic;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
@@ -14,12 +9,12 @@ import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.config.InventoryConfigRule.RuleType;
+import net.invtweaks.framework.ContainerManager.ContainerSection;
+import net.invtweaks.framework.ContainerSectionManager;
 import net.invtweaks.framework.Obfuscation;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.Container;
-import net.minecraft.src.ContainerDispenser;
 import net.minecraft.src.ItemStack;
 
 /**
@@ -32,11 +27,6 @@ public class InventoryAlgorithms extends Obfuscation {
     
     private static final Logger log = Logger.getLogger("InvTweaks");
 
-    // Do not change values (SortableContainer.chestAlgorithm depend on that)
-    public static final int DEFAULT = 0;
-    public static final int VERTICAL = 1;
-    public static final int HORIZONTAL = 2;
-    public static final int INVENTORY = 3;
 
     private InvTweaksConfig config = null;
     
@@ -50,150 +40,13 @@ public class InventoryAlgorithms extends Obfuscation {
     }
     
 	/**
-	 * Sort inventory
-	 * @return The number of clicks that were needed
-	 * @throws TimeoutException 
-     */
-    public final long sortContainer(Container minecraftContainer, boolean inventoryPart, int algorithm) throws TimeoutException {
-    	
-    	if (config == null)
-    		return -1;
-    	
-    	// Do nothing if the inventory is closed
-    	// if (!mc.hrrentScreen instanceof GuiContainer)
-    	//		return;
-    	
-    	long timer = System.nanoTime();
-
-    	ItemTree tree = config.getTree();
-    	SortableContainer container = new SortableContainer(mc, config,
-    	        minecraftContainer, inventoryPart);
-
-		//// Empty hand (needed in SMP)
-		if (isMultiplayerWorld()) {
-			container.putHoldItemDown();
-		}
-		
-		if (algorithm != DEFAULT) {
-			
-			Vector<InventoryConfigRule> rules;
-			Vector<Integer> lockedSlots;
-			
-			if (algorithm == INVENTORY) {
-				// TODO Get locked slots by decreasing priority to improve algorithm
-				lockedSlots = config.getLockedSlots();
-                rules = config.getRules();
-				
-		    	//// Merge stacks to fill the ones in locked slots
-				log.info("Merging stacks.");
-		    	for (int i = container.getSize()-1; i >= 0; i--) {
-		    		ItemStack from = container.getItemStack(i);
-		    		if (from != null) {
-		    	    	for (Integer j : lockedSlots) {
-		    	    		ItemStack to = container.getItemStack(j);
-		    	    		if (to != null && container.canBeMerged(i, j)) {
-		    	    			int result = container.swapOrMerge(i, j, Integer.MAX_VALUE);
-		    	    			container.markAsNotMoved(j);
-		    	    			if (result == SortableContainer.MOVE_OK_OLD_SLOT_EMPTY) {
-		        	    			break;
-		    	    			}
-		    	    		}
-		    	    	}
-		    		}
-		    	}
-				
-			}
-			else {
-				int rowSize = (minecraftContainer instanceof ContainerDispenser) ? 3 : 9;
-				rules = computeLineSortingRules(container,
-						rowSize, (algorithm == HORIZONTAL));
-				lockedSlots = new Vector<Integer>();
-			}
-	    	
-	    	//// Apply rules
-			log.info("Applying rules.");
-	    	
-	    	// Sorts rule by rule, themselves being already sorted by decreasing priority
-			Iterator<InventoryConfigRule> rulesIt = rules.iterator();
-			while (rulesIt.hasNext()) {
-				
-				InventoryConfigRule rule = rulesIt.next();
-				int rulePriority = rule.getPriority();
-	
-				if (log.getLevel() == Const.DEBUG)
-					log.info("Rule : "+rule.getKeyword()+"("+rulePriority+")");
-	
-				// For every item in the inventory
-				for (int i = 0; i < container.getSize(); i++) {
-					ItemStack from = container.getItemStack(i);
-
-					// If the rule is strong enough to move the item and it matches the item
-		    		if (container.hasToBeMoved(i) && 
-		    				container.getLockPriority(i) < rulePriority) {
-						List<ItemTreeItem> fromItems = tree.getItems(
-								getItemID(from), getItemDamage(from));
-		    			if (tree.matches(fromItems, rule.getKeyword())) {
-		    				
-		    				// Test preffered slots
-		    				int[] preferredSlots = rule.getPreferredSlots();
-		    				int stackToMove = i;
-		    				for (int j = 0; j < preferredSlots.length; j++) {
-		    					int k = preferredSlots[j];
-		    					int moveResult = container.moveStack(stackToMove, k, rulePriority);
-		    					if (moveResult != SortableContainer.MOVE_FAILURE) {
-		    						if (moveResult == SortableContainer.MOVE_OK_OLD_SLOT_EMPTY
-		    								|| stackToMove == k) {
-		    							break;
-		    						}
-		    						else {
-		    							from = container.getItemStack(moveResult);
-		    							fromItems = tree.getItems(getItemID(from), getItemDamage(from));
-		    							if (!tree.matches(fromItems, rule.getKeyword())) {
-		    								break;
-		    							}
-		    							else {
-			    							stackToMove = moveResult;
-		    								j = -1;
-		    							}
-		    						}
-			    				}
-		    				}
-		    			}
-		    		}
-				}
-			}
-	    	
-			//// Don't move locked stacks
-			log.info("Locking stacks.");
-			
-			for (int i = 0; i < container.getSize(); i++) {
-				if (container.hasToBeMoved(i) && container.getLockPriority(i) > 0) {
-					container.markAsMoved(i, 1);
-				}
-			}
-
-		}
-		
-		//// Sort remaining
-		defaultSorting(container);
-
-		if (log.getLevel() == Const.DEBUG) {
-			timer = System.nanoTime()-timer;
-			log.info("Sorting done in "
-					+ container.getClickCount() + " clicks and "
-					+ timer + "ns");
-		}
-
-    	return container.getClickCount();
-    }
-    
-    /**
      * Autoreplace + middle click sorting
+	 * @throws Exception 
      */
-	public void autoReplaceSlot(int slot, int wantedId, int wantedDamage) {
+	public void autoReplaceSlot(int slot, int wantedId, int wantedDamage) throws Exception {
    
-		SortableContainer inventory = new SortableContainer(
-				mc, config, getPlayerContainer(), true);  	
+		ContainerSectionManager container = new ContainerSectionManager(
+		        mc, ContainerSection.INVENTORY);
 		ItemStack candidateStack, replacementStack = null;
 		int replacementStackSlot = -1;
 
@@ -227,7 +80,7 @@ public class InventoryAlgorithms extends Obfuscation {
 		// else one that matches the slot's rules
 		for (InventoryConfigRule rule : matchingRules) {
 			for (int i = 0; i < Const.INVENTORY_SIZE; i++) {
-				candidateStack = inventory.getItemStack(i);
+				candidateStack = container.getItemStack(i);
 				if (candidateStack != null) {
 					List<ItemTreeItem> candidateItems = tree.getItems(
 							getItemID(candidateStack),
@@ -262,16 +115,17 @@ public class InventoryAlgorithms extends Obfuscation {
 		     */
 			new Thread(new Runnable() {
 
-				private SortableContainer inventory;
+				private ContainerSectionManager containerMgr;
 				private int targetedSlot;
 				private int i, expectedItemId;
 				
-				public Runnable init(
-						SortableContainer inventory,
-						int i, int currentItem) {
-					this.inventory = inventory;
+				public Runnable init(Minecraft mc,
+						int i, int currentItem) throws Exception {
+					this.containerMgr = new ContainerSectionManager(
+					        mc, ContainerSection.INVENTORY);
 					this.targetedSlot = currentItem;
-					this.expectedItemId = getItemID(inventory.getItemStack(i));
+					this.expectedItemId = getItemID(
+					        containerMgr.getItemStack(i));
 					this.i = i;
 					return this;
 				}
@@ -298,20 +152,19 @@ public class InventoryAlgorithms extends Obfuscation {
 					
 					// In POLLING_DELAY ms, things might have changed
 					try {
-						ItemStack stack = inventory.getItemStack(i);
+						ItemStack stack = containerMgr.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId) {
-							if (inventory.moveStack(i, targetedSlot, Integer.MAX_VALUE)
-									!= SortableContainer.MOVE_FAILURE) {
+							if (containerMgr.move(i, targetedSlot)) {
 								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTOREPLACE_SOUND).equals("false")) {
 					    			mc.theWorld.playSoundAtEntity(getThePlayer(), 
 					    					"mob.chickenplop", 0.15F, 0.2F);
 								}
 								// If item are swapped (like for mushroom soups),
 								// put the item back in the inventory if it is in the hotbar
-								if (inventory.getItemStack(i) != null && i >= 27) {
+								if (containerMgr.getItemStack(i) != null && i >= 27) {
 									for (int j = 0; j < Const.INVENTORY_SIZE; j++) {
-										if (inventory.getItemStack(j) == null) {
-											inventory.moveStack(i, j, Integer.MAX_VALUE);
+										if (containerMgr.getItemStack(j) == null) {
+										    containerMgr.move(i, j);
 											break;
 										}
 									}
@@ -331,7 +184,7 @@ public class InventoryAlgorithms extends Obfuscation {
 					
 				}
 				
-			}.init(inventory, replacementStackSlot, slot)).start();
+			}.init(mc, replacementStackSlot, slot)).start();
 			
 		}
     }
@@ -343,223 +196,5 @@ public class InventoryAlgorithms extends Obfuscation {
 			// Do nothing
 		}
     }
-
-	private void defaultSorting(SortableContainer inventory) throws TimeoutException {
-	
-		log.info("Default sorting.");
-		
-		Vector<Integer> remaining = new Vector<Integer>(), nextRemaining = new Vector<Integer>();
-		for (int i = 0; i < inventory.getSize(); i++) {
-			if (inventory.hasToBeMoved(i)) {
-				remaining.add(i);
-				nextRemaining.add(i);
-			}
-		}
-		
-		int iterations = 0;
-		while (remaining.size() > 0 && iterations++ < 50) {
-			for (int i : remaining) {
-				if (inventory.hasToBeMoved(i)) {
-					for (int j = 0; j < inventory.getSize(); j++) {
-						if (inventory.moveStack(i, j, 1) != -1) {
-							nextRemaining.remove((Object) j);
-							break;
-						}
-					}
-				}
-				else {
-					nextRemaining.remove((Object) i);
-				}
-			}
-			remaining.clear();
-			remaining.addAll(nextRemaining);
-		}
-		if (iterations == 50) {
-			log.info("Sorting takes too long, aborting.");
-		}
-		
-	}
-	
-	private Vector<InventoryConfigRule> computeLineSortingRules(
-			SortableContainer container, int rowSize, boolean horizontal) {
-		
-		Vector<InventoryConfigRule> rules = new Vector<InventoryConfigRule>();
-		Map<ItemTreeItem, Integer> stats = computeContainerStats(container);		
-		List<ItemTreeItem> itemOrder = new ArrayList<ItemTreeItem>();
-
-		int distinctItems = stats.size();
-		int columnSize = getContainerColumnSize(container, rowSize);
-		int spaceWidth;
-		int spaceHeight;
-		int availableSlots = container.getSize();
-		int remainingStacks = 0;
-		for (Integer stacks : stats.values()) {
-			remainingStacks += stacks; 
-		}
-		
-		// No need to compute rules for an empty chest
-		if (distinctItems == 0)
-			return rules;
-		
-		// (Partially) sort stats by decreasing item stack count
-		List<ItemTreeItem> unorderedItems = new ArrayList<ItemTreeItem>(stats.keySet());
-		boolean hasStacksToOrderFirst = true;
-		while (hasStacksToOrderFirst) {
-			hasStacksToOrderFirst = false;
-			for (ItemTreeItem item : unorderedItems) {
-				Integer value = stats.get(item);
-				if (value > ((horizontal) ? rowSize : columnSize)
-						&& !itemOrder.contains(item)) {
-					hasStacksToOrderFirst = true;
-					itemOrder.add(item);
-					unorderedItems.remove(item);
-					break;
-				}
-			}
-		}
-		Collections.sort(unorderedItems, Collections.reverseOrder());
-		itemOrder.addAll(unorderedItems);
-		
-		// Define space size used for each item type.
-		if (horizontal) {
-			spaceHeight = 1;
-			spaceWidth = rowSize/((distinctItems+columnSize-1)/columnSize);
-		}
-		else {
-			spaceWidth = 1;
-			spaceHeight = columnSize/((distinctItems+rowSize-1)/rowSize);
-		}
-		
-		char row = 'a', maxRow = (char) (row - 1 + columnSize);
-		char column = '1', maxColumn = (char) (column - 1 + rowSize);
-		
-		// Create rules
-		Iterator<ItemTreeItem> it = itemOrder.iterator();
-		while (it.hasNext()) {
-			
-			ItemTreeItem item = it.next();
-			
-			// Adapt rule dimensions to fit the amount
-			int thisSpaceWidth = spaceWidth,
-				thisSpaceHeight = spaceHeight;
-			while (stats.get(item) > thisSpaceHeight*thisSpaceWidth) {
-				if (horizontal) {
-					if (column + thisSpaceWidth < maxColumn) {
-						thisSpaceWidth = maxColumn - column + 1;
-					}
-					else if (row + thisSpaceHeight < maxRow) {
-						thisSpaceHeight++;
-					}
-					else {
-						break;
-					}
-				}
-				else {
-					if (row + thisSpaceHeight < maxRow) {
-						thisSpaceHeight = maxRow - row + 1;
-					}
-					else if (column + thisSpaceWidth < maxColumn) {
-						thisSpaceWidth++;
-					}
-					else {
-						break;
-					}
-				}
-			}
-			
-			// Adjust line/column ends to fill empty space
-			if (horizontal && (column + thisSpaceWidth == maxColumn)) {
-				thisSpaceWidth++;
-			}
-			else if (!horizontal && row + thisSpaceHeight == maxRow) {
-				thisSpaceHeight++;
-			}
-			
-			// Create rule
-			String constraint = row + "" + column + "-"
-					+ (char)(row - 1 + thisSpaceHeight)
-					+ (char)(column - 1 + thisSpaceWidth);
-			if (!horizontal) {
-				constraint += 'v';
-			}
-			rules.add(new InventoryConfigRule(config.getTree(), 
-					constraint, item.getName(),
-					container.getSize(), rowSize));
-			
-			// Check if ther's still room for more rules
-			availableSlots -= thisSpaceHeight*thisSpaceWidth;
-			remainingStacks -= stats.get(item);
-			if (availableSlots >= remainingStacks) {
-				// Move origin for next rule
-				if (horizontal) {
-					if (column + thisSpaceWidth + spaceWidth <= maxColumn + 1) {
-						column += thisSpaceWidth;
-					}
-					else {
-						column = '1';
-						row += thisSpaceHeight;
-					}
-				}
-				else {
-					if (row + thisSpaceHeight + spaceHeight <= maxRow + 1) {
-						row += thisSpaceHeight;
-					}
-					else {
-						row = 'a';
-						column += thisSpaceWidth;
-					}
-				}
-				if (row > maxRow || column > maxColumn)
-					break;
-			}
-			else {
-				break;
-			}
-		}
-		
-		String defaultRule;
-		if (horizontal) {
-			defaultRule = maxRow + "1-a" + maxColumn;
-		}
-		else {
-			defaultRule = "a" + maxColumn + "-" + maxRow + "1v";
-		}
-		rules.add(new InventoryConfigRule(config.getTree(), defaultRule, 
-				config.getTree().getRootCategory().getName(),
-				container.getSize(), rowSize));
-		
-		return rules;
-		
-	}
-	
-	private Map<ItemTreeItem, Integer> computeContainerStats(SortableContainer container) {
-		Map<ItemTreeItem, Integer> stats = new HashMap<ItemTreeItem, Integer>();
-		Map<Integer, ItemTreeItem> itemSearch = new HashMap<Integer, ItemTreeItem>();
-		ItemTree tree = config.getTree();
-		
-		for (int i = 0; i < container.getSize(); i++) {
-			ItemStack stack = container.getItemStack(i);
-			if (stack != null) {
-				int itemSearchKey = getItemID(stack)*100000 + 
-						((getMaxStackSize(stack) != 1) ? getItemDamage(stack) : 0);
-				ItemTreeItem item = itemSearch.get(itemSearchKey);
-				if (item == null) {
-					item = tree.getItems(getItemID(stack),
-							getItemDamage(stack)).get(0);
-					itemSearch.put(itemSearchKey, item);	
-					stats.put(item, 1);
-				}
-				else {
-					stats.put(item, stats.get(item) + 1);
-				}
-			}
-		}
-		
-		return stats;
-	}
-	
-	private int getContainerColumnSize(SortableContainer container, int rowSize) {
-		return container.getSize() / rowSize;
-	}
 
 }

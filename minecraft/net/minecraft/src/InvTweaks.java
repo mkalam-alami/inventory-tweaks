@@ -12,12 +12,11 @@ import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InvTweaksConfigManager;
 import net.invtweaks.config.InventoryConfigRule;
-import net.invtweaks.framework.ContainerManager;
-import net.invtweaks.framework.Obfuscation;
 import net.invtweaks.framework.ContainerManager.ContainerSection;
+import net.invtweaks.framework.ContainerSectionManager;
+import net.invtweaks.framework.Obfuscation;
 import net.invtweaks.gui.GuiInventorySettings;
-import net.invtweaks.logic.InventoryAlgorithms;
-import net.invtweaks.logic.SortableContainer;
+import net.invtweaks.logic.ContainerSorter;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
@@ -42,7 +41,7 @@ public class InvTweaks extends Obfuscation {
      * Attributes to remember the status of chest sorting
      * while using middle clicks.
      */
-    private int chestAlgorithm = InventoryAlgorithms.DEFAULT;
+    private int chestAlgorithm = ContainerSorter.ALGORITHM_DEFAULT;
     private long chestAlgorithmClickTimestamp = 0;
     private boolean chestAlgorithmButtonDown = false;
 
@@ -90,15 +89,6 @@ public class InvTweaks extends Obfuscation {
      */
     public final void onSortingKeyPressed() {
         synchronized (this) {
-            ContainerManager im = new ContainerManager(mc);
-            try {
-                im.moveSome(ContainerSection.INVENTORY, 0,
-                        ContainerSection.CRAFTING_IN, 0, 1);
-            } catch (TimeoutException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-/*
             if (!cfgManager.makeSureConfigurationIsLoaded()) {
                 return;
             }
@@ -110,7 +100,7 @@ public class InvTweaks extends Obfuscation {
             }
 
             // Sorting!
-            handleSorting(guiScreen);*/
+            handleSorting(guiScreen);
         }
     }
 
@@ -124,95 +114,100 @@ public class InvTweaks extends Obfuscation {
             return;
         }
         InvTweaksConfig config = cfgManager.getConfig();
-        
+
         // Handle option to disable this feature
         if (cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP).equals("false")) {
             return;
         }
 
-        
-        SortableContainer container = new SortableContainer(mc, config,
-                getPlayerContainer(), true);
+        try {
+            ContainerSectionManager containerMgr = new ContainerSectionManager(mc, ContainerSection.INVENTORY);
 
-        // Find stack slot (look in hotbar only).
-        // We're looking for a brand new stack in the hotbar
-        // (not an existing stack whose amount has been increased)
-        int currentSlot = -1;
-        do {
-            // In SMP, we have to wait first for the inventory update
-            if (isMultiplayerWorld() && currentSlot == -1) {
-                try {
-                    Thread.sleep(Const.POLLING_DELAY);
-                } catch (InterruptedException e) {
-                    // Do nothing (sleep interrupted)
-                }
-            }
-            for (int i = 0; i < Const.INVENTORY_HOTBAR_SIZE; i++) {
-                ItemStack currentHotbarStack = container.getItemStack(i + 27);
-                // Don't move already started stacks
-                if (currentHotbarStack != null && 
-                        currentHotbarStack.animationsToGo == 5 && hotbarClone[i] == null) {
-                    currentSlot = i + 27;
-                }
-            }
-
-            // The loop is only relevant in SMP (polling)
-        } while (isMultiplayerWorld() && currentSlot == -1);
-
-        //
-        if (currentSlot != -1) {
-
-            // Find preffered slots
-            List<Integer> prefferedPositions = new LinkedList<Integer>();
-            InventoryConfigRule matchingRule = null;
-            ItemTree tree = config.getTree();
-            ItemStack stack = container.getItemStack(currentSlot);
-            List<ItemTreeItem> items = tree.getItems(getItemID(stack), getItemDamage(stack));
-            for (InventoryConfigRule rule : config.getRules()) {
-                if (tree.matches(items, rule.getKeyword())) {
-                    for (int slot : rule.getPreferredSlots()) {
-                        prefferedPositions.add(slot);
-                    }
-                    matchingRule = rule;
-                }
-            }
-
-            // Find best slot for stack
-            if (prefferedPositions != null) {
-                for (int newSlot : prefferedPositions) {
+            // Find stack slot (look in hotbar only).
+            // We're looking for a brand new stack in the hotbar
+            // (not an existing stack whose amount has been increased)
+            int currentSlot = -1;
+            do {
+                // In SMP, we have to wait first for the inventory update
+                if (isMultiplayerWorld() && currentSlot == -1) {
                     try {
-                        // Already in the best slot!
-                        if (newSlot == currentSlot) {
-                            container.markAsMoved(newSlot, Integer.MAX_VALUE);
-                            break;
+                        Thread.sleep(Const.POLLING_DELAY);
+                    } catch (InterruptedException e) {
+                        // Do nothing (sleep interrupted)
+                    }
+                }
+                for (int i = 0; i < Const.INVENTORY_HOTBAR_SIZE; i++) {
+                    ItemStack currentHotbarStack = containerMgr.getItemStack(i + 27);
+                    // Don't move already started stacks
+                    if (currentHotbarStack != null && currentHotbarStack.animationsToGo == 5 && hotbarClone[i] == null) {
+                        currentSlot = i + 27;
+                    }
+                }
+
+                // The loop is only relevant in SMP (polling)
+            } while (isMultiplayerWorld() && currentSlot == -1);
+
+            if (currentSlot != -1) {
+
+                // Find preffered slots
+                List<Integer> prefferedPositions = new LinkedList<Integer>();
+                InventoryConfigRule matchingRule = null; 
+                ItemTree tree = config.getTree();
+                ItemStack stack = containerMgr.getItemStack(currentSlot);
+                List<ItemTreeItem> items = tree.getItems(getItemID(stack),
+                        getItemDamage(stack));
+                for (InventoryConfigRule rule : config.getRules()) {
+                    if (tree.matches(items, rule.getKeyword())) {
+                        for (int slot : rule.getPreferredSlots()) {
+                            prefferedPositions.add(slot);
                         }
-                        // Is the slot available?
-                        else if (container.getItemStack(newSlot) == null) {
-                            if (container.moveStack(currentSlot, newSlot, matchingRule.getPriority()) != SortableContainer.MOVE_FAILURE) {
+                        matchingRule = rule;
+                    }
+                }
+
+                // Find best slot for stack
+                boolean hasToBeMoved = true;
+                if (prefferedPositions != null) {
+                    for (int newSlot : prefferedPositions) {
+                        try {
+                            // Already in the best slot!
+                            if (newSlot == currentSlot) {
+                                hasToBeMoved = false;
                                 break;
                             }
-                        }
-                    } catch (TimeoutException e) {
-                        logInGameError("Failed to move picked up stack", e);
-                    }
-                }
-            }
-
-            // Else, put the slot anywhere
-            if (container.hasToBeMoved(currentSlot)) {
-                for (int i = 0; i < container.getSize(); i++) {
-                    try {
-                        if (container.getItemStack(i) == null) {
-                            if (container.moveStack(currentSlot, i, Integer.MAX_VALUE) != SortableContainer.MOVE_FAILURE) {
-                                break;
+                            // Is the slot available?
+                            else if (containerMgr.getItemStack(newSlot) == null) {
+                                // TODO: Check rule level before to move
+                                if (containerMgr.move(currentSlot, newSlot)) {
+                                    break;
+                                }
                             }
+                        } catch (TimeoutException e) {
+                            logInGameError("Failed to move picked up stack", e);
                         }
-                    } catch (TimeoutException e) {
-                        logInGameError("Failed to move picked up stack", e);
                     }
                 }
-            }
 
+                // Else, put the slot anywhere
+                if (hasToBeMoved) {
+                    for (int i = 0; i < containerMgr.getSectionSize(); i++) {
+                        try {
+                            if (containerMgr.getItemStack(i) == null) {
+                                if (containerMgr.move(currentSlot, i)) {
+                                    break;
+                                }
+                            }
+                        } catch (TimeoutException e) {
+                            logInGameError("Failed to move picked up stack", e);
+                        }
+                    }
+                }
+
+            }
+            
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
     }
 
@@ -299,20 +294,16 @@ public class InvTweaks extends Obfuscation {
                     int y = guiScreen.height - (Mouse.getEventY() * guiScreen.height) / mc.displayHeight - 1;
                     Slot slot = getSlotAtPosition((GuiContainer) guiScreen, x, y);
                     if (slot != null) {
-                        SortableContainer container = new SortableContainer(mc, 
-                                cfgManager.getConfig(),
-                                ((GuiContainer) guiScreen).inventorySlots, false);
                         try {
-                            int i = container.putHoldItemDown();
-                            // If stack in hand
-                            if (i != -1 && container.getItemStack(i) != null) {
-                                container.moveStack(i, slot.slotNumber+1-9, Integer.MAX_VALUE);
+                            ContainerSectionManager container = new ContainerSectionManager(
+                                    mc, ContainerSection.INVENTORY);
+                            if (container.getItemStack(slot.slotNumber) != null) {
+                                if (getHoldStack() != null) {
+                                    container.leftClick(slot.slotNumber);
+                                }
+                                container.move(slot.slotNumber, slot.slotNumber+1);
                             }
-                            // If stack in slot
-                            else if (container.getItemStack(slot.slotNumber-9) != null) {
-                                container.moveStack(slot.slotNumber-9, slot.slotNumber+1-9, Integer.MAX_VALUE);
-                            }
-                        } catch (TimeoutException e) {
+                        } catch (Exception e) {
                             // TODO Auto-generated catch block
                         }
                     }
@@ -412,9 +403,10 @@ public class InvTweaks extends Obfuscation {
         ItemStack selectedItem = getItemStack(getMainInventory(), getFocusedSlot());
 
         try {
-            cfgManager.getInventoryAlgorithms().sortContainer((guiScreen == null) ? getPlayerContainer() : getContainer((GuiContainer) guiScreen), /* GuiContainer */
-            true, InventoryAlgorithms.INVENTORY);
-        } catch (TimeoutException e) {
+            new ContainerSorter(mc, cfgManager.getConfig(),
+                    ContainerSection.INVENTORY,
+                    ContainerSorter.ALGORITHM_INVENTORY).sort();
+        } catch (Exception e) {
             logInGame("Failed to sort inventory: " + e.getMessage());
         }
 
@@ -473,18 +465,16 @@ public class InvTweaks extends Obfuscation {
                     // Sorting buttons
                     if (!config.getProperty(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS).equals("false")) {
 
-                        Container container = getContainer((GuiContainer) guiScreen);
-
                         GuiButton button = new SortingButton(id++, x - 37,
-                                y, w, h, "s", container, InventoryAlgorithms.DEFAULT);
+                                y, w, h, "s", ContainerSorter.ALGORITHM_DEFAULT);
                         guiContainer.controlList.add((GuiButton) button);
 
                         button = new SortingButton(id++, x - 25, y, w, h, "v",
-                                container, InventoryAlgorithms.VERTICAL);
+                                ContainerSorter.ALGORITHM_VERTICAL);
                         guiContainer.controlList.add((GuiButton) button);
 
                         button = new SortingButton(id++, x - 13, y, w, h, "h",
-                                container, InventoryAlgorithms.HORIZONTAL);
+                                ContainerSorter.ALGORITHM_HORIZONTAL);
                         guiContainer.controlList.add((GuiButton) button);
 
                     }
@@ -542,12 +532,12 @@ public class InvTweaks extends Obfuscation {
                             long timestamp = System.currentTimeMillis();
                             if (timestamp - chestAlgorithmClickTimestamp > 
                                     Const.CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
-                                chestAlgorithm = InventoryAlgorithms.DEFAULT;
+                                chestAlgorithm = ContainerSorter.ALGORITHM_DEFAULT;
                             }
                             try {
-                                cfgManager.getInventoryAlgorithms().sortContainer(
-                                        container, false, chestAlgorithm);
-                            } catch (TimeoutException e) {
+                                new ContainerSorter(mc, cfgManager.getConfig(),
+                                        ContainerSection.CHEST, chestAlgorithm).sort();
+                            } catch (Exception e) {
                                 logInGameError("Failed to sort container", e);
                             }
                             chestAlgorithm = (chestAlgorithm + 1) % 3;
@@ -588,7 +578,11 @@ public class InvTweaks extends Obfuscation {
                     getCurrentScreen() instanceof GuiEditSign /* GuiEditSign */)) {
 
                 if (config.autoreplaceEnabled(storedStackId, storedStackId)) {
-                    cfgManager.getInventoryAlgorithms().autoReplaceSlot(focusedSlot, storedStackId, storedStackDamage);
+                    try {
+                        cfgManager.getInventoryAlgorithms().autoReplaceSlot(focusedSlot, storedStackId, storedStackDamage);
+                    } catch (Exception e) {
+                        logInGameError("Failed to trigger auto-refill", e);
+                    }
                 }
             }
         }
@@ -660,13 +654,26 @@ public class InvTweaks extends Obfuscation {
             InvTweaksConfig config = cfgManager.getConfig();
             if (super.mousePressed(minecraft, i, j)) {
                 // Put hold item down if necessary
-                SortableContainer container = new SortableContainer(mc, config, getPlayerContainer(), true);
-                if (getHoldStack() != null) {
-                    try {
-                        container.putHoldItemDown();
-                    } catch (TimeoutException e) {
-                        logInGameError("Failed to put item down", e);
+                ContainerSectionManager containerMgr;
+                
+                try {
+                    containerMgr = new ContainerSectionManager(
+                            mc, ContainerSection.INVENTORY);
+                    if (getHoldStack() != null) {
+                        try {
+                            // Put hold item down
+                            for (int k = containerMgr.getSectionSize() - 1; k >= 0; k--) {
+                                if (containerMgr.getItemStack(k) == null) {
+                                    containerMgr.leftClick(k);
+                                    break;
+                                }
+                            }
+                        } catch (TimeoutException e) {
+                            logInGameError("Failed to put item down", e);
+                        }
                     }
+                } catch (Exception e) {
+                    logInGameError("Failed to set up settings button", e);
                 }
                 
                 // Refresh config
@@ -680,18 +687,17 @@ public class InvTweaks extends Obfuscation {
             }
 
         }
-
+        
     }
+    
 
     private class SortingButton extends GuiButton {
 
         private boolean buttonClicked = false;
-        private Container container;
         private int algorithm;
 
-        public SortingButton(int id, int x, int y, int w, int h, String displayString, Container container, int algorithm) {
+        public SortingButton(int id, int x, int y, int w, int h, String displayString, int algorithm) {
             super(id, x, y, w, h, displayString);
-            this.container = container;
             this.algorithm = algorithm;
         }
 
@@ -742,8 +748,10 @@ public class InvTweaks extends Obfuscation {
         public boolean mousePressed(Minecraft minecraft, int i, int j) {
             if (super.mousePressed(minecraft, i, j)) {
                 try {
-                    cfgManager.getInventoryAlgorithms().sortContainer(container, false, algorithm);
-                } catch (TimeoutException e) {
+                    new ContainerSorter(
+                            mc, cfgManager.getConfig(),
+                            ContainerSection.CHEST, algorithm).sort();
+                } catch (Exception e) {
                     logInGameError("Failed to sort container", e);
                 }
                 return true;

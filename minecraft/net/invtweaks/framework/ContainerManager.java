@@ -22,7 +22,7 @@ import net.minecraft.src.Slot;
 
 /**
  * Allows to perform various operations on the inventory
- * and/or containers, that work in both single and multiplayer.
+ * and/or containers. Works in both single and multiplayer.
  * 
  * @author Jimeo Wan
  *
@@ -136,23 +136,28 @@ public class ContainerManager extends Obfuscation {
      * @param srcIndex The destination slot
      * @param destSection The destination section
      * @param destIndex The destination slot
+     * @return false if the source slot is empty
      * @throws TimeoutException 
      */
-	public void move(ContainerSection srcSection, int srcIndex,
+	public boolean move(ContainerSection srcSection, int srcIndex,
             ContainerSection destSection, int destIndex) throws TimeoutException {
 	    
-        if ((srcSection == destSection && srcIndex == destIndex)
-                || getSlotStack(srcSection, srcIndex) == null) {
-            return;
+        if (getItemStack(srcSection, srcIndex) == null) {
+            return false;
+        }
+        else if (srcSection == destSection && srcIndex == destIndex) {
+            return true;
         }
 
-        boolean destinationEmpty = getSlotStack(destSection, destIndex) == null;
+        boolean destinationEmpty = getItemStack(destSection, destIndex) == null;
 
         leftClick(srcSection, srcIndex);
         leftClick(destSection, destIndex);
         if (!destinationEmpty) {
             leftClick(srcSection, srcIndex);
         }
+        
+        return true;
     }
 	    
 	/**
@@ -172,12 +177,12 @@ public class ContainerManager extends Obfuscation {
 	        ContainerSection destSection, int destIndex,
 	        int amount) throws TimeoutException {
 
-        ItemStack source = getSlotStack(srcSection, srcIndex);
+        ItemStack source = getItemStack(srcSection, srcIndex);
 	    if (source == null || srcSection == destSection && srcIndex == destIndex) {
             return true;
         }
 
-        ItemStack destination = getSlotStack(srcSection, srcIndex);
+        ItemStack destination = getItemStack(srcSection, srcIndex);
         int sourceSize = getStackSize(source);
         int movedAmount = Math.min(amount, sourceSize);
 	    
@@ -220,8 +225,8 @@ public class ContainerManager extends Obfuscation {
                 // After clicking, we'll need to wait for server answer before continuing.
                 // We'll do this by listening to any change in the slot, but this implies we
                 // check first if the click will indeed produce a change.
-                stackInSlot = (getSlotStack(section, index) != null)
-                        ? copy(getSlotStack(section, index)) : null;
+                stackInSlot = (getItemStack(section, index) != null)
+                        ? copy(getItemStack(section, index)) : null;
                 ItemStack stackInHand = getHoldStack();
             
                 // Useless if empty stacks
@@ -247,7 +252,7 @@ public class ContainerManager extends Obfuscation {
             if (isMultiplayerWorld()) {
                 if (!uselessClick) {
                     int pollingTime = 0;
-                    while (areItemStacksEqual(getSlotStack(section, index), stackInSlot)
+                    while (areItemStacksEqual(getItemStack(section, index), stackInSlot)
                             && pollingTime < Const.POLLING_TIMEOUT) {
                         InventoryAlgorithms.trySleep(Const.POLLING_DELAY);
                         pollingTime += Const.POLLING_DELAY;
@@ -295,7 +300,7 @@ public class ContainerManager extends Obfuscation {
      */
     public boolean isSlotEmpty(ContainerSection section, int slot) {
         if (isSectionAvailable(section)) {
-            return getSlotStack(section, slot) == null;
+            return getItemStack(section, slot) == null;
         }
         else {
             return false;
@@ -308,7 +313,7 @@ public class ContainerManager extends Obfuscation {
      * @param slot
      * @return An ItemStack or null.
      */
-    public ItemStack getSlotStack(ContainerSection section, int index) 
+    public ItemStack getItemStack(ContainerSection section, int index) 
             throws NullPointerException, IndexOutOfBoundsException {
         return getSlotStack(container, indexToSlot(section, index));  
     }
@@ -332,6 +337,10 @@ public class ContainerManager extends Obfuscation {
         else {
             return -1;
         }
+    }
+    
+    public Container getContainer() {
+        return container;
     }
     
 }

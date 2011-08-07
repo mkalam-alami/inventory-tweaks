@@ -3,10 +3,11 @@
 | Changelog                                                    |
 |==============================================================|
 
-[08.05.2011] 1.23 (B1.7.3)
+[08.??.2011] 1.23 (B1.7.3)
  * The settings button is now available with the Aether mod's inventory
  * The "stuff" rule now also matches unknown mod items
  * Better reloading behavior with multiple configurations
+ * Huge refactoring of the mod's code, to emerge a library for modders
  
 [08.01.2011] 1.22 (B1.7.3)
  * Really fixed the bug making a lot of keywords not work

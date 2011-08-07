@@ -1,13 +1,13 @@
 package net.invtweaks.library;
 
-import net.minecraft.src.Container;
+import net.minecraft.client.Minecraft;
 import net.minecraft.src.GuiContainer;
 import net.minecraft.src.Slot;
 
 public class GuiContainerHelper extends GuiContainer {
 
-    public GuiContainerHelper(Container container) {
-        super(container);
+    public GuiContainerHelper(Minecraft mc) throws ClassCastException {
+        super(((GuiContainer) mc.currentScreen).inventorySlots);
     }
 
     public Slot getSlotAtPosition(int i, int j) {

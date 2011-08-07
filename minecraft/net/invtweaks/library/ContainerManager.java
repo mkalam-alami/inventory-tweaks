@@ -32,10 +32,13 @@ public class ContainerManager extends Obfuscation {
     // TODO: Throw errors when the container isn't available anymore
     
     public static final int INVENTORY_SIZE = 36;
+    public static final int HOTBAR_SIZE = 9;
     public static final int DEFAULT_TIMEOUT = 500;
     
     public enum ContainerSection{
         /** The player's inventory */ INVENTORY,
+        /** The player's inventory (only the hotbar) */ INVENTORY_HOTBAR,
+        /** The player's inventory (all except the hotbar) */ INVENTORY_NOT_HOTBAR,
         /** The chest or dispenser contents */ CHEST,
         /** The crafting input */ CRAFTING_IN,
         /** The crafting output */ CRAFTING_OUT,
@@ -80,30 +83,38 @@ public class ContainerManager extends Obfuscation {
             if (container instanceof ContainerPlayer) {
                 slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 0));
                 slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 5));
-                slotRefs.put(ContainerSection.ARMOR, slots.subList(4, 8));
-                slotRefs.put(ContainerSection.INVENTORY, slots.subList(8, 44));
+                slotRefs.put(ContainerSection.ARMOR, slots.subList(5, 9));
+                slotRefs.put(ContainerSection.INVENTORY, slots.subList(9, 45));
+                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(9, 36));
+                slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(36, 45));
             }
             
             // Chest/Dispenser
-            if ((container instanceof ContainerChest)
+            else if ((container instanceof ContainerChest)
                     || (container instanceof ContainerDispenser)) {
                 slotRefs.put(ContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
                 slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
+                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE+HOTBAR_SIZE, size-HOTBAR_SIZE));
+                slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
             }
             
             // Furnace
-            if ((container instanceof ContainerFurnace)) {
+            else if ((container instanceof ContainerFurnace)) {
                 slotRefs.put(ContainerSection.FURNACE_IN, slots.subList(0, 1));
                 slotRefs.put(ContainerSection.FURNACE_FUEL, slots.subList(1, 2));
                 slotRefs.put(ContainerSection.FURNACE_OUT, slots.subList(2, 3));
                 slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
+                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE+HOTBAR_SIZE, size-HOTBAR_SIZE));
+                slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
             }
 
             // Workbench
-            if ((container instanceof ContainerWorkbench)) {
-                slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(0, 0));
-                slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(1, 10));
+            else if ((container instanceof ContainerWorkbench)) {
+                slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+                slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 10));
                 slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
+                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE+HOTBAR_SIZE, size-HOTBAR_SIZE));
+                slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
             }
             
             // Unkown
@@ -149,6 +160,11 @@ public class ContainerManager extends Obfuscation {
             return true;
         }
 
+        if (getHoldStack() != null) {
+            leftClick(ContainerSection.INVENTORY, 
+                    getFirstEmptySlot(ContainerSection.INVENTORY)); //TODO: -1
+        }
+        
         boolean destinationEmpty = getItemStack(destSection, destIndex) == null;
 
         leftClick(srcSection, srcIndex);
@@ -294,6 +310,55 @@ public class ContainerManager extends Obfuscation {
         }
     }
 
+    /**
+     * 
+     * @param section
+     * @return -1 if no slot is free
+     */
+    public int getFirstEmptySlot(ContainerSection section) {
+        for (Slot slot : slotRefs.get(section)) {
+            if (!slot.getHasStack()) {
+                return slot.slotNumber;
+            }
+        }
+        return -1;
+    }
+
+    public int getSlotIndex(int slotNumber) {
+        // TODO Caching with getSlotSection
+        for (ContainerSection section : slotRefs.keySet()) {
+            if (section != ContainerSection.INVENTORY) {
+                int i = 0;
+                for (Slot slot : slotRefs.get(section)) {
+                    if (slot.slotNumber == slotNumber) {
+                        return i;
+                    }
+                    i++;
+                }
+            }
+        }
+        return -1;
+    }
+    
+    /**
+     * Note: Prefers INVENTORY_HOTBAR/NOT_HOTBAR instead of INVENTORY.
+     * @param slotNumber
+     * @return
+     */
+    public ContainerSection getSlotSection(int slotNumber) {
+        // TODO Caching with getSlotIndex
+        for (ContainerSection section : slotRefs.keySet()) {
+            if (section != ContainerSection.INVENTORY) {
+                for (Slot slot : slotRefs.get(section)) {
+                    if (slot.slotNumber == slotNumber) {
+                        return section;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
     /**
      * @param slot
      * @return true if the specified slot exists and is empty, false otherwise.

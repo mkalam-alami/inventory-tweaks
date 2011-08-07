@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,10 +15,11 @@ import net.invtweaks.config.InvTweaksConfigManager;
 import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.gui.GuiSettingsButton;
 import net.invtweaks.gui.GuiSortingButton;
+import net.invtweaks.library.ContainerManager;
 import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.library.ContainerSectionManager;
-import net.invtweaks.library.GuiContainerHelper;
 import net.invtweaks.library.Obfuscation;
+import net.invtweaks.logic.ShortcutsHandler.ShortcutType;
 import net.invtweaks.logic.SortingHandler;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
@@ -60,6 +62,9 @@ public class InvTweaks extends Obfuscation {
     private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
     private ItemStack[] hotbarClone = new ItemStack[Const.INVENTORY_HOTBAR_SIZE];
     
+    // XXX:Work in progress (currently only a POC of shortcuts without modifying the Minecraft code) 
+    private Map<Integer, Boolean> shortcutKeysStatus = new HashMap<Integer, Boolean>();
+
     /**
      * Creates an instance of the mod, and loads the configuration
      * from the files, creating them if necessary.
@@ -355,6 +360,109 @@ public class InvTweaks extends Obfuscation {
 
     }
 
+    private void handleAutoRefill() {
+    
+        ItemStack currentStack = getFocusedStack();
+        int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
+        int currentStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
+        int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
+        InvTweaksConfig config = cfgManager.getConfig();
+        
+        if (currentStackId != storedStackId || currentStackDamage != storedStackDamage) {
+    
+            if (storedFocusedSlot != focusedSlot) { // Filter selection change
+                storedFocusedSlot = focusedSlot;
+            } else if ((currentStack == null || getItemID(currentStack) == 281 && storedStackId == 282)  // Handle eaten mushroom soup
+                    && (getCurrentScreen() == null || // Filter open inventory or other window
+                    getCurrentScreen() instanceof GuiEditSign /* GuiEditSign */)) {
+    
+                if (config.isAutoRefillEnabled(storedStackId, storedStackId)) {
+                    try {
+                        cfgManager.getAutoRefillHandler().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
+                    } catch (Exception e) {
+                        logInGameError("Failed to trigger auto-refill", e);
+                    }
+                }
+            }
+        }
+    
+        storedStackId = currentStackId;
+        storedStackDamage = currentStackDamage;
+    
+    }
+
+    private void handleMiddleClick(GuiScreen guiScreen) {
+    
+        if (Mouse.isButtonDown(2)) {
+    
+            if (!cfgManager.makeSureConfigurationIsLoaded()) {
+                return;
+            }
+            InvTweaksConfig config = cfgManager.getConfig();
+    
+            // Check that middle click sorting is allowed
+            if (config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK)
+                    .equals(InvTweaksConfig.VALUE_TRUE)) {
+    
+                if (!chestAlgorithmButtonDown) {
+                    chestAlgorithmButtonDown = true;
+    
+                    if (isChestOrDispenser(guiScreen)) {
+    
+                        // Check if the middle click target the chest or the
+                        // inventory
+                        // (copied GuiContainer.getSlotAtPosition algorithm)
+                        GuiContainer guiContainer = (GuiContainer) guiScreen;
+                        Container container = getContainer((GuiContainer) guiScreen);
+                        int slotCount = getSlots(container).size();
+                        int mouseX = (Mouse.getEventX() * guiContainer.width) / mc.displayWidth;
+                        int mouseY = guiContainer.height - (Mouse.getEventY() * guiContainer.height) / mc.displayHeight - 1;
+                        int target = 0; // 0 = nothing, 1 = chest, 2 = inventory
+                        for (int i = 0; i < slotCount; i++) {
+                            Slot slot = getSlot(container, i);
+                            int k = (guiContainer.width - guiContainer.xSize) / 2;
+                            int l = (guiContainer.height - guiContainer.ySize) / 2;
+                            if (mouseX - k >= slot.xDisplayPosition - 1 &&
+                                    mouseX - k < slot.xDisplayPosition + 16 + 1 &&
+                                    mouseY - l >= slot.yDisplayPosition - 1 &&
+                                    mouseY - l < slot.yDisplayPosition + 16 + 1) {
+                                target = (i < slotCount - Const.INVENTORY_SIZE) ? 1 : 2;
+                                break;
+                            }
+                        }
+    
+                        if (target == 1) {
+    
+                            // Play click
+                            mc.theWorld.playSoundAtEntity(getThePlayer(), "random.click", 0.2F, 1.8F);
+    
+                            long timestamp = System.currentTimeMillis();
+                            if (timestamp - chestAlgorithmClickTimestamp > 
+                                    Const.CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
+                                chestAlgorithm = SortingHandler.ALGORITHM_DEFAULT;
+                            }
+                            try {
+                                new SortingHandler(mc, cfgManager.getConfig(),
+                                        ContainerSection.CHEST, chestAlgorithm).sort();
+                            } catch (Exception e) {
+                                logInGameError("Failed to sort container", e);
+                            }
+                            chestAlgorithm = (chestAlgorithm + 1) % 3;
+                            chestAlgorithmClickTimestamp = timestamp;
+                        } else if (target == 2) {
+                            handleSorting(guiScreen);
+                        }
+    
+                    } else {
+                        handleSorting(guiScreen);
+                    }
+                }
+            }
+        } else {
+            chestAlgorithmButtonDown = false;
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private void handleGUILayout(GuiScreen guiScreen) {
 
@@ -425,108 +533,156 @@ public class InvTweaks extends Obfuscation {
 
     }
 
-    private void handleMiddleClick(GuiScreen guiScreen) {
-
-        if (Mouse.isButtonDown(2)) {
-
-            if (!cfgManager.makeSureConfigurationIsLoaded()) {
-                return;
-            }
-            InvTweaksConfig config = cfgManager.getConfig();
-
-            // Check that middle click sorting is allowed
-            if (config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK)
-                    .equals(InvTweaksConfig.VALUE_TRUE)) {
-
-                if (!chestAlgorithmButtonDown) {
-                    chestAlgorithmButtonDown = true;
-
-                    if (isChestOrDispenser(guiScreen)) {
-
-                        // Check if the middle click target the chest or the
-                        // inventory
-                        // (copied GuiContainer.getSlotAtPosition algorithm)
-                        GuiContainer guiContainer = (GuiContainer) guiScreen;
-                        Container container = getContainer((GuiContainer) guiScreen);
-                        int slotCount = getSlots(container).size();
-                        int mouseX = (Mouse.getEventX() * guiContainer.width) / mc.displayWidth;
-                        int mouseY = guiContainer.height - (Mouse.getEventY() * guiContainer.height) / mc.displayHeight - 1;
-                        int target = 0; // 0 = nothing, 1 = chest, 2 = inventory
-                        for (int i = 0; i < slotCount; i++) {
-                            Slot slot = getSlot(container, i);
-                            int k = (guiContainer.width - guiContainer.xSize) / 2;
-                            int l = (guiContainer.height - guiContainer.ySize) / 2;
-                            if (mouseX - k >= slot.xDisplayPosition - 1 &&
-                                    mouseX - k < slot.xDisplayPosition + 16 + 1 &&
-                                    mouseY - l >= slot.yDisplayPosition - 1 &&
-                                    mouseY - l < slot.yDisplayPosition + 16 + 1) {
-                                target = (i < slotCount - Const.INVENTORY_SIZE) ? 1 : 2;
-                                break;
-                            }
-                        }
-
-                        if (target == 1) {
-
-                            // Play click
-                            mc.theWorld.playSoundAtEntity(getThePlayer(), "random.click", 0.2F, 1.8F);
-
-                            long timestamp = System.currentTimeMillis();
-                            if (timestamp - chestAlgorithmClickTimestamp > 
-                                    Const.CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
-                                chestAlgorithm = SortingHandler.ALGORITHM_DEFAULT;
-                            }
-                            try {
-                                new SortingHandler(mc, cfgManager.getConfig(),
-                                        ContainerSection.CHEST, chestAlgorithm).sort();
-                            } catch (Exception e) {
-                                logInGameError("Failed to sort container", e);
-                            }
-                            chestAlgorithm = (chestAlgorithm + 1) % 3;
-                            chestAlgorithmClickTimestamp = timestamp;
-                        } else if (target == 2) {
-                            handleSorting(guiScreen);
-                        }
-
-                    } else {
-                        handleSorting(guiScreen);
-                    }
-                }
-            }
-        } else {
-            chestAlgorithmButtonDown = false;
-        }
-    }
-
-    private void handleAutoRefill() {
-
-        ItemStack currentStack = getFocusedStack();
-        int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
-        int currentStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
-        int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
-        InvTweaksConfig config = cfgManager.getConfig();
+    private void handleShortcuts(GuiScreen guiScreen) {
         
-        if (currentStackId != storedStackId || currentStackDamage != storedStackDamage) {
-
-            if (storedFocusedSlot != focusedSlot) { // Filter selection change
-                storedFocusedSlot = focusedSlot;
-            } else if ((currentStack == null || getItemID(currentStack) == 281 && storedStackId == 282)  // Handle eaten mushroom soup
-                    && (getCurrentScreen() == null || // Filter open inventory or other window
-                    getCurrentScreen() instanceof GuiEditSign /* GuiEditSign */)) {
-
-                if (config.isAutoRefillEnabled(storedStackId, storedStackId)) {
-                    try {
-                        cfgManager.getInventoryAlgorithms().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
-                    } catch (Exception e) {
-                        logInGameError("Failed to trigger auto-refill", e);
+        if (!(guiScreen instanceof GuiContainer)) {
+            return;
+        }
+        
+        if (Mouse.isButtonDown(0)) {
+            if (!shortcutKeysStatus.get(0)) {
+                shortcutKeysStatus.put(0, true);
+                
+                // The mouse has been clicked, trigger a shortcut according to the pressed keys
+                
+                int x = (Mouse.getEventX() * guiScreen.width) / mc.displayWidth;
+                int y = guiScreen.height - (Mouse.getEventY() * guiScreen.height) / mc.displayHeight - 1;
+                Slot slot = getSlotAtPosition((GuiContainer) guiScreen, x, y);
+                boolean shortcutValid = false;
+                if (slot != null) {
+    
+                    // Choose shortcut type
+                    ShortcutType shortcutType = ShortcutType.MOVE_STACK;
+                    if (shortcutKeysStatus.get(Keyboard.KEY_LCONTROL)
+                            || shortcutKeysStatus.get(Keyboard.KEY_RCONTROL)) {
+                        shortcutType = ShortcutType.MOVE_ALL;
+                        shortcutValid = true;
                     }
+                    else if (shortcutKeysStatus.get(Keyboard.KEY_LMENU)
+                            || shortcutKeysStatus.get(Keyboard.KEY_RMENU)) {
+                        shortcutType = ShortcutType.MOVE_ONE;
+                        shortcutValid = true;
+                    }
+                    
+                    // Choose target section
+                    try {
+                        ContainerManager container = new ContainerManager(mc);
+                        ContainerSection srcSection = container.getSlotSection(slot.slotNumber);
+                        ContainerSection destSection = null;
+    
+                        
+                        // Set up available sections
+                        Vector<ContainerSection> availableSections = new Vector<ContainerSection>();
+                        if (container.isSectionAvailable(ContainerSection.CHEST)) {
+                            availableSections.add(ContainerSection.CHEST);
+                        }
+                        else if (container.isSectionAvailable(ContainerSection.CRAFTING_IN)) {
+                            availableSections.add(ContainerSection.CRAFTING_IN);
+                        }
+                        availableSections.add(ContainerSection.INVENTORY_NOT_HOTBAR);
+                        availableSections.add(ContainerSection.INVENTORY_HOTBAR);
+                        
+                        // Check for destination modifiers
+                        int destinationModifier = 0; 
+                        if (shortcutKeysStatus.get(Keyboard.KEY_UP)) {
+                            destinationModifier = -1;
+                        }
+                        else if (shortcutKeysStatus.get(Keyboard.KEY_DOWN)) {
+                            destinationModifier = 1;
+                        }
+                        
+                        if (destinationModifier == 0) {
+                            // Default behavior
+                            switch (srcSection) {
+                           
+                            case INVENTORY_NOT_HOTBAR:
+                                if (availableSections.get(0) != ContainerSection.INVENTORY) {
+                                    destSection = availableSections.get(0);
+                                }
+                                else {
+                                    destSection = ContainerSection.INVENTORY_HOTBAR;
+                                }
+                                break;
+                                
+                            case INVENTORY_HOTBAR:
+                                destSection = ContainerSection.INVENTORY_NOT_HOTBAR;
+                                break;
+                                
+                            default:
+                                destSection = ContainerSection.INVENTORY_NOT_HOTBAR;
+                                
+                            }
+                            }
+                        
+                        else {
+                            // Specific destination
+                            int srcSectionIndex = availableSections.indexOf(srcSection);
+                            if (srcSectionIndex != -1) {
+                                shortcutValid = true;
+                                destSection = availableSections.get(
+                                        (availableSections.size() + srcSectionIndex + 
+                                                destinationModifier) % availableSections.size());
+                            }
+                        }
+                        
+                        if (shortcutValid) {
+                            cfgManager.getShortcutsHandler().move(
+                                    shortcutType, slot.slotNumber, destSection);
+                        }
+    
+                    } catch (Exception e) {
+                       logInGameError("Failed to trigger shortcut", e);
+                    }
+                    
                 }
+                
             }
         }
-
-        storedStackId = currentStackId;
-        storedStackDamage = currentStackDamage;
-
+        else {
+            shortcutKeysStatus.put(0, false);
+        }
+        
+        // Update modifiers status
+        updateShortcutKeysStatus(
+                Keyboard.KEY_LCONTROL,
+                Keyboard.KEY_RCONTROL,
+                Keyboard.KEY_LMENU,
+                Keyboard.KEY_RMENU,
+                Keyboard.KEY_UP,
+                Keyboard.KEY_DOWN);
+        
     }
+
+    private void updateShortcutKeysStatus(int... keyCodes) {
+        for (int keyCode : keyCodes) {
+            if (Keyboard.isKeyDown(keyCode)) {
+                if (!shortcutKeysStatus.get(keyCode)) {
+                    shortcutKeysStatus.put(keyCode, true);
+                }
+            }
+            else {
+                shortcutKeysStatus.put(keyCode, false);
+            }
+        }
+    }
+    
+    private Slot getSlotAtPosition(GuiContainer guiContainer, int i, int j) {  // Copied from GuiContainer
+        for (int k = 0; k < guiContainer.inventorySlots.slots.size(); k++) {
+            Slot slot = (Slot)guiContainer.inventorySlots.slots.get(k);
+            if (getIsMouseOverSlot(guiContainer, slot, i, j)) {
+                return slot;
+            }
+        }
+        return null;
+    }
+    private boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int i, int j) { // Copied from GuiContainer
+        int k = (guiContainer.width - guiContainer.xSize) / 2;
+        int l = (guiContainer.height - guiContainer.ySize) / 2;
+        i -= k;
+        j -= l;
+        return i >= slot.xDisplayPosition - 1 && i < slot.xDisplayPosition + 16 + 1 && j >= slot.yDisplayPosition - 1 && j < slot.yDisplayPosition + 16 + 1;
+    }
+
 
     private void playClick() {
         if (!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_SOUND).equals("false")) {
@@ -544,56 +700,6 @@ public class InvTweaks extends Obfuscation {
 
     private String buildlogString(Level level, String message) {
         return Const.INGAME_LOG_PREFIX + ((level.equals(Level.SEVERE)) ? "[ERROR] " : "") + message;
-    }
-
-    // XXX:Work in progress (currently only a POC of shortcuts without modifying the Minecraft code) 
-    private Map<Integer, Boolean> clickModifiers = new HashMap<Integer, Boolean>();
-
-    private void handleShortcuts(GuiScreen guiScreen) {
-        
-        if (!(guiScreen instanceof GuiContainer)) {
-            return;
-        }
-        
-        if (Mouse.isButtonDown(0)) {
-            if (!clickModifiers.get(0)) {
-                clickModifiers.put(0, true);
-                if (clickModifiers.get(Keyboard.KEY_LCONTROL)) {
-                    int x = (Mouse.getEventX() * guiScreen.width) / mc.displayWidth;
-                    int y = guiScreen.height - (Mouse.getEventY() * guiScreen.height) / mc.displayHeight - 1;
-                    Slot slot = new GuiContainerHelper(getContainer((GuiContainer) guiScreen))
-                            .getSlotAtPosition(x, y);
-                    if (slot != null) {
-                        try {
-                            ContainerSectionManager container = new ContainerSectionManager(
-                                    mc, ContainerSection.INVENTORY);
-                            if (container.getItemStack(slot.slotNumber) != null) {
-                                if (getHoldStack() != null) {
-                                    container.leftClick(slot.slotNumber);
-                                }
-                                container.move(slot.slotNumber, slot.slotNumber+1);
-                            }
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                        }
-                    }
-                }
-            }
-        }
-        else {
-            clickModifiers.put(0, false);
-        }
-        
-        // Register modifiers status
-        if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
-            if (!clickModifiers.get(Keyboard.KEY_LCONTROL)) {
-                clickModifiers.put(Keyboard.KEY_LCONTROL, true);
-            }
-        }
-        else {
-            clickModifiers.put(Keyboard.KEY_LCONTROL, false);
-        }
-        
     }
     
 }

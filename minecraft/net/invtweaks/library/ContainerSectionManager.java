@@ -55,6 +55,10 @@ public class ContainerSectionManager {
         return containerMgr.getSectionSlots(section);
     }
 
+    public int getFirstEmptySlot() {
+        return containerMgr.getFirstEmptySlot(section);
+    }
+
     public int getSectionSize() {
         return containerMgr.getSectionSize(section);
     }

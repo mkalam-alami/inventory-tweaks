@@ -13,6 +13,7 @@ import java.util.zip.ZipFile;
 
 import net.invtweaks.Const;
 import net.invtweaks.logic.AutoRefillHandler;
+import net.invtweaks.logic.ShortcutsHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaks;
 
@@ -35,26 +36,16 @@ public class InvTweaksConfigManager {
     private InvTweaksConfig config = null;
     private long storedConfigLastModified = 0;
 
-    /**
-     * The mod's logic for sorting and moving items.
-     */
-    private AutoRefillHandler inventoryAlgorithms = null;
+    private AutoRefillHandler autoRefillHandler = null;
+    private ShortcutsHandler shortcutsHandler = null;
     
     public InvTweaksConfigManager(Minecraft mc) {
         this.mc = mc;
     }
     
-    public AutoRefillHandler getInventoryAlgorithms() {
-        return inventoryAlgorithms;
-    }
-    
-    public InvTweaksConfig getConfig() {
-        return config;
-    }
-
     // TODO Only reload modified file(s)
     public boolean makeSureConfigurationIsLoaded() {
-
+    
         // Load properties
         try {
             if (config != null && config.refreshProperties()) {
@@ -63,7 +54,7 @@ public class InvTweaksConfigManager {
         } catch (IOException e) {
             InvTweaks.logInGameErrorStatic("Failed to refresh properties from file", e);
         }
-
+    
         // Load rules + tree files
         long configLastModified = computeConfigLastModified();
         if (config != null) {
@@ -84,6 +75,18 @@ public class InvTweaksConfigManager {
         }
     }
 
+    public InvTweaksConfig getConfig() {
+        return config;
+    }
+
+    public AutoRefillHandler getAutoRefillHandler() {
+        return autoRefillHandler;
+    }
+    
+    public ShortcutsHandler getShortcutsHandler() {
+        return shortcutsHandler;
+    }
+    
     private long computeConfigLastModified() {
         return new File(Const.CONFIG_RULES_FILE).lastModified()
         + new File(Const.CONFIG_TREE_FILE).lastModified();
@@ -131,8 +134,8 @@ public class InvTweaksConfigManager {
             // Configuration creation
             if (config == null) {
                 config = new InvTweaksConfig(Const.CONFIG_RULES_FILE, Const.CONFIG_TREE_FILE);
-                inventoryAlgorithms = new AutoRefillHandler(mc, config); // Load
-                                                                           // algorithm
+                autoRefillHandler = new AutoRefillHandler(mc, config);
+                shortcutsHandler = new ShortcutsHandler(mc);
             }
             
             // Configuration loading

@@ -12,18 +12,19 @@ import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InvTweaksConfigManager;
 import net.invtweaks.config.InventoryConfigRule;
-import net.invtweaks.framework.ContainerManager.ContainerSection;
-import net.invtweaks.framework.ContainerSectionManager;
-import net.invtweaks.framework.Obfuscation;
-import net.invtweaks.gui.GuiInventorySettings;
-import net.invtweaks.logic.ContainerSorter;
+import net.invtweaks.gui.GuiSettingsButton;
+import net.invtweaks.gui.GuiSortingButton;
+import net.invtweaks.library.ContainerManager.ContainerSection;
+import net.invtweaks.library.GuiContainerHelper;
+import net.invtweaks.library.ContainerSectionManager;
+import net.invtweaks.library.Obfuscation;
+import net.invtweaks.logic.SortingHandler;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 public class InvTweaks extends Obfuscation {
 
@@ -41,7 +42,7 @@ public class InvTweaks extends Obfuscation {
      * Attributes to remember the status of chest sorting
      * while using middle clicks.
      */
-    private int chestAlgorithm = ContainerSorter.ALGORITHM_DEFAULT;
+    private int chestAlgorithm = SortingHandler.ALGORITHM_DEFAULT;
     private long chestAlgorithmClickTimestamp = 0;
     private boolean chestAlgorithmButtonDown = false;
 
@@ -151,7 +152,6 @@ public class InvTweaks extends Obfuscation {
 
                 // Find preffered slots
                 List<Integer> prefferedPositions = new LinkedList<Integer>();
-                InventoryConfigRule matchingRule = null; 
                 ItemTree tree = config.getTree();
                 ItemStack stack = containerMgr.getItemStack(currentSlot);
                 List<ItemTreeItem> items = tree.getItems(getItemID(stack),
@@ -161,7 +161,6 @@ public class InvTweaks extends Obfuscation {
                         for (int slot : rule.getPreferredSlots()) {
                             prefferedPositions.add(slot);
                         }
-                        matchingRule = rule;
                     }
                 }
 
@@ -278,70 +277,6 @@ public class InvTweaks extends Obfuscation {
         return sortKeyBinding;
     }
     
-    // XXX:Work in progress (currently only a POC of shortcuts without modifying the Minecraft code) 
-    private Map<Integer, Boolean> clickModifiers = new HashMap<Integer, Boolean>();
-    private void handleShortcuts(GuiScreen guiScreen) {
-        
-        if (!(guiScreen instanceof GuiContainer)) {
-            return;
-        }
-        
-        if (Mouse.isButtonDown(0)) {
-            if (!clickModifiers.get(0)) {
-                clickModifiers.put(0, true);
-                if (clickModifiers.get(Keyboard.KEY_LCONTROL)) {
-                    int x = (Mouse.getEventX() * guiScreen.width) / mc.displayWidth;
-                    int y = guiScreen.height - (Mouse.getEventY() * guiScreen.height) / mc.displayHeight - 1;
-                    Slot slot = getSlotAtPosition((GuiContainer) guiScreen, x, y);
-                    if (slot != null) {
-                        try {
-                            ContainerSectionManager container = new ContainerSectionManager(
-                                    mc, ContainerSection.INVENTORY);
-                            if (container.getItemStack(slot.slotNumber) != null) {
-                                if (getHoldStack() != null) {
-                                    container.leftClick(slot.slotNumber);
-                                }
-                                container.move(slot.slotNumber, slot.slotNumber+1);
-                            }
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                        }
-                    }
-                }
-            }
-        }
-        else {
-            clickModifiers.put(0, false);
-        }
-        
-        // Register modifiers status
-        if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
-            if (!clickModifiers.get(Keyboard.KEY_LCONTROL)) {
-                clickModifiers.put(Keyboard.KEY_LCONTROL, true);
-            }
-        }
-        else {
-            clickModifiers.put(Keyboard.KEY_LCONTROL, false);
-        }
-        
-    }
-    private Slot getSlotAtPosition(GuiContainer guiContainer, int i, int j) {  // Copied from GuiContainer
-        for (int k = 0; k < guiContainer.inventorySlots.slots.size(); k++) {
-            Slot slot = (Slot)guiContainer.inventorySlots.slots.get(k);
-            if (getIsMouseOverSlot(guiContainer, slot, i, j)) {
-                return slot;
-            }
-        }
-        return null;
-    }
-    private boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int i, int j) { // Copied from GuiContainer
-        int k = (guiContainer.width - guiContainer.xSize) / 2;
-        int l = (guiContainer.height - guiContainer.ySize) / 2;
-        i -= k;
-        j -= l;
-        return i >= slot.xDisplayPosition - 1 && i < slot.xDisplayPosition + 16 + 1 && j >= slot.yDisplayPosition - 1 && j < slot.yDisplayPosition + 16 + 1;
-    }
-
     private boolean onTick() {
 
         InvTweaksConfig config = cfgManager.getConfig();
@@ -400,12 +335,12 @@ public class InvTweaks extends Obfuscation {
 
     private void handleSorting(GuiScreen guiScreen) {
 
-        ItemStack selectedItem = getItemStack(getMainInventory(), getFocusedSlot());
+        ItemStack selectedItem = getMainInventory()[getFocusedSlot()];
 
         try {
-            new ContainerSorter(mc, cfgManager.getConfig(),
+            new SortingHandler(mc, cfgManager.getConfig(),
                     ContainerSection.INVENTORY,
-                    ContainerSorter.ALGORITHM_INVENTORY).sort();
+                    SortingHandler.ALGORITHM_INVENTORY).sort();
         } catch (Exception e) {
             logInGame("Failed to sort inventory: " + e.getMessage());
         }
@@ -414,7 +349,7 @@ public class InvTweaks extends Obfuscation {
 
         // This needs to be remembered so that the
         // autoreplace feature doesn't trigger
-        if (selectedItem != null && getItemStack(getMainInventory(), getFocusedSlot()) == null) {
+        if (selectedItem != null && getMainInventory()[getFocusedSlot()] == null) {
             storedStackId = 0;
         }
 
@@ -446,7 +381,8 @@ public class InvTweaks extends Obfuscation {
 
                 // Inventory button
                 if (!isContainer) {
-                    guiScreen.controlList.add(new SettingsButton(Const.JIMEOWAN_ID,
+                    guiScreen.controlList.add(new GuiSettingsButton(cfgManager, 
+                            Const.JIMEOWAN_ID,
                             guiScreen.width / 2 + 73, guiScreen.height / 2 - 78,
                             w, h, "..."));
                 }
@@ -460,21 +396,25 @@ public class InvTweaks extends Obfuscation {
                         y = (guiContainer.height - guiContainer.ySize) / 2 + 5;
 
                     // Settings button
-                    guiScreen.controlList.add(new SettingsButton(id++, x - 1, y, w, h, "..."));
+                    guiScreen.controlList.add(new GuiSettingsButton(cfgManager, 
+                            id++, x - 1, y, w, h, "..."));
 
                     // Sorting buttons
                     if (!config.getProperty(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS).equals("false")) {
 
-                        GuiButton button = new SortingButton(id++, x - 37,
-                                y, w, h, "s", ContainerSorter.ALGORITHM_DEFAULT);
+                        GuiButton button = new GuiSortingButton(cfgManager,
+                                id++, x - 37, y, w, h, "s",
+                                SortingHandler.ALGORITHM_DEFAULT);
                         guiContainer.controlList.add((GuiButton) button);
 
-                        button = new SortingButton(id++, x - 25, y, w, h, "v",
-                                ContainerSorter.ALGORITHM_VERTICAL);
+                        button = new GuiSortingButton(cfgManager,
+                                id++, x - 25, y, w, h, "v",
+                                SortingHandler.ALGORITHM_VERTICAL);
                         guiContainer.controlList.add((GuiButton) button);
 
-                        button = new SortingButton(id++, x - 13, y, w, h, "h",
-                                ContainerSorter.ALGORITHM_HORIZONTAL);
+                        button = new GuiSortingButton(cfgManager,
+                                id++, x - 13, y, w, h, "h",
+                                SortingHandler.ALGORITHM_HORIZONTAL);
                         guiContainer.controlList.add((GuiButton) button);
 
                     }
@@ -532,10 +472,10 @@ public class InvTweaks extends Obfuscation {
                             long timestamp = System.currentTimeMillis();
                             if (timestamp - chestAlgorithmClickTimestamp > 
                                     Const.CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
-                                chestAlgorithm = ContainerSorter.ALGORITHM_DEFAULT;
+                                chestAlgorithm = SortingHandler.ALGORITHM_DEFAULT;
                             }
                             try {
-                                new ContainerSorter(mc, cfgManager.getConfig(),
+                                new SortingHandler(mc, cfgManager.getConfig(),
                                         ContainerSection.CHEST, chestAlgorithm).sort();
                             } catch (Exception e) {
                                 logInGameError("Failed to sort container", e);
@@ -610,155 +550,54 @@ public class InvTweaks extends Obfuscation {
         return Const.INGAME_LOG_PREFIX + ((level.equals(Level.SEVERE)) ? "[ERROR] " : "") + message;
     }
 
-    private class SettingsButton extends GuiButton {
+    // XXX:Work in progress (currently only a POC of shortcuts without modifying the Minecraft code) 
+    private Map<Integer, Boolean> clickModifiers = new HashMap<Integer, Boolean>();
 
-        public SettingsButton(int id, int x, int y, int w, int h, String displayString) {
-            super(id, x, y, w, h, displayString);
+    private void handleShortcuts(GuiScreen guiScreen) {
+        
+        if (!(guiScreen instanceof GuiContainer)) {
+            return;
         }
-
-        public void drawButton(Minecraft minecraft, int i, int j) {
-
-            if (!enabled2) {
-                return;
-            }
-
-            // TODO Refactoring
-            // Draw little button
-            // (use the 4 corners of the texture to fit best its small size)
-            GL11.glBindTexture(3553, minecraft.renderEngine.getTexture("/gui/gui.png"));
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            boolean flag = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
-            int k = getHoverState(flag);
-            drawTexturedModalRect(xPosition, yPosition, 1, 46 + k * 20 + 1, width / 2, height / 2);
-            drawTexturedModalRect(xPosition, yPosition + height / 2, 1, 46 + k * 20 + 20 - height / 2 - 1, width / 2, height / 2);
-            drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2 - 1, 46 + k * 20 + 1, width / 2, height / 2);
-            drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2, 200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2, width / 2,
-                    height / 2);
-
-            // Button status specific behaviour
-            int textColor = 0xffe0e0e0;
-            if (!enabled) {
-                textColor = 0xffa0a0a0;
-            } else if (flag) {
-                textColor = 0xffffffa0;
-            }
-
-            // Display string
-            drawCenteredString(mc.fontRenderer, displayString, xPosition + 5, yPosition - 1, textColor);
-        }
-
-        /**
-         * Sort container
-         */
-        public boolean mousePressed(Minecraft minecraft, int i, int j) {
-            InvTweaksConfig config = cfgManager.getConfig();
-            if (super.mousePressed(minecraft, i, j)) {
-                // Put hold item down if necessary
-                ContainerSectionManager containerMgr;
-                
-                try {
-                    containerMgr = new ContainerSectionManager(
-                            mc, ContainerSection.INVENTORY);
-                    if (getHoldStack() != null) {
+        
+        if (Mouse.isButtonDown(0)) {
+            if (!clickModifiers.get(0)) {
+                clickModifiers.put(0, true);
+                if (clickModifiers.get(Keyboard.KEY_LCONTROL)) {
+                    int x = (Mouse.getEventX() * guiScreen.width) / mc.displayWidth;
+                    int y = guiScreen.height - (Mouse.getEventY() * guiScreen.height) / mc.displayHeight - 1;
+                    Slot slot = new GuiContainerHelper(getContainer((GuiContainer) guiScreen))
+                            .getSlotAtPosition(x, y);
+                    if (slot != null) {
                         try {
-                            // Put hold item down
-                            for (int k = containerMgr.getSectionSize() - 1; k >= 0; k--) {
-                                if (containerMgr.getItemStack(k) == null) {
-                                    containerMgr.leftClick(k);
-                                    break;
+                            ContainerSectionManager container = new ContainerSectionManager(
+                                    mc, ContainerSection.INVENTORY);
+                            if (container.getItemStack(slot.slotNumber) != null) {
+                                if (getHoldStack() != null) {
+                                    container.leftClick(slot.slotNumber);
                                 }
+                                container.move(slot.slotNumber, slot.slotNumber+1);
                             }
-                        } catch (TimeoutException e) {
-                            logInGameError("Failed to put item down", e);
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
                         }
                     }
-                } catch (Exception e) {
-                    logInGameError("Failed to set up settings button", e);
                 }
-                
-                // Refresh config
-                cfgManager.makeSureConfigurationIsLoaded();
-
-                // Display menu
-                mc.displayGuiScreen(new GuiInventorySettings(getCurrentScreen(), config));
-                return true;
-            } else {
-                return false;
             }
-
+        }
+        else {
+            clickModifiers.put(0, false);
+        }
+        
+        // Register modifiers status
+        if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+            if (!clickModifiers.get(Keyboard.KEY_LCONTROL)) {
+                clickModifiers.put(Keyboard.KEY_LCONTROL, true);
+            }
+        }
+        else {
+            clickModifiers.put(Keyboard.KEY_LCONTROL, false);
         }
         
     }
     
-
-    private class SortingButton extends GuiButton {
-
-        private boolean buttonClicked = false;
-        private int algorithm;
-
-        public SortingButton(int id, int x, int y, int w, int h, String displayString, int algorithm) {
-            super(id, x, y, w, h, displayString);
-            this.algorithm = algorithm;
-        }
-
-        public void drawButton(Minecraft minecraft, int i, int j) {
-
-            if (!enabled2) {
-                return;
-            }
-
-            // Draw little button
-            // (use the 4 corners of the texture to fit best its small size)
-            GL11.glBindTexture(3553, minecraft.renderEngine.getTexture("/gui/gui.png"));
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            boolean flag = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
-            int k = getHoverState(flag) - ((buttonClicked) ? 1 : 0);
-            drawTexturedModalRect(xPosition, yPosition, 1, 46 + k * 20 + 1, width / 2, height / 2);
-            drawTexturedModalRect(xPosition, yPosition + height / 2, 1, 46 + k * 20 + 20 - height / 2 - 1, width / 2, height / 2);
-            drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2 - 1, 46 + k * 20 + 1, width / 2, height / 2);
-            drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2, 200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2, width / 2,
-                    height / 2);
-
-            // Button status specific behaviour
-            int textColor = 0xffe0e0e0;
-            if (!enabled) {
-                textColor = 0xffa0a0a0;
-            } else if (flag) {
-                textColor = 0xffffffa0;
-            }
-
-            // Display symbol
-            if (displayString.equals("h")) {
-                drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4, textColor);
-                drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7, textColor);
-            } else if (displayString.equals("v")) {
-                drawRect(xPosition + 3, yPosition + 3, xPosition + 4, yPosition + height - 3, textColor);
-                drawRect(xPosition + 6, yPosition + 3, xPosition + 7, yPosition + height - 3, textColor);
-            } else {
-                drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4, textColor);
-                drawRect(xPosition + 5, yPosition + 4, xPosition + 6, yPosition + 5, textColor);
-                drawRect(xPosition + 4, yPosition + 5, xPosition + 5, yPosition + 6, textColor);
-                drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7, textColor);
-            }
-        }
-
-        /**
-         * Sort container
-         */
-        public boolean mousePressed(Minecraft minecraft, int i, int j) {
-            if (super.mousePressed(minecraft, i, j)) {
-                try {
-                    new ContainerSorter(
-                            mc, cfgManager.getConfig(),
-                            ContainerSection.CHEST, algorithm).sort();
-                } catch (Exception e) {
-                    logInGameError("Failed to sort container", e);
-                }
-                return true;
-            } else {
-                return false;
-            }
-
-        }
-    }
 }

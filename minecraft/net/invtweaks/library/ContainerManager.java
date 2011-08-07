@@ -1,4 +1,4 @@
-package net.invtweaks.framework;
+package net.invtweaks.library;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.invtweaks.Const;
-import net.invtweaks.logic.InventoryAlgorithms;
+import net.invtweaks.logic.AutoRefillHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Container;
 import net.minecraft.src.ContainerChest;
@@ -254,7 +254,7 @@ public class ContainerManager extends Obfuscation {
                     int pollingTime = 0;
                     while (areItemStacksEqual(getItemStack(section, index), stackInSlot)
                             && pollingTime < Const.POLLING_TIMEOUT) {
-                        InventoryAlgorithms.trySleep(Const.POLLING_DELAY);
+                        AutoRefillHandler.trySleep(Const.POLLING_DELAY);
                         pollingTime += Const.POLLING_DELAY;
                     }
                     if (pollingTime >= Const.POLLING_TIMEOUT) {

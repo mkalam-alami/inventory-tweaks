@@ -1,4 +1,4 @@
-package net.invtweaks.framework;
+package net.invtweaks.library;
 
 import java.io.File;
 import java.util.List;
@@ -27,31 +27,31 @@ public class Obfuscation {
 
     protected Minecraft mc;
 
-    protected Obfuscation(Minecraft mc) {
+    public Obfuscation(Minecraft mc) {
         this.mc = mc;
     }
 
     // Minecraft members
 
-    protected void addChatMessage(String message) {
+    public void addChatMessage(String message) {
         if (mc.ingameGUI != null) {
             mc.ingameGUI.addChatMessage(message);
         }
     }
 
-    protected boolean isMultiplayerWorld() {
+    public boolean isMultiplayerWorld() {
         return mc.isMultiplayerWorld();
     }
 
-    protected EntityPlayer getThePlayer() {
+    public EntityPlayer getThePlayer() {
         return mc.thePlayer;
     }
 
-    protected PlayerController getPlayerController() {
+    public PlayerController getPlayerController() {
         return mc.playerController;
     }
 
-    protected GuiScreen getCurrentScreen() {
+    public GuiScreen getCurrentScreen() {
         return mc.currentScreen;
     }
 
@@ -73,98 +73,93 @@ public class Obfuscation {
 
     // EntityPlayer members
 
-    protected InventoryPlayer getInventoryPlayer() {
+    public InventoryPlayer getInventoryPlayer() {
         return getThePlayer().inventory;
     }
 
-    protected ItemStack getCurrentEquippedItem() {
+    public ItemStack getCurrentEquippedItem() {
         return getThePlayer().getCurrentEquippedItem();
     }
 
-    protected Container getCraftingInventory() {
+    public Container getCraftingInventory() {
         return getThePlayer().craftingInventory;
     }
 
-    protected Container getPlayerContainer() {
+    public Container getPlayerContainer() {
         return getThePlayer().inventorySlots; // MCP name: inventorySlots
     }
 
     // InventoryPlayer members
 
-    protected ItemStack[] getMainInventory() {
+    public ItemStack[] getMainInventory() {
         return getInventoryPlayer().mainInventory;
     }
 
-    protected void setMainInventory(ItemStack[] value) {
+    public void setMainInventory(ItemStack[] value) {
         getInventoryPlayer().mainInventory = value;
     }
 
-    protected void setHasInventoryChanged(boolean value) {
+    public void setHasInventoryChanged(boolean value) {
         getInventoryPlayer().inventoryChanged = value;
     }
 
-    protected void setHoldStack(ItemStack stack) {
+    public void setHoldStack(ItemStack stack) {
         getInventoryPlayer().setItemStack(stack); // MCP name: setItemStack
     }
 
-    protected boolean hasInventoryChanged() {
+    public boolean hasInventoryChanged() {
         return getInventoryPlayer().inventoryChanged;
     }
 
-    protected ItemStack getHoldStack() {
+    public ItemStack getHoldStack() {
         return getInventoryPlayer().getItemStack(); // MCP name: getItemStack
     }
 
-    protected ItemStack getFocusedStack() {
-        return getInventoryPlayer().getCurrentItem(); // MCP name:
-                                                      // getCurrentItem
+    public ItemStack getFocusedStack() {
+        return getInventoryPlayer().getCurrentItem(); // MCP name: getCurrentItem
     }
 
-    protected int getFocusedSlot() {
+    public int getFocusedSlot() {
         return getInventoryPlayer().currentItem; // MCP name: currentItem
     }
 
     // ItemStack members
 
-    protected ItemStack createItemStack(int id, int size, int damage) {
+    public ItemStack createItemStack(int id, int size, int damage) {
         return new ItemStack(id, size, damage);
     }
 
-    protected ItemStack copy(ItemStack itemStack) {
+    public ItemStack copy(ItemStack itemStack) {
         return itemStack.copy();
     }
 
-    protected int getItemDamage(ItemStack itemStack) {
+    public int getItemDamage(ItemStack itemStack) {
         return itemStack.getItemDamage();
     }
 
-    protected int getMaxStackSize(ItemStack itemStack) {
+    public int getMaxStackSize(ItemStack itemStack) {
         return itemStack.getMaxStackSize();
     }
 
-    protected int getStackSize(ItemStack itemStack) {
+    public int getStackSize(ItemStack itemStack) {
         return itemStack.stackSize;
     }
 
-    protected void setStackSize(ItemStack itemStack, int value) {
+    public void setStackSize(ItemStack itemStack, int value) {
         itemStack.stackSize = value;
     }
 
-    protected int getItemID(ItemStack itemStack) {
+    public int getItemID(ItemStack itemStack) {
         return itemStack.itemID;
     }
 
-    protected boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
+    public boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
         return ItemStack.areItemStacksEqual(itemStack1, itemStack2);
-    }
-
-    protected ItemStack getItemStack(ItemStack[] stacks, int i) {
-        return stacks[i];
     }
 
     // PlayerController members
 
-    protected ItemStack clickInventory(PlayerController playerController,
+    public ItemStack clickInventory(PlayerController playerController,
             int windowId, int slot, int clickButton, boolean shiftHold,
             EntityPlayer entityPlayer) {
         return playerController.func_27174_a(windowId, slot, clickButton,
@@ -173,41 +168,41 @@ public class Obfuscation {
 
     // Container members
 
-    protected int getWindowId(Container container) {
+    public int getWindowId(Container container) {
         return container.windowId;
     }
 
-    protected List<?> getSlots(Container container) {
+    public List<?> getSlots(Container container) {
         return container.slots;
     }
 
-    protected Slot getSlot(Container container, int i) {
+    public Slot getSlot(Container container, int i) {
         return (Slot) getSlots(container).get(i);
     }
 
-    protected ItemStack getSlotStack(Container container, int i) {
+    public ItemStack getSlotStack(Container container, int i) {
         Slot slot = (Slot) getSlots(container).get(i);
         return (slot == null) ? null : slot.getStack(); /* getStack */
     }
 
-    protected void setSlotStack(Container container, int i, ItemStack stack) {
+    public void setSlotStack(Container container, int i, ItemStack stack) {
         container.putStackInSlot(i, stack); /* putStackInSlot */
     }
 
     // GuiContainer members
 
-    protected Container getContainer(GuiContainer guiContainer) {
+    public Container getContainer(GuiContainer guiContainer) {
         return guiContainer.inventorySlots;
     }
 
     // Other
 
-    protected boolean isChestOrDispenser(GuiScreen guiScreen) {
+    public boolean isChestOrDispenser(GuiScreen guiScreen) {
         return (guiScreen instanceof GuiChest /* GuiChest */
         || guiScreen instanceof GuiDispenser /* GuiDispenser */);
     }
     
-    protected int getKeycode(KeyBinding keyBinding) {
+    public int getKeycode(KeyBinding keyBinding) {
         return keyBinding.keyCode;
     }
 

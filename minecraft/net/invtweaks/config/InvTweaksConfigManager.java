@@ -15,7 +15,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import net.invtweaks.Const;
-import net.invtweaks.logic.InventoryAlgorithms;
+import net.invtweaks.logic.AutoRefillHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaks;
 
@@ -41,13 +41,13 @@ public class InvTweaksConfigManager {
     /**
      * The mod's logic for sorting and moving items.
      */
-    private InventoryAlgorithms inventoryAlgorithms = null;
+    private AutoRefillHandler inventoryAlgorithms = null;
     
     public InvTweaksConfigManager(Minecraft mc) {
         this.mc = mc;
     }
     
-    public InventoryAlgorithms getInventoryAlgorithms() {
+    public AutoRefillHandler getInventoryAlgorithms() {
         return inventoryAlgorithms;
     }
     
@@ -201,7 +201,7 @@ public class InvTweaksConfigManager {
             // Configuration creation
             if (config == null) {
                 config = new InvTweaksConfig(Const.CONFIG_RULES_FILE, Const.CONFIG_TREE_FILE);
-                inventoryAlgorithms = new InventoryAlgorithms(mc, config); // Load
+                inventoryAlgorithms = new AutoRefillHandler(mc, config); // Load
                                                                            // algorithm
             }
             

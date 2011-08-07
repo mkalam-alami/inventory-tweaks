@@ -9,28 +9,27 @@ import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.config.InventoryConfigRule.RuleType;
-import net.invtweaks.framework.ContainerManager.ContainerSection;
-import net.invtweaks.framework.ContainerSectionManager;
-import net.invtweaks.framework.Obfuscation;
+import net.invtweaks.library.ContainerSectionManager;
+import net.invtweaks.library.Obfuscation;
+import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.ItemStack;
 
 /**
- * Set of algorithms used for sorting and the auto-refilling of the hotbar.
+ * Handles the auto-refilling of the hotbar.
  * 
  * @author Jimeo Wan
  *
  */
-public class InventoryAlgorithms extends Obfuscation {
+public class AutoRefillHandler extends Obfuscation {
     
     private static final Logger log = Logger.getLogger("InvTweaks");
 
-
     private InvTweaksConfig config = null;
     
-    public InventoryAlgorithms(Minecraft mc, InvTweaksConfig config) {
+    public AutoRefillHandler(Minecraft mc, InvTweaksConfig config) {
 		super(mc);
 		setConfig(config);
 	}
@@ -40,7 +39,7 @@ public class InventoryAlgorithms extends Obfuscation {
     }
     
 	/**
-     * Autoreplace + middle click sorting
+     * Auto-refill
 	 * @throws Exception 
      */
 	public void autoReplaceSlot(int slot, int wantedId, int wantedDamage) throws Exception {

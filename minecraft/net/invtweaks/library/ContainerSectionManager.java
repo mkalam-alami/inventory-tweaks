@@ -1,9 +1,9 @@
-package net.invtweaks.framework;
+package net.invtweaks.library;
 
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import net.invtweaks.framework.ContainerManager.ContainerSection;
+import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Container;
 import net.minecraft.src.ItemStack;

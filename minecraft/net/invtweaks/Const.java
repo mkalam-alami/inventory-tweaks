@@ -3,7 +3,7 @@ package net.invtweaks;
 import java.io.File;
 import java.util.logging.Level;
 
-import net.invtweaks.framework.Obfuscation;
+import net.invtweaks.library.Obfuscation;
 
 
 public class Const {

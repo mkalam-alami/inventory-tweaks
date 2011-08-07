@@ -13,9 +13,9 @@ import java.util.logging.Logger;
 import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InventoryConfigRule;
-import net.invtweaks.framework.ContainerManager.ContainerSection;
-import net.invtweaks.framework.ContainerSectionManager;
-import net.invtweaks.framework.Obfuscation;
+import net.invtweaks.library.ContainerSectionManager;
+import net.invtweaks.library.Obfuscation;
+import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
@@ -37,7 +37,7 @@ import net.minecraft.src.ItemStack;
  * @author Jimeo Wan
  *
  */
-public class ContainerSorter extends Obfuscation {
+public class SortingHandler extends Obfuscation {
 
     
     private static final Logger log = Logger.getLogger("InvTweaks");
@@ -67,7 +67,7 @@ public class ContainerSorter extends Obfuscation {
 
     private boolean isMultiplayer;
 
-    public ContainerSorter(Minecraft mc, InvTweaksConfig config,
+    public SortingHandler(Minecraft mc, InvTweaksConfig config,
             ContainerSection section, int algorithm) throws Exception {
         super(mc);
         
@@ -89,6 +89,7 @@ public class ContainerSorter extends Obfuscation {
         // Init attributes
 
         this.containerMgr = new ContainerSectionManager(mc, section);
+        this.size = containerMgr.getSectionSize();
         
         this.rules = config.getRules();
         this.tree = config.getTree();
@@ -106,7 +107,6 @@ public class ContainerSorter extends Obfuscation {
             }
         }
 
-        this.size = containerMgr.getSectionSize();
         this.rulePriority = new int[size];
         this.keywordOrder = new int[size];
         for (int i = 0; i < size; i++) {
@@ -328,6 +328,10 @@ public class ContainerSorter extends Obfuscation {
             
             // Move to empty slot
             if (to == null && lockPriorities[j] <= priority && !frozenSlots[j]) {
+                rulePriority[i] = -1;
+                keywordOrder[i] = -1;
+                rulePriority[j] = priority;
+                keywordOrder[j] = getItemOrder(getItemID(from), getItemDamage(from));
                 containerMgr.move(i, j); 
                 return j;
             }
@@ -345,6 +349,11 @@ public class ContainerSorter extends Obfuscation {
                     }
                 }
                 if (canBeSwapped || from.isItemEqual(to)) {
+                    
+                    rulePriority[i] = -1;
+                    keywordOrder[i] = -1;
+                    rulePriority[j] = priority;
+                    keywordOrder[j] = getItemOrder(getItemID(from), getItemDamage(from));
                     containerMgr.move(i, j); 
                     
                     int dropSlot = i;
@@ -359,6 +368,11 @@ public class ContainerSorter extends Obfuscation {
                     }
                     if (i != dropSlot) {
                         containerMgr.move(i, dropSlot);
+                        ItemStack remains = containerMgr.getItemStack(dropSlot);
+                        if (remains != null) {
+                            rulePriority[dropSlot] = -1;
+                            keywordOrder[dropSlot] = getItemOrder(getItemID(remains), getItemDamage(remains));
+                        }
                     }
                     
                     return dropSlot;
@@ -469,10 +483,12 @@ public class ContainerSorter extends Obfuscation {
     }
      */
     
-    private Vector<InventoryConfigRule> computeLineSortingRules(
-            int rowSize, boolean horizontal) {
+    private void computeLineSortingRules(int rowSize, boolean horizontal) {
         
-        Map<ItemTreeItem, Integer> stats = computeContainerStats();        
+        rules = new Vector<InventoryConfigRule>();
+        
+        
+        Map<ItemTreeItem, Integer> stats = computeContainerStats();
         List<ItemTreeItem> itemOrder = new ArrayList<ItemTreeItem>();
 
         int distinctItems = stats.size();
@@ -487,7 +503,7 @@ public class ContainerSorter extends Obfuscation {
         
         // No need to compute rules for an empty chest
         if (distinctItems == 0)
-            return rules;
+            return;
         
         // (Partially) sort stats by decreasing item stack count
         List<ItemTreeItem> unorderedItems = new ArrayList<ItemTreeItem>(stats.keySet());
@@ -570,8 +586,7 @@ public class ContainerSorter extends Obfuscation {
             if (!horizontal) {
                 constraint += 'v';
             }
-            rules.add(new InventoryConfigRule(tree, 
-                    constraint, item.getName(), size, rowSize));
+            rules.add(new InventoryConfigRule(tree, constraint, item.getName(), size, rowSize));
             
             // Check if ther's still room for more rules
             availableSlots -= thisSpaceHeight*thisSpaceWidth;
@@ -613,8 +628,6 @@ public class ContainerSorter extends Obfuscation {
         }
         rules.add(new InventoryConfigRule(tree, defaultRule, 
                 tree.getRootCategory().getName(), size, rowSize));
-        
-        return rules;
         
     }
     

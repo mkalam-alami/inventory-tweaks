@@ -1,0 +1,18 @@
+<!--
+
+Piston mod
+by Hippoplatimus
+
+# HOWTO
+# Copy/paste the following XML to anywhere in InvTweaksTree.xml, between <stuff> and </stuff>.
+
+# CONTRIBUTORS
+# jimeowan
+
+-->
+<pistons>
+   <piston id="110" />
+   <stickyPiston id="112" />
+   <pistonHead id="111" />
+   <stickyPistonHead id="113" />
+</pistons>

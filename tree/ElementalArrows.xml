@@ -1,0 +1,18 @@
+<!--
+
+Elemental Arrows 
+by Risugami
+
+# HOWTO
+# Copy/paste the following XML to anywhere in InvTweaksTree.xml, between <stuff> and </stuff>.
+
+# CONTRIBUTORS
+# jimeowan
+
+-->
+<elementalArrow>
+   <bombArrow id="384" />
+   <fileArrow id="385" />
+   <iceArrow id="386" />
+   <eggArrow id="387" />
+</elementalArrow>

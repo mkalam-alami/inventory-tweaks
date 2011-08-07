@@ -1,0 +1,239 @@
+<!--
+
+Aether Mod 1.01
+by kingbdogz, shockah, kodaichi, flan and 303
+
+# HOWTO
+# Copy/paste the following XML to anywhere in InvTweaksTree.xml, between <stuff> and </stuff>.
+
+# CONTRIBUTORS
+# azureflamecloud
+
+-->
+<aether>
+  <equipment>
+    <weapon>
+      <sword>
+        <SkyRootSword id="17025" />
+        <HolyStoneSword id="17026" />
+        <ZaniteSword id="17027" />
+        <GravititeSword id="17028" />
+        <PigSlayer id="17286" />
+        <VampireBlade id="17287" />
+        <FlamingSword id="17289" />
+        <HolySword id="17290" />
+        <LightningSword id="17291" />
+        <LightningKnife id="17292" />
+      </sword>
+      <darts>
+        <goldenDart id="17264"/>
+        <enchantedDartPoison id="17264" damage="1"/>
+        <enchantedDartBlue id="17264" damage="2"/>
+        <enchantedDartGold id="17264" damage="3"/>
+      </darts>
+      <dartShooter>
+        <dartShooter id="17265"/>
+        <poisonShooter id="17265" damage="1"/>
+        <enchantedShooterBlue id="17265" damage="2"/>
+        <enchantedShooterGold id="17265" damage="3"/>
+      </dartShooter>
+      <hammerofNotch id="17294"/>
+      <phoenixBow id="17295"/>
+      <cloudStaff id="17298"/>
+      <valkyrieLance id="17301"/>
+    </weapon>
+    <tool>
+      <pickaxe>
+        <skyrootPickaxe id="17269" />
+        <holystonePickaxe id="17270" />
+        <zanitePickaxe id="17271" />
+        <gravititePickaxe id="17272" />
+      </pickaxe>
+      <shovel>
+        <skyrootShovel id="17273" />
+        <holystoneShovel id="17274" />
+        <zaniteShovel id="17275" />
+        <gravititeShovel id="17276" />
+      </shovel>
+      <axe>
+        <skyrootAxe id="17277" />
+        <holystoneAxe id="17278" />
+        <zaniteAxe id="17279" />
+        <gravititeAxe id="17280" />
+      </axe>
+      <parachute>
+        <cloudParachute id="17296"/>
+        <goldenParachute id="17297"/>
+      </parachute>
+      <natureStaff id="17288"/>
+    </tool>
+    <armor>
+      <helmet>
+        <gravititeHelmet id="17320"/>
+        <phoenixHelmet id="17325"/>
+        <obsidianHelmet id="17331"/>
+        <neptuneHelmet id="17335"/>
+      </helmet>
+      <chestplate>
+        <gravititeChestplate id="17321"/>
+        <phoenixChestplate id="17326"/>
+        <obsidianChestplate id="17330"/>
+        <neptuneChestplate id="17336"/>
+      </chestplate>
+      <leggings>
+        <gravititeLeggings id="17322"/>
+        <phoenixLeggings id="17327"/>
+        <obsidianLeggings id="17332"/>
+        <neptuneLeggings id="17337"/>
+      </leggings>
+      <boots>
+        <gravititeBoots id="17323"/>
+        <phoenixBoots id="17328"/>
+        <obsidianBoots id="17333"/>
+        <neptuneBoots id="17338"/>
+      </boots>
+      <gloves>
+        <leatherGloves id="17310"/>
+        <ironGloves id="17311"/>
+        <goldGloves id="17312"/>
+        <diamondGloves id="17313"/>
+        <zaniteGloves id="17314"/>
+        <gravititeGloves id="17319"/>
+        <phoenixGloves id="17324"/>
+        <obsidianGloves id="17329"/>
+        <neptuneGloves id="17334"/>
+      </gloves>
+    <accessories>
+      <rings>
+        <ironRing id="17302"/>
+        <goldRing id="17303"/>
+        <zaniteRing id="17304"/> 
+      </rings>
+      <pendants>
+        <ironPendant id="17305"/>
+        <goldPendant id="17306"/>
+        <zanitePendant id="17307"/>
+      </pendants>
+      <capes>
+        <swetCape id="17309"/>
+        <invincibilityCloak id="17340"/>
+      </capes>
+    </accessories>
+    </armor>
+    <shieldofRepulsion id="17308"/>
+    <victoryMedal id="17256"/>
+    <lifeShard id="17299"/>
+    <regenerationStone id="17339"/>
+  </equipment>
+  <food>
+    <ediblefood>
+        <blueGummieSwet id="17293"/>
+        <goldGummieSwet id="17293" damage="1"/>
+    </ediblefood>
+    <unediblefood>
+        <aechorPetal id="17262"/>
+    </unediblefood>
+  </food>
+  <keys>
+    <bronzeKey id="17257"/>
+    <silverKey id="17257" damage="1"/>
+    <goldKey id="17257" damage="2"/>
+  </keys>
+  <books>
+    <bookofLoreVolume1 id="17258"/>
+    <bookofLoreVolume2 id="17258" damage="1"/>
+    <bookofLoreVolume3 id="17258" damage="2"/>
+  </books>
+  <eggs>
+    <blueMoaEgg id="17259"/>
+    <blackMoaEgg id="17259" damage="1"/>
+    <whiteMoaEgg id="17259" damage="2"/>
+  </eggs>
+  <decoration>
+    <musicDisc>
+      <musicDiscBlue id="17260"/>
+    </musicDisc>
+  </decoration>
+  <resources>
+    <goldenAmber id="17261"/>
+    <ambrosiumShard id="17266"/>
+    <zeniteGemstone id="17267"/>
+    <ironBubble id="17285"/>
+    <goldenFeather id="17300"/>
+  </resources>
+  <block>
+    <naturalBlock>
+      <stones>
+        <holyStone id="169" />
+        <mossyHolystone id="169" damage="2" />
+        <iceStone id="170" />
+        <carvedStone id="189"/>
+        <angelicStone id="189" damage="1"/>
+        <hellfireStone id="189" damage="2"/>
+      </stones>
+      <sentryStones>
+        <sentryStone id="190"/>
+        <lightAngelicStone id="190" damage="1"/>
+        <lightHellfireStone id="190" damage="2"/>
+      </sentryStones>
+      <pillar>
+        <pillar id="193"/>
+        <pillarTop id="193" damage="1"/>
+        <pillarTop id="193" damage="2"/>
+      </pillar>
+      <clouds>
+        <coldAercloud id="171" />
+        <blueAercloud id="171" damage="1" />
+        <goldAercloud id="171" damage="2"/>
+      </clouds>
+      <logs>
+        <skyrootLog id="175" />
+        <goldenoakLog id="175" damage="2" />
+      </logs>
+      <aetherDirt id="166" />
+      <aetherGrass id="167" />
+      <quicksoil id="168" />
+      <aeroGel id="172" />
+      <ore>
+        <ambrosiumOre id="181" />
+        <zaniteOre id="183" />
+        <gravititeOre id="184" />
+      </ore>
+      <aetherPortal id="165" />
+      <trap id="186"/>
+    </naturalBlock>
+    <manufacturedBlock>
+      <constructionBlock>
+        <skyrootplank id="176" />
+        <skyrootStick id="17263"/>
+        <oreBlock>
+          <enchantedGravitite id="185" />
+        </oreBlock>
+      </constructionBlock>
+    </manufacturedBlock>
+  </block>
+  <bucket>
+    <skyrootBucket id="17268"/>
+    <milkBucket id="17268" damage="1"/>
+    <poisonBucket id="17268" damage="2"/>
+    <remedyBucket id="17268" damage="3"/>
+    <waterBucket id="17268" damage="8"/>
+  </bucket>
+  <utility>
+    <enchanter id="173" />
+    <incubator id="174" />
+    <ambrosiumTorch id="182"/>
+    <woodenChest id="187"/>
+    <treasureChest id="188"/>
+  </utility>
+  <plant>
+    <sapling>
+      <skyrootSapling id="179"/>
+      <goldenoakSapling id="180"/>
+    </sapling>
+    <leaves>
+      <skyrootLeaves id="177"/>
+      <goldenoakLeaves id="178"/>
+    </leaves>
+  </plant>
+</aether>

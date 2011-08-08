@@ -14,6 +14,9 @@ import net.minecraft.client.Minecraft;
  */
 public class ShortcutsHandler extends Obfuscation {
 
+    // TODO: Shortcuts don't work on CRAFTING_OUT
+    
+    
     private ContainerManager container;
     private ContainerSection fromSection;
     private int fromIndex;
@@ -30,29 +33,28 @@ public class ShortcutsHandler extends Obfuscation {
     }
     
     public void move(ShortcutType shortcutType, int fromSlot,
-            ContainerSection toSection) throws TimeoutException {
+            ContainerSection toSection) throws Exception {
         synchronized(this) {
             initAction(fromSlot);
 
-            int emptySlotIndex = container.getSlotIndex(
-                    container.getFirstEmptySlot(toSection)); // TODO merge case
-            
-            switch (shortcutType) {
-            
-            case MOVE_STACK:
-                container.move(fromSection, fromIndex,
-                        toSection, emptySlotIndex);
-                break;
-
-            case MOVE_ONE:
-                container.moveSome(fromSection, fromIndex,
-                        toSection, emptySlotIndex, 1);
-                break;
+            int emptySlotIndex = container.getFirstEmptyIndex(toSection); // TODO merge case
+            if (emptySlotIndex != -1) {
+                switch (shortcutType) {
                 
-            case MOVE_ALL:
-                container.move(fromSection, fromIndex,
-                        toSection, emptySlotIndex);
-                
+                case MOVE_STACK:
+                    container.move(fromSection, fromIndex,
+                            toSection, emptySlotIndex);
+                    break;
+    
+                case MOVE_ONE:
+                    container.moveSome(fromSection, fromIndex,
+                            toSection, emptySlotIndex, 1);
+                    break;
+                    
+                case MOVE_ALL:
+                    container.move(fromSection, fromIndex,
+                            toSection, emptySlotIndex);
+                }
             }
             
         }
@@ -61,7 +63,7 @@ public class ShortcutsHandler extends Obfuscation {
     }
     
     public void drop(ShortcutType shortcutType, int fromSlot, 
-            ContainerSection toSection) throws TimeoutException {
+            ContainerSection toSection) throws Exception {
         synchronized(this) {
             initAction(fromSlot);
             // TODO Drop
@@ -69,7 +71,7 @@ public class ShortcutsHandler extends Obfuscation {
         }
     }
     
-    private void initAction(int fromSlot) throws TimeoutException {
+    private void initAction(int fromSlot) throws Exception {
         container = new ContainerManager(mc);
         fromSection = container.getSlotSection(fromSlot);
         fromIndex = container.getSlotIndex(fromSlot);
@@ -77,6 +79,16 @@ public class ShortcutsHandler extends Obfuscation {
         // Cancel default click action
         if (getHoldStack() != null) {
             container.leftClick(fromSection, fromIndex);
+            // Sometimes (ex: crafting output) we can put back the item
+            if (getHoldStack() != null) {
+                int firstEmptyIndex = container.getFirstEmptyIndex(ContainerSection.INVENTORY);
+                if (firstEmptyIndex != -1) {
+                   container.leftClick(ContainerSection.INVENTORY, firstEmptyIndex);
+                }
+                else {
+                    throw new Exception("Couldn't put hold item down");
+                }
+            }
         }
     }
     

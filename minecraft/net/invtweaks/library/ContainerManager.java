@@ -81,7 +81,7 @@ public class ContainerManager extends Obfuscation {
         try {
             // Inventory: 4 crafting slots, then 4 armor slots, then inventory
             if (container instanceof ContainerPlayer) {
-                slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 0));
+                slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
                 slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 5));
                 slotRefs.put(ContainerSection.ARMOR, slots.subList(5, 9));
                 slotRefs.put(ContainerSection.INVENTORY, slots.subList(9, 45));
@@ -94,7 +94,7 @@ public class ContainerManager extends Obfuscation {
                     || (container instanceof ContainerDispenser)) {
                 slotRefs.put(ContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
                 slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
-                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE+HOTBAR_SIZE, size-HOTBAR_SIZE));
+                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
                 slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
             }
             
@@ -104,7 +104,7 @@ public class ContainerManager extends Obfuscation {
                 slotRefs.put(ContainerSection.FURNACE_FUEL, slots.subList(1, 2));
                 slotRefs.put(ContainerSection.FURNACE_OUT, slots.subList(2, 3));
                 slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
-                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE+HOTBAR_SIZE, size-HOTBAR_SIZE));
+                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
                 slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
             }
 
@@ -113,7 +113,7 @@ public class ContainerManager extends Obfuscation {
                 slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
                 slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 10));
                 slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
-                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE+HOTBAR_SIZE, size-HOTBAR_SIZE));
+                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
                 slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
             }
             
@@ -147,7 +147,8 @@ public class ContainerManager extends Obfuscation {
      * @param srcIndex The destination slot
      * @param destSection The destination section
      * @param destIndex The destination slot
-     * @return false if the source slot is empty
+     * @return false if the source slot is empty or the player is
+     * holding an item that couln't be put down.
      * @throws TimeoutException 
      */
 	public boolean move(ContainerSection srcSection, int srcIndex,
@@ -160,9 +161,15 @@ public class ContainerManager extends Obfuscation {
             return true;
         }
 
+        // Put hold item down
         if (getHoldStack() != null) {
-            leftClick(ContainerSection.INVENTORY, 
-                    getFirstEmptySlot(ContainerSection.INVENTORY)); //TODO: -1
+            int firstEmptyIndex = getFirstEmptyIndex(ContainerSection.INVENTORY);
+            if (firstEmptyIndex != -1) {
+                leftClick(ContainerSection.INVENTORY, firstEmptyIndex);
+            }
+            else {
+                return false;
+            }
         }
         
         boolean destinationEmpty = getItemStack(destSection, destIndex) == null;
@@ -315,11 +322,13 @@ public class ContainerManager extends Obfuscation {
      * @param section
      * @return -1 if no slot is free
      */
-    public int getFirstEmptySlot(ContainerSection section) {
-        for (Slot slot : slotRefs.get(section)) {
+    public int getFirstEmptyIndex(ContainerSection section) {
+        int i = 0;
+        for (Slot slot : slotRefs.get(section)) { 
             if (!slot.getHasStack()) {
-                return slot.slotNumber;
+                return i;
             }
+            i++;
         }
         return -1;
     }

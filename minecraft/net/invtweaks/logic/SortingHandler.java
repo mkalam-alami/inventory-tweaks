@@ -412,7 +412,7 @@ public class SortingHandler extends Obfuscation {
         } else if (iStack == null || keywordOrder[i] == -1) {
             return false;
         } else {
-            if (keywordOrder[j] == keywordOrder[j]) {
+            if (keywordOrder[i] == keywordOrder[j]) {
                 // Items of same keyword orders can have different IDs,
                 // in the case of categories defined by a range of IDs
                 if (getItemID(iStack) == getItemID(jStack)) {
@@ -441,53 +441,6 @@ public class SortingHandler extends Obfuscation {
                 ? items.get(0).getOrder()
                 : Integer.MAX_VALUE;
     }
-///TODO
-    /**
-     * SP: Removes the stack from the given slot.
-     * SMP: Registers the action without actually doing it.
-     * 
-     * @param slot
-     * @return The removed stack
-    private ItemStack remove(int slot) {
-        ItemStack removed = getStackInSlot(slot);
-        if (log.getLevel() == Const.DEBUG) {
-            try {
-                log.info("Removed: " + tree.getItems(getItemID(removed), getItemDamage(removed)).get(0) + " from " + slot);
-            } catch (NullPointerException e) {
-                log.info("Removed: null from " + slot);
-            }
-        }
-        if (!isMultiplayer) {
-            putStackInSlot(slot, null);
-        }
-        rulePriority[slot] = -1;
-        keywordOrder[slot] = -1;
-        return removed;
-    }
-     */
-
-    /**
-     * SP: Puts a stack in the given slot. WARNING: Any existing stack will be overriden!
-     * SMP: Registers the action without actually doing it.
-     * 
-     * @param stack
-     * @param slot
-     * @param priority
-    private void put(ItemStack stack, int slot, int priority) {
-        if (log.getLevel() == Const.DEBUG) {
-            try {
-                log.info("Put: " + tree.getItems(getItemID(stack), getItemDamage(stack)).get(0) + " in " + slot);
-            } catch (NullPointerException e) {
-                log.info("Removed: null");
-            }
-        }
-        if (!isMultiplayer) {
-            putStackInSlot(slot, stack);
-        }
-        rulePriority[slot] = priority;
-        keywordOrder[slot] = getItemOrder(getItemID(stack), getItemDamage(stack));
-    }
-     */
     
     private void computeLineSortingRules(int rowSize, boolean horizontal) {
         

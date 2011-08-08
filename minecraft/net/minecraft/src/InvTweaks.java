@@ -25,6 +25,7 @@ import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
 
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -62,7 +63,9 @@ public class InvTweaks extends Obfuscation {
     private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
     private ItemStack[] hotbarClone = new ItemStack[Const.INVENTORY_HOTBAR_SIZE];
     
-    // XXX:Work in progress (currently only a POC of shortcuts without modifying the Minecraft code) 
+    /**
+     * Allows to monitor the keys related to shortcuts
+     */
     private Map<Integer, Boolean> shortcutKeysStatus = new HashMap<Integer, Boolean>();
 
     /**
@@ -195,23 +198,18 @@ public class InvTweaks extends Obfuscation {
                 // Else, put the slot anywhere
                 if (hasToBeMoved) {
                     for (int i = 0; i < containerMgr.getSectionSize(); i++) {
-                        try {
-                            if (containerMgr.getItemStack(i) == null) {
-                                if (containerMgr.move(currentSlot, i)) {
-                                    break;
-                                }
+                        if (containerMgr.getItemStack(i) == null) {
+                            if (containerMgr.move(currentSlot, i)) {
+                                break;
                             }
-                        } catch (TimeoutException e) {
-                            logInGameError("Failed to move picked up stack", e);
                         }
                     }
                 }
 
             }
             
-        } catch (Exception e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (Exception e) {
+            logInGameError("Failed to move picked up stack", e);
         }
     }
 
@@ -558,8 +556,8 @@ public class InvTweaks extends Obfuscation {
                         shortcutType = ShortcutType.MOVE_ALL;
                         shortcutValid = true;
                     }
-                    else if (shortcutKeysStatus.get(Keyboard.KEY_LMENU)
-                            || shortcutKeysStatus.get(Keyboard.KEY_RMENU)) {
+                    else if (shortcutKeysStatus.get(Keyboard.KEY_LSHIFT)
+                            || shortcutKeysStatus.get(Keyboard.KEY_RSHIFT)) {
                         shortcutType = ShortcutType.MOVE_ONE;
                         shortcutValid = true;
                     }
@@ -628,14 +626,23 @@ public class InvTweaks extends Obfuscation {
                         if (shortcutValid) {
                             cfgManager.getShortcutsHandler().move(
                                     shortcutType, slot.slotNumber, destSection);
+                            
+                            // Reset keyboard status to avoid keys being "stuck"
+                            // when Minecraft loses focus while the keys are pressed.
+                            // Also, this disables Minecraft's default shift shortcut.
+                            try {
+                                Keyboard.destroy();
+                                Keyboard.create();
+                            } catch (LWJGLException e) {
+                                logInGameError("Keyboard error during shortcut", e);
+                            }
                         }
-    
+                        
                     } catch (Exception e) {
                        logInGameError("Failed to trigger shortcut", e);
                     }
                     
                 }
-                
             }
         }
         else {
@@ -648,6 +655,8 @@ public class InvTweaks extends Obfuscation {
                 Keyboard.KEY_RCONTROL,
                 Keyboard.KEY_LMENU,
                 Keyboard.KEY_RMENU,
+                Keyboard.KEY_LSHIFT,
+                Keyboard.KEY_RSHIFT,
                 Keyboard.KEY_UP,
                 Keyboard.KEY_DOWN);
         

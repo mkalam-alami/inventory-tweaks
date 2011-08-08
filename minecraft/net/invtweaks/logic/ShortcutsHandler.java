@@ -1,11 +1,11 @@
 package net.invtweaks.logic;
 
-import java.util.concurrent.TimeoutException;
-
 import net.invtweaks.library.ContainerManager;
 import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.library.Obfuscation;
 import net.minecraft.client.Minecraft;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.Slot;
 
 /**
  * 
@@ -13,9 +13,6 @@ import net.minecraft.client.Minecraft;
  *
  */
 public class ShortcutsHandler extends Obfuscation {
-
-    // TODO: Shortcuts don't work on CRAFTING_OUT
-    
     
     private ContainerManager container;
     private ContainerSection fromSection;
@@ -33,33 +30,52 @@ public class ShortcutsHandler extends Obfuscation {
     }
     
     public void move(ShortcutType shortcutType, int fromSlot,
-            ContainerSection toSection) throws Exception {
+            ContainerSection toSection, boolean separateStacks) throws Exception {
+        // TODO: If separate stacks = false
+        
+        // IMPORTANT: This is called before the default action is executed.
+        
         synchronized(this) {
             initAction(fromSlot);
 
             int emptySlotIndex = container.getFirstEmptyIndex(toSection); // TODO merge case
+            
+            // Switch to FURNACE_IN to FURNACE_FUEL if the slot is taken
+            if (emptySlotIndex == -1 && toSection == ContainerSection.FURNACE_IN) {
+                toSection =  ContainerSection.FURNACE_FUEL;
+                emptySlotIndex = container.getFirstEmptyIndex(toSection);
+            }
+            
             if (emptySlotIndex != -1) {
                 switch (shortcutType) {
                 
                 case MOVE_STACK:
-                    container.move(fromSection, fromIndex,
-                            toSection, emptySlotIndex);
+                    container.move(fromSection, fromIndex, toSection, emptySlotIndex);
                     break;
     
                 case MOVE_ONE:
-                    container.moveSome(fromSection, fromIndex,
-                            toSection, emptySlotIndex, 1);
+                    container.moveSome(fromSection, fromIndex, toSection, emptySlotIndex, 1);
                     break;
                     
                 case MOVE_ALL:
-                    container.move(fromSection, fromIndex,
-                            toSection, emptySlotIndex);
+                    ItemStack fromStack = container.getItemStack(fromSection, fromIndex);
+                    for (Slot slot : container.getSectionSlots(fromSection)) {
+                        if (slot.getHasStack() && 
+                                fromStack.isItemEqual(slot.getStack())) {
+                            boolean moveResult = container.move(fromSection,
+                                    container.getSlotIndex(slot.slotNumber),
+                                    toSection, emptySlotIndex);
+                            if (!moveResult) {
+                                break;
+                            }
+                            emptySlotIndex = container.getFirstEmptyIndex(toSection);
+                        }
+                    }
+                    
                 }
             }
             
         }
-        
-        endAction();
     }
     
     public void drop(ShortcutType shortcutType, int fromSlot, 
@@ -67,7 +83,6 @@ public class ShortcutsHandler extends Obfuscation {
         synchronized(this) {
             initAction(fromSlot);
             // TODO Drop
-            endAction();
         }
     }
     
@@ -76,25 +91,25 @@ public class ShortcutsHandler extends Obfuscation {
         fromSection = container.getSlotSection(fromSlot);
         fromIndex = container.getSlotIndex(fromSlot);
         
-        // Cancel default click action
+        // Put hold stack down
         if (getHoldStack() != null) {
+            
             container.leftClick(fromSection, fromIndex);
-            // Sometimes (ex: crafting output) we can put back the item
+            
+            // Sometimes (ex: crafting output) we can't put back the item
+            // in the slot, in that case choose a new one.
             if (getHoldStack() != null) {
                 int firstEmptyIndex = container.getFirstEmptyIndex(ContainerSection.INVENTORY);
                 if (firstEmptyIndex != -1) {
-                   container.leftClick(ContainerSection.INVENTORY, firstEmptyIndex);
+                   fromSection = ContainerSection.INVENTORY;
+                   fromSlot = firstEmptyIndex;
+                   container.leftClick(fromSection, fromSlot);
+                   
                 }
                 else {
                     throw new Exception("Couldn't put hold item down");
                 }
             }
-        }
-    }
-    
-    private void endAction() throws TimeoutException {
-        if (getHoldStack() != null) {
-            container.leftClick(fromSection, fromIndex);
         }
     }
     

@@ -193,8 +193,7 @@ public class SortingHandler extends Obfuscation {
                                 int k = preferredSlots[j];
                                 int moveResult = move(stackToMove, k, rulePriority);
                                 if (moveResult != -1) {
-                                    if (containerMgr.getItemStack(stackToMove) == null ||
-                                            moveResult == k) {
+                                    if (moveResult == k) {
                                         break;
                                     }
                                     else {
@@ -340,17 +339,28 @@ public class SortingHandler extends Obfuscation {
 
             // Try to swap/merge
             else if (to != null) {
-                boolean canBeSwapped = false;
+                
+                boolean canBeSwappedOrMerged = false;
+                
+                // Can be swapped?
                 if (lockPriorities[j] <= priority) {
                     if (rulePriority[j] < priority) {
-                        canBeSwapped = true;
+                        canBeSwappedOrMerged = true;
                     } else if (rulePriority[j] == priority) {
                         if (isOrderedBefore(i, j)) {
-                            canBeSwapped = true;
+                            canBeSwappedOrMerged = true;
                         }
                     }
                 }
-                if (canBeSwapped || from.isItemEqual(to)) {
+                
+                // Can be merged?
+                if (!canBeSwappedOrMerged
+                       && from.isItemEqual(to)
+                       && getStackSize(to) < to.getMaxStackSize() ) {
+                    canBeSwappedOrMerged = true;
+                }
+                
+                if (canBeSwappedOrMerged) {
                     
                     keywordOrder[j] = keywordOrder[i];
                     rulePriority[j] = priority;

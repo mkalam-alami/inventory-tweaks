@@ -25,7 +25,6 @@ import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
 
-import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -540,24 +539,30 @@ public class InvTweaks extends Obfuscation {
         if (Mouse.isButtonDown(0)) {
             if (!shortcutKeysStatus.get(0)) {
                 shortcutKeysStatus.put(0, true);
+            
+                // The mouse has been clicked,
+                // trigger a shortcut according to the pressed keys.
                 
-                // The mouse has been clicked, trigger a shortcut according to the pressed keys
-                
-                int x = (Mouse.getEventX() * guiScreen.width) / mc.displayWidth;
-                int y = guiScreen.height - (Mouse.getEventY() * guiScreen.height) / mc.displayHeight - 1;
-                Slot slot = getSlotAtPosition((GuiContainer) guiScreen, x, y);
+                // Initialization
+                int ex = Mouse.getEventX(), ey = Mouse.getEventY();
+                int x = (ex * guiScreen.width) / mc.displayWidth;
+                int y = guiScreen.height - (ey * guiScreen.height) / mc.displayHeight - 1;
                 boolean shortcutValid = false;
+                
+                // Check that the slot is not empty
+                Slot slot = getSlotAtPosition((GuiContainer) guiScreen, x, y);
+                
                 if (slot != null) {
     
                     // Choose shortcut type
                     ShortcutType shortcutType = ShortcutType.MOVE_STACK;
-                    if (shortcutKeysStatus.get(Keyboard.KEY_LCONTROL)
-                            || shortcutKeysStatus.get(Keyboard.KEY_RCONTROL)) {
+                    if (shortcutKeysStatus.get(Keyboard.KEY_LSHIFT)
+                            || shortcutKeysStatus.get(Keyboard.KEY_RSHIFT)) {
                         shortcutType = ShortcutType.MOVE_ALL;
                         shortcutValid = true;
                     }
-                    else if (shortcutKeysStatus.get(Keyboard.KEY_LSHIFT)
-                            || shortcutKeysStatus.get(Keyboard.KEY_RSHIFT)) {
+                    else if (shortcutKeysStatus.get(Keyboard.KEY_LCONTROL)
+                            || shortcutKeysStatus.get(Keyboard.KEY_RCONTROL)) {
                         shortcutType = ShortcutType.MOVE_ONE;
                         shortcutValid = true;
                     }
@@ -568,7 +573,6 @@ public class InvTweaks extends Obfuscation {
                         ContainerSection srcSection = container.getSlotSection(slot.slotNumber);
                         ContainerSection destSection = null;
     
-                        
                         // Set up available sections
                         Vector<ContainerSection> availableSections = new Vector<ContainerSection>();
                         if (container.isSectionAvailable(ContainerSection.CHEST)) {
@@ -576,6 +580,9 @@ public class InvTweaks extends Obfuscation {
                         }
                         else if (container.isSectionAvailable(ContainerSection.CRAFTING_IN)) {
                             availableSections.add(ContainerSection.CRAFTING_IN);
+                        }
+                        else if (container.isSectionAvailable(ContainerSection.FURNACE_IN)) {
+                            availableSections.add(ContainerSection.FURNACE_IN);
                         }
                         availableSections.add(ContainerSection.INVENTORY_NOT_HOTBAR);
                         availableSections.add(ContainerSection.INVENTORY_HOTBAR);
@@ -594,7 +601,7 @@ public class InvTweaks extends Obfuscation {
                             switch (srcSection) {
                            
                             case INVENTORY_NOT_HOTBAR:
-                                if (availableSections.get(0) != ContainerSection.INVENTORY) {
+                                if (availableSections.get(0) != ContainerSection.INVENTORY_NOT_HOTBAR) {
                                     destSection = availableSections.get(0);
                                 }
                                 else {
@@ -603,14 +610,13 @@ public class InvTweaks extends Obfuscation {
                                 break;
                                 
                             case INVENTORY_HOTBAR:
-                                destSection = ContainerSection.INVENTORY_NOT_HOTBAR;
+                                destSection = availableSections.get(0);
                                 break;
                                 
                             default:
-                                destSection = ContainerSection.INVENTORY_NOT_HOTBAR;
-                                
+                                destSection = ContainerSection.INVENTORY;
                             }
-                            }
+                        }
                         
                         else {
                             // Specific destination
@@ -624,20 +630,17 @@ public class InvTweaks extends Obfuscation {
                         }
                         
                         if (shortcutValid) {
-                            cfgManager.getShortcutsHandler().move(
-                                    shortcutType, slot.slotNumber, destSection);
                             
-                            // Reset keyboard status to avoid keys being "stuck"
-                            // when Minecraft loses focus while the keys are pressed.
-                            // Also, this disables Minecraft's default shift shortcut.
-                            try {
-                                Keyboard.destroy();
-                                Keyboard.create();
-                            } catch (LWJGLException e) {
-                                logInGameError("Keyboard error during shortcut", e);
-                            }
+                            cfgManager.getShortcutsHandler().move(
+                                    shortcutType, slot.slotNumber,
+                                    destSection, true);
+                            
+                            // Reset mouse status to prevent default action.
+                            Mouse.destroy();
+                            Mouse.create();
+                            Mouse.setCursorPosition(ex, ey);
                         }
-                        
+
                     } catch (Exception e) {
                        logInGameError("Failed to trigger shortcut", e);
                     }

@@ -8,8 +8,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,14 +32,28 @@ public class InvTweaksConfig {
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
 
+    // Sorting settings
     public static final String PROP_ENABLE_MIDDLE_CLICK = "enableMiddleClick";
     public static final String PROP_SHOW_CHEST_BUTTONS = "showChestButtons";
     public static final String PROP_ENABLE_SORTING_ON_PICKUP = "enableSortingOnPickup";
-    public static final String PROP_ENABLE_AUTO_REFILL_SOUND = "enableAutoRefillSound";
+    
+    // Shortcuts
+    public static final String PROP_ENABLE_SHORTCUTS = "enableShortcuts";
+    public static final String PROP_SHORTCUT_PREFIX = "shortcutKey";
+    public static final String PROP_SHORTCUT_ONE_ITEM = "shortcutKeyOneItem";
+    public static final String PROP_SHORTCUT_ONE_STACK = "shortcutKeyOneStack";
+    public static final String PROP_SHORTCUT_ALL_ITEMS = "shortcutKeyAllItems";
+    public static final String PROP_SHORTCUT_DROP = "shortcutKeyDrop";
+    public static final String PROP_SHORTCUT_UP = "shortcutKeyToUpperSection";
+    public static final String PROP_SHORTCUT_DOWN = "shortcutKeyToLowerSection";
+    
+    // Sound
     public static final String PROP_ENABLE_SORTING_SOUND = "enableSortingSound";
+    public static final String PROP_ENABLE_AUTO_REFILL_SOUND = "enableAutoRefillSound";
 
     public static final String VALUE_TRUE = "true";
     public static final String VALUE_FALSE = "false";
+    public static final Object VALUE_DEFAULT = "DEFAULT"; // For shortcuts
     public static final String VALUE_CI_COMPATIBILITY = "convenientInventoryCompatibility";
     
     public static final String LOCKED = "LOCKED";
@@ -48,10 +63,12 @@ public class InvTweaksConfig {
     public static final String DEBUG = "DEBUG";
     public static final boolean DEFAULT_AUTO_REFILL_BEHAVIOUR = true;
 
+
+
     private String rulesFile;
     private String treeFile;
 
-    private Properties properties;
+    private InvTweaksProperties properties;
     private ItemTree tree;
     private Vector<InventoryConfigRuleset> rulesets;
     private int currentRuleset = 0;
@@ -66,15 +83,15 @@ public class InvTweaksConfig {
     public InvTweaksConfig(String rulesFile, String treeFile) {
         this.rulesFile = rulesFile;
         this.treeFile = treeFile;
-        init();
+        reset();
     }
 
     public void load() throws Exception {
-
+        
         synchronized (this) {
 
             // Reset all
-            init();
+            reset();
 
             // Load properties
             loadProperties();
@@ -175,7 +192,8 @@ public class InvTweaksConfig {
         if (configPropsFile.exists()) {
             try {
                 FileOutputStream fos = new FileOutputStream(configPropsFile);
-                properties.store(fos, "Inventory Tweaks Configuration");
+                properties.store(fos, "Inventory Tweaks Configuration\n"+
+                        "(Regarding shortcuts, all key names can be found at: http://www.lwjgl.org/javadoc/org/lwjgl/input/Keyboard.html)");
                 fos.flush();
                 fos.close();
                 storedConfigLastModified = new File(Const.CONFIG_PROPS_FILE).lastModified();
@@ -186,15 +204,24 @@ public class InvTweaksConfig {
         }
     }
 
+    public Map<String, String> getProperties(String prefix) {
+        Map<String, String> result = new HashMap<String, String>();
+        for (Object o : properties.keySet()) {
+            String key = (String) o; 
+            if (key.startsWith(prefix)) {
+                result.put(key, properties.getProperty(key));
+            }
+        }
+        return result;
+    }
+    
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
 
     public void setProperty(String key, String value) {
-        properties.setProperty(key, value);
+        properties.put(key, value);
         saveProperties();
-        
-        //
         if (key.equals(PROP_ENABLE_MIDDLE_CLICK)) {
             resolveConvenientInventoryConflicts();
         }
@@ -362,17 +389,27 @@ public class InvTweaksConfig {
         }
     }
 
-    private void init() {
+    private void reset() {
         rulesets = new Vector<InventoryConfigRuleset>();
         currentRuleset = -1;
 
         // Default property values
-        properties = new Properties();
-        properties.setProperty(PROP_ENABLE_MIDDLE_CLICK, VALUE_TRUE);
-        properties.setProperty(PROP_SHOW_CHEST_BUTTONS, VALUE_TRUE);
-        properties.setProperty(PROP_ENABLE_SORTING_ON_PICKUP, VALUE_TRUE);
-        properties.setProperty(PROP_ENABLE_AUTO_REFILL_SOUND, VALUE_TRUE);
-        properties.setProperty(PROP_ENABLE_SORTING_SOUND, VALUE_TRUE);
+        properties = new InvTweaksProperties();
+        
+        properties.put(PROP_ENABLE_MIDDLE_CLICK, VALUE_TRUE);
+        properties.put(PROP_SHOW_CHEST_BUTTONS, VALUE_TRUE);
+        properties.put(PROP_ENABLE_SORTING_ON_PICKUP, VALUE_TRUE);
+        properties.put(PROP_ENABLE_AUTO_REFILL_SOUND, VALUE_TRUE);
+        properties.put(PROP_ENABLE_SORTING_SOUND, VALUE_TRUE);
+        properties.put(PROP_ENABLE_SHORTCUTS, VALUE_TRUE);
+        
+        properties.put(PROP_SHORTCUT_ALL_ITEMS, "LSHIFT, RSHIFT");
+        properties.put(PROP_SHORTCUT_ONE_ITEM, "LCTRL, RCTRL");
+        properties.put(PROP_SHORTCUT_ONE_STACK, VALUE_DEFAULT);
+        properties.put(PROP_SHORTCUT_UP, "UP");
+        properties.put(PROP_SHORTCUT_DOWN, "DOWN");
+        properties.put(PROP_SHORTCUT_DROP, "LMETA, RMETA"); // TODO check works + allow alt?
+
 
         invalidKeywords = new Vector<String>();
     }
@@ -385,10 +422,11 @@ public class InvTweaksConfig {
             fis.close();
             resolveConvenientInventoryConflicts();
         }
+        properties.sortKeys();
         
         // Retro-compatibility: rename autoreplace
         if (properties.contains("enableAutoreplaceSound")) {
-            properties.setProperty(PROP_ENABLE_AUTO_REFILL_SOUND, 
+            properties.put(PROP_ENABLE_AUTO_REFILL_SOUND, 
                     (String) properties.get("enableAutoreplaceSound"));
             properties.remove("enableAutoreplaceSound");
         }

@@ -61,7 +61,6 @@ public class GuiSettingsButton extends GuiButton {
     public boolean mousePressed(Minecraft minecraft, int i, int j) {
         
         InvTweaksConfig config = cfgManager.getConfig();
-        Obfuscation obf = new Obfuscation(minecraft);
         
         if (super.mousePressed(minecraft, i, j)) {
             // Put hold item down if necessary
@@ -70,7 +69,7 @@ public class GuiSettingsButton extends GuiButton {
             try {
                 containerMgr = new ContainerSectionManager(
                         minecraft, ContainerSection.INVENTORY);
-                if (obf.getHoldStack() != null) {
+                if (Obfuscation.getHoldStackStatic(minecraft) != null) {
                     try {
                         // Put hold item down
                         for (int k = containerMgr.getSectionSize() - 1; k >= 0; k--) {
@@ -91,7 +90,7 @@ public class GuiSettingsButton extends GuiButton {
             cfgManager.makeSureConfigurationIsLoaded();
 
             // Display menu
-            minecraft.displayGuiScreen(new GuiInventorySettings(obf.getCurrentScreen(), config));
+            minecraft.displayGuiScreen(new GuiInventorySettings(Obfuscation.getCurrentScreenStatic(minecraft), config));
             return true;
         } else {
             return false;

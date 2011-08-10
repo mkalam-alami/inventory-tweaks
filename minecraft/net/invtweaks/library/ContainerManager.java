@@ -332,7 +332,7 @@ public class ContainerManager extends Obfuscation {
         }
         return -1;
     }
-
+    
     public int getSlotIndex(int slotNumber) {
         // TODO Caching with getSlotSection
         for (ContainerSection section : slotRefs.keySet()) {

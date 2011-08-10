@@ -30,6 +30,7 @@ public class GuiInventorySettings extends GuiScreen {
     private final static String MIDDLE_CLICK = "Middle click";
     private final static String CHEST_BUTTONS = "Chest buttons";
     private final static String SORT_ON_PICKUP = "Sort on pickup";
+    private final static String SHORTCUTS = "Shortcuts";
     private final static String ON = ": ON";
     private final static String OFF = ": OFF";
     private final static String DISABLE_CI = ": Disable CI's first";
@@ -37,6 +38,7 @@ public class GuiInventorySettings extends GuiScreen {
     private final static int ID_MIDDLE_CLICK = 1;
     private final static int ID_CHESTS_BUTTONS = 2;
     private final static int ID_SORT_ON_PICKUP = 3;
+    private final static int ID_SHORTCUTS = 4;
 
     private final static int ID_EDITRULES = 100;
     private final static int ID_EDITTREE = 101;
@@ -89,6 +91,11 @@ public class GuiInventorySettings extends GuiScreen {
                 computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP,
                 SORT_ON_PICKUP)));
         
+        moveToButtonCoords(i++, p);
+        controlList.add(new GuiSmallButton(ID_SHORTCUTS, p.getX(), p.getY(), 
+                computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_SHORTCUTS,
+                SHORTCUTS)));
+        
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
@@ -99,11 +106,6 @@ public class GuiInventorySettings extends GuiScreen {
             }
         }
 
-    }
-
-    private void moveToButtonCoords(int buttonOrder, Point p) {
-        p.setX(width / 2 - 155 + (buttonOrder % 2) * 160);
-        p.setY(height / 6 + (buttonOrder / 2) * 24);
     }
 
     public void drawScreen(int i, int j, float f) {
@@ -129,6 +131,11 @@ public class GuiInventorySettings extends GuiScreen {
         // Toggle auto-refill sound
         case ID_SORT_ON_PICKUP:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, SORT_ON_PICKUP);
+            break;
+            
+        // Toggle shortcuts
+        case ID_SHORTCUTS:
+            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SHORTCUTS, SHORTCUTS);
             break;
 
         // Open rules configuration in external editor
@@ -162,6 +169,11 @@ public class GuiInventorySettings extends GuiScreen {
             mc.displayGuiScreen(parentScreen);
         }
 
+    }
+
+    private void moveToButtonCoords(int buttonOrder, Point p) {
+        p.setX(width / 2 - 155 + (buttonOrder % 2) * 160);
+        p.setY(height / 6 + (buttonOrder / 2) * 24);
     }
 
     private void toggleBooleanButton(GuiButton guibutton, String property, String label) {

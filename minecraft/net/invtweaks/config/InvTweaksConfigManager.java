@@ -139,11 +139,12 @@ public class InvTweaksConfigManager {
             if (config == null) {
                 config = new InvTweaksConfig(Const.CONFIG_RULES_FILE, Const.CONFIG_TREE_FILE);
                 autoRefillHandler = new AutoRefillHandler(mc, config);
-                shortcutsHandler = new ShortcutsHandler(mc);
+                shortcutsHandler = new ShortcutsHandler(mc, config);
             }
             
             // Configuration loading
             config.load();
+            shortcutsHandler.reset();
             
             log.setLevel(config.getLogLevel());
             InvTweaks.logInGameStatic("Configuration loaded");

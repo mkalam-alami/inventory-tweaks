@@ -1,10 +1,7 @@
 package net.minecraft.src;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,11 +12,9 @@ import net.invtweaks.config.InvTweaksConfigManager;
 import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.gui.GuiSettingsButton;
 import net.invtweaks.gui.GuiSortingButton;
-import net.invtweaks.library.ContainerManager;
 import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.library.ContainerSectionManager;
 import net.invtweaks.library.Obfuscation;
-import net.invtweaks.logic.ShortcutsHandler.ShortcutType;
 import net.invtweaks.logic.SortingHandler;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
@@ -62,13 +57,8 @@ public class InvTweaks extends Obfuscation {
      */
     private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
     private ItemStack[] hotbarClone = new ItemStack[Const.INVENTORY_HOTBAR_SIZE];
-    private boolean mouseWasInWindow = true;
+    private boolean mouseWasInWindow = true, mouseWasDown = false;;
     
-    /**
-     * Allows to monitor the keys related to shortcuts
-     */
-    private Map<Integer, Boolean> shortcutKeysStatus = new HashMap<Integer, Boolean>();
-
     /**
      * Allows to trigger some logic only every Const.POLLING_DELAY.
      */
@@ -289,6 +279,17 @@ public class InvTweaks extends Obfuscation {
         return sortKeyBinding;
     }
     
+    // Used by ShortcutsHandler only, but put here for convenience and 
+    // performance, since the xSize/ySize attributes are protected
+    public static boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int i, int j) { // Copied from GuiContainer
+     // Copied from GuiContainer
+        int k = (guiContainer.width - guiContainer.xSize) / 2;
+        int l = (guiContainer.height - guiContainer.ySize) / 2;
+        i -= k;
+        j -= l;
+        return i >= slot.xDisplayPosition - 1 && i < slot.xDisplayPosition + 16 + 1 && j >= slot.yDisplayPosition - 1 && j < slot.yDisplayPosition + 16 + 1;
+    }
+
     private boolean onTick() {
 
         tickNumber++;
@@ -527,138 +528,22 @@ public class InvTweaks extends Obfuscation {
     }
     
     private void handleShortcuts(GuiScreen guiScreen) {
-        
         if (!(guiScreen instanceof GuiContainer)) {
             return;
         }
-        
-        if (Mouse.isButtonDown(0)) {
-            if (!shortcutKeysStatus.get(0)) {
-                shortcutKeysStatus.put(0, true);
-            
+        if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1)) {
+            if (!mouseWasDown) {
+                mouseWasDown = true;
+                
                 // The mouse has just been clicked,
                 // trigger a shortcut according to the pressed keys.
-                
-                // Initialization
-                int ex = Mouse.getEventX(), ey = Mouse.getEventY();
-                int x = (ex * guiScreen.width) / mc.displayWidth;
-                int y = guiScreen.height - (ey * guiScreen.height) / mc.displayHeight - 1;
-                boolean shortcutValid = false;
-                
-                // Check that the slot is not empty
-                Slot slot = getSlotAtPosition((GuiContainer) guiScreen, x, y);
-                
-                if (slot != null) {
-    
-                    // Choose shortcut type
-                    ShortcutType shortcutType = ShortcutType.MOVE_STACK;
-                    if (shortcutKeysStatus.get(Keyboard.KEY_LSHIFT)
-                            || shortcutKeysStatus.get(Keyboard.KEY_RSHIFT)) {
-                        shortcutType = ShortcutType.MOVE_ALL;
-                        shortcutValid = true;
-                    }
-                    else if (shortcutKeysStatus.get(Keyboard.KEY_LCONTROL)
-                            || shortcutKeysStatus.get(Keyboard.KEY_RCONTROL)) {
-                        shortcutType = ShortcutType.MOVE_ONE;
-                        shortcutValid = true;
-                    }
-                    
-                    // Choose target section
-                    try {
-                        ContainerManager container = new ContainerManager(mc);
-                        ContainerSection srcSection = container.getSlotSection(slot.slotNumber);
-                        ContainerSection destSection = null;
-    
-                        // Set up available sections
-                        Vector<ContainerSection> availableSections = new Vector<ContainerSection>();
-                        if (container.isSectionAvailable(ContainerSection.CHEST)) {
-                            availableSections.add(ContainerSection.CHEST);
-                        }
-                        else if (container.isSectionAvailable(ContainerSection.CRAFTING_IN)) {
-                            availableSections.add(ContainerSection.CRAFTING_IN);
-                        }
-                        else if (container.isSectionAvailable(ContainerSection.FURNACE_IN)) {
-                            availableSections.add(ContainerSection.FURNACE_IN);
-                        }
-                        availableSections.add(ContainerSection.INVENTORY_NOT_HOTBAR);
-                        availableSections.add(ContainerSection.INVENTORY_HOTBAR);
-                        
-                        // Check for destination modifiers
-                        int destinationModifier = 0; 
-                        if (shortcutKeysStatus.get(Keyboard.KEY_UP)) {
-                            destinationModifier = -1;
-                        }
-                        else if (shortcutKeysStatus.get(Keyboard.KEY_DOWN)) {
-                            destinationModifier = 1;
-                        }
-                        
-                        if (destinationModifier == 0) {
-                            // Default behavior
-                            switch (srcSection) {
-                           
-                            case INVENTORY_NOT_HOTBAR:
-                                if (availableSections.get(0) != ContainerSection.INVENTORY_NOT_HOTBAR) {
-                                    destSection = availableSections.get(0);
-                                }
-                                else {
-                                    destSection = ContainerSection.INVENTORY_HOTBAR;
-                                }
-                                break;
-                                
-                            case INVENTORY_HOTBAR:
-                                destSection = availableSections.get(0);
-                                break;
-                                
-                            default:
-                                destSection = ContainerSection.INVENTORY;
-                            }
-                        }
-                        
-                        else {
-                            // Specific destination
-                            int srcSectionIndex = availableSections.indexOf(srcSection);
-                            if (srcSectionIndex != -1) {
-                                shortcutValid = true;
-                                destSection = availableSections.get(
-                                        (availableSections.size() + srcSectionIndex + 
-                                                destinationModifier) % availableSections.size());
-                            }
-                        }
-                        
-                        if (shortcutValid) {
-                            
-                            cfgManager.getShortcutsHandler().move(
-                                    shortcutType, slot.slotNumber,
-                                    destSection, true);
-                            
-                            // Reset mouse status to prevent default action.
-                            Mouse.destroy();
-                            Mouse.create();
-                            Mouse.setCursorPosition(ex, ey);
-                        }
-
-                    } catch (Exception e) {
-                       logInGameError("Failed to trigger shortcut", e);
-                    }
-                    
-                }
+                cfgManager.getShortcutsHandler().handleShortcut(
+                        (GuiContainer) guiScreen);
             }
         }
         else {
-            shortcutKeysStatus.put(0, false);
+            mouseWasDown = false;
         }
-        
-        // Update modifiers status
-        updateShortcutKeysStatus(
-                Keyboard.KEY_LCONTROL,
-                Keyboard.KEY_RCONTROL,
-                Keyboard.KEY_LMENU,
-                Keyboard.KEY_RMENU,
-                Keyboard.KEY_LSHIFT,
-                Keyboard.KEY_RSHIFT,
-                Keyboard.KEY_UP,
-                Keyboard.KEY_DOWN);
-        
     }
 
     private boolean isTimeForPolling() {
@@ -673,10 +558,8 @@ public class InvTweaks extends Obfuscation {
      * to avoid the "stuck keys" bug.
      */
     private void unlockKeysIfNecessary() {
-    
         boolean mouseInWindow = Mouse.isInsideWindow();
-        if(!mouseWasInWindow && mouseInWindow)
-        {
+        if (!mouseWasInWindow && mouseInWindow) {
             Keyboard.destroy();
             boolean firstTry = true;
             while (!Keyboard.isCreated()) {
@@ -694,7 +577,6 @@ public class InvTweaks extends Obfuscation {
             }
         }
         mouseWasInWindow = mouseInWindow;
-    
     }
 
     /**
@@ -711,37 +593,6 @@ public class InvTweaks extends Obfuscation {
             }
         }
     }
-
-    private void updateShortcutKeysStatus(int... keyCodes) {
-        for (int keyCode : keyCodes) {
-            if (Keyboard.isKeyDown(keyCode)) {
-                if (!shortcutKeysStatus.get(keyCode)) {
-                    shortcutKeysStatus.put(keyCode, true);
-                }
-            }
-            else {
-                shortcutKeysStatus.put(keyCode, false);
-            }
-        }
-    }
-    
-    private Slot getSlotAtPosition(GuiContainer guiContainer, int i, int j) {  // Copied from GuiContainer
-        for (int k = 0; k < guiContainer.inventorySlots.slots.size(); k++) {
-            Slot slot = (Slot)guiContainer.inventorySlots.slots.get(k);
-            if (getIsMouseOverSlot(guiContainer, slot, i, j)) {
-                return slot;
-            }
-        }
-        return null;
-    }
-    private boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int i, int j) { // Copied from GuiContainer
-        int k = (guiContainer.width - guiContainer.xSize) / 2;
-        int l = (guiContainer.height - guiContainer.ySize) / 2;
-        i -= k;
-        j -= l;
-        return i >= slot.xDisplayPosition - 1 && i < slot.xDisplayPosition + 16 + 1 && j >= slot.yDisplayPosition - 1 && j < slot.yDisplayPosition + 16 + 1;
-    }
-
 
     private void playClick() {
         if (!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_SOUND).equals("false")) {

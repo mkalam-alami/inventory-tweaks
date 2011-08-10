@@ -336,7 +336,9 @@ public class ShortcutsHandler extends Obfuscation {
 
     private boolean isActive(ShortcutType shortcutType) {
         for (Integer keyCode : shortcuts.get(shortcutType)) {
-            if (shortcutKeysStatus.get(keyCode)) {
+            if (shortcutKeysStatus.get(keyCode) && 
+                    // AltGr also activates LCtrl, make sure the real LCtrl has been pressed
+                    (keyCode != 29 || !Keyboard.isKeyDown(184))) {
                 return true;
             }
         }

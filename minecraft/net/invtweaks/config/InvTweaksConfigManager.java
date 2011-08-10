@@ -102,15 +102,19 @@ public class InvTweaksConfigManager {
 
         // Compatibility: Move/Remove old files
 
-        if (new File(Const.OLD_CONFIG_RULES_FILE).exists()) {
+        if (new File(Const.OLDER_CONFIG_RULES_FILE).exists()) {
             if (new File(Const.CONFIG_RULES_FILE).exists()) {
                 backupFile(new File(Const.CONFIG_RULES_FILE), Const.CONFIG_RULES_FILE);
             }
-            new File(Const.OLD_CONFIG_RULES_FILE).renameTo(new File(Const.CONFIG_RULES_FILE));
+            new File(Const.OLDER_CONFIG_RULES_FILE).renameTo(new File(Const.CONFIG_RULES_FILE));
+        }
+        if (new File(Const.OLDER_CONFIG_TREE_FILE).exists()) {
+            backupFile(new File(Const.OLDER_CONFIG_TREE_FILE), Const.CONFIG_TREE_FILE);
         }
         if (new File(Const.OLD_CONFIG_TREE_FILE).exists()) {
-            backupFile(new File(Const.OLD_CONFIG_TREE_FILE), Const.CONFIG_TREE_FILE);
+            new File(Const.OLD_CONFIG_TREE_FILE).renameTo(new File(Const.CONFIG_TREE_FILE));
         }
+        
 
         // Create missing files
 

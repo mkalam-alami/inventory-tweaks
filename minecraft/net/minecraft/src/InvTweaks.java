@@ -25,6 +25,7 @@ import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
 
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -55,18 +56,24 @@ public class InvTweaks extends Obfuscation {
     private long sortingKeyPressedDate = 0;
     
     /**
-     * Various information concerning the inventory, stored on
+     * Various information concerning the context, stored on
      * each tick to allow for certain features (auto-refill,
-     * sorting on pick up)
+     * sorting on pick up...)
      */
     private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
     private ItemStack[] hotbarClone = new ItemStack[Const.INVENTORY_HOTBAR_SIZE];
+    private boolean mouseWasInWindow = true;
     
     /**
      * Allows to monitor the keys related to shortcuts
      */
     private Map<Integer, Boolean> shortcutKeysStatus = new HashMap<Integer, Boolean>();
 
+    /**
+     * Allows to trigger some logic only every Const.POLLING_DELAY.
+     */
+    private int tickNumber = 0, lastPollingTickNumber = -Const.POLLING_DELAY;
+    
     /**
      * Creates an instance of the mod, and loads the configuration
      * from the files, creating them if necessary.
@@ -235,6 +242,9 @@ public class InvTweaks extends Obfuscation {
             if (!onTick()) {
                 return;
             }
+            if (isTimeForPolling()) {
+                unlockKeysIfNecessary();
+            }
             handleGUILayout(guiScreen);
             handleMiddleClick(guiScreen);
             handleShortcuts(guiScreen);
@@ -281,13 +291,14 @@ public class InvTweaks extends Obfuscation {
     
     private boolean onTick() {
 
-        InvTweaksConfig config = cfgManager.getConfig();
+        tickNumber++;
         
         // Not calling "cfgManager.makeSureConfigurationIsLoaded()" for performance reasons
+        InvTweaksConfig config = cfgManager.getConfig();
         if (config == null) { 
             return false;
         }
-
+        
         // Clone the hotbar to be able to monitor changes on it
         GuiScreen currentScreen = getCurrentScreen();
         if (currentScreen == null || currentScreen instanceof GuiInventory) {
@@ -318,21 +329,6 @@ public class InvTweaks extends Obfuscation {
 
         return true;
 
-    }
-
-    /**
-     * Allows to maintain a clone of the hotbar contents to track changes
-     * (especially needed by the "on pickup" features).
-     */
-    private void cloneHotbar() {
-        ItemStack[] mainInventory = getMainInventory();
-        for (int i = 0; i < 9; i++) {
-            if (mainInventory[i] != null) {
-                hotbarClone[i] = mainInventory[i].copy();
-            } else {
-                hotbarClone[i] = null;
-            }
-        }
     }
 
     private void handleSorting(GuiScreen guiScreen) {
@@ -529,7 +525,7 @@ public class InvTweaks extends Obfuscation {
         }
 
     }
-
+    
     private void handleShortcuts(GuiScreen guiScreen) {
         
         if (!(guiScreen instanceof GuiContainer)) {
@@ -540,7 +536,7 @@ public class InvTweaks extends Obfuscation {
             if (!shortcutKeysStatus.get(0)) {
                 shortcutKeysStatus.put(0, true);
             
-                // The mouse has been clicked,
+                // The mouse has just been clicked,
                 // trigger a shortcut according to the pressed keys.
                 
                 // Initialization
@@ -663,6 +659,57 @@ public class InvTweaks extends Obfuscation {
                 Keyboard.KEY_UP,
                 Keyboard.KEY_DOWN);
         
+    }
+
+    private boolean isTimeForPolling() {
+        if (tickNumber - lastPollingTickNumber >= Const.POLLING_DELAY) {
+            lastPollingTickNumber = tickNumber;
+        }
+        return tickNumber - lastPollingTickNumber == 0;
+    }
+
+    /**
+     * When the mouse gets inside the window, reset pressed keys
+     * to avoid the "stuck keys" bug.
+     */
+    private void unlockKeysIfNecessary() {
+    
+        boolean mouseInWindow = Mouse.isInsideWindow();
+        if(!mouseWasInWindow && mouseInWindow)
+        {
+            Keyboard.destroy();
+            boolean firstTry = true;
+            while (!Keyboard.isCreated()) {
+                try {
+                    Keyboard.create();
+                } catch (LWJGLException e) {
+                    if (firstTry) {
+                        logInGameError("I'm having troubles with the keyboard: ", e);
+                        firstTry = false;
+                    }
+                }
+            }
+            if (!firstTry) {
+                logInGame("Ok it's repaired, sorry about that.");
+            }
+        }
+        mouseWasInWindow = mouseInWindow;
+    
+    }
+
+    /**
+     * Allows to maintain a clone of the hotbar contents to track changes
+     * (especially needed by the "on pickup" features).
+     */
+    private void cloneHotbar() {
+        ItemStack[] mainInventory = getMainInventory();
+        for (int i = 0; i < 9; i++) {
+            if (mainInventory[i] != null) {
+                hotbarClone[i] = mainInventory[i].copy();
+            } else {
+                hotbarClone[i] = null;
+            }
+        }
     }
 
     private void updateShortcutKeysStatus(int... keyCodes) {

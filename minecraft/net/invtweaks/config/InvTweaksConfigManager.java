@@ -49,6 +49,7 @@ public class InvTweaksConfigManager {
         // Load properties
         try {
             if (config != null && config.refreshProperties()) {
+                shortcutsHandler = new ShortcutsHandler(mc, config);
                 InvTweaks.logInGameStatic("Mod properties loaded");
             }
         } catch (IOException e) {
@@ -115,7 +116,6 @@ public class InvTweaksConfigManager {
             new File(Const.OLD_CONFIG_TREE_FILE).renameTo(new File(Const.CONFIG_TREE_FILE));
         }
         
-
         // Create missing files
 
         if (!new File(Const.CONFIG_RULES_FILE).exists() && 

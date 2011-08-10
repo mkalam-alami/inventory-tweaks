@@ -63,8 +63,6 @@ public class InvTweaksConfig {
     public static final String DEBUG = "DEBUG";
     public static final boolean DEFAULT_AUTO_REFILL_BEHAVIOUR = true;
 
-
-
     private String rulesFile;
     private String treeFile;
 

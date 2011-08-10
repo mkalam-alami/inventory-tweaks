@@ -30,7 +30,8 @@ import net.minecraft.src.Slot;
 public class ContainerManager extends Obfuscation {
 	
     // TODO: Throw errors when the container isn't available anymore
-    
+
+    public static final int DROP_SLOT = -999;
     public static final int INVENTORY_SIZE = 36;
     public static final int HOTBAR_SIZE = 9;
     public static final int DEFAULT_TIMEOUT = 500;
@@ -227,6 +228,14 @@ public class ContainerManager extends Obfuscation {
 	    
 	}
 
+    public boolean drop(ContainerSection srcSection, int srcIndex) throws TimeoutException {
+        return move(srcSection, srcIndex, null, DROP_SLOT);
+    }
+    
+    public boolean dropSome(ContainerSection srcSection, int srcIndex, int amount) throws TimeoutException {
+        return moveSome(srcSection, srcIndex, null, DROP_SLOT, amount);
+    }
+            
 	public void leftClick(ContainerSection section, int index) throws TimeoutException {
         click(section, index, false);
     }
@@ -398,7 +407,12 @@ public class ContainerManager extends Obfuscation {
      */
     public ItemStack getItemStack(ContainerSection section, int index) 
             throws NullPointerException, IndexOutOfBoundsException {
-        return getSlotStack(container, indexToSlot(section, index));  
+        int slot = indexToSlot(section, index);
+        if (slot >= 0 && slot < getSlots(container).size()) {
+            return getSlotStack(container, slot);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -408,6 +422,9 @@ public class ContainerManager extends Obfuscation {
      * @return -1 if not found
      */
     private int indexToSlot(ContainerSection section, int index) {
+        if (index == DROP_SLOT) {
+            return DROP_SLOT;
+        }
         if (isSectionAvailable(section)) {
             Slot slot = slotRefs.get(section).get(index);
             if (slot != null) {

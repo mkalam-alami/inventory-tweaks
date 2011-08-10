@@ -26,6 +26,8 @@ import org.lwjgl.input.Mouse;
  */
 public class ShortcutsHandler extends Obfuscation {
 
+    private final static int DROP_SLOT = -999;
+    
     private ShortcutType defaultAction = ShortcutType.MOVE_ONE_STACK;
     private ShortcutType defaultDestination = null;
     
@@ -93,14 +95,16 @@ public class ShortcutsHandler extends Obfuscation {
                 String[] keyNames = keys.get(key).split("[ ]*,[ ]*");
                 List<Integer> keyBindings = new LinkedList<Integer>();
                 for (String keyName : keyNames) {
-                    // Accept both KEY_### and ###, in case someone
-                    // takes the LWJGL Javadoc at face value
+                    // - Accept both KEY_### and ###, in case someone
+                    //   takes the LWJGL Javadoc at face value
+                    // - Accept LALT & RALT instead of LMENU & RMENU
                     keyBindings.add(Keyboard.getKeyIndex(
-                            keyName.replace("KEY_", "")));
+                            keyName.replace("KEY_", "")
+                                   .replace("ALT", "MENU")));
                 }
                 ShortcutType shortcutType = propNameToShortcutType(key);
                 if (shortcutType != null) {
-                    shortcuts.put(propNameToShortcutType(key), keyBindings);
+                    shortcuts.put(shortcutType, keyBindings);
                 }
                 
                 // Register key status listener
@@ -214,17 +218,15 @@ public class ShortcutsHandler extends Obfuscation {
                     }
                 }
                 
-                if (shortcutValid) {
+                if (shortcutValid || isActive(ShortcutType.DROP)) {
                     
                     initAction(slot.slotNumber, shortcutType, destSection);
                     
                     // Drop or move
                     if (srcSection == ContainerSection.CRAFTING_OUT) {
-                        craftAll(Mouse.isButtonDown(1));
-                    } else if (isActive(ShortcutType.DROP)) { 
-                        drop();
+                        craftAll(Mouse.isButtonDown(1), isActive(ShortcutType.DROP));
                     } else {
-                        move(Mouse.isButtonDown(1));
+                        move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP));
                     }
                     
                     // Reset mouse status to prevent default action.
@@ -243,15 +245,13 @@ public class ShortcutsHandler extends Obfuscation {
             
     }
     
-    private void move(boolean separateStacks) throws Exception {
-        
-        // TODO: If separate stacks = false
+    private void move(boolean separateStacks, boolean drop) throws Exception {
         
         int toIndex = -1;
         
         synchronized(this) {
     
-            toIndex = getNextIndex(separateStacks);
+            toIndex = getNextIndex(separateStacks, drop);
             if (toIndex != -1) {
                 switch (shortcutType) {
                 
@@ -273,7 +273,7 @@ public class ShortcutsHandler extends Obfuscation {
                             if (!moveResult) {
                                 break;
                             }
-                            toIndex = getNextIndex(separateStacks);
+                            toIndex = getNextIndex(separateStacks, drop);
                         }
                     }
                     
@@ -282,27 +282,25 @@ public class ShortcutsHandler extends Obfuscation {
             
         }
     }
-
-    private void drop() throws Exception {
-        synchronized(this) {
-            // TODO Drop
-        }
-    }
-
-    private void craftAll(boolean separateStacks) throws Exception {
-        int toIndex = getNextIndex(separateStacks);
+    
+    private void craftAll(boolean separateStacks, boolean drop) throws Exception {
+        int toIndex = getNextIndex(separateStacks, drop);
         Slot slot = container.getSlot(fromSection, fromIndex);
         while (slot.getHasStack() && toIndex != -1) {
             container.move(fromSection, fromIndex, toSection, toIndex);
-            toIndex = getNextIndex(separateStacks);
+            toIndex = getNextIndex(separateStacks, drop);
             if (getHoldStack() != null) {
                 container.leftClick(toSection, toIndex);
-                toIndex = getNextIndex(separateStacks);
+                toIndex = getNextIndex(separateStacks, drop);
             }
         }
     }
 
-    private int getNextIndex(boolean emptySlotOnly) {
+    private int getNextIndex(boolean emptySlotOnly, boolean drop) {
+        
+        if (drop) {
+            return DROP_SLOT;
+        }
         
         int result = -1;
 

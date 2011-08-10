@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Container;
+import net.minecraft.src.ContainerPlayer;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.GuiChest;
 import net.minecraft.src.GuiContainer;
@@ -69,8 +70,8 @@ public class Obfuscation {
         return getThePlayer().craftingInventory;
     }
 
-    protected Container getPlayerContainer() {
-        return getThePlayer().inventorySlots; // MCP name: inventorySlots
+    protected ContainerPlayer getPlayerContainer() {
+        return (ContainerPlayer) getThePlayer().inventorySlots; // MCP name: inventorySlots
     }
 
     // InventoryPlayer members
@@ -139,6 +140,12 @@ public class Obfuscation {
 
     protected boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
         return ItemStack.areItemStacksEqual(itemStack1, itemStack2);
+    }
+    
+    protected boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
+        return itemStack1.isItemEqual(itemStack2) ||
+                (itemStack1.isItemStackDamageable() && 
+                        getItemID(itemStack1) == getItemID(itemStack2));
     }
 
     // PlayerController members

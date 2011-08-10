@@ -332,6 +332,15 @@ public class ContainerManager extends Obfuscation {
         }
         return -1;
     }
+
+    public Slot getSlot(ContainerSection section, int index) {
+        List<Slot> slots = slotRefs.get(section);
+        if (slots != null) {
+            return slots.get(index);
+        } else {
+            return null;
+        }
+    }
     
     public int getSlotIndex(int slotNumber) {
         // TODO Caching with getSlotSection

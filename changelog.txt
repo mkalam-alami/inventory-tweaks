@@ -3,12 +3,16 @@
 | Changelog                                                    |
 |==============================================================|
 
-[08.??.2011] 1.23 (B1.7.3)
- * The settings button is now available with the Aether mod's inventory
+[08.??.2011] 1.30 (B1.7.3)
+ * Added various shortcuts to move/drop/craft items
+ * The settings button is now available on the Aether mod's inventory
+ * Huge refactoring of the mod's code, to emerge a library for modders
+ * Sorting now moves the items from the crafting table to the inventory
  * The "stuff" rule now also matches unknown mod items
  * Better reloading behavior with multiple configurations
- * Huge refactoring of the mod's code, to emerge a library for modders
- * Changed the item tree extension to .txt
+ * Changed back the item tree extension to .txt
+ 
+|== 1.2X ======================================================|
  
 [08.01.2011] 1.22 (B1.7.3)
  * Really fixed the bug making a lot of keywords not work

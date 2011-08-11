@@ -155,7 +155,10 @@ public class ContainerManager extends Obfuscation {
 	public boolean move(ContainerSection srcSection, int srcIndex,
             ContainerSection destSection, int destIndex) throws TimeoutException {
 	    
-        if (getItemStack(srcSection, srcIndex) == null) {
+	    ItemStack srcStack = getItemStack(srcSection, srcIndex);
+        ItemStack destStack = getItemStack(destSection, destIndex);
+	    
+        if (srcStack == null) {
             return false;
         }
         else if (srcSection == destSection && srcIndex == destIndex) {
@@ -175,11 +178,39 @@ public class ContainerManager extends Obfuscation {
         
         boolean destinationEmpty = getItemStack(destSection, destIndex) == null;
 
-        leftClick(srcSection, srcIndex);
-        leftClick(destSection, destIndex);
-        if (!destinationEmpty) {
-            leftClick(srcSection, srcIndex);
+        // Use intermediate slot if we have to swap tools
+        if (destStack != null
+                && getItemID(srcStack) == getItemID(destStack)
+                && srcStack.isItemStackDamageable()) {
+            int intermediateSlot = getFirstEmptyUsableSlotNumber();
+            ContainerSection intermediateSection = getSlotSection(intermediateSlot);
+            int intermediateIndex = getSlotIndex(intermediateSlot);
+            if (intermediateIndex != -1) {
+                // Step 1/3: Dest > Int
+                leftClick(destSection, destIndex);
+                leftClick(intermediateSection, intermediateIndex);
+                // Step 2/3: Src > Dest
+                leftClick(srcSection, srcIndex);
+                leftClick(destSection, destIndex);
+                // Step 3/3: Int > Src
+                leftClick(intermediateSection, intermediateIndex);
+                leftClick(srcSection, srcIndex);
+            }
+            else {
+                return false;
+            }
         }
+        
+        // Normal move
+        else {
+            leftClick(srcSection, srcIndex);
+            leftClick(destSection, destIndex);
+            if (!destinationEmpty) {
+                leftClick(srcSection, srcIndex);
+            }
+        }
+        
+      
         
         return true;
     }
@@ -419,6 +450,20 @@ public class ContainerManager extends Obfuscation {
         return container;
     }
 
+    private int getFirstEmptyUsableSlotNumber() {
+        for (ContainerSection section : slotRefs.keySet()) {
+            for (Slot slot : slotRefs.get(section)) {
+                // Use only standard slot (to make sure
+                // we can freely put and remove items there)
+                if (slot.getClass().equals(Slot.class)
+                        && !slot.getHasStack()) {
+                    return slot.slotNumber;
+                }
+            }
+        }
+        return -1;
+    }
+    
     /**
      * Converts section/index values to slot ID.
      * @param section

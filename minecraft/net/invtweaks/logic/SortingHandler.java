@@ -39,7 +39,6 @@ import net.minecraft.src.ItemStack;
  */
 public class SortingHandler extends Obfuscation {
 
-    
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     public static final boolean STACK_NOT_EMPTIED = true;
@@ -64,8 +63,6 @@ public class SortingHandler extends Obfuscation {
     private int[] keywordOrder;
     private int[] lockPriorities;
     private boolean[] frozenSlots;
-
-    private boolean isMultiplayer;
 
     public SortingHandler(Minecraft mc, InvTweaksConfig config,
             ContainerSection section, int algorithm) throws Exception {
@@ -118,8 +115,6 @@ public class SortingHandler extends Obfuscation {
                 this.keywordOrder[i] = -1;
             }
         }
-        
-        this.isMultiplayer = isMultiplayerWorld();
     }
     
     public void sort() throws TimeoutException {
@@ -429,8 +424,9 @@ public class SortingHandler extends Obfuscation {
                     if (getStackSize(iStack) == getStackSize(jStack)) {
                         // Highest damage first for tools, else lowest damage.
                         // No tool ordering for same ID (cannot swap directly)
-                        return (getItemDamage(iStack) < getItemDamage(jStack) 
-                                && !jStack.isItemStackDamageable());
+                        int damageDiff = getItemDamage(iStack) - getItemDamage(jStack);
+                        return (damageDiff < 0 && !iStack.isItemStackDamageable()
+                                || damageDiff > 0 && iStack.isItemStackDamageable());
                     } else {
                         return getStackSize(iStack) > getStackSize(jStack);
                     }

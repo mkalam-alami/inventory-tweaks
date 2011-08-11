@@ -41,6 +41,7 @@ public class ShortcutsHandler extends Obfuscation {
     private ShortcutType shortcutType;
 
     private enum ShortcutType {
+        MOVE_TO_SPECIFIC_HOTBAR_SLOT,
         MOVE_ONE_STACK,
         MOVE_ONE_ITEM,
         MOVE_ALL_ITEMS,
@@ -99,8 +100,7 @@ public class ShortcutsHandler extends Obfuscation {
                     //   takes the LWJGL Javadoc at face value
                     // - Accept LALT & RALT instead of LMENU & RMENU
                     keyBindings.add(Keyboard.getKeyIndex(
-                            keyName.replace("KEY_", "")
-                                   .replace("ALT", "MENU")));
+                            keyName.replace("KEY_", "").replace("ALT", "MENU")));
                 }
                 ShortcutType shortcutType = propNameToShortcutType(key);
                 if (shortcutType != null) {
@@ -114,6 +114,21 @@ public class ShortcutsHandler extends Obfuscation {
             }
             
         }
+        
+        // Add hotbar shortcuts (1-9) mappings & listeners
+        List<Integer> keyBindings = new LinkedList<Integer>();
+        int[] hotbarKeys = {Keyboard.KEY_1, Keyboard.KEY_2, Keyboard.KEY_3, 
+                Keyboard.KEY_4, Keyboard.KEY_5, Keyboard.KEY_6,
+                Keyboard.KEY_7, Keyboard.KEY_8, Keyboard.KEY_9,
+                Keyboard.KEY_NUMPAD1, Keyboard.KEY_NUMPAD2, Keyboard.KEY_NUMPAD3,
+                Keyboard.KEY_NUMPAD4, Keyboard.KEY_NUMPAD5, Keyboard.KEY_NUMPAD6, 
+                Keyboard.KEY_NUMPAD7, Keyboard.KEY_NUMPAD8, Keyboard.KEY_NUMPAD9};
+        for (int i : hotbarKeys) {
+            keyBindings.add(i);
+            shortcutKeysStatus.put(i, false);
+        }
+        shortcuts.put(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT, keyBindings);
+        
     }
     
     public void handleShortcut(GuiContainer guiScreen) {
@@ -145,11 +160,15 @@ public class ShortcutsHandler extends Obfuscation {
     
             // Choose shortcut type
             ShortcutType shortcutType = defaultAction;
-            if (isActive(ShortcutType.MOVE_ALL_ITEMS)) {
+            if (isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != -1) {
+                shortcutType = ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT;
+                shortcutValid = true;
+            }
+            if (isActive(ShortcutType.MOVE_ALL_ITEMS) != -1) {
                 shortcutType = ShortcutType.MOVE_ALL_ITEMS;
                 shortcutValid = true;
             }
-            else if (isActive(ShortcutType.MOVE_ONE_ITEM)) {
+            else if (isActive(ShortcutType.MOVE_ONE_ITEM) != -1) {
                 shortcutType = ShortcutType.MOVE_ONE_ITEM;
                 shortcutValid = true;
             }
@@ -176,11 +195,11 @@ public class ShortcutsHandler extends Obfuscation {
                 
                 // Check for destination modifiers
                 int destinationModifier = 0; 
-                if (isActive(ShortcutType.MOVE_UP)
+                if (isActive(ShortcutType.MOVE_UP) != -1
                         || defaultDestination == ShortcutType.MOVE_UP) {
                     destinationModifier = -1;
                 }
-                else if (isActive(ShortcutType.MOVE_DOWN)
+                else if (isActive(ShortcutType.MOVE_DOWN) != -1
                         || defaultDestination == ShortcutType.MOVE_DOWN) {
                     destinationModifier = 1;
                 }
@@ -218,15 +237,27 @@ public class ShortcutsHandler extends Obfuscation {
                     }
                 }
                 
-                if (shortcutValid || isActive(ShortcutType.DROP)) {
+                if (shortcutValid || isActive(ShortcutType.DROP) != -1) {
                     
                     initAction(slot.slotNumber, shortcutType, destSection);
                     
-                    // Drop or move
-                    if (srcSection == ContainerSection.CRAFTING_OUT) {
-                        craftAll(Mouse.isButtonDown(1), isActive(ShortcutType.DROP));
+                    if (shortcutType == ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
+                        
+                        // Move to specific hotbar slot
+                        String keyName = Keyboard.getKeyName(
+                                isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT));
+                        int destIndex = -1+Integer.parseInt(keyName.replace("NUMPAD", ""));
+                        container.move(fromSection, fromIndex,
+                                ContainerSection.INVENTORY_HOTBAR, destIndex);
+                        
                     } else {
-                        move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP));
+                        
+                        // Drop or move
+                        if (srcSection == ContainerSection.CRAFTING_OUT) {
+                            craftAll(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != -1);
+                        } else {
+                            move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != -1);
+                        }
                     }
                     
                     // Reset mouse status to prevent default action.
@@ -334,15 +365,19 @@ public class ShortcutsHandler extends Obfuscation {
         return result;
     }
 
-    private boolean isActive(ShortcutType shortcutType) {
+    /**
+     * @param shortcutType
+     * @return The key that made the shortcut active
+     */
+    private int isActive(ShortcutType shortcutType) {
         for (Integer keyCode : shortcuts.get(shortcutType)) {
             if (shortcutKeysStatus.get(keyCode) && 
                     // AltGr also activates LCtrl, make sure the real LCtrl has been pressed
                     (keyCode != 29 || !Keyboard.isKeyDown(184))) {
-                return true;
+                return keyCode;
             }
         }
-        return false;
+        return -1;
     }
 
     private void initAction(int fromSlot, ShortcutType shortcutType, ContainerSection destSection) throws Exception {

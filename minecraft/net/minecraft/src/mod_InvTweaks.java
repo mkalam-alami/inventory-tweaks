@@ -2,16 +2,19 @@ package net.minecraft.src;
 
 import java.util.logging.Logger;
 
+import net.invtweaks.Const;
 import net.minecraft.client.Minecraft;
 
 /**
- * Entry point for Inventory Tweaks.
- * This client mod for Minecraft allows you to easily manage your inventory.
+ * ModLoader entry point to load and configure the mod.
  * 
- * @author Jimeo Wan (jimeo.wan at gmail.com)
- *  Website: {@link http://wan.ka.free.fr/?invtweaks}
- *  Source code: {@link https://github.com/jimeowan/inventory-tweaks}
+ * @author Jimeo Wan
  * 
+ * Contact: jimeo.wan (at) gmail (dot) com
+ * Website: {@link http://wan.ka.free.fr/?invtweaks}
+ * Source code: {@link https://github.com/jimeowan/inventory-tweaks}
+ * License: MIT
+ *
  */
 public class mod_InvTweaks extends BaseMod {
 
@@ -25,7 +28,7 @@ public class mod_InvTweaks extends BaseMod {
         Minecraft mc = ModLoader.getMinecraftInstance();
 
         // Register key (listen only for key down events)
-        ModLoader.RegisterKey(this, InvTweaks.getSortKeyBinding(), false);
+        ModLoader.RegisterKey(this, Const.SORT_KEY_BINDING, false);
 
         // Register in game hooks
         ModLoader.SetInGameHook(this, true, true);
@@ -38,7 +41,7 @@ public class mod_InvTweaks extends BaseMod {
 
     @Override
     public String Version() {
-        return "1.22 (1.7.3)";
+        return Const.MOD_VERSION;
     }
 
     /**

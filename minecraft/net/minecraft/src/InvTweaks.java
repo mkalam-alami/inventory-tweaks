@@ -24,12 +24,23 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+/**
+ * Main class for Inventory Tweaks, which maintains various hooks
+ * and dispatches the events to the correct handlers.
+ * 
+ * @author Jimeo Wan
+ *
+ * Contact: jimeo.wan (at) gmail (dot) com
+ * Website: {@link http://wan.ka.free.fr/?invtweaks}
+ * Source code: {@link https://github.com/jimeowan/inventory-tweaks}
+ * License: MIT
+ * 
+ */
 public class InvTweaks extends Obfuscation {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     private static InvTweaks instance;
-    private static KeyBinding sortKeyBinding = new KeyBinding("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
 
     /**
      * The configuration loader.
@@ -269,16 +280,6 @@ public class InvTweaks extends Obfuscation {
         return instance;
     }
 
-    /**
-     * Returns the binding for the sort key.
-     * Object maintained by Minecraft so that it's keycode is actually
-     * what has been configured by the player (not always the R key).
-     * @return
-     */
-    public static KeyBinding getSortKeyBinding() {
-        return sortKeyBinding;
-    }
-    
     // Used by ShortcutsHandler only, but put here for convenience and 
     // performance, since the xSize/ySize attributes are protected
     public static boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int i, int j) { // Copied from GuiContainer
@@ -307,7 +308,7 @@ public class InvTweaks extends Obfuscation {
         }
 
         // If the key is hold for 1s, switch config
-        if (Keyboard.isKeyDown(getKeycode(sortKeyBinding))) {
+        if (Keyboard.isKeyDown(getKeycode(Const.SORT_KEY_BINDING))) {
             long currentTime = System.currentTimeMillis();
             if (sortingKeyPressedDate == 0) {
                 sortingKeyPressedDate = currentTime;
@@ -537,8 +538,11 @@ public class InvTweaks extends Obfuscation {
                 
                 // The mouse has just been clicked,
                 // trigger a shortcut according to the pressed keys.
-                cfgManager.getShortcutsHandler().handleShortcut(
-                        (GuiContainer) guiScreen);
+                if (!cfgManager.getConfig().getProperty(
+                        InvTweaksConfig.PROP_ENABLE_SHORTCUTS).equals("false")) {
+                    cfgManager.getShortcutsHandler().handleShortcut(
+                            (GuiContainer) guiScreen);
+                }
             }
         }
         else {

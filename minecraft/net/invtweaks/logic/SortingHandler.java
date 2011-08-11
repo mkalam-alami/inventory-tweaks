@@ -428,10 +428,9 @@ public class SortingHandler extends Obfuscation {
                 if (getItemID(iStack) == getItemID(jStack)) {
                     if (getStackSize(iStack) == getStackSize(jStack)) {
                         // Highest damage first for tools, else lowest damage.
-                        // No tool ordering for same ID in multiplayer (cannot
-                        // swap directly)
-                        return (getItemDamage(iStack) > getItemDamage(jStack) && getMaxStackSize(jStack) == 1 && !isMultiplayer)
-                                || (getItemDamage(iStack) < getItemDamage(jStack) && getMaxStackSize(jStack) > 1);
+                        // No tool ordering for same ID (cannot swap directly)
+                        return (getItemDamage(iStack) < getItemDamage(jStack) 
+                                && !jStack.isItemStackDamageable());
                     } else {
                         return getStackSize(iStack) > getStackSize(jStack);
                     }

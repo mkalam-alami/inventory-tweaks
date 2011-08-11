@@ -4,14 +4,13 @@
 |==============================================================|
 
 [08.??.2011] 1.30 (B1.7.3)
- * Added various shortcuts to move/drop/craft items [TEST SMP]
- * Sorting now moves the items from the crafting table to the inventory [TODO]
- * The "stuff" rule now also matches unknown mod items
- * The settings button is now available on the Aether mod's inventory [TEST]
- * Tools are now sorted by damage in SMP too [TEST]
- * Changed back the item tree extension to .txt
- * Better reloading behavior with multiple configurations
+ * Added various shortcuts to move/drop/craft items
+ * The settings button is now available on the Aether mod's inventory
  * Huge refactoring of the mod's code, to emerge a library for modders
+ * Sorting now moves the items from the crafting table to the inventory
+ * The "stuff" rule now also matches unknown mod items
+ * Better reloading behavior with multiple configurations
+ * Changed back the item tree extension to .txt
  
 |== 1.2X ======================================================|
  

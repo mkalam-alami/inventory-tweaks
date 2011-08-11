@@ -193,7 +193,7 @@ public class InvTweaks extends Obfuscation {
 
                 // Else, put the slot anywhere
                 if (hasToBeMoved) {
-                    for (int i = 0; i < containerMgr.getSectionSize(); i++) {
+                    for (int i = 0; i < containerMgr.getSize(); i++) {
                         if (containerMgr.getItemStack(i) == null) {
                             if (containerMgr.move(currentSlot, i)) {
                                 break;

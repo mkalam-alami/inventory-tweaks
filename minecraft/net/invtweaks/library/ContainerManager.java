@@ -342,6 +342,19 @@ public class ContainerManager extends Obfuscation {
         return -1;
     }
 
+    /**
+     * @param slot
+     * @return true if the specified slot exists and is empty, false otherwise.
+     */
+    public boolean isSlotEmpty(ContainerSection section, int slot) {
+        if (isSectionAvailable(section)) {
+            return getItemStack(section, slot) == null;
+        }
+        else {
+            return false;
+        }
+    }
+
     public Slot getSlot(ContainerSection section, int index) {
         List<Slot> slots = slotRefs.get(section);
         if (slots != null) {
@@ -387,19 +400,6 @@ public class ContainerManager extends Obfuscation {
     }
     
     /**
-     * @param slot
-     * @return true if the specified slot exists and is empty, false otherwise.
-     */
-    public boolean isSlotEmpty(ContainerSection section, int slot) {
-        if (isSectionAvailable(section)) {
-            return getItemStack(section, slot) == null;
-        }
-        else {
-            return false;
-        }
-    }
-
-    /**
      * Returns an ItemStack from the wanted section and slot.
      * @param section
      * @param slot
@@ -413,6 +413,10 @@ public class ContainerManager extends Obfuscation {
         } else {
             return null;
         }
+    }
+
+    public Container getContainer() {
+        return container;
     }
 
     /**
@@ -437,10 +441,6 @@ public class ContainerManager extends Obfuscation {
         else {
             return -1;
         }
-    }
-    
-    public Container getContainer() {
-        return container;
     }
     
 }

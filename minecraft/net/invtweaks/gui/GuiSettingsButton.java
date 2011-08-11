@@ -72,7 +72,7 @@ public class GuiSettingsButton extends GuiButton {
                 if (Obfuscation.getHoldStackStatic(minecraft) != null) {
                     try {
                         // Put hold item down
-                        for (int k = containerMgr.getSectionSize() - 1; k >= 0; k--) {
+                        for (int k = containerMgr.getSize() - 1; k >= 0; k--) {
                             if (containerMgr.getItemStack(k) == null) {
                                 containerMgr.leftClick(k);
                                 break;

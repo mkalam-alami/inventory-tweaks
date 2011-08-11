@@ -39,6 +39,14 @@ public class ContainerSectionManager {
         return containerMgr.moveSome(section, srcIndex, section, destIndex, amount);
     }
 
+    public boolean drop(int srcIndex) throws TimeoutException {
+        return containerMgr.drop(section, srcIndex);
+    }
+    
+    public boolean dropSome(int srcIndex, int amount) throws TimeoutException {
+        return containerMgr.dropSome(section, srcIndex, amount);
+    }
+    
     public void leftClick(int index) throws TimeoutException {
         containerMgr.leftClick(section, index);
     }
@@ -55,18 +63,35 @@ public class ContainerSectionManager {
         return containerMgr.getSectionSlots(section);
     }
 
-    public int getFirstEmptyIndex() {
-        return containerMgr.getFirstEmptyIndex(section);
+    public int getSize() {
+        return containerMgr.getSectionSize(section);
     }
 
-    public int getSectionSize() {
-        return containerMgr.getSectionSize(section);
+    public int getFirstEmptyIndex() {
+        return containerMgr.getFirstEmptyIndex(section);
     }
 
     public boolean isSlotEmpty(int slot) {
         return containerMgr.isSlotEmpty(section, slot);
     }
 
+    public Slot getSlot(int index) {
+        return containerMgr.getSlot(section, index);
+    }
+    
+    public int getSlotIndex(int slotNumber) {
+        if (isSlotInSection(slotNumber)) {
+            return containerMgr.getSlotIndex(slotNumber);
+        }
+        else {
+            return -1;
+        }
+    }
+
+    public boolean isSlotInSection(int slotNumber) {
+        return containerMgr.getSlotSection(slotNumber) == section;
+    }
+    
     public ItemStack getItemStack(int index) throws NullPointerException, IndexOutOfBoundsException {
         return containerMgr.getItemStack(section, index);
     }

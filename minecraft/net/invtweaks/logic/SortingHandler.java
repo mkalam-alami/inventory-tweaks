@@ -89,7 +89,7 @@ public class SortingHandler extends Obfuscation {
         // Init attributes
 
         this.containerMgr = new ContainerSectionManager(mc, section);
-        this.size = containerMgr.getSectionSize();
+        this.size = containerMgr.getSize();
         
         this.rules = config.getRules();
         this.tree = config.getTree();

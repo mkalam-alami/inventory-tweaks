@@ -44,7 +44,7 @@ public class GuiTooltipButton extends GuiButton {
             String displayString, String tooltip) {
         super(id, x, y, w, h, displayString);
         if (tooltip != null) {
-            this.tooltipLines = tooltip.split("\n");
+            setTooltip(tooltip);
         }
     }
 
@@ -72,12 +72,10 @@ public class GuiTooltipButton extends GuiButton {
             // Draw tooltip if hover time is long enough
             if (hoverTime > Const.TOOLTIP_DELAY && tooltipLines != null) {
                 
-                
-                
                 FontRenderer fontRenderer = minecraft.fontRenderer;
 
                 // Compute tooltip params
-                int x = i + 12, y = j - 12;
+                int x = i + 12, y = j - LINE_HEIGHT*tooltipLines.length;
                 if (tooltipWidth == -1) {
                     for (String line : tooltipLines) {
                         tooltipWidth = Math.max(fontRenderer.getStringWidth(line), tooltipWidth);

@@ -3,14 +3,12 @@ package net.invtweaks.gui;
 import java.awt.Desktop;
 import java.io.File;
 import java.net.URL;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
-import net.invtweaks.library.Obfuscation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiScreen;
@@ -22,7 +20,7 @@ import org.lwjgl.util.Point;
  * The inventory and chest settings menu.
  * 
  * @author Jimeo Wan
- *
+ * 
  */
 public class GuiInventorySettings extends GuiScreen {
 
@@ -55,7 +53,8 @@ public class GuiInventorySettings extends GuiScreen {
     private GuiScreen parentScreen;
     private InvTweaksConfig config;
 
-    public GuiInventorySettings(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
+    public GuiInventorySettings(Minecraft mc, GuiScreen parentScreen,
+            InvTweaksConfig config) {
         this.mc = mc;
         this.parentScreen = parentScreen;
         this.config = config;
@@ -66,56 +65,48 @@ public class GuiInventorySettings extends GuiScreen {
         List<GuiButton> controlList = new LinkedList<GuiButton>();
         Point p = new Point();
         int i = 0;
-        
+
         // Create large buttons
-        
-        moveToButtonCoords(0, p);
+
+        moveToButtonCoords(1, p);
         controlList.add(new GuiButton(ID_EDITRULES, p.getX() + 55, height / 6 + 96, "Open the sorting rules file..."));
         controlList.add(new GuiButton(ID_EDITTREE, p.getX() + 55, height / 6 + 120, "Open the item tree file..."));
         controlList.add(new GuiButton(ID_HELP, p.getX() + 55, height / 6 + 144, "Open help in browser..."));
         controlList.add(new GuiButton(ID_DONE, p.getX() + 55, height / 6 + 168, "Done"));
 
         // Create settings buttons
-        
+
         String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
         moveToButtonCoords(i++, p);
-        GuiTooltipButton middleClickBtn = new GuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(),
-                computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, MIDDLE_CLICK),
-                "Allows to sort using the middle click");
+        GuiTooltipButton middleClickBtn = new GuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(), computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, MIDDLE_CLICK), "To sort using the middle click");
         controlList.add(middleClickBtn);
         if (middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: middle click not available
             middleClickBtn.enabled = false;
-            middleClickBtn.setTooltip(
-                    middleClickBtn.getTooltip()+"\n(In conflict with Convenient Inventory)");
+            middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(In conflict with Convenient Inventory)");
         }
 
         moveToButtonCoords(i++, p);
-        controlList.add(new GuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(),
-                computeBooleanButtonLabel(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS,
-                CHEST_BUTTONS), "Adds three buttons\non chests to sort them"));
+        controlList.add(new GuiTooltipButton(ID_SHORTCUTS_HELP, p.getX() + 130, p.getY(), 20, 20, "?", "Shortcuts help"));
+        controlList.add(new GuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130, 20, computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_ENABLE_SHORTCUTS, SHORTCUTS), "Enables various shortcuts\nto move items around"));
 
         moveToButtonCoords(i++, p);
-        GuiTooltipButton sortOnPickupBtn = new GuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), 
-                computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP,
-                SORT_ON_PICKUP), "Moves picked up items to the right slots");
+        GuiTooltipButton sortOnPickupBtn = new GuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, SORT_ON_PICKUP), "Moves picked up items\nto the right slots");
         controlList.add(sortOnPickupBtn);
         if (mc.isMultiplayerWorld()) {
             // Sorting on pickup unavailable in SMP
             sortOnPickupBtn.enabled = false;
             sortOnPickupBtn.displayString = SORT_ON_PICKUP + SP_ONLY;
-            sortOnPickupBtn.setTooltip(
-                    sortOnPickupBtn.getTooltip()+"\n(Single player only)");
+            sortOnPickupBtn.setTooltip(sortOnPickupBtn.getTooltip() + "\n(Single player only)");
         }
-        
+
         moveToButtonCoords(i++, p);
-        controlList.add(new GuiTooltipButton(ID_SHORTCUTS, 
-                p.getX(), p.getY(), 130, 20,
-                computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_SHORTCUTS,
-                SHORTCUTS), "Enables various shortcuts\nto move items around"));
-        controlList.add(new GuiTooltipButton(ID_SHORTCUTS_HELP, 
-                p.getX()+130, p.getY(), 20, 20, "?", "Shortcuts help"));
-        
+        controlList.add(new GuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(), computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, CHEST_BUTTONS), "Adds three buttons\non chests to sort them"));
+
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
@@ -126,10 +117,7 @@ public class GuiInventorySettings extends GuiScreen {
             }
         }
 
-        // Save control list, changing the item orders
-        // for a better drawing order (needed by the tooltips)
-        Collections.swap(controlList, 4, 5);
-        Collections.swap(controlList, 6, 7);
+        // Save control list
         this.controlList = controlList;
 
     }
@@ -158,7 +146,7 @@ public class GuiInventorySettings extends GuiScreen {
         case ID_SORT_ON_PICKUP:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, SORT_ON_PICKUP);
             break;
-            
+
         // Toggle shortcuts
         case ID_SHORTCUTS:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SHORTCUTS, SHORTCUTS);
@@ -166,7 +154,7 @@ public class GuiInventorySettings extends GuiScreen {
 
         // Shortcuts help
         case ID_SHORTCUTS_HELP:
-            mc.displayGuiScreen(new GuiShortcutsHelp(mc, this));
+            mc.displayGuiScreen(new GuiShortcutsHelp(mc, this, config));
             break;
 
         // Open rules configuration in external editor
@@ -203,7 +191,7 @@ public class GuiInventorySettings extends GuiScreen {
     }
 
     private void moveToButtonCoords(int buttonOrder, Point p) {
-        p.setX(width / 2 - 155 + (buttonOrder % 2) * 160);
+        p.setX(width / 2 - 155 + ((buttonOrder+1) % 2) * 160);
         p.setY(height / 6 + (buttonOrder / 2) * 24);
     }
 
@@ -217,8 +205,7 @@ public class GuiInventorySettings extends GuiScreen {
         String propertyValue = config.getProperty(property);
         if (propertyValue.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             return label + DISABLE_CI;
-        }
-        else {
+        } else {
             Boolean enabled = new Boolean(propertyValue);
             return label + ((enabled) ? ON : OFF);
         }

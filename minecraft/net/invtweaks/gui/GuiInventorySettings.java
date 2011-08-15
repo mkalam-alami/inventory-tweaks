@@ -35,7 +35,7 @@ public class GuiInventorySettings extends GuiScreen {
     private final static String SHORTCUTS = "Shortcuts";
     private final static String ON = ": ON";
     private final static String OFF = ": OFF";
-    private final static String DISABLE_CI = ": Disable CI first";
+    private final static String DISABLE_CI = ": Disable CI";
     private final static String SP_ONLY = ": Only in SP";
 
     private final static int ID_MIDDLE_CLICK = 1;
@@ -88,10 +88,18 @@ public class GuiInventorySettings extends GuiScreen {
         }
 
         moveToButtonCoords(i++, p);
-        controlList.add(new GuiTooltipButton(ID_SHORTCUTS_HELP, p.getX() + 130, p.getY(), 20, 20, "?", "Shortcuts help"));
-        controlList.add(new GuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130, 20, computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_SHORTCUTS, SHORTCUTS), "Enables various shortcuts\nto move items around"));
-
+        controlList.add(new GuiTooltipButton(ID_SHORTCUTS_HELP, 
+                p.getX() + 130, p.getY(), 20, 20, "?", "Shortcuts help"));
+        String shortcuts = config.getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
+        GuiTooltipButton shortcutsBtn = new GuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130, 20, computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_ENABLE_SHORTCUTS, SHORTCUTS), "Enables various shortcuts\nto move items around");
+        controlList.add(shortcutsBtn);
+        if (shortcuts.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+            // Convenient Inventory compatibility: shortcuts not available
+            shortcutsBtn.enabled = false;
+            shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(In conflict with Convenient Inventory)");
+        }
+        
         moveToButtonCoords(i++, p);
         GuiTooltipButton sortOnPickupBtn = new GuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, SORT_ON_PICKUP), "Moves picked up items\nto the right slots");

@@ -541,8 +541,8 @@ public class InvTweaks extends Obfuscation {
                 
                 // The mouse has just been clicked,
                 // trigger a shortcut according to the pressed keys.
-                if (!cfgManager.getConfig().getProperty(
-                        InvTweaksConfig.PROP_ENABLE_SHORTCUTS).equals("false")) {
+                if (cfgManager.getConfig().getProperty(
+                        InvTweaksConfig.PROP_ENABLE_SHORTCUTS).equals("true")) {
                     cfgManager.getShortcutsHandler().handleShortcut(
                             (GuiContainer) guiScreen);
                 }

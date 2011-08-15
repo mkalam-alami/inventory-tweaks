@@ -1,6 +1,7 @@
 package net.invtweaks.config;
 
 import java.awt.Point;
+import java.util.Collections;
 import java.util.logging.Logger;
 
 import net.invtweaks.tree.ItemTree;
@@ -13,7 +14,7 @@ import net.invtweaks.tree.ItemTree;
  * @author Jimeo Wan
  *
  */
-public class InventoryConfigRule implements Comparable<InventoryConfigRule> {
+public class SortingRule implements Comparable<SortingRule> {
 
     public enum RuleType {
 
@@ -49,7 +50,7 @@ public class InventoryConfigRule implements Comparable<InventoryConfigRule> {
     private int containerSize;
     private int containerRowSize;
 
-    public InventoryConfigRule(ItemTree tree, String constraint,
+    public SortingRule(ItemTree tree, String constraint,
             String keyword, int containerSize, int containerRowSize) {
 
         this.keyword = keyword;
@@ -106,16 +107,13 @@ public class InventoryConfigRule implements Comparable<InventoryConfigRule> {
      * Compares rules priority : positive value means 'this' is of greater
      * priority than o
      */
-    public int compareTo(InventoryConfigRule o) {
+    public int compareTo(SortingRule o) {
         return getPriority() - o.getPriority();
     }
 
-    private static int index(int rowSize, int row, int column) {
-        return row * rowSize + column;
-    }
-
     public int[] getRulePreferredPositions(String constraint) {
-        return InventoryConfigRule.getRulePreferredPositions(
+        // TODO Caching
+        return SortingRule.getRulePreferredPositions(
                 constraint, containerSize, containerRowSize);
     }
 
@@ -169,6 +167,10 @@ public class InventoryConfigRule implements Comparable<InventoryConfigRule> {
                             x += (point1.x < point2.x) ? 1 : -1;
                         }
                         y += (point1.y < point2.y) ? 1 : -1;
+                    }
+                    
+                    if (constraint.contains("r")) {
+                        reverseArray(result);
                     }
 
                 }
@@ -242,5 +244,22 @@ public class InventoryConfigRule implements Comparable<InventoryConfigRule> {
     public String toString() {
         return constraint + " " + keyword;
     }
+    
+    private static int index(int rowSize, int row, int column) {
+        return row * rowSize + column;
+    }
+
+    private static void reverseArray(int[] data) {
+        int left = 0;
+        int right = data.length - 1;
+        while( left < right ) {
+            int temp = data[left];
+            data[left] = data[right];
+            data[right] = temp;
+            left++;
+            right--;
+        }
+    }
+
 
 }

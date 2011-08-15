@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
-import net.invtweaks.config.InventoryConfigRule;
+import net.invtweaks.config.SortingRule;
 import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.library.ContainerManager;
 import net.invtweaks.library.ContainerSectionManager;
@@ -60,7 +60,7 @@ public class SortingHandler extends Obfuscation {
     private int size;
     
     private ItemTree tree;
-    private Vector<InventoryConfigRule> rules;
+    private Vector<SortingRule> rules;
     private int[] rulePriority;
     private int[] keywordOrder;
     private int[] lockPriorities;
@@ -188,10 +188,10 @@ public class SortingHandler extends Obfuscation {
             log.info("Applying rules.");
             
             // Sorts rule by rule, themselves being already sorted by decreasing priority
-            Iterator<InventoryConfigRule> rulesIt = rules.iterator();
+            Iterator<SortingRule> rulesIt = rules.iterator();
             while (rulesIt.hasNext()) {
                 
-                InventoryConfigRule rule = rulesIt.next();
+                SortingRule rule = rulesIt.next();
                 int rulePriority = rule.getPriority();
     
                 if (log.getLevel() == Const.DEBUG)
@@ -475,7 +475,7 @@ public class SortingHandler extends Obfuscation {
     
     private void computeLineSortingRules(int rowSize, boolean horizontal) {
         
-        rules = new Vector<InventoryConfigRule>();
+        rules = new Vector<SortingRule>();
         
         
         Map<ItemTreeItem, Integer> stats = computeContainerStats();
@@ -576,7 +576,7 @@ public class SortingHandler extends Obfuscation {
             if (!horizontal) {
                 constraint += 'v';
             }
-            rules.add(new InventoryConfigRule(tree, constraint, item.getName(), size, rowSize));
+            rules.add(new SortingRule(tree, constraint, item.getName(), size, rowSize));
             
             // Check if ther's still room for more rules
             availableSlots -= thisSpaceHeight*thisSpaceWidth;
@@ -616,7 +616,7 @@ public class SortingHandler extends Obfuscation {
         else {
             defaultRule = "a" + maxColumn + "-" + maxRow + "1v";
         }
-        rules.add(new InventoryConfigRule(tree, defaultRule, 
+        rules.add(new SortingRule(tree, defaultRule, 
                 tree.getRootCategory().getName(), size, rowSize));
         
     }

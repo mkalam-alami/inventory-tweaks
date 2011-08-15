@@ -25,7 +25,7 @@ public class InventoryConfigRuleset {
 	private int[] lockPriorities;
 	private boolean[] frozenSlots;
 	private Vector<Integer> lockedSlots;
-    private Vector<InventoryConfigRule> rules;
+    private Vector<SortingRule> rules;
 	private Vector<String> autoReplaceRules;
 	private boolean debugEnabled;
 	
@@ -49,7 +49,7 @@ public class InventoryConfigRuleset {
 		}
 
 		lockedSlots = new Vector<Integer>();
-		rules = new Vector<InventoryConfigRule>();
+		rules = new Vector<SortingRule>();
 		autoReplaceRules = new Vector<String>();
 		debugEnabled = false;
 	}
@@ -64,24 +64,24 @@ public class InventoryConfigRuleset {
 
 		String[] words = rawLine.split(" ");
 		String lineText = rawLine.toLowerCase();
-		InventoryConfigRule newRule = null;
+		SortingRule newRule = null;
 
 		// Parse valid lines only
 		if (words.length == 2) {
 
 			// Standard rules format
 			if (lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$")
-					|| lineText.matches("^[a-d][1-9]-[a-d][1-9]v? [\\w]*$")) {
+					|| lineText.matches("^[a-d][1-9]-[a-d][1-9][rv]?[rv]? [\\w]*$")) {
 				
 				words[0] = words[0].toLowerCase();
 				
 				// Locking rule
 				if (words[1].equals(InvTweaksConfig.LOCKED)) {
-					int[] newLockedSlots = InventoryConfigRule
+					int[] newLockedSlots = SortingRule
 					        .getRulePreferredPositions(
 								words[0], Const.INVENTORY_SIZE,
 								Const.INVENTORY_ROW_SIZE);
-					int lockPriority = InventoryConfigRule.
+					int lockPriority = SortingRule.
 					        getRuleType(words[0]).getHighestPriority();
 					for (int i : newLockedSlots) {
 						lockPriorities[i] = lockPriority;
@@ -91,7 +91,7 @@ public class InventoryConfigRuleset {
 				
 				// Freeze rule
 				else if (words[1].equals(InvTweaksConfig.FROZEN)) {
-					int[] newLockedSlots = InventoryConfigRule
+					int[] newLockedSlots = SortingRule
 					        .getRulePreferredPositions(
 								words[0], Const.INVENTORY_SIZE,
 								Const.INVENTORY_ROW_SIZE);
@@ -119,7 +119,7 @@ public class InventoryConfigRuleset {
 					}
 					
 					if (isValidKeyword) {
-						newRule = new InventoryConfigRule(tree, words[0], 
+						newRule = new SortingRule(tree, words[0], 
 								keyword.toLowerCase(), Const.INVENTORY_SIZE,
 								Const.INVENTORY_ROW_SIZE);
 						rules.add(newRule);
@@ -211,7 +211,7 @@ public class InventoryConfigRuleset {
 	/**
 	 * @return the rules
 	 */
-	public Vector<InventoryConfigRule> getRules() {
+	public Vector<SortingRule> getRules() {
 		return rules;
 	}
 

@@ -7,8 +7,8 @@ import java.util.logging.Logger;
 
 import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
-import net.invtweaks.config.InventoryConfigRule;
-import net.invtweaks.config.InventoryConfigRule.RuleType;
+import net.invtweaks.config.SortingRule;
+import net.invtweaks.config.SortingRule.RuleType;
 import net.invtweaks.library.ContainerSectionManager;
 import net.invtweaks.library.Obfuscation;
 import net.invtweaks.library.ContainerManager.ContainerSection;
@@ -51,19 +51,19 @@ public class AutoRefillHandler extends Obfuscation {
 
 		//// Search replacement
 		
-		List<InventoryConfigRule> matchingRules = new ArrayList<InventoryConfigRule>();
-		List<InventoryConfigRule> rules = config.getRules();
+		List<SortingRule> matchingRules = new ArrayList<SortingRule>();
+		List<SortingRule> rules = config.getRules();
 		ItemTree tree = config.getTree();
 		List<ItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
 
 		// Find rules that match the slot
 		for (ItemTreeItem item : items) {
 			// Fake rules that match the exact item first
-			matchingRules.add(new InventoryConfigRule(
+			matchingRules.add(new SortingRule(
 					tree, "D"+(slot-27), item.getName(),
 					Const.INVENTORY_SIZE, Const.INVENTORY_ROW_SIZE));
 		}
-		for (InventoryConfigRule rule : rules) {
+		for (SortingRule rule : rules) {
 			if (rule.getType() == RuleType.TILE || rule.getType() == RuleType.COLUMN) {
 				for (int preferredSlot : rule.getPreferredSlots()) {
 					if (slot == preferredSlot) {
@@ -77,7 +77,7 @@ public class AutoRefillHandler extends Obfuscation {
 		// Look only for a matching stack
 		// First, look for the same item,
 		// else one that matches the slot's rules
-		for (InventoryConfigRule rule : matchingRules) {
+		for (SortingRule rule : matchingRules) {
 			for (int i = 0; i < Const.INVENTORY_SIZE; i++) {
 				candidateStack = container.getItemStack(i);
 				if (candidateStack != null) {

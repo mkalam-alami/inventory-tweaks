@@ -252,7 +252,7 @@ public class InvTweaksConfig {
      * 
      * @return
      */
-    public Vector<InventoryConfigRule> getRules() {
+    public Vector<SortingRule> getRules() {
         return rulesets.get(currentRuleset).getRules();
     }
 

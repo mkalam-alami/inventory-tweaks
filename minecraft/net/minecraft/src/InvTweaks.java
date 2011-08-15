@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InvTweaksConfigManager;
-import net.invtweaks.config.InventoryConfigRule;
+import net.invtweaks.config.SortingRule;
 import net.invtweaks.gui.GuiInventorySettingsButton;
 import net.invtweaks.gui.GuiSortingButton;
 import net.invtweaks.library.ContainerManager.ContainerSection;
@@ -171,7 +171,7 @@ public class InvTweaks extends Obfuscation {
                 ItemStack stack = containerMgr.getItemStack(currentSlot);
                 List<ItemTreeItem> items = tree.getItems(getItemID(stack),
                         getItemDamage(stack));
-                for (InventoryConfigRule rule : config.getRules()) {
+                for (SortingRule rule : config.getRules()) {
                     if (tree.matches(items, rule.getKeyword())) {
                         for (int slot : rule.getPreferredSlots()) {
                             prefferedPositions.add(slot);

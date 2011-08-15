@@ -13,13 +13,15 @@ import java.util.logging.Logger;
 import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.SortingRule;
-import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.library.ContainerManager;
+import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.library.ContainerSectionManager;
 import net.invtweaks.library.Obfuscation;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.src.Item;
+import net.minecraft.src.ItemArmor;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
 
@@ -126,6 +128,7 @@ public class SortingHandler extends Obfuscation {
         //      return;
         
         long timer = System.nanoTime();
+        ContainerManager globalContainer = new ContainerManager(mc);
 
         //// Empty hand (needed in SMP)
         if (isMultiplayerWorld()) {
@@ -138,19 +141,18 @@ public class SortingHandler extends Obfuscation {
                 
                 //// Move items out of the crafting slots
                 log.info("Handling crafting slots.");
-                ContainerManager craftingManager = new ContainerManager(mc);
-                if (craftingManager.hasSection(ContainerSection.CRAFTING_IN)) {
-                    List<Slot> craftingSlots = craftingManager.getSlots(ContainerSection.CRAFTING_IN);
-                    int emptyIndex = craftingManager.getFirstEmptyIndex(ContainerSection.INVENTORY);
+                if (globalContainer.hasSection(ContainerSection.CRAFTING_IN)) {
+                    List<Slot> craftingSlots = globalContainer.getSlots(ContainerSection.CRAFTING_IN);
+                    int emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
                     if (emptyIndex != -1) {
                         for (Slot craftingSlot : craftingSlots) {
                             if (craftingSlot.getHasStack()) {
-                                craftingManager.move(
+                                globalContainer.move(
                                         ContainerSection.CRAFTING_IN,
-                                        craftingManager.getSlotIndex(craftingSlot.slotNumber),
+                                        globalContainer.getSlotIndex(craftingSlot.slotNumber),
                                         ContainerSection.INVENTORY, 
                                         emptyIndex);
-                                emptyIndex = craftingManager.getFirstEmptyIndex(ContainerSection.INVENTORY);
+                                emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
                                 if(emptyIndex == -1) {
                                     break;
                                 }
@@ -161,23 +163,47 @@ public class SortingHandler extends Obfuscation {
                 
                 
                 //// Merge stacks to fill the ones in locked slots
+                //// + Move armor parts to the armor slots
+                
                 log.info("Merging stacks.");
-                for (int i = size-1; i >= 0; i--) {
+                for (int i = size - 1; i >= 0; i--) {
                     ItemStack from = containerMgr.getItemStack(i);
                     if (from != null) {
-                        int j = 0;
-                        for (Integer lockPriority : lockPriorities) {
-                            if (lockPriority > 0) {
-                                ItemStack to = containerMgr.getItemStack(j);
-                                if (to != null && from.isItemEqual(to)) {
-                                    move(i, j, Integer.MAX_VALUE);
-                                    markAsNotMoved(j);
-                                    if (containerMgr.getItemStack(i) == null) {
-                                        break;
+
+                        // Move armor parts
+                        Item fromItem = from.getItem();
+                        if (fromItem.isDamagable()) {
+                             if (fromItem instanceof ItemArmor) {
+                                 ItemArmor fromItemArmor = (ItemArmor) fromItem;
+                                 List<Slot> armorSlots = globalContainer.getSlots(ContainerSection.ARMOR);
+                                 for (Slot slot : armorSlots) {
+                                     if (slot.isItemValid(from)
+                                             && (!slot.getHasStack() || fromItemArmor.armorLevel > 
+                                                     ((ItemArmor) slot.getStack().getItem()).armorLevel)) {
+                                         globalContainer.move(ContainerSection.INVENTORY, i,
+                                                 ContainerSection.ARMOR, 
+                                                 globalContainer.getSlotIndex(slot.slotNumber));
+                                     }
+                                 }
+                             }
+                        }
+                        
+                        // Stackable objects are never damageable
+                        else {
+                            int j = 0;
+                            for (Integer lockPriority : lockPriorities) {
+                                if (lockPriority > 0) {
+                                    ItemStack to = containerMgr.getItemStack(j);
+                                    if (to != null && from.isItemEqual(to)) {
+                                        move(i, j, Integer.MAX_VALUE);
+                                        markAsNotMoved(j);
+                                        if (containerMgr.getItemStack(i) == null) {
+                                            break;
+                                        }
                                     }
                                 }
+                                j++;
                             }
-                            j++;
                         }
                     }
                 }

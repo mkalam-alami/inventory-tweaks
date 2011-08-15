@@ -1,7 +1,6 @@
 package net.invtweaks.config;
 
 import java.awt.Point;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 import net.invtweaks.tree.ItemTree;

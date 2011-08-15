@@ -228,12 +228,15 @@ public class ShortcutsHandler extends Obfuscation {
                 
                 else {
                     // Specific destination
+                    shortcutValid = true;
                     int srcSectionIndex = availableSections.indexOf(srcSection);
                     if (srcSectionIndex != -1) {
-                        shortcutValid = true;
                         destSection = availableSections.get(
                                 (availableSections.size() + srcSectionIndex + 
                                         destinationModifier) % availableSections.size());
+                    }
+                    else {
+                        destSection = ContainerSection.INVENTORY;
                     }
                 }
                 

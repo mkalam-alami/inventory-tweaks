@@ -319,15 +319,24 @@ public class InvTweaksConfig {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void resolveConvenientInventoryConflicts() {
         
+        boolean convenientInventoryInstalled = false;
         boolean defaultCISortingShortcutEnabled = false;
+        
+        //// Analyze environment
         
         try {
             // Find CI class
             Class convenientInventory = Class.forName("ConvenientInventory");
+            convenientInventoryInstalled = true;
             
             // Latest versions of CI: disable CI sorting thanks to 
             // the specific field provided for InvTweaks
-            Field middleClickField = convenientInventory.getDeclaredField("middleClickEnabled");
+            Field middleClickField = null;
+            try {
+                middleClickField = convenientInventory.getDeclaredField("middleClickEnabled");
+            } catch (NoSuchFieldException e) {
+                // Do nothing
+            }
             if (middleClickField != null) {
                 boolean middleClickSorting = getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK)
                         .equals(InvTweaksConfig.VALUE_TRUE);
@@ -371,6 +380,22 @@ public class InvTweaksConfig {
         catch (Exception e) {
             InvTweaks.logInGameErrorStatic("Failed to manage Convenient Inventory compatibility", e);
         }
+        
+        //// Shortcuts
+        
+        String shortcutsProp = getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
+        if (convenientInventoryInstalled
+                && !shortcutsProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+            setProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS,
+                    InvTweaksConfig.VALUE_CI_COMPATIBILITY);
+        }
+        else if (!convenientInventoryInstalled
+                && shortcutsProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+            setProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS,
+                    InvTweaksConfig.VALUE_TRUE);
+        }
+        
+        //// Middle click
         
         // If CI's middle click is enabled, disable InvTweaks shortcut
         String middleClickProp = getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);

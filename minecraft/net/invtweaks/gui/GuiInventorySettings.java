@@ -35,7 +35,7 @@ public class GuiInventorySettings extends GuiScreen {
     private final static String SHORTCUTS = "Shortcuts";
     private final static String ON = ": ON";
     private final static String OFF = ": OFF";
-    private final static String DISABLE_CI = ": Disable CI's first";
+    private final static String DISABLE_CI = ": Disable CI first";
     private final static String SP_ONLY = ": Only in SP";
 
     private final static int ID_MIDDLE_CLICK = 1;

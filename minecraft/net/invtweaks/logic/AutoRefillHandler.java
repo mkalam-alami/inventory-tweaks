@@ -188,7 +188,7 @@ public class AutoRefillHandler extends Obfuscation {
 		}
     }
 	
-	public static void trySleep(int delay) {
+	private static void trySleep(int delay) {
 		try {
 			Thread.sleep(delay);
 		} catch (InterruptedException e) {

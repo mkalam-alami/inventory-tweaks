@@ -181,13 +181,13 @@ public class ShortcutsHandler extends Obfuscation {
                 
                 // Set up available sections
                 Vector<ContainerSection> availableSections = new Vector<ContainerSection>();
-                if (container.isSectionAvailable(ContainerSection.CHEST)) {
+                if (container.hasSection(ContainerSection.CHEST)) {
                     availableSections.add(ContainerSection.CHEST);
                 }
-                else if (container.isSectionAvailable(ContainerSection.CRAFTING_IN)) {
+                else if (container.hasSection(ContainerSection.CRAFTING_IN)) {
                     availableSections.add(ContainerSection.CRAFTING_IN);
                 }
-                else if (container.isSectionAvailable(ContainerSection.FURNACE_IN)) {
+                else if (container.hasSection(ContainerSection.FURNACE_IN)) {
                     availableSections.add(ContainerSection.FURNACE_IN);
                 }
                 availableSections.add(ContainerSection.INVENTORY_NOT_HOTBAR);
@@ -295,7 +295,7 @@ public class ShortcutsHandler extends Obfuscation {
                     break;
                     
                 case MOVE_ALL_ITEMS:
-                    for (Slot slot : container.getSectionSlots(fromSection)) {
+                    for (Slot slot : container.getSlots(fromSection)) {
                         if (slot.getHasStack() && areSameItemType(fromStack, slot.getStack())
                                 && toIndex != -1) {
                             boolean moveResult = container.move(fromSection,
@@ -338,7 +338,7 @@ public class ShortcutsHandler extends Obfuscation {
         // Try to merge with existing slot
         if (!emptySlotOnly) {
             int i = 0;
-            for (Slot slot : container.getSectionSlots(toSection)) {
+            for (Slot slot : container.getSlots(toSection)) {
                 if (slot.getHasStack()) {
                     ItemStack stack = slot.getStack();
                     if (stack.isItemEqual(fromStack)

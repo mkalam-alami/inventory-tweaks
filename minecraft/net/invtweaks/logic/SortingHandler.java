@@ -14,12 +14,14 @@ import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InventoryConfigRule;
 import net.invtweaks.library.ContainerManager.ContainerSection;
+import net.invtweaks.library.ContainerManager;
 import net.invtweaks.library.ContainerSectionManager;
 import net.invtweaks.library.Obfuscation;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.Slot;
 
 /**
  * Core of the sorting behaviour. Allows to move items in a container
@@ -133,6 +135,30 @@ public class SortingHandler extends Obfuscation {
         if (algorithm != ALGORITHM_DEFAULT) {
             
             if (algorithm == ALGORITHM_INVENTORY) {
+                
+                //// Move items out of the crafting slots
+                log.info("Handling crafting slots.");
+                ContainerManager craftingManager = new ContainerManager(mc);
+                if (craftingManager.hasSection(ContainerSection.CRAFTING_IN)) {
+                    List<Slot> craftingSlots = craftingManager.getSlots(ContainerSection.CRAFTING_IN);
+                    int emptyIndex = craftingManager.getFirstEmptyIndex(ContainerSection.INVENTORY);
+                    if (emptyIndex != -1) {
+                        for (Slot craftingSlot : craftingSlots) {
+                            if (craftingSlot.getHasStack()) {
+                                craftingManager.move(
+                                        ContainerSection.CRAFTING_IN,
+                                        craftingManager.getSlotIndex(craftingSlot.slotNumber),
+                                        ContainerSection.INVENTORY, 
+                                        emptyIndex);
+                                emptyIndex = craftingManager.getFirstEmptyIndex(ContainerSection.INVENTORY);
+                                if(emptyIndex == -1) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                
                 
                 //// Merge stacks to fill the ones in locked slots
                 log.info("Merging stacks.");

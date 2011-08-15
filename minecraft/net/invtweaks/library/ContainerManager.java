@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import net.invtweaks.Const;
-import net.invtweaks.logic.AutoRefillHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Container;
 import net.minecraft.src.ContainerChest;
@@ -34,7 +32,8 @@ public class ContainerManager extends Obfuscation {
     public static final int DROP_SLOT = -999;
     public static final int INVENTORY_SIZE = 36;
     public static final int HOTBAR_SIZE = 9;
-    public static final int DEFAULT_TIMEOUT = 500;
+    public static final int ACTION_TIMEOUT = 500;
+    public static final int POLLING_DELAY = 3;
     
     public enum ContainerSection{
         /** The player's inventory */ INVENTORY,
@@ -51,8 +50,6 @@ public class ContainerManager extends Obfuscation {
          * mod containers), only INVENTORY and OTHER sections are defined. */
         OTHER
     }
-
-    private static final Logger log = Logger.getLogger("InvTweaks Framework");
     
     private Container container;
     private Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
@@ -278,11 +275,11 @@ public class ContainerManager extends Obfuscation {
     public void click(ContainerSection section, int index, boolean rightClick) throws TimeoutException {
         
         int slot = indexToSlot(section, index);
-        int timeSpentWaiting = 0;
+       // int timeSpentWaiting = 0;
         
         if (slot != -1) {
-
-            boolean uselessClick = false;
+            
+            /* boolean uselessClick = false;
             ItemStack stackInSlot = null;
             if (isMultiplayerWorld()) {
                 // After clicking, we'll need to wait for server answer before continuing.
@@ -301,7 +298,7 @@ public class ContainerManager extends Obfuscation {
                         && getStackSize(stackInSlot) == getMaxStackSize(stackInSlot)) {
                     uselessClick = true;
                 }
-            }
+            }*/
         
             // Click!
             clickInventory(getPlayerController(),
@@ -312,44 +309,56 @@ public class ContainerManager extends Obfuscation {
                     getThePlayer());
         
             // Wait for inventory update
-            if (isMultiplayerWorld()) {
+            /*if (isMultiplayerWorld()) {
                 if (!uselessClick) {
                     int pollingTime = 0;
+                    // Note: Polling doesn't work for crafting output, if the same recipe
+                    // can still be used.
                     while (areItemStacksEqual(getItemStack(section, index), stackInSlot)
-                            && pollingTime < Const.POLLING_TIMEOUT) {
-                        AutoRefillHandler.trySleep(Const.POLLING_DELAY);
-                        pollingTime += Const.POLLING_DELAY;
+                            && pollingTime < ACTION_TIMEOUT
+                            && section != ContainerSection.CRAFTING_OUT) { 
+                        try {
+                            Thread.sleep(POLLING_DELAY);
+                        } catch (InterruptedException e) {
+                            // Do nothing
+                        }
+                        pollingTime += POLLING_DELAY;
                     }
-                    if (pollingTime >= Const.POLLING_TIMEOUT) {
+                    if (pollingTime >= ACTION_TIMEOUT) {
                         log.warning("Click timeout");
                     }
                     timeSpentWaiting += pollingTime;
                 }
-            
-                // Freeze protection (to protect from infinite clicking in SMP
-                // due to a mod bug, or the server not responding)
-                if (timeSpentWaiting > Const.SORTING_TIMEOUT) {
-                    throw new TimeoutException("Timeout");
-                }
-            }
+            }*/
         }
     }
 
-    public boolean isSectionAvailable(ContainerSection section) {
+    public boolean hasSection(ContainerSection section) {
         return slotRefs.containsKey(section);
     }
 
-    public List<Slot> getSectionSlots(ContainerSection section) {
+    public List<Slot> getSlots(ContainerSection section) {
         return slotRefs.get(section); 
     }
 
+    /**
+     * @return The size of the whole container
+     */
+    public int getSize() {
+        int result = 0;
+        for (List<Slot> slots : slotRefs.values()) {
+            result += slots.size();
+        }
+        return result;
+    }
+    
     /**
      * Returns the size of a section of the container.
      * @param slot
      * @return The size, or 0 if there is no such section.
      */
-    public int getSectionSize(ContainerSection section) {
-        if (isSectionAvailable(section)) {
+    public int getSize(ContainerSection section) {
+        if (hasSection(section)) {
             return slotRefs.get(section).size();  
         }
         else {
@@ -378,7 +387,7 @@ public class ContainerManager extends Obfuscation {
      * @return true if the specified slot exists and is empty, false otherwise.
      */
     public boolean isSlotEmpty(ContainerSection section, int slot) {
-        if (isSectionAvailable(section)) {
+        if (hasSection(section)) {
             return getItemStack(section, slot) == null;
         }
         else {
@@ -474,7 +483,7 @@ public class ContainerManager extends Obfuscation {
         if (index == DROP_SLOT) {
             return DROP_SLOT;
         }
-        if (isSectionAvailable(section)) {
+        if (hasSection(section)) {
             Slot slot = slotRefs.get(section).get(index);
             if (slot != null) {
                 return slot.slotNumber;

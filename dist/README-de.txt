@@ -20,7 +20,7 @@
 
 * Oben + Linksklick: Item nach oben bewegen (Bsp: von der Hotbar ins Inventar)
 * Unten + Linksklick: Bewege Item nach Unten (Bsp: von der Kiste ins Inventar)
-* Shift + Linksklick: Bewege alle Item des gleichen Typs
+* Shift + Linksklick: Bewege alle Items des gleichen Typs
 * STRG + Linksklick: Bewege nur ein Item
 * Rechtsklick statt Klick: Bewege zu einem leeren Slot
 

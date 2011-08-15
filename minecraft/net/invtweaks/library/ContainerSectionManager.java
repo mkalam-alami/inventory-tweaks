@@ -26,7 +26,7 @@ public class ContainerSectionManager {
         this.containerMgr = new ContainerManager(mc);
         this.section = section;
         
-        if (!containerMgr.isSectionAvailable(section)) {
+        if (!containerMgr.hasSection(section)) {
             throw new Exception("Section not available");
         }
     }
@@ -60,11 +60,11 @@ public class ContainerSectionManager {
     }
 
     public List<Slot> getSlots() {
-        return containerMgr.getSectionSlots(section);
+        return containerMgr.getSlots(section);
     }
 
     public int getSize() {
-        return containerMgr.getSectionSize(section);
+        return containerMgr.getSize(section);
     }
 
     public int getFirstEmptyIndex() {

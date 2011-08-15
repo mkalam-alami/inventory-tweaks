@@ -10,7 +10,7 @@ import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InvTweaksConfigManager;
 import net.invtweaks.config.InventoryConfigRule;
-import net.invtweaks.gui.GuiSettingsButton;
+import net.invtweaks.gui.GuiInventorySettingsButton;
 import net.invtweaks.gui.GuiSortingButton;
 import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.library.ContainerSectionManager;
@@ -484,10 +484,10 @@ public class InvTweaks extends Obfuscation {
 
                 // Inventory button
                 if (!isContainer) {
-                    guiScreen.controlList.add(new GuiSettingsButton(cfgManager, 
-                            Const.JIMEOWAN_ID,
+                    guiScreen.controlList.add(new GuiInventorySettingsButton(
+                            cfgManager, Const.JIMEOWAN_ID,
                             guiScreen.width / 2 + 73, guiScreen.height / 2 - 78,
-                            w, h, "..."));
+                            w, h, "...", "Inventory settings"));
                 }
 
                 // Chest buttons
@@ -499,26 +499,29 @@ public class InvTweaks extends Obfuscation {
                         y = (guiContainer.height - guiContainer.ySize) / 2 + 5;
 
                     // Settings button
-                    guiScreen.controlList.add(new GuiSettingsButton(cfgManager, 
-                            id++, x - 1, y, w, h, "..."));
+                    guiScreen.controlList.add(new GuiInventorySettingsButton(
+                            cfgManager, id++, 
+                            x - 1, y, w, h, "...", "Inventory settings"));
 
                     // Sorting buttons
                     if (!config.getProperty(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS).equals("false")) {
 
-                        GuiButton button = new GuiSortingButton(cfgManager,
-                                id++, x - 37, y, w, h, "s",
-                                SortingHandler.ALGORITHM_DEFAULT);
+                        GuiButton button = new GuiSortingButton(
+                                cfgManager, id++,
+                                x - 13, y, w, h, "h", "Sort in rows",
+                                SortingHandler.ALGORITHM_HORIZONTAL);
                         guiContainer.controlList.add((GuiButton) button);
 
-                        button = new GuiSortingButton(cfgManager,
-                                id++, x - 25, y, w, h, "v",
+                        button = new GuiSortingButton(
+                                cfgManager, id++,
+                                x - 25, y, w, h, "v", "Sort in columns",
                                 SortingHandler.ALGORITHM_VERTICAL);
                         guiContainer.controlList.add((GuiButton) button);
 
-                        button = new GuiSortingButton(cfgManager,
-                                id++, x - 13, y, w, h, "h",
-                                SortingHandler.ALGORITHM_HORIZONTAL);
-
+                        button = new GuiSortingButton(
+                                cfgManager, id++,
+                                x - 37, y, w, h, "s", "Default sorting",
+                                SortingHandler.ALGORITHM_DEFAULT);
                         guiContainer.controlList.add((GuiButton) button);
 
                     }

@@ -15,11 +15,12 @@ import net.minecraft.src.InvTweaks;
  * @author Jimeo Wan
  *
  */
-public class GuiSettingsButton extends GuiIconButton {
+public class GuiInventorySettingsButton extends GuiIconButton {
     
-    public GuiSettingsButton(InvTweaksConfigManager cfgManager,
-            int id, int x, int y, int w, int h, String displayString) {
-        super(cfgManager, id, x, y, w, h, displayString);
+    public GuiInventorySettingsButton(InvTweaksConfigManager cfgManager,
+            int id, int x, int y, int w, int h,
+            String displayString, String tooltip) {
+        super(cfgManager, id, x, y, w, h, displayString, tooltip);
     }
 
     public void drawButton(Minecraft minecraft, int i, int j) {
@@ -69,7 +70,8 @@ public class GuiSettingsButton extends GuiIconButton {
             cfgManager.makeSureConfigurationIsLoaded();
 
             // Display menu
-            minecraft.displayGuiScreen(new GuiInventorySettings(Obfuscation.getCurrentScreenStatic(minecraft), config));
+            minecraft.displayGuiScreen(new GuiInventorySettings(minecraft,
+                    Obfuscation.getCurrentScreenStatic(minecraft), config));
             return true;
         } else {
             return false;

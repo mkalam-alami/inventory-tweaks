@@ -19,8 +19,9 @@ public class GuiSortingButton extends GuiIconButton {
 
     public GuiSortingButton(InvTweaksConfigManager cfgManager, 
             int id, int x, int y, int w, int h,
-            String displayString, int algorithm) {
-        super(cfgManager, id, x, y, w, h, displayString);
+            String displayString, String tooltip,
+            int algorithm) {
+        super(cfgManager, id, x, y, w, h, displayString, tooltip);
         this.algorithm = algorithm;
     }
 

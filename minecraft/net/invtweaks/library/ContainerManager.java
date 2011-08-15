@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Container;

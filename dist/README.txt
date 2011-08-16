@@ -19,7 +19,7 @@
 
 * Up + Left click: Move item up (ex: from the hotbar to the inventory)
 * Down + Left click: Move item down (ex: from the chest to the inventory)
-* Shift + Left click: Move all items of the same type
+* Shift + Left click: Move all items of the same type / Fast crafting
 * Ctrl + Left click: Move only one item
 * Right-click instead of click: Move to empty slot
 

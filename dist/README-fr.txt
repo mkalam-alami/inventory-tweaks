@@ -19,7 +19,7 @@
 
 * Up + Clic: Déplacer un objet vers la section supérieure
 * Down + Clic: Déplacer un objet vers la section inférieure
-* Shift + Clic: Déplacer tous les objets du même type
+* Shift + Clic: Déplacer tous les objets du même type / Crafter autant que possible
 * Ctrl + Clic: Déplacer uniquement un objet
 * Clic droit à la place du gauche: Déplacer vers un emplacement libre
 

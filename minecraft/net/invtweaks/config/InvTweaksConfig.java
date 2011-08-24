@@ -427,11 +427,11 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_SHORTCUTS, VALUE_TRUE);
         
         properties.put(PROP_SHORTCUT_ALL_ITEMS, "LSHIFT, RSHIFT");
-        properties.put(PROP_SHORTCUT_ONE_ITEM, "LCTRL, RCTRL");
+        properties.put(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");
         properties.put(PROP_SHORTCUT_ONE_STACK, VALUE_DEFAULT);
         properties.put(PROP_SHORTCUT_UP, "UP");
         properties.put(PROP_SHORTCUT_DOWN, "DOWN");
-        properties.put(PROP_SHORTCUT_DROP, "LMETA, RMETA"); // TODO check works + allow alt?
+        properties.put(PROP_SHORTCUT_DROP, "LALT, RALT");
 
 
         invalidKeywords = new Vector<String>();

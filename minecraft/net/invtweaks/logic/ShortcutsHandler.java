@@ -299,15 +299,16 @@ public class ShortcutsHandler extends Obfuscation {
                     
                 case MOVE_ALL_ITEMS:
                     for (Slot slot : container.getSlots(fromSection)) {
-                        if (slot.getHasStack() && areSameItemType(fromStack, slot.getStack())
-                                && toIndex != -1) {
-                            boolean moveResult = container.move(fromSection,
-                                    container.getSlotIndex(slot.slotNumber),
-                                    toSection, toIndex);
-                            if (!moveResult) {
-                                break;
+                        if (slot.getHasStack() && areSameItemType(fromStack, slot.getStack())) {
+                            while (slot.getHasStack() && toIndex != -1) {
+                                boolean moveResult = container.move(fromSection,
+                                        container.getSlotIndex(slot.slotNumber),
+                                        toSection, toIndex);
+                                if (!moveResult) {
+                                    break;
+                                }
+                                toIndex = getNextIndex(separateStacks, drop);
                             }
-                            toIndex = getNextIndex(separateStacks, drop);
                         }
                     }
                     

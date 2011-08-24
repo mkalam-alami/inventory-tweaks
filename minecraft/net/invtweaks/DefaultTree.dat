@@ -120,19 +120,18 @@
         <sandStone id="24" />
       </sands>
       <gravel id="13" />
-      <ore>
-        <ironOre id="15" />
-        <goldOre id="14" />
-        <coalOre id="16" />
-        <redstoneOre id="73" />
-        <redstoneOre id="74" />
-        <lapisLazuliOre id="21" />
-        <diamondOre id="56" />
-      </ore>
+      <oreBlock>
+        <ironOreBlock id="15" />
+        <goldOreBlock id="14" />
+        <coalOreBlock id="16" />
+        <redstoneOreBlock id="73" />
+        <redstoneOreBlock id="74" />
+        <lapisLazuliOreBlock id="21" />
+        <diamondOreBlock id="56" />
+      </oreBlock>
       <clayBlock id="82" />
       <obsidian id="49" />
       <netherBlock>
-        <glowstone id="89" />
         <glowstoneBlock id="89" />
         <netherrack id="87" />
         <soulSand id="88" />
@@ -222,12 +221,17 @@
       <coal id="263" />
       <charcoal id="263" />
       <ingot>
+        <gold id="266" />
         <goldIngot id="266" />
+        <iron id="265" />
         <ironIngot id="265" />
       </ingot>
+      <diamond id="264" />
       <diamondGem id="264" />
       <dusts>
+        <redstone id="331" />
         <redstoneDust id="331" />
+        <glowstone id="348" />
         <glowstoneDust id="348" />
       </dusts>
       <clayBrick id="336" />

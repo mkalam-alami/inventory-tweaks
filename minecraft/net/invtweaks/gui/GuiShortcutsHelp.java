@@ -3,10 +3,14 @@ package net.invtweaks.gui;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
+import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiScreen;
+import net.minecraft.src.InvTweaks;
 
 public class GuiShortcutsHelp extends GuiScreen {
 
@@ -42,44 +46,50 @@ public class GuiShortcutsHelp extends GuiScreen {
         int y = height / 6;
 
         drawShortcutLine("Move", "Left click", 0x0000EEFF, y);
-        y += 13;
+        y += 12;
         drawShortcutLine("Move to empty slot", "Right click", 0x0000EEFF, y);
-        y += 25;
+        y += 20;
         
         drawShortcutLine("Move one stack",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_STACK),
+                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_STACK) + " + Click",
                 0x00FFFF00, y);
-        y += 13;
+        y += 12;
         drawShortcutLine("Move one item only",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM),
+                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + Click",
                 0x00FFFF00, y);
-        y += 13;
+        y += 12;
         drawShortcutLine("Move all items of same type",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS),
+                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS) + " + Click",
                 0x00FFFF00, y);
-        y += 25;
+        y += 20;
 
         drawShortcutLine("Move to upper section",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_UP),
+                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_UP) + " + Click",
                 0x0000FF33, y);
-        y += 13;
+        y += 12;
         drawShortcutLine("Move to lower section",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DOWN),
+                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DOWN) + " + Click",
                 0x0000FF33, y);
-        y += 13;
-        drawShortcutLine("Move to hotbar", "0-9", 0x0000FF33, y);
-        y += 25;
+        y += 12;
+        drawShortcutLine("Move to hotbar", "0-9 + Click", 0x0000FF33, y);
+        y += 20;
 
         drawShortcutLine("Drop",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DROP),
+                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DROP) + " + Click",
                 0x00FF8800, y);
+        y += 12;
+        drawShortcutLine("Craft all", "LSHIFT, RSHIFT + Click", 0x00FF8800, y);
+        y += 12;
+        drawShortcutLine("Select sorting configuration", "0-9 + " +
+                Keyboard.getKeyName(Const.SORT_KEY_BINDING.keyCode), 0x00FF8800, y);
+        y += 12;
         
         super.drawScreen(i, j, f);
     }
     
     private void drawShortcutLine(String label, String value, int color, int y) {
         drawString(fontRenderer, label, 50, y, -1);
-        drawString(fontRenderer, value.replace("DEFAULT", "-"), width / 2 + 40, y, color);
+        drawString(fontRenderer, value.contains("DEFAULT") ? "-" : value, width / 2 + 40, y, color);
     }
 
     protected void actionPerformed(GuiButton guibutton) {

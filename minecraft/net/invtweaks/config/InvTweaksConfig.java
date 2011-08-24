@@ -233,18 +233,27 @@ public class InvTweaksConfig {
         return currentRulesetName;
     }
 
-    public String switchConfig() {
-        if (!rulesets.isEmpty()) {
-            if (currentRuleset == -1) {
-                currentRuleset = 0;
-            } else {
-                currentRuleset = (currentRuleset + 1) % rulesets.size();
-            }
+    /**
+     * 
+     * @param i from 0 to n-1, n being the number of available configurations.
+     * @return null if the given ID is invalid
+     */
+    public String switchConfig(int i) {
+        if (!rulesets.isEmpty() && i < rulesets.size()) {
+            currentRuleset = i;
             currentRulesetName = rulesets.get(currentRuleset).getName();
+            return currentRulesetName;
         } else {
-            currentRulesetName = null;
+            return null;
         }
-        return currentRulesetName;
+    }
+    
+    public String switchConfig() {
+        if (currentRuleset == -1) {
+            return switchConfig(0);
+        } else {
+            return switchConfig((currentRuleset + 1) % rulesets.size());
+        }
     }
 
     /**

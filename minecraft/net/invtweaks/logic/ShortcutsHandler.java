@@ -115,6 +115,14 @@ public class ShortcutsHandler extends Obfuscation {
             
         }
         
+        // Add Minecraft's Up & Down bindings to the shortcuts
+        int upKeyCode = mc.gameSettings.keyBindForward.keyCode,
+            downKeyCode = mc.gameSettings.keyBindBack.keyCode;
+        shortcuts.get(ShortcutType.MOVE_UP).add(upKeyCode);
+        shortcuts.get(ShortcutType.MOVE_DOWN).add(downKeyCode);
+        shortcutKeysStatus.put(upKeyCode, false);
+        shortcutKeysStatus.put(downKeyCode, false);
+        
         // Add hotbar shortcuts (1-9) mappings & listeners
         List<Integer> keyBindings = new LinkedList<Integer>();
         int[] hotbarKeys = {Keyboard.KEY_1, Keyboard.KEY_2, Keyboard.KEY_3, 
@@ -131,11 +139,7 @@ public class ShortcutsHandler extends Obfuscation {
         
     }
     
-    public void handleShortcut(GuiContainer guiScreen) {
-
-        // IMPORTANT: This is called before the default action is executed.
-        
-        // Update keys statuses
+    private void updateKeyStatuses() {
         for (int keyCode : shortcutKeysStatus.keySet()) {
             if (Keyboard.isKeyDown(keyCode)) {
                 if (!shortcutKeysStatus.get(keyCode)) {
@@ -146,6 +150,23 @@ public class ShortcutsHandler extends Obfuscation {
                 shortcutKeysStatus.put(keyCode, false);
             }
         }
+    }
+    
+    public Vector<Integer> getDownShortcutKeys() {
+        updateKeyStatuses();
+        Vector<Integer> downShortcutKeys = new Vector<Integer>();
+        for (Integer key : shortcutKeysStatus.keySet()) {
+            if (shortcutKeysStatus.get(key)) {
+                downShortcutKeys.add(key);
+            }
+        }
+        return downShortcutKeys;
+    }
+    
+    public void handleShortcut(GuiContainer guiScreen) {
+        // IMPORTANT: This method is called before the default action is executed.
+        
+        updateKeyStatuses();
         
         // Initialization
         int ex = Mouse.getEventX(), ey = Mouse.getEventY();
@@ -278,7 +299,7 @@ public class ShortcutsHandler extends Obfuscation {
         }
             
     }
-    
+
     private void move(boolean separateStacks, boolean drop) throws Exception {
         
         int toIndex = -1;

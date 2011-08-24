@@ -2,6 +2,7 @@ package net.minecraft.src;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -337,6 +338,57 @@ public class InvTweaks extends Obfuscation {
 
         ItemStack selectedItem = getMainInventory()[getFocusedSlot()];
 
+        // Switch between configurations
+        InvTweaksConfig config = cfgManager.getConfig();
+        Vector<Integer> downKeys = cfgManager.getShortcutsHandler().getDownShortcutKeys();
+        if (Keyboard.isKeyDown(Const.SORT_KEY_BINDING.keyCode)) {
+            for (int downKey : downKeys) {
+                String newRuleset = null;
+                switch (downKey) {
+                case Keyboard.KEY_1:
+                case Keyboard.KEY_NUMPAD1:
+                    newRuleset = config.switchConfig(0);
+                    break;
+                case Keyboard.KEY_2:
+                case Keyboard.KEY_NUMPAD2:
+                    newRuleset = config.switchConfig(1);
+                    break;
+                case Keyboard.KEY_3:
+                case Keyboard.KEY_NUMPAD3:
+                    newRuleset = config.switchConfig(2);
+                    break;
+                case Keyboard.KEY_4:
+                case Keyboard.KEY_NUMPAD4:
+                    newRuleset = config.switchConfig(3);
+                    break;
+                case Keyboard.KEY_5:
+                case Keyboard.KEY_NUMPAD5:
+                    newRuleset = config.switchConfig(4);
+                    break;
+                case Keyboard.KEY_6:
+                case Keyboard.KEY_NUMPAD6:
+                    newRuleset = config.switchConfig(5);
+                    break;
+                case Keyboard.KEY_7:
+                case Keyboard.KEY_NUMPAD7:
+                    newRuleset = config.switchConfig(6);
+                    break;
+                case Keyboard.KEY_8:
+                case Keyboard.KEY_NUMPAD8:
+                    newRuleset = config.switchConfig(7);
+                    break;
+                case Keyboard.KEY_9:
+                case Keyboard.KEY_NUMPAD9:
+                    newRuleset = config.switchConfig(8);
+                    break;
+                }
+                if (newRuleset != null) {
+                    logInGame("'" + newRuleset + "' enabled");
+                }
+            }
+        }
+        
+        // Sorting
         try {
             new SortingHandler(mc, cfgManager.getConfig(),
                     ContainerSection.INVENTORY,

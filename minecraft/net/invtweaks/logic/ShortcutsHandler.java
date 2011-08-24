@@ -290,14 +290,24 @@ public class ShortcutsHandler extends Obfuscation {
                 switch (shortcutType) {
                 
                 case MOVE_ONE_STACK:
-                    container.move(fromSection, fromIndex, toSection, toIndex);
+                {
+                    Slot slot = container.getSlot(fromSection, fromIndex);
+                    while (slot.getHasStack() && toIndex != -1) {
+                        container.move(fromSection, fromIndex, toSection, toIndex);
+                        toIndex = getNextIndex(separateStacks, drop);
+                    }
                     break;
     
+                }
+                
                 case MOVE_ONE_ITEM:
+                {
                     container.moveSome(fromSection, fromIndex, toSection, toIndex, 1);
                     break;
+                }
                     
                 case MOVE_ALL_ITEMS:
+                {
                     for (Slot slot : container.getSlots(fromSection)) {
                         if (slot.getHasStack() && areSameItemType(fromStack, slot.getStack())) {
                             while (slot.getHasStack() && toIndex != -1) {
@@ -311,6 +321,7 @@ public class ShortcutsHandler extends Obfuscation {
                             }
                         }
                     }
+                }
                     
                 }
             }

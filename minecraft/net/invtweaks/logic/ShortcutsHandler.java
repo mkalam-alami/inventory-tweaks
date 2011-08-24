@@ -310,9 +310,10 @@ public class ShortcutsHandler extends Obfuscation {
                 {
                     for (Slot slot : container.getSlots(fromSection)) {
                         if (slot.getHasStack() && areSameItemType(fromStack, slot.getStack())) {
-                            while (slot.getHasStack() && toIndex != -1) {
-                                boolean moveResult = container.move(fromSection,
-                                        container.getSlotIndex(slot.slotNumber),
+                            int fromIndex = container.getSlotIndex(slot.slotNumber);
+                            while (slot.getHasStack() && toIndex != -1 && 
+                                    !(fromSection == toSection && fromIndex == toIndex)) {
+                                boolean moveResult = container.move(fromSection, fromIndex,
                                         toSection, toIndex);
                                 if (!moveResult) {
                                     break;

@@ -174,10 +174,10 @@ public class ContainerManager extends Obfuscation {
         
         boolean destinationEmpty = getItemStack(destSection, destIndex) == null;
 
-        // Use intermediate slot if we have to swap tools
+        // Use intermediate slot if we have to swap tools, maps, etc.
         if (destStack != null
                 && getItemID(srcStack) == getItemID(destStack)
-                && srcStack.isItemStackDamageable()) {
+                && srcStack.getMaxStackSize() == 1) {
             int intermediateSlot = getFirstEmptyUsableSlotNumber();
             ContainerSection intermediateSection = getSlotSection(intermediateSlot);
             int intermediateIndex = getSlotIndex(intermediateSlot);

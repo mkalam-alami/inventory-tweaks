@@ -139,7 +139,18 @@ public class ShortcutsHandler extends Obfuscation {
         
     }
     
+    /**
+     * Checks if the Up/Down controls that are listened are outdated
+     * @return true if the shortuts listeners have to be reset
+     */
+    private boolean haveControlsChanged() {
+        return (!shortcutKeysStatus.containsKey(mc.gameSettings.keyBindForward.keyCode)
+                || !shortcutKeysStatus.containsKey(mc.gameSettings.keyBindBack.keyCode));
+    }
+    
     private void updateKeyStatuses() {
+        if (haveControlsChanged())
+            reset();
         for (int keyCode : shortcutKeysStatus.keySet()) {
             if (Keyboard.isKeyDown(keyCode)) {
                 if (!shortcutKeysStatus.get(keyCode)) {

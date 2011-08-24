@@ -3,14 +3,13 @@ package net.invtweaks.gui;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
-
 import net.invtweaks.Const;
 import net.invtweaks.config.InvTweaksConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiScreen;
-import net.minecraft.src.InvTweaks;
+
+import org.lwjgl.input.Keyboard;
 
 public class GuiShortcutsHelp extends GuiScreen {
 

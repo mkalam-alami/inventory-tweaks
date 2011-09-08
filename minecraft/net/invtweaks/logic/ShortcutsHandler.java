@@ -40,17 +40,6 @@ public class ShortcutsHandler extends Obfuscation {
     private ContainerSection toSection;
     private ShortcutType shortcutType;
 
-    private enum ShortcutType {
-        MOVE_TO_SPECIFIC_HOTBAR_SLOT,
-        MOVE_ONE_STACK,
-        MOVE_ONE_ITEM,
-        MOVE_ALL_ITEMS,
-        MOVE_UP,
-        MOVE_DOWN,
-        MOVE_TO_EMPTY_SLOT,
-        DROP
-    }
-    
     /**
      * Allows to monitor the keys related to shortcuts
      */
@@ -61,6 +50,17 @@ public class ShortcutsHandler extends Obfuscation {
      */
     private Map<ShortcutType, List<Integer>> shortcuts;
     
+    private enum ShortcutType {
+        MOVE_TO_SPECIFIC_HOTBAR_SLOT,
+        MOVE_ONE_STACK,
+        MOVE_ONE_ITEM,
+        MOVE_ALL_ITEMS,
+        MOVE_UP,
+        MOVE_DOWN,
+        MOVE_TO_EMPTY_SLOT,
+        DROP
+    }
+
     public ShortcutsHandler(Minecraft mc, InvTweaksConfig config) {
         super(mc);
         this.config = config;
@@ -139,30 +139,6 @@ public class ShortcutsHandler extends Obfuscation {
         
     }
     
-    /**
-     * Checks if the Up/Down controls that are listened are outdated
-     * @return true if the shortuts listeners have to be reset
-     */
-    private boolean haveControlsChanged() {
-        return (!shortcutKeysStatus.containsKey(mc.gameSettings.keyBindForward.keyCode)
-                || !shortcutKeysStatus.containsKey(mc.gameSettings.keyBindBack.keyCode));
-    }
-    
-    private void updateKeyStatuses() {
-        if (haveControlsChanged())
-            reset();
-        for (int keyCode : shortcutKeysStatus.keySet()) {
-            if (Keyboard.isKeyDown(keyCode)) {
-                if (!shortcutKeysStatus.get(keyCode)) {
-                    shortcutKeysStatus.put(keyCode, true);
-                }
-            }
-            else {
-                shortcutKeysStatus.put(keyCode, false);
-            }
-        }
-    }
-    
     public Vector<Integer> getDownShortcutKeys() {
         updateKeyStatuses();
         Vector<Integer> downShortcutKeys = new Vector<Integer>();
@@ -239,22 +215,18 @@ public class ShortcutsHandler extends Obfuscation {
                 if (destinationModifier == 0) {
                     // Default behavior
                     switch (srcSection) {
-                   
-                    case INVENTORY_NOT_HOTBAR:
-                        if (availableSections.get(0) != ContainerSection.INVENTORY_NOT_HOTBAR) {
-                            destSection = availableSections.get(0);
-                        }
-                        else {
-                            destSection = ContainerSection.INVENTORY_HOTBAR;
-                        }
+
+                    case INVENTORY_HOTBAR:
+                        destSection = ContainerSection.INVENTORY_NOT_HOTBAR;
                         break;
                         
-                    case INVENTORY_HOTBAR:
-                        destSection = availableSections.get(0);
+                    case CRAFTING_IN:
+                    case FURNACE_IN:
+                        destSection = ContainerSection.INVENTORY_NOT_HOTBAR;
                         break;
                         
                     default:
-                        destSection = ContainerSection.INVENTORY;
+                        destSection = ContainerSection.INVENTORY_HOTBAR;
                     }
                 }
                 
@@ -371,6 +343,30 @@ public class ShortcutsHandler extends Obfuscation {
             if (getHoldStack() != null) {
                 container.leftClick(toSection, toIndex);
                 toIndex = getNextIndex(separateStacks, drop);
+            }
+        }
+    }
+
+    /**
+     * Checks if the Up/Down controls that are listened are outdated
+     * @return true if the shortuts listeners have to be reset
+     */
+    private boolean haveControlsChanged() {
+        return (!shortcutKeysStatus.containsKey(mc.gameSettings.keyBindForward.keyCode)
+                || !shortcutKeysStatus.containsKey(mc.gameSettings.keyBindBack.keyCode));
+    }
+
+    private void updateKeyStatuses() {
+        if (haveControlsChanged())
+            reset();
+        for (int keyCode : shortcutKeysStatus.keySet()) {
+            if (Keyboard.isKeyDown(keyCode)) {
+                if (!shortcutKeysStatus.get(keyCode)) {
+                    shortcutKeysStatus.put(keyCode, true);
+                }
+            }
+            else {
+                shortcutKeysStatus.put(keyCode, false);
             }
         }
     }

@@ -337,13 +337,21 @@ public class ShortcutsHandler extends Obfuscation {
     private void craftAll(boolean separateStacks, boolean drop) throws Exception {
         int toIndex = getNextIndex(separateStacks, drop);
         Slot slot = container.getSlot(fromSection, fromIndex);
-        while (slot.getHasStack() && toIndex != -1) {
-            container.move(fromSection, fromIndex, toSection, toIndex);
-            toIndex = getNextIndex(separateStacks, drop);
-            if (getHoldStack() != null) {
-                container.leftClick(toSection, toIndex);
+        if (slot.getHasStack()) {
+            // Store the first item type to craft, to make
+            // sure it doesn't craft something else in the end
+            int idToCraft = getItemID(slot.getStack());
+            do {
+                container.move(fromSection, fromIndex, toSection, toIndex);
                 toIndex = getNextIndex(separateStacks, drop);
-            }
+                if (getHoldStack() != null) {
+                    container.leftClick(toSection, toIndex);
+                    toIndex = getNextIndex(separateStacks, drop);
+                }
+            
+            } while (slot.getHasStack() 
+                    && getItemID(slot.getStack()) == idToCraft
+                    && toIndex != -1);
         }
     }
 

@@ -1,4 +1,3 @@
-package net.invtweaks;
 
 import java.io.File;
 import java.util.List;
@@ -24,13 +23,13 @@ public class Obfuscation {
 	public boolean isMultiplayerWorld() {
 		return mc.l();
 	}
-	public dc getThePlayer() {
-		return mc.h;
-	}
-	public ob getPlayerController() {
+    public qs getThePlayer() {
+        return mc.h;
+    }
+	public hw getPlayerController() {
 		return mc.c;
 	}
-	public da getCurrentScreen() {
+	public qr getCurrentScreen() {
 		return mc.r;
 	}
 	public static File getMinecraftDir() {
@@ -39,37 +38,37 @@ public class Obfuscation {
 
 	// EntityPlayer members
 	
-	public ix getInventoryPlayer() {
-		return getThePlayer().c;
+	public ui getInventoryPlayer() {
+		return getThePlayer().as;
 	}
-	public iz getCurrentEquippedItem() {
-		return getThePlayer().G();
+	public ul getCurrentEquippedItem() {
+		return getThePlayer().G();/*?*/
 	}
 	public dw getCraftingInventory() {
-		return getThePlayer().e;
+		return getThePlayer().e;/*?*/
 	}
 
 	// InventoryPlayer members
 	
-	public iz[] getMainInventory() {
+	public ul[] getMainInventory() {
 		return getInventoryPlayer().a;
 	}
-	public void setMainInventory(iz[] value) {
+	public void setMainInventory(ul[] value) {
 		getInventoryPlayer().a = value;
 	}
 	public void setHasInventoryChanged(boolean value) {
 		getInventoryPlayer().e = value;
 	}
-	public void setHoldStack(iz stack) {
+	public void setHoldStack(ul stack) {
 		getInventoryPlayer().b(stack); // MCP name: setItemStack
 	}
 	public boolean hasInventoryChanged() {
 		return getInventoryPlayer().e;
 	}
-	public iz getHoldStack() {
-		return getInventoryPlayer().i(); // MCP name: getItemStack
+	public ul getHoldStack() {
+		return getInventoryPlayer().j(); // MCP name: getItemStack
 	}
-	public iz getFocusedStack() {
+	public ul getFocusedStack() {
 		return getInventoryPlayer().b(); // MCP name: getCurrentItem
 	}
 	public int getFocusedSlot() {
@@ -78,39 +77,39 @@ public class Obfuscation {
 	
 	// ItemStack members
 
-	public iz createItemStack(int id, int size, int damage) {
-		return new iz(id, size, damage);
+	public ul createItemStack(int id, int size, int damage) {
+		return new ul(id, size, damage);
 	}
-	public iz copy(iz itemStack) {
+	public ul copy(ul itemStack) {
 		return itemStack.k();
 	}
-	public int getItemDamage(iz itemStack) {
+	public int getItemDamage(ul itemStack) {
 		return itemStack.i();
 	}
-	public int getMaxStackSize(iz itemStack) {
+	public int getMaxStackSize(ul itemStack) {
 		return itemStack.c();
 	}
-	public int getStackSize(iz itemStack) {
+	public int getStackSize(ul itemStack) {
 		return itemStack.a;
 	}
-	public void setStackSize(iz itemStack, int value) {
+	public void setStackSize(ul itemStack, int value) {
 		itemStack.a = value;
 	}
-	public int getItemID(iz itemStack) {
+	public int getItemID(ul itemStack) {
 		return itemStack.c;
 	}
-	public boolean areItemStacksEqual(iz itemStack1, iz itemStack2) {
-		return iz.a(itemStack1, itemStack2);
+	public boolean areItemStacksEqual(ul itemStack1, ul itemStack2) {
+		return ul.a(itemStack1, itemStack2);
 	}
-	public iz getItemStack(iz[] stacks, int i) {
+	public ul getItemStack(ul[] stacks, int i) {
 		return stacks[i];
 	}
 	
 	// PlayerController members
 
-	public iz clickInventory(ob playerController,
+	public ul clickInventory(ob/*?*/ playerController,
 			int windowId, int slot, int clickButton,
-			boolean shiftHold, gs entityPlayer) {
+			boolean shiftHold, qs entityPlayer) {
 		return playerController.a(windowId, slot, clickButton,
 				shiftHold, entityPlayer);
 	}
@@ -118,10 +117,10 @@ public class Obfuscation {
 	// Container members
 	
 	public int getWindowId(dw container) {
-		return container.f;
+		return container.f;/*?*/
 	}
 	public List<?> getSlots(dw container) {
-		return container.e;
+		return container.e;/*?*/
 	}
 	
 }

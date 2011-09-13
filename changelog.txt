@@ -6,7 +6,9 @@
 [09.13.2011] 1.31 (B1.7.3)
  * Added shortcuts to switch between sorting configurations (0-9 + Sort)
  * Up/Down shortcuts now work with the Forward/Backward keys
+ * Shortcuts now choose the destination the same way that Minecraft does
  * Fixed the 'move all' and 'drop' shortcuts not working
+ * Fixed compatibility issues with mods (especially Millenaire)
  * Fixed the 'craft all' shortcut using the remains to craft something else
  * Fixed a freeze when using a shortcut while holding an item
  * Fixed a freeze when sorting maps

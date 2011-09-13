@@ -11,7 +11,7 @@ import net.minecraft.src.KeyBinding;
 public class Const {
 
     // Version-specific mod constants
-    public static final String MOD_VERSION = "1.30 (1.7.3)";
+    public static final String MOD_VERSION = "1.31 (1.7.3)";
 
     // Mod timing constants
     public static final int RULESET_SWAP_DELAY = 1000;

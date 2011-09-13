@@ -584,9 +584,13 @@ public class InvTweaks extends Obfuscation {
     }
     
     private void handleShortcuts(GuiScreen guiScreen) {
-        if (!(guiScreen instanceof GuiContainer)) {
+        
+        // Check open GUI
+        if (!(guiScreen instanceof GuiContainer)
+                || guiScreen.getClass().getSimpleName().equals("MLGuiChestBuilding")) { // Millenaire mod
             return;
         }
+        
         if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1)) {
             if (!mouseWasDown) {
                 mouseWasDown = true;

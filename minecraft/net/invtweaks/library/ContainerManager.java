@@ -47,7 +47,7 @@ public class ContainerManager extends Obfuscation {
         /** The furnace fuel */ FURNACE_FUEL,
         /** Any other type of slot. For unknown container types (such as
          * mod containers), only INVENTORY and OTHER sections are defined. */
-        OTHER
+        UNKNOWN
     }
     
     private Container container;
@@ -74,61 +74,50 @@ public class ContainerManager extends Obfuscation {
         
         List<Slot> slots = container.slots;
         int size = slots.size();
+        boolean guiWithInventory = true;
 
-        try {
-            // Inventory: 4 crafting slots, then 4 armor slots, then inventory
-            if (container instanceof ContainerPlayer) {
-                slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
-                slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 5));
-                slotRefs.put(ContainerSection.ARMOR, slots.subList(5, 9));
-                slotRefs.put(ContainerSection.INVENTORY, slots.subList(9, 45));
-                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(9, 36));
-                slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(36, 45));
-            }
-            
-            // Chest/Dispenser
-            else if ((container instanceof ContainerChest)
-                    || (container instanceof ContainerDispenser)) {
-                slotRefs.put(ContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
-                slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
-                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
-                slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
-            }
-            
-            // Furnace
-            else if ((container instanceof ContainerFurnace)) {
-                slotRefs.put(ContainerSection.FURNACE_IN, slots.subList(0, 1));
-                slotRefs.put(ContainerSection.FURNACE_FUEL, slots.subList(1, 2));
-                slotRefs.put(ContainerSection.FURNACE_OUT, slots.subList(2, 3));
-                slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
-                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
-                slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
-            }
+        // Inventory: 4 crafting slots, then 4 armor slots, then inventory
+        if (container instanceof ContainerPlayer) {
+            slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+            slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 5));
+            slotRefs.put(ContainerSection.ARMOR, slots.subList(5, 9));
+        }
+        
+        // Chest/Dispenser
+        else if ((container instanceof ContainerChest)
+                || (container instanceof ContainerDispenser)) {
+            slotRefs.put(ContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
+        }
+        
+        // Furnace
+        else if ((container instanceof ContainerFurnace)) {
+            slotRefs.put(ContainerSection.FURNACE_IN, slots.subList(0, 1));
+            slotRefs.put(ContainerSection.FURNACE_FUEL, slots.subList(1, 2));
+            slotRefs.put(ContainerSection.FURNACE_OUT, slots.subList(2, 3));
+        }
 
-            // Workbench
-            else if ((container instanceof ContainerWorkbench)) {
-                slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
-                slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 10));
-                slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
-                slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
-                slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
+        // Workbench
+        else if ((container instanceof ContainerWorkbench)) {
+            slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+            slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 10));
+        }
+        
+        // Unknown
+        else {
+            if (size >= INVENTORY_SIZE) {
+             // Assuming the container ends with the inventory, just like all vanilla containers.
+                slotRefs.put(ContainerSection.UNKNOWN, slots.subList(0, size-INVENTORY_SIZE));
             }
-            
-            // Unkown
             else {
-                throw new Exception();
+                guiWithInventory = false;
+                slotRefs.put(ContainerSection.UNKNOWN, slots.subList(0, size));
             }
         }
-        catch (Exception e) {
-            // Assuming the container ends with the inventory,
-            // just like all vanilla containers.
-            if (size >= INVENTORY_SIZE) {
-                slotRefs.put(ContainerSection.OTHER, slots.subList(0, size-INVENTORY_SIZE));
-                slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
-            }
-            else {
-                slotRefs.put(ContainerSection.OTHER, slots.subList(0, size));
-            }
+
+        if (guiWithInventory) {
+            slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
+            slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
+            slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
         }
         
     }
@@ -422,7 +411,7 @@ public class ContainerManager extends Obfuscation {
     /**
      * Note: Prefers INVENTORY_HOTBAR/NOT_HOTBAR instead of INVENTORY.
      * @param slotNumber
-     * @return
+     * @return null if the slot number is invalid.
      */
     public ContainerSection getSlotSection(int slotNumber) {
         // TODO Caching with getSlotIndex

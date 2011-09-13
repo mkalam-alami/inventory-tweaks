@@ -189,7 +189,8 @@ public class Obfuscation {
     // Other
 
     protected boolean isChestOrDispenser(GuiScreen guiScreen) {
-        return (guiScreen instanceof GuiChest /* GuiChest */
+        return ((guiScreen instanceof GuiChest /* GuiChest */
+                && !guiScreen.getClass().getSimpleName().equals("MLGuiChestBuilding")) // Millenaire mod
         || guiScreen instanceof GuiDispenser /* GuiDispenser */);
     }
     

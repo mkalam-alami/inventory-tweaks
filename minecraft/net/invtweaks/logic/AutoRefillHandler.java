@@ -1,5 +1,7 @@
 package net.invtweaks.logic;
 
+import Obfuscation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -10,7 +12,6 @@ import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.SortingRule;
 import net.invtweaks.config.SortingRule.RuleType;
 import net.invtweaks.library.ContainerSectionManager;
-import net.invtweaks.library.Obfuscation;
 import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;

@@ -1,5 +1,7 @@
 package net.minecraft.src;
 
+import Obfuscation;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -15,7 +17,6 @@ import net.invtweaks.gui.GuiInventorySettingsButton;
 import net.invtweaks.gui.GuiSortingButton;
 import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.library.ContainerSectionManager;
-import net.invtweaks.library.Obfuscation;
 import net.invtweaks.logic.SortingHandler;
 import net.invtweaks.tree.ItemTree;
 import net.invtweaks.tree.ItemTreeItem;

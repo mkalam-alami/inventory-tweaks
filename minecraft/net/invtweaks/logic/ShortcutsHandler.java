@@ -1,5 +1,7 @@
 package net.invtweaks.logic;
 
+import Obfuscation;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,7 +11,6 @@ import java.util.Vector;
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.library.ContainerManager;
 import net.invtweaks.library.ContainerManager.ContainerSection;
-import net.invtweaks.library.Obfuscation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.GuiContainer;
 import net.minecraft.src.InvTweaks;

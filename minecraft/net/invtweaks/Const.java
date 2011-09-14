@@ -1,11 +1,12 @@
 package net.invtweaks;
 
+import Obfuscation;
+
 import java.io.File;
 import java.util.logging.Level;
 
 import org.lwjgl.input.Keyboard;
 
-import net.invtweaks.library.Obfuscation;
 import net.minecraft.src.KeyBinding;
 
 public class Const {

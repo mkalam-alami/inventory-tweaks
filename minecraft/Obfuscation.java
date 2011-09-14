@@ -1,10 +1,14 @@
-
 import java.io.File;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.*;
 
+/**
+ * Minecraft 1.8 Obfuscation layer
+ * 
+ * @author Jimeo Wan
+ *
+ */
 public class Obfuscation {
 
 	protected Minecraft mc;
@@ -23,29 +27,29 @@ public class Obfuscation {
 	public boolean isMultiplayerWorld() {
 		return mc.l();
 	}
-    public qs getThePlayer() {
+    public qs getThePlayer() { // EntityPlayer
         return mc.h;
     }
-	public hw getPlayerController() {
+	public hw getPlayerController() { // PlayerController
 		return mc.c;
 	}
-	public qr getCurrentScreen() {
+	public qr getCurrentScreen() { // GuiScreen
 		return mc.r;
 	}
-	public static File getMinecraftDir() {
+	public static File getMinecraftDir() { 
 		return Minecraft.b();
 	}
 
 	// EntityPlayer members
 	
-	public ui getInventoryPlayer() {
+	public ui getInventoryPlayer() { // InventoryPlayer
 		return getThePlayer().as;
 	}
-	public ul getCurrentEquippedItem() {
-		return getThePlayer().G();/*?*/
+	public ul getCurrentEquippedItem() { // ItemStack
+		return getThePlayer().aj();
 	}
-	public dw getCraftingInventory() {
-		return getThePlayer().e;/*?*/
+	public cf getCraftingInventory() { // Container
+		return getThePlayer().au;
 	}
 
 	// InventoryPlayer members
@@ -105,9 +109,18 @@ public class Obfuscation {
 		return stacks[i];
 	}
 	
+	// Slot members
+	
+	public boolean hasStack(sx slot) { // Slot
+	    return slot.b();
+	}
+    public int getSlotNumber(sx slot) { // Slot
+        return slot.?;
+    }
+	
 	// PlayerController members
 
-	public ul clickInventory(ob/*?*/ playerController,
+	public ul clickInventory(hw playerController,
 			int windowId, int slot, int clickButton,
 			boolean shiftHold, qs entityPlayer) {
 		return playerController.a(windowId, slot, clickButton,
@@ -116,11 +129,32 @@ public class Obfuscation {
 	
 	// Container members
 	
-	public int getWindowId(dw container) {
-		return container.f;/*?*/
+	public int getWindowId(cf container) {
+		return container.f;
 	}
-	public List<?> getSlots(dw container) {
-		return container.e;/*?*/
+	public List<?> getSlots(cf container) {
+		return container.e;
 	}
+	
+	// Classes
+	
+	public boolean isGuiContainer(Object o) {
+        return o instanceof GuiContainer;
+	}
+	public boolean isContainerPlayer(Object o) {
+	    return o instanceof ContainerPlayer;
+	}
+    public boolean isContainerChest(Object o) {
+        return o instanceof ContainerPlayer;
+    }
+    public boolean isContainerFurnace(Object o) {
+        return o instanceof ContainerPlayer;
+    }
+    public boolean isContainerDispenser(Object o) {
+        return o instanceof ContainerPlayer;
+    }
+    public boolean isContainerWorkbench(Object o) {
+        return o instanceof ContainerPlayer;
+    }
 	
 }

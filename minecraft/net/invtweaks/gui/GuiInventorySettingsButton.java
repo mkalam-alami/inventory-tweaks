@@ -1,12 +1,13 @@
 package net.invtweaks.gui;
 
+import Obfuscation;
+
 import java.util.concurrent.TimeoutException;
 
 import net.invtweaks.config.InvTweaksConfig;
 import net.invtweaks.config.InvTweaksConfigManager;
 import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.invtweaks.library.ContainerSectionManager;
-import net.invtweaks.library.Obfuscation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaks;
 

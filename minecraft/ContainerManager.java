@@ -1,4 +1,3 @@
-package net.invtweaks.library;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,8 +39,8 @@ public class ContainerManager extends Obfuscation {
         UNKNOWN
     }
     
-    private Container container;
-    private Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
+    private cf container;
+    private Map<ContainerSection, List<sx>> slotRefs = new HashMap<ContainerSection, List<sx>>();
     
     
     /**
@@ -54,40 +53,40 @@ public class ContainerManager extends Obfuscation {
     public ContainerManager(Minecraft mc) {
         super(mc);
         
-        GuiScreen currentScreen = getCurrentScreen();
-        if (currentScreen instanceof GuiContainer) {
+        qr currentScreen = getCurrentScreen();
+        if (isGuiContainer(currentScreen)) {
             this.container = getContainer((GuiContainer) currentScreen);
         }
         else {
             this.container = getPlayerContainer();
         }
         
-        List<Slot> slots = container.slots;
+        List<sx> slots = (List<sx>) getSlots(container);
         int size = slots.size();
         boolean guiWithInventory = true;
 
         // Inventory: 4 crafting slots, then 4 armor slots, then inventory
-        if (container instanceof ContainerPlayer) {
+        if (isContainerPlayer(container)) {
             slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
             slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 5));
             slotRefs.put(ContainerSection.ARMOR, slots.subList(5, 9));
         }
         
         // Chest/Dispenser
-        else if ((container instanceof ContainerChest)
-                || (container instanceof ContainerDispenser)) {
+        else if (isContainerChest(container)
+                || isContainerDispenser(container)) {
             slotRefs.put(ContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
         }
         
         // Furnace
-        else if ((container instanceof ContainerFurnace)) {
+        else if (isContainerFurnace(container)) {
             slotRefs.put(ContainerSection.FURNACE_IN, slots.subList(0, 1));
             slotRefs.put(ContainerSection.FURNACE_FUEL, slots.subList(1, 2));
             slotRefs.put(ContainerSection.FURNACE_OUT, slots.subList(2, 3));
         }
 
         // Workbench
-        else if ((container instanceof ContainerWorkbench)) {
+        else if (isContainerWorkbench(container)) {
             slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
             slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 10));
         }
@@ -130,8 +129,8 @@ public class ContainerManager extends Obfuscation {
 	public boolean move(ContainerSection srcSection, int srcIndex,
             ContainerSection destSection, int destIndex) throws TimeoutException {
 	    
-	    ItemStack srcStack = getItemStack(srcSection, srcIndex);
-        ItemStack destStack = getItemStack(destSection, destIndex);
+	    ul srcStack = getItemStack(srcSection, srcIndex);
+	    ul destStack = getItemStack(destSection, destIndex);
 	    
         if (srcStack == null) {
             return false;
@@ -156,7 +155,7 @@ public class ContainerManager extends Obfuscation {
         // Use intermediate slot if we have to swap tools, maps, etc.
         if (destStack != null
                 && getItemID(srcStack) == getItemID(destStack)
-                && srcStack.getMaxStackSize() == 1) {
+                && getMaxStackSize(srcStack) == 1) {
             int intermediateSlot = getFirstEmptyUsableSlotNumber();
             ContainerSection intermediateSection = getSlotSection(intermediateSlot);
             int intermediateIndex = getSlotIndex(intermediateSlot);
@@ -207,17 +206,17 @@ public class ContainerManager extends Obfuscation {
 	        ContainerSection destSection, int destIndex,
 	        int amount) throws TimeoutException {
 
-        ItemStack source = getItemStack(srcSection, srcIndex);
+	    ul source = getItemStack(srcSection, srcIndex);
 	    if (source == null || srcSection == destSection && srcIndex == destIndex) {
             return true;
         }
 
-        ItemStack destination = getItemStack(srcSection, srcIndex);
+	    ul destination = getItemStack(srcSection, srcIndex);
         int sourceSize = getStackSize(source);
         int movedAmount = Math.min(amount, sourceSize);
 	    
 	    if (source != null && (destination == null
-	            || source.isItemEqual(destination))) {
+	            || areItemStacksEqual(source, destination)) {
 
 	        leftClick(srcSection, srcIndex);
 	        for (int i = 0; i < movedAmount; i++) {
@@ -315,7 +314,7 @@ public class ContainerManager extends Obfuscation {
         return slotRefs.containsKey(section);
     }
 
-    public List<Slot> getSlots(ContainerSection section) {
+    public List<sx> getSlots(ContainerSection section) {
         return slotRefs.get(section); 
     }
 
@@ -324,7 +323,7 @@ public class ContainerManager extends Obfuscation {
      */
     public int getSize() {
         int result = 0;
-        for (List<Slot> slots : slotRefs.values()) {
+        for (List<sx> slots : slotRefs.values()) {
             result += slots.size();
         }
         return result;
@@ -351,7 +350,7 @@ public class ContainerManager extends Obfuscation {
      */
     public int getFirstEmptyIndex(ContainerSection section) {
         int i = 0;
-        for (Slot slot : slotRefs.get(section)) { 
+        for (sx slot : slotRefs.get(section)) { 
             if (!slot.getHasStack()) {
                 return i;
             }
@@ -373,8 +372,8 @@ public class ContainerManager extends Obfuscation {
         }
     }
 
-    public Slot getSlot(ContainerSection section, int index) {
-        List<Slot> slots = slotRefs.get(section);
+    public sx getSlot(ContainerSection section, int index) {
+        List<sx> slots = slotRefs.get(section);
         if (slots != null) {
             return slots.get(index);
         } else {
@@ -387,7 +386,7 @@ public class ContainerManager extends Obfuscation {
         for (ContainerSection section : slotRefs.keySet()) {
             if (section != ContainerSection.INVENTORY) {
                 int i = 0;
-                for (Slot slot : slotRefs.get(section)) {
+                for (sx slot : slotRefs.get(section)) {
                     if (slot.slotNumber == slotNumber) {
                         return i;
                     }
@@ -407,7 +406,7 @@ public class ContainerManager extends Obfuscation {
         // TODO Caching with getSlotIndex
         for (ContainerSection section : slotRefs.keySet()) {
             if (section != ContainerSection.INVENTORY) {
-                for (Slot slot : slotRefs.get(section)) {
+                for (sx slot : slotRefs.get(section)) {
                     if (slot.slotNumber == slotNumber) {
                         return section;
                     }
@@ -423,7 +422,7 @@ public class ContainerManager extends Obfuscation {
      * @param slot
      * @return An ItemStack or null.
      */
-    public ItemStack getItemStack(ContainerSection section, int index) 
+    public ul getItemStack(ContainerSection section, int index) 
             throws NullPointerException, IndexOutOfBoundsException {
         int slot = indexToSlot(section, index);
         if (slot >= 0 && slot < getSlots(container).size()) {
@@ -433,18 +432,18 @@ public class ContainerManager extends Obfuscation {
         }
     }
 
-    public Container getContainer() {
+    public cf getContainer() {
         return container;
     }
 
     private int getFirstEmptyUsableSlotNumber() {
         for (ContainerSection section : slotRefs.keySet()) {
-            for (Slot slot : slotRefs.get(section)) {
+            for (sx slot : slotRefs.get(section)) {
                 // Use only standard slot (to make sure
                 // we can freely put and remove items there)
-                if (slot.getClass().equals(Slot.class)
-                        && !slot.getHasStack()) {
-                    return slot.slotNumber;
+                if (slot.getClass().equals(sx.class)
+                        && !hasStack(slot)) {
+                    return getSlotNumber(slot);
                 }
             }
         }
@@ -462,7 +461,7 @@ public class ContainerManager extends Obfuscation {
             return DROP_SLOT;
         }
         if (hasSection(section)) {
-            Slot slot = slotRefs.get(section).get(index);
+            sx slot = slotRefs.get(section).get(index);
             if (slot != null) {
                 return slot.slotNumber;
             }

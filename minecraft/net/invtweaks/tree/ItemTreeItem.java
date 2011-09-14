@@ -1,6 +1,6 @@
 package net.invtweaks.tree;
 
-import net.invtweaks.library.Obfuscation;
+import Obfuscation;
 import net.minecraft.src.ItemStack;
 
 /**

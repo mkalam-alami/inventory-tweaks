@@ -1,15 +1,9 @@
-package net.invtweaks;
-
-import Obfuscation;
-
 import java.io.File;
 import java.util.logging.Level;
 
 import org.lwjgl.input.Keyboard;
 
-import net.minecraft.src.KeyBinding;
-
-public class Const {
+public class InvTweaksConst {
 
     // Version-specific mod constants
     public static final String MOD_VERSION = "1.31 (1.7.3)";
@@ -24,7 +18,7 @@ public class Const {
     public static final int TOOLTIP_DELAY = 1000;
 
     // File constants
-    public static final String MINECRAFT_DIR = Obfuscation.getMinecraftDir();
+    public static final String MINECRAFT_DIR = InvTweaksObfuscation.getMinecraftDir();
     public static final String MINECRAFT_CONFIG_DIR = MINECRAFT_DIR + "config" + File.separatorChar;
     public static final String CONFIG_PROPS_FILE = MINECRAFT_CONFIG_DIR + "InvTweaks.cfg";
     public static final String CONFIG_RULES_FILE = MINECRAFT_CONFIG_DIR + "InvTweaksRules.txt";

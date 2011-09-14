@@ -1,12 +1,11 @@
-package net.invtweaks.config;
+
+
 
 import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import net.invtweaks.Const;
-import net.invtweaks.tree.ItemTree;
 
 /**
  * Stores a whole configuration defined by rules.
@@ -16,7 +15,7 @@ import net.invtweaks.tree.ItemTree;
  * @author Jimeo Wan
  *
  */
-public class InventoryConfigRuleset {
+public class InvTweaksConfigInventoryRuleset {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
@@ -25,31 +24,31 @@ public class InventoryConfigRuleset {
 	private int[] lockPriorities;
 	private boolean[] frozenSlots;
 	private Vector<Integer> lockedSlots;
-    private Vector<SortingRule> rules;
+    private Vector<InvTweaksConfigSortingRule> rules;
 	private Vector<String> autoReplaceRules;
 	private boolean debugEnabled;
 	
-	private ItemTree tree;
+	private InvTweaksItemTree tree;
 	
 	/**
 	 * Creates a new configuration holder.
 	 * The configuration is not yet loaded.
 	 */
-	public InventoryConfigRuleset(ItemTree tree, String name) {
+	public InvTweaksConfigInventoryRuleset(InvTweaksItemTree tree, String name) {
 		this.tree = tree;
 		this.name = name;
 		
-		lockPriorities = new int[Const.INVENTORY_SIZE];
+		lockPriorities = new int[InvTweaksConst.INVENTORY_SIZE];
 		for (int i = 0; i < lockPriorities.length; i++) {
 			lockPriorities[i] = 0;
 		}
-		frozenSlots = new boolean[Const.INVENTORY_SIZE];
+		frozenSlots = new boolean[InvTweaksConst.INVENTORY_SIZE];
 		for (int i = 0; i < frozenSlots.length; i++) {
 			frozenSlots[i] = false;
 		}
 
 		lockedSlots = new Vector<Integer>();
-		rules = new Vector<SortingRule>();
+		rules = new Vector<InvTweaksConfigSortingRule>();
 		autoReplaceRules = new Vector<String>();
 		debugEnabled = false;
 	}
@@ -64,7 +63,7 @@ public class InventoryConfigRuleset {
 
 		String[] words = rawLine.split(" ");
 		String lineText = rawLine.toLowerCase();
-		SortingRule newRule = null;
+		InvTweaksConfigSortingRule newRule = null;
 
 		// Parse valid lines only
 		if (words.length == 2) {
@@ -77,11 +76,11 @@ public class InventoryConfigRuleset {
 				
 				// Locking rule
 				if (words[1].equals(InvTweaksConfig.LOCKED)) {
-					int[] newLockedSlots = SortingRule
+					int[] newLockedSlots = InvTweaksConfigSortingRule
 					        .getRulePreferredPositions(
-								words[0], Const.INVENTORY_SIZE,
-								Const.INVENTORY_ROW_SIZE);
-					int lockPriority = SortingRule.
+								words[0], InvTweaksConst.INVENTORY_SIZE,
+								InvTweaksConst.INVENTORY_ROW_SIZE);
+					int lockPriority = InvTweaksConfigSortingRule.
 					        getRuleType(words[0]).getHighestPriority();
 					for (int i : newLockedSlots) {
 						lockPriorities[i] = lockPriority;
@@ -91,10 +90,10 @@ public class InventoryConfigRuleset {
 				
 				// Freeze rule
 				else if (words[1].equals(InvTweaksConfig.FROZEN)) {
-					int[] newLockedSlots = SortingRule
+					int[] newLockedSlots = InvTweaksConfigSortingRule
 					        .getRulePreferredPositions(
-								words[0], Const.INVENTORY_SIZE,
-								Const.INVENTORY_ROW_SIZE);
+								words[0], InvTweaksConst.INVENTORY_SIZE,
+								InvTweaksConst.INVENTORY_ROW_SIZE);
 					for (int i : newLockedSlots) {
 						frozenSlots[i] = true;
 					}
@@ -119,9 +118,9 @@ public class InventoryConfigRuleset {
 					}
 					
 					if (isValidKeyword) {
-						newRule = new SortingRule(tree, words[0], 
-								keyword.toLowerCase(), Const.INVENTORY_SIZE,
-								Const.INVENTORY_ROW_SIZE);
+						newRule = new InvTweaksConfigSortingRule(tree, words[0], 
+								keyword.toLowerCase(), InvTweaksConst.INVENTORY_SIZE,
+								InvTweaksConst.INVENTORY_ROW_SIZE);
 						rules.add(newRule);
 						return null;
 					}
@@ -211,7 +210,7 @@ public class InventoryConfigRuleset {
 	/**
 	 * @return the rules
 	 */
-	public Vector<SortingRule> getRules() {
+	public Vector<InvTweaksConfigSortingRule> getRules() {
 		return rules;
 	}
 

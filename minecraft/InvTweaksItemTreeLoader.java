@@ -1,4 +1,5 @@
-package net.invtweaks.tree;
+
+
 
 import java.io.File;
 import java.util.LinkedList;
@@ -6,7 +7,6 @@ import java.util.LinkedList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import net.minecraft.src.InvTweaks;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -17,23 +17,23 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Jimeo Wan
  *
  */
-public class ItemTreeLoader extends DefaultHandler {
+public class InvTweaksItemTreeLoader extends DefaultHandler {
 
     private final static String ATTR_RANGE_MIN = "min";
     private final static String ATTR_RANGE_MAX = "max";
     private final static String ATTR_ID = "id";
     private final static String ATTR_DAMAGE = "damage";
 
-    private ItemTree tree;
+    private InvTweaksItemTree tree;
 
     private int itemOrder = 0;
     private LinkedList<String> categoryStack = new LinkedList<String>();
 
-    public ItemTreeLoader() {
-        tree = new ItemTree();
+    public InvTweaksItemTreeLoader() {
+        tree = new InvTweaksItemTree();
     }
 
-    public ItemTree load(String filePath) throws Exception {
+    public InvTweaksItemTree load(String filePath) throws Exception {
         tree.reset();
         categoryStack.clear();
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
@@ -57,10 +57,10 @@ public class ItemTreeLoader extends DefaultHandler {
 
             if (categoryStack.isEmpty()) {
                 // Root category
-                tree.setRootCategory(new ItemTreeCategory(name));
+                tree.setRootCategory(new InvTweaksItemTreeCategory(name));
             } else {
                 // Normal category
-                tree.addCategory(categoryStack.getLast(), new ItemTreeCategory(name));
+                tree.addCategory(categoryStack.getLast(), new InvTweaksItemTreeCategory(name));
             }
 
             // Handle item ranges
@@ -68,7 +68,7 @@ public class ItemTreeLoader extends DefaultHandler {
                 int rangeMin = Integer.parseInt(rangeMinAttr);
                 int rangeMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_MAX));
                 for (int i = rangeMin; i <= rangeMax; i++) {
-                    tree.addItem(name, new ItemTreeItem((name + i).toLowerCase(),
+                    tree.addItem(name, new InvTweaksItemTreeItem((name + i).toLowerCase(),
                             i, -1, itemOrder++));
                 }
             }
@@ -82,7 +82,7 @@ public class ItemTreeLoader extends DefaultHandler {
             if (attributes.getValue(ATTR_DAMAGE) != null) {
                 damage = Integer.parseInt(attributes.getValue(ATTR_DAMAGE));
             }
-            tree.addItem(categoryStack.getLast(), new ItemTreeItem(name.toLowerCase(),
+            tree.addItem(categoryStack.getLast(), new InvTweaksItemTreeItem(name.toLowerCase(),
                     id, damage, itemOrder++));
         }
     }

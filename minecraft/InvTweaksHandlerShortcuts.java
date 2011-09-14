@@ -1,21 +1,10 @@
-package net.invtweaks.logic;
-
-import Obfuscation;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import net.invtweaks.config.InvTweaksConfig;
-import net.invtweaks.library.ContainerManager;
-import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.GuiContainer;
-import net.minecraft.src.InvTweaks;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -25,7 +14,7 @@ import org.lwjgl.input.Mouse;
  * @author Jimeo Wan
  *
  */
-public class ShortcutsHandler extends Obfuscation {
+public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
     private final static int DROP_SLOT = -999;
     
@@ -34,11 +23,11 @@ public class ShortcutsHandler extends Obfuscation {
     
     // Context attributes
     private InvTweaksConfig config;
-    private ContainerManager container;
-    private ContainerSection fromSection;
+    private InvTweaksContainerManager container;
+    private InvTweaksContainerSection fromSection;
     private int fromIndex;
-    private ItemStack fromStack;
-    private ContainerSection toSection;
+    private ul fromStack;
+    private InvTweaksContainerSection toSection;
     private ShortcutType shortcutType;
 
     /**
@@ -62,7 +51,7 @@ public class ShortcutsHandler extends Obfuscation {
         DROP
     }
 
-    public ShortcutsHandler(Minecraft mc, InvTweaksConfig config) {
+    public InvTweaksHandlerShortcuts(Minecraft mc, InvTweaksConfig config) {
         super(mc);
         this.config = config;
         reset();
@@ -163,9 +152,9 @@ public class ShortcutsHandler extends Obfuscation {
         boolean shortcutValid = false;
         
         // Check that the slot is not empty
-        Slot slot = getSlotAtPosition((GuiContainer) guiScreen, x, y);
+        sx slot = getSlotAtPosition((GuiContainer) guiScreen, x, y);
         
-        if (slot != null && slot.getHasStack()) {
+        if (slot != null && hasStack(slot)) {
     
             // Choose shortcut type
             ShortcutType shortcutType = defaultAction;
@@ -184,23 +173,23 @@ public class ShortcutsHandler extends Obfuscation {
             
             // Choose target section
             try {
-                ContainerManager container = new ContainerManager(mc);
-                ContainerSection srcSection = container.getSlotSection(slot.slotNumber);
-                ContainerSection destSection = null;
+                InvTweaksContainerManager container = new InvTweaksContainerManager(mc);
+                InvTweaksContainerSection srcSection = container.getSlotSection(slot.slotNumber);
+                InvTweaksContainerSection destSection = null;
                 
                 // Set up available sections
-                Vector<ContainerSection> availableSections = new Vector<ContainerSection>();
-                if (container.hasSection(ContainerSection.CHEST)) {
-                    availableSections.add(ContainerSection.CHEST);
+                Vector<InvTweaksContainerSection> availableSections = new Vector<InvTweaksContainerSection>();
+                if (container.hasSection(InvTweaksContainerSection.CHEST)) {
+                    availableSections.add(InvTweaksContainerSection.CHEST);
                 }
-                else if (container.hasSection(ContainerSection.CRAFTING_IN)) {
-                    availableSections.add(ContainerSection.CRAFTING_IN);
+                else if (container.hasSection(InvTweaksContainerSection.CRAFTING_IN)) {
+                    availableSections.add(InvTweaksContainerSection.CRAFTING_IN);
                 }
-                else if (container.hasSection(ContainerSection.FURNACE_IN)) {
-                    availableSections.add(ContainerSection.FURNACE_IN);
+                else if (container.hasSection(InvTweaksContainerSection.FURNACE_IN)) {
+                    availableSections.add(InvTweaksContainerSection.FURNACE_IN);
                 }
-                availableSections.add(ContainerSection.INVENTORY_NOT_HOTBAR);
-                availableSections.add(ContainerSection.INVENTORY_HOTBAR);
+                availableSections.add(InvTweaksContainerSection.INVENTORY_NOT_HOTBAR);
+                availableSections.add(InvTweaksContainerSection.INVENTORY_HOTBAR);
                 
                 // Check for destination modifiers
                 int destinationModifier = 0; 
@@ -218,16 +207,16 @@ public class ShortcutsHandler extends Obfuscation {
                     switch (srcSection) {
 
                     case INVENTORY_HOTBAR:
-                        destSection = ContainerSection.INVENTORY_NOT_HOTBAR;
+                        destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR;
                         break;
                         
                     case CRAFTING_IN:
                     case FURNACE_IN:
-                        destSection = ContainerSection.INVENTORY_NOT_HOTBAR;
+                        destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR;
                         break;
                         
                     default:
-                        destSection = ContainerSection.INVENTORY_HOTBAR;
+                        destSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
                     }
                 }
                 
@@ -241,18 +230,18 @@ public class ShortcutsHandler extends Obfuscation {
                                         destinationModifier) % availableSections.size());
                     }
                     else {
-                        destSection = ContainerSection.INVENTORY;
+                        destSection = InvTweaksContainerSection.INVENTORY;
                     }
                 }
                 
                 // Don't trigger the shortcut if we don't know on what we are clicking.
-                if (srcSection == ContainerSection.UNKNOWN) {
+                if (srcSection == InvTweaksContainerSection.UNKNOWN) {
                     shortcutValid = false;
                 }
                 
                 if (shortcutValid || isActive(ShortcutType.DROP) != -1) {
                     
-                    initAction(slot.slotNumber, shortcutType, destSection);
+                    initAction(getSlotNumber(slot), shortcutType, destSection);
                     
                     if (shortcutType == ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
                         
@@ -261,12 +250,12 @@ public class ShortcutsHandler extends Obfuscation {
                                 isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT));
                         int destIndex = -1+Integer.parseInt(keyName.replace("NUMPAD", ""));
                         container.move(fromSection, fromIndex,
-                                ContainerSection.INVENTORY_HOTBAR, destIndex);
+                                InvTweaksContainerSection.INVENTORY_HOTBAR, destIndex);
                         
                     } else {
                         
                         // Drop or move
-                        if (srcSection == ContainerSection.CRAFTING_OUT) {
+                        if (srcSection == InvTweaksContainerSection.CRAFTING_OUT) {
                             craftAll(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != -1);
                         } else {
                             move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != -1);
@@ -301,8 +290,8 @@ public class ShortcutsHandler extends Obfuscation {
                 
                 case MOVE_ONE_STACK:
                 {
-                    Slot slot = container.getSlot(fromSection, fromIndex);
-                    while (slot.getHasStack() && toIndex != -1) {
+                    sx slot = container.getSlot(fromSection, fromIndex);
+                    while (hasStack(slot) && toIndex != -1) {
                         container.move(fromSection, fromIndex, toSection, toIndex);
                         toIndex = getNextIndex(separateStacks, drop);
                     }
@@ -318,10 +307,10 @@ public class ShortcutsHandler extends Obfuscation {
                     
                 case MOVE_ALL_ITEMS:
                 {
-                    for (Slot slot : container.getSlots(fromSection)) {
-                        if (slot.getHasStack() && areSameItemType(fromStack, slot.getStack())) {
-                            int fromIndex = container.getSlotIndex(slot.slotNumber);
-                            while (slot.getHasStack() && toIndex != -1 && 
+                    for (sx slot : container.getSlots(fromSection)) {
+                        if (hasStack(slot) && areSameItemType(fromStack, getStack(slot))) {
+                            int fromIndex = container.getSlotIndex(getSlotNumber(slot));
+                            while (hasStack(slot) && toIndex != -1 && 
                                     !(fromSection == toSection && fromIndex == toIndex)) {
                                 boolean moveResult = container.move(fromSection, fromIndex,
                                         toSection, toIndex);
@@ -342,11 +331,11 @@ public class ShortcutsHandler extends Obfuscation {
     
     private void craftAll(boolean separateStacks, boolean drop) throws Exception {
         int toIndex = getNextIndex(separateStacks, drop);
-        Slot slot = container.getSlot(fromSection, fromIndex);
-        if (slot.getHasStack()) {
+        sx slot = container.getSlot(fromSection, fromIndex);
+        if (hasStack(slot) ) {
             // Store the first item type to craft, to make
             // sure it doesn't craft something else in the end
-            int idToCraft = getItemID(slot.getStack());
+            int idToCraft = getItemID(getStack(slot));
             do {
                 container.move(fromSection, fromIndex, toSection, toIndex);
                 toIndex = getNextIndex(separateStacks, drop);
@@ -355,8 +344,8 @@ public class ShortcutsHandler extends Obfuscation {
                     toIndex = getNextIndex(separateStacks, drop);
                 }
             
-            } while (slot.getHasStack() 
-                    && getItemID(slot.getStack()) == idToCraft
+            } while (hasStack(slot) 
+                    && getItemID(getStack(slot)) == idToCraft
                     && toIndex != -1);
         }
     }
@@ -396,10 +385,10 @@ public class ShortcutsHandler extends Obfuscation {
         // Try to merge with existing slot
         if (!emptySlotOnly) {
             int i = 0;
-            for (Slot slot : container.getSlots(toSection)) {
-                if (slot.getHasStack()) {
-                    ItemStack stack = slot.getStack();
-                    if (stack.isItemEqual(fromStack)
+            for (sx slot : container.getSlots(toSection)) {
+                if (hasStack(slot)) {
+                    ul stack = getStack(slot);
+                    if (areItemsEqual(stack, fromStack)
                             && getStackSize(stack) < getMaxStackSize(stack)) {
                         result = i;
                         break;
@@ -415,8 +404,8 @@ public class ShortcutsHandler extends Obfuscation {
         }
         
         // Switch from FURNACE_IN to FURNACE_FUEL if the slot is taken
-        if (result == -1 && toSection == ContainerSection.FURNACE_IN) {
-            toSection =  ContainerSection.FURNACE_FUEL;
+        if (result == -1 && toSection == InvTweaksContainerSection.FURNACE_IN) {
+            toSection =  InvTweaksContainerSection.FURNACE_FUEL;
             result = container.getFirstEmptyIndex(toSection);
         }
         
@@ -438,10 +427,10 @@ public class ShortcutsHandler extends Obfuscation {
         return -1;
     }
 
-    private void initAction(int fromSlot, ShortcutType shortcutType, ContainerSection destSection) throws Exception {
+    private void initAction(int fromSlot, ShortcutType shortcutType, InvTweaksContainerSection destSection) throws Exception {
         
         // Set up context
-        this.container = new ContainerManager(mc);
+        this.container = new InvTweaksContainerManager(mc);
         this.fromSection = container.getSlotSection(fromSlot);
         this.fromIndex = container.getSlotIndex(fromSlot);
         this.fromStack = container.getItemStack(fromSection, fromIndex);
@@ -456,9 +445,9 @@ public class ShortcutsHandler extends Obfuscation {
             // Sometimes (ex: crafting output) we can't put back the item
             // in the slot, in that case choose a new one.
             if (getHoldStack() != null) {
-                int firstEmptyIndex = container.getFirstEmptyIndex(ContainerSection.INVENTORY);
+                int firstEmptyIndex = container.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
                 if (firstEmptyIndex != -1) {
-                   fromSection = ContainerSection.INVENTORY;
+                   fromSection = InvTweaksContainerSection.INVENTORY;
                    fromSlot = firstEmptyIndex;
                    container.leftClick(fromSection, fromSlot);
                    
@@ -470,10 +459,10 @@ public class ShortcutsHandler extends Obfuscation {
         }
     }
     
-    private Slot getSlotAtPosition(GuiContainer guiContainer, int i, int j) { 
+    private sx getSlotAtPosition(GuiContainer guiContainer, int i, int j) { 
         // Copied from GuiContainer
         for (int k = 0; k < guiContainer.inventorySlots.slots.size(); k++) {
-            Slot slot = (Slot)guiContainer.inventorySlots.slots.get(k);
+            sx slot = (sx) guiContainer.inventorySlots.slots.get(k);
             if (InvTweaks.getIsMouseOverSlot(guiContainer, slot, i, j)) {
                 return slot;
             }

@@ -1,4 +1,4 @@
-package net.invtweaks.config;
+
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -13,7 +13,7 @@ import java.util.Properties;
  * @author MARWANE
  *
  */
-public class InvTweaksProperties extends Properties {
+public class InvTweaksConfigProperties extends Properties {
 
     private static final long serialVersionUID = 1L;
     

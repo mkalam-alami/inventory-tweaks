@@ -1,28 +1,22 @@
-package net.invtweaks.gui;
-
 import java.util.LinkedList;
 import java.util.List;
 
-import net.invtweaks.Const;
-import net.invtweaks.config.InvTweaksConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.GuiButton;
-import net.minecraft.src.GuiScreen;
 
 import org.lwjgl.input.Keyboard;
 
-public class GuiShortcutsHelp extends GuiScreen {
+public class InvTweaksGuiShortcutsHelp extends qr {
 
     private final static String SCREEN_TITLE = "Shortcuts help";
     
     private final static int ID_DONE = 0;
 
     private Minecraft mc;
-    private GuiScreen parentScreen;
+    private qr parentScreen;
     private InvTweaksConfig config;
     
-    public GuiShortcutsHelp(Minecraft mc, 
-            GuiScreen parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiShortcutsHelp(Minecraft mc, 
+            qr parentScreen, InvTweaksConfig config) {
         this.mc = mc;
         this.parentScreen = parentScreen;
         this.config = config;
@@ -80,7 +74,7 @@ public class GuiShortcutsHelp extends GuiScreen {
         drawShortcutLine("Craft all", "LSHIFT, RSHIFT + Click", 0x00FF8800, y);
         y += 12;
         drawShortcutLine("Select sorting configuration", "0-9 + " +
-                Keyboard.getKeyName(Const.SORT_KEY_BINDING.keyCode), 0x00FF8800, y);
+                Keyboard.getKeyName(InvTweaksConst.SORT_KEY_BINDING.keyCode), 0x00FF8800, y);
         y += 12;
         
         super.drawScreen(i, j, f);

@@ -1,9 +1,9 @@
-package net.invtweaks.config;
+
+
 
 import java.awt.Point;
 import java.util.logging.Logger;
 
-import net.invtweaks.tree.ItemTree;
 
 /**
  * Stores a sorting rule, as a target plus a keyword.
@@ -13,30 +13,7 @@ import net.invtweaks.tree.ItemTree;
  * @author Jimeo Wan
  *
  */
-public class SortingRule implements Comparable<SortingRule> {
-
-    public enum RuleType {
-
-        RECTANGLE(1), ROW(2), COLUMN(3), TILE(4);
-
-        private int lowestPriority;
-        private int highestPriority;
-
-        RuleType(int priorityLevel) {
-            lowestPriority = priorityLevel * 1000000;
-            highestPriority = (priorityLevel + 1) * 1000000 - 1;
-        }
-
-        // Used for computing rule priorities
-        public int getLowestPriority() {
-            return lowestPriority;
-        }
-
-        // Used for computing lock levels
-        public int getHighestPriority() {
-            return highestPriority;
-        }
-    }
+public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSortingRule> {
 
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
@@ -44,12 +21,12 @@ public class SortingRule implements Comparable<SortingRule> {
     private String constraint;
     private int[] preferredPositions;
     private String keyword;
-    private RuleType type;
+    private InvTweaksConfigSortingRuleType type;
     private int priority;
     private int containerSize;
     private int containerRowSize;
 
-    public SortingRule(ItemTree tree, String constraint,
+    public InvTweaksConfigSortingRule(InvTweaksItemTree tree, String constraint,
             String keyword, int containerSize, int containerRowSize) {
 
         this.keyword = keyword;
@@ -69,7 +46,7 @@ public class SortingRule implements Comparable<SortingRule> {
 
     }
 
-    public RuleType getType() {
+    public InvTweaksConfigSortingRuleType getType() {
         return type;
     }
 
@@ -106,13 +83,13 @@ public class SortingRule implements Comparable<SortingRule> {
      * Compares rules priority : positive value means 'this' is of greater
      * priority than o
      */
-    public int compareTo(SortingRule o) {
+    public int compareTo(InvTweaksConfigSortingRule o) {
         return getPriority() - o.getPriority();
     }
 
     public int[] getRulePreferredPositions(String constraint) {
         // TODO Caching
-        return SortingRule.getRulePreferredPositions(
+        return InvTweaksConfigSortingRule.getRulePreferredPositions(
                 constraint, containerSize, containerRowSize);
     }
 
@@ -221,19 +198,19 @@ public class SortingRule implements Comparable<SortingRule> {
         return result;
     }
 
-    public static RuleType getRuleType(String constraint) {
+    public static InvTweaksConfigSortingRuleType getRuleType(String constraint) {
 
-        RuleType result = RuleType.TILE;
+        InvTweaksConfigSortingRuleType result = InvTweaksConfigSortingRuleType.TILE;
 
         if (constraint.length() == 1 || (constraint.length() == 2 && constraint.contains("r"))) {
             constraint = constraint.replace("r", "");
             if (constraint.getBytes()[0] <= '9')
-                result = RuleType.COLUMN;
+                result = InvTweaksConfigSortingRuleType.COLUMN;
             else {
-                result = RuleType.ROW;
+                result = InvTweaksConfigSortingRuleType.ROW;
             }
         } else if (constraint.length() > 4) {
-            result = RuleType.RECTANGLE;
+            result = InvTweaksConfigSortingRuleType.RECTANGLE;
         }
 
         return result;

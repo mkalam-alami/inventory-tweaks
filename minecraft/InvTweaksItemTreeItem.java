@@ -1,14 +1,9 @@
-package net.invtweaks.tree;
-
-import Obfuscation;
-import net.minecraft.src.ItemStack;
-
 /**
  * Representation of an item in the item tree.
  * @author Jimeo Wan
  *
  */
-public class ItemTreeItem extends Obfuscation implements Comparable<ItemTreeItem> {
+public class InvTweaksItemTreeItem extends InvTweaksObfuscation implements Comparable<InvTweaksItemTreeItem> {
 
     private String name;
     private int id;
@@ -21,7 +16,7 @@ public class ItemTreeItem extends Obfuscation implements Comparable<ItemTreeItem
      * @param damage The item variant or -1
      * @param order The item order while sorting
      */
-    public ItemTreeItem(String name, int id, int damage, int order) {
+    public InvTweaksItemTreeItem(String name, int id, int damage, int order) {
         super(null);
         this.name = name;
         this.id = id;
@@ -45,7 +40,7 @@ public class ItemTreeItem extends Obfuscation implements Comparable<ItemTreeItem
         return order;
     }
 
-    public boolean matchesStack(ItemStack stack) {
+    public boolean matchesStack(ul stack) {
         return getItemID(stack) == id && 
                 (getMaxStackSize(stack) == 1 || getItemDamage(stack) == damage);
     }
@@ -55,9 +50,9 @@ public class ItemTreeItem extends Obfuscation implements Comparable<ItemTreeItem
      * matches the item constraints (the opposite can be false).
      */
     public boolean equals(Object o) {
-        if (o == null || !(o instanceof ItemTreeItem))
+        if (o == null || !(o instanceof InvTweaksItemTreeItem))
             return false;
-        ItemTreeItem item = (ItemTreeItem) o;
+        InvTweaksItemTreeItem item = (InvTweaksItemTreeItem) o;
         return id == item.getId() && (damage == -1 || damage == item.getDamage());
     }
 
@@ -66,7 +61,7 @@ public class ItemTreeItem extends Obfuscation implements Comparable<ItemTreeItem
     }
 
     @Override
-    public int compareTo(ItemTreeItem item) {
+    public int compareTo(InvTweaksItemTreeItem item) {
         return item.order - order;
     }
 

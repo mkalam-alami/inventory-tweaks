@@ -1,6 +1,5 @@
-package net.invtweaks.gui;
 
-import net.invtweaks.config.InvTweaksConfigManager;
+
 import net.minecraft.client.Minecraft;
 
 import org.lwjgl.opengl.GL11;
@@ -10,11 +9,11 @@ import org.lwjgl.opengl.GL11;
  * @author Jimeo Wan
  *
  */
-public class GuiIconButton extends GuiTooltipButton {
+public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
     
     protected InvTweaksConfigManager cfgManager;
     
-    public GuiIconButton(InvTweaksConfigManager cfgManager,
+    public InvTweaksGuiIconButton(InvTweaksConfigManager cfgManager,
             int id, int x, int y, int w, int h, 
             String displayString, String tooltip) {
         super(id, x, y, w, h, displayString, tooltip);

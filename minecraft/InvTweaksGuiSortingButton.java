@@ -1,23 +1,17 @@
-package net.invtweaks.gui;
-
-import net.invtweaks.config.InvTweaksConfigManager;
-import net.invtweaks.library.ContainerManager.ContainerSection;
-import net.invtweaks.logic.SortingHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.InvTweaks;
 
 /**
  * Chest sorting button
  * @author Jimeo Wan
  *
  */
-public class GuiSortingButton extends GuiIconButton {
+public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
 
-    private final ContainerSection section = ContainerSection.CHEST;
+    private final InvTweaksContainerSection section = InvTweaksContainerSection.CHEST;
     
     private int algorithm;
 
-    public GuiSortingButton(InvTweaksConfigManager cfgManager, 
+    public InvTweaksGuiSortingButton(InvTweaksConfigManager cfgManager, 
             int id, int x, int y, int w, int h,
             String displayString, String tooltip,
             int algorithm) {
@@ -54,7 +48,7 @@ public class GuiSortingButton extends GuiIconButton {
     public boolean mousePressed(Minecraft minecraft, int i, int j) {
         if (super.mousePressed(minecraft, i, j)) {
             try {
-                new SortingHandler(
+                new InvTweaksHandlerSorting(
                         minecraft, cfgManager.getConfig(),
                         section, algorithm).sort();
             } catch (Exception e) {

@@ -1,16 +1,11 @@
-package net.invtweaks.gui;
-
-import net.invtweaks.Const;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.FontRenderer;
-import net.minecraft.src.GuiButton;
 
 /**
  * Icon-size button, which get drawns in a specific way to fit its small size.
  * @author Jimeo Wan
  *
  */
-public class GuiTooltipButton extends GuiButton {
+public class InvTweaksGuiTooltipButton extends GuiButton {
     
     public final static int DEFAULT_BUTTON_WIDTH = 200;
     public final static int LINE_HEIGHT = 11;
@@ -22,7 +17,7 @@ public class GuiTooltipButton extends GuiButton {
     private String[] tooltipLines = null;
     private int tooltipWidth = -1;
 
-    public GuiTooltipButton(int id,
+    public InvTweaksGuiTooltipButton(int id,
             int x, int y, String displayString) {
         this(id, x, y, 150, 20, displayString, null);
     }
@@ -30,17 +25,17 @@ public class GuiTooltipButton extends GuiButton {
     /**
      * Default size is 150, the common "GuiSmallButton" button size.
      */
-    public GuiTooltipButton(int id,
+    public InvTweaksGuiTooltipButton(int id,
             int x, int y, String displayString, String tooltip) {
         this(id, x, y, 150, 20, displayString, tooltip);
     }
 
-    public GuiTooltipButton(int id, int x, int y, int w, int h,
+    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h,
             String displayString) {
         this(id, x, y, w, h, displayString, null);
     }
     
-    public GuiTooltipButton(int id, int x, int y, int w, int h,
+    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h,
             String displayString, String tooltip) {
         super(id, x, y, w, h, displayString);
         if (tooltip != null) {
@@ -70,7 +65,7 @@ public class GuiTooltipButton extends GuiButton {
             }
             
             // Draw tooltip if hover time is long enough
-            if (hoverTime > Const.TOOLTIP_DELAY && tooltipLines != null) {
+            if (hoverTime > InvTweaksConst.TOOLTIP_DELAY && tooltipLines != null) {
                 
                 FontRenderer fontRenderer = minecraft.fontRenderer;
 

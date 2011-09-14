@@ -1,24 +1,15 @@
-package net.invtweaks.gui;
-
-import Obfuscation;
-
 import java.util.concurrent.TimeoutException;
 
-import net.invtweaks.config.InvTweaksConfig;
-import net.invtweaks.config.InvTweaksConfigManager;
-import net.invtweaks.library.ContainerManager.ContainerSection;
-import net.invtweaks.library.ContainerSectionManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.InvTweaks;
 
 /**
  * Button that opens the inventory & chest settings screen.
  * @author Jimeo Wan
  *
  */
-public class GuiInventorySettingsButton extends GuiIconButton {
+public class InvTweaksGuiInventorySettingsButton extends InvTweaksGuiIconButton {
     
-    public GuiInventorySettingsButton(InvTweaksConfigManager cfgManager,
+    public InvTweaksGuiInventorySettingsButton(InvTweaksConfigManager cfgManager,
             int id, int x, int y, int w, int h,
             String displayString, String tooltip) {
         super(cfgManager, id, x, y, w, h, displayString, tooltip);
@@ -45,11 +36,11 @@ public class GuiInventorySettingsButton extends GuiIconButton {
         
         if (super.mousePressed(minecraft, i, j)) {
             // Put hold item down if necessary
-            ContainerSectionManager containerMgr;
+            InvTweaksContainerSectionManager containerMgr;
             
             try {
-                containerMgr = new ContainerSectionManager(
-                        minecraft, ContainerSection.INVENTORY);
+                containerMgr = new InvTweaksContainerSectionManager(
+                        minecraft, InvTweaksContainerSection.INVENTORY);
                 if (Obfuscation.getHoldStackStatic(minecraft) != null) {
                     try {
                         // Put hold item down
@@ -71,7 +62,7 @@ public class GuiInventorySettingsButton extends GuiIconButton {
             cfgManager.makeSureConfigurationIsLoaded();
 
             // Display menu
-            minecraft.displayGuiScreen(new GuiInventorySettings(minecraft,
+            minecraft.displayGuiScreen(new InvTweaksGuiInventorySettings(minecraft,
                     Obfuscation.getCurrentScreenStatic(minecraft), config));
             return true;
         } else {

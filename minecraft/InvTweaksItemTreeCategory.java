@@ -1,4 +1,5 @@
-package net.invtweaks.tree;
+
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,32 +14,32 @@ import java.util.logging.Logger;
  * @author Jimeo Wan
  *
  */
-public class ItemTreeCategory {
+public class InvTweaksItemTreeCategory {
 
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
 
-    private final Map<Integer, List<ItemTreeItem>> items = 
-        new HashMap<Integer, List<ItemTreeItem>>();
+    private final Map<Integer, List<InvTweaksItemTreeItem>> items = 
+        new HashMap<Integer, List<InvTweaksItemTreeItem>>();
     private final Vector<String> matchingItems = new Vector<String>();
-    private final Vector<ItemTreeCategory> subCategories = 
-        new Vector<ItemTreeCategory>();
+    private final Vector<InvTweaksItemTreeCategory> subCategories = 
+        new Vector<InvTweaksItemTreeCategory>();
     private String name;
     private int order = -1;
 
-    public ItemTreeCategory(String name) {
+    public InvTweaksItemTreeCategory(String name) {
         this.name = (name != null) ? name.toLowerCase() : null;
     }
 
-    public boolean contains(ItemTreeItem item) {
-        List<ItemTreeItem> storedItems = items.get(item.getId());
+    public boolean contains(InvTweaksItemTreeItem item) {
+        List<InvTweaksItemTreeItem> storedItems = items.get(item.getId());
         if (storedItems != null) {
-            for (ItemTreeItem storedItem : storedItems) {
+            for (InvTweaksItemTreeItem storedItem : storedItems) {
                 if (storedItem.equals(item))
                     return true;
             }
         }
-        for (ItemTreeCategory category : subCategories) {
+        for (InvTweaksItemTreeCategory category : subCategories) {
             if (category.contains(item)) {
                 return true;
             }
@@ -46,15 +47,15 @@ public class ItemTreeCategory {
         return false;
     }
 
-    public void addCategory(ItemTreeCategory category) {
+    public void addCategory(InvTweaksItemTreeCategory category) {
         subCategories.add(category);
     }
 
-    public void addItem(ItemTreeItem item) {
+    public void addItem(InvTweaksItemTreeItem item) {
 
         // Add item to category
         if (items.get(item.getId()) == null) {
-            List<ItemTreeItem> itemList = new ArrayList<ItemTreeItem>();
+            List<InvTweaksItemTreeItem> itemList = new ArrayList<InvTweaksItemTreeItem>();
             itemList.add(item);
             items.put(item.getId(), itemList);
         } else {
@@ -73,7 +74,7 @@ public class ItemTreeCategory {
             return this.order;
         } else {
             int order;
-            for (ItemTreeCategory category : subCategories) {
+            for (InvTweaksItemTreeCategory category : subCategories) {
                 order = category.getCategoryOrder();
                 if (order != -1)
                     return order;
@@ -87,7 +88,7 @@ public class ItemTreeCategory {
             return getCategoryOrder();
         } else {
             int result;
-            for (ItemTreeCategory category : subCategories) {
+            for (InvTweaksItemTreeCategory category : subCategories) {
                 result = category.findCategoryOrder(keyword);
                 if (result != -1) {
                     return result;
@@ -104,7 +105,7 @@ public class ItemTreeCategory {
             return 1;
         } else {
             int result;
-            for (ItemTreeCategory category : subCategories) {
+            for (InvTweaksItemTreeCategory category : subCategories) {
                 result = category.findKeywordDepth(keyword);
                 if (result != -1) {
                     return result + 1;
@@ -119,11 +120,11 @@ public class ItemTreeCategory {
      * 
      * @return
      */
-    public Collection<ItemTreeCategory> getSubCategories() {
+    public Collection<InvTweaksItemTreeCategory> getSubCategories() {
         return subCategories;
     }
 
-    public Collection<List<ItemTreeItem>> getItems() {
+    public Collection<List<InvTweaksItemTreeItem>> getItems() {
         return items.values();
     }
 

@@ -1,4 +1,5 @@
-package net.invtweaks.config;
+
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,11 +12,7 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import net.invtweaks.Const;
-import net.invtweaks.logic.AutoRefillHandler;
-import net.invtweaks.logic.ShortcutsHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.InvTweaks;
 
 /**
  * Handles the (re)loading of the configuration,
@@ -36,8 +33,8 @@ public class InvTweaksConfigManager {
     private InvTweaksConfig config = null;
     private long storedConfigLastModified = 0;
 
-    private AutoRefillHandler autoRefillHandler = null;
-    private ShortcutsHandler shortcutsHandler = null;
+    private InvTweaksHandlerAutoRefill autoRefillHandler = null;
+    private InvTweaksHandlerShortcuts shortcutsHandler = null;
     
     public InvTweaksConfigManager(Minecraft mc) {
         this.mc = mc;
@@ -49,7 +46,7 @@ public class InvTweaksConfigManager {
         // Load properties
         try {
             if (config != null && config.refreshProperties()) {
-                shortcutsHandler = new ShortcutsHandler(mc, config);
+                shortcutsHandler = new InvTweaksHandlerShortcuts(mc, config);
                 InvTweaks.logInGameStatic("Mod properties loaded");
             }
         } catch (IOException e) {
@@ -80,17 +77,17 @@ public class InvTweaksConfigManager {
         return config;
     }
 
-    public AutoRefillHandler getAutoRefillHandler() {
+    public InvTweaksHandlerAutoRefill getAutoRefillHandler() {
         return autoRefillHandler;
     }
     
-    public ShortcutsHandler getShortcutsHandler() {
+    public InvTweaksHandlerShortcuts getShortcutsHandler() {
         return shortcutsHandler;
     }
     
     private long computeConfigLastModified() {
-        return new File(Const.CONFIG_RULES_FILE).lastModified()
-        + new File(Const.CONFIG_TREE_FILE).lastModified();
+        return new File(InvTweaksConst.CONFIG_RULES_FILE).lastModified()
+        + new File(InvTweaksConst.CONFIG_TREE_FILE).lastModified();
     }
 
     /**
@@ -103,28 +100,28 @@ public class InvTweaksConfigManager {
 
         // Compatibility: Move/Remove old files
 
-        if (new File(Const.OLDER_CONFIG_RULES_FILE).exists()) {
-            if (new File(Const.CONFIG_RULES_FILE).exists()) {
-                backupFile(new File(Const.CONFIG_RULES_FILE), Const.CONFIG_RULES_FILE);
+        if (new File(InvTweaksConst.OLDER_CONFIG_RULES_FILE).exists()) {
+            if (new File(InvTweaksConst.CONFIG_RULES_FILE).exists()) {
+                backupFile(new File(InvTweaksConst.CONFIG_RULES_FILE), InvTweaksConst.CONFIG_RULES_FILE);
             }
-            new File(Const.OLDER_CONFIG_RULES_FILE).renameTo(new File(Const.CONFIG_RULES_FILE));
+            new File(InvTweaksConst.OLDER_CONFIG_RULES_FILE).renameTo(new File(InvTweaksConst.CONFIG_RULES_FILE));
         }
-        if (new File(Const.OLDER_CONFIG_TREE_FILE).exists()) {
-            backupFile(new File(Const.OLDER_CONFIG_TREE_FILE), Const.CONFIG_TREE_FILE);
+        if (new File(InvTweaksConst.OLDER_CONFIG_TREE_FILE).exists()) {
+            backupFile(new File(InvTweaksConst.OLDER_CONFIG_TREE_FILE), InvTweaksConst.CONFIG_TREE_FILE);
         }
-        if (new File(Const.OLD_CONFIG_TREE_FILE).exists()) {
-            new File(Const.OLD_CONFIG_TREE_FILE).renameTo(new File(Const.CONFIG_TREE_FILE));
+        if (new File(InvTweaksConst.OLD_CONFIG_TREE_FILE).exists()) {
+            new File(InvTweaksConst.OLD_CONFIG_TREE_FILE).renameTo(new File(InvTweaksConst.CONFIG_TREE_FILE));
         }
         
         // Create missing files
 
-        if (!new File(Const.CONFIG_RULES_FILE).exists() && 
-                extractFile(Const.DEFAULT_CONFIG_FILE, Const.CONFIG_RULES_FILE)) {
-            InvTweaks.logInGameStatic(Const.CONFIG_RULES_FILE + " missing, creating default one.");
+        if (!new File(InvTweaksConst.CONFIG_RULES_FILE).exists() && 
+                extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE, InvTweaksConst.CONFIG_RULES_FILE)) {
+            InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_RULES_FILE + " missing, creating default one.");
         }
-        if (!new File(Const.CONFIG_TREE_FILE).exists() && 
-                extractFile(Const.DEFAULT_CONFIG_TREE_FILE, Const.CONFIG_TREE_FILE)) {
-            InvTweaks.logInGameStatic(Const.CONFIG_TREE_FILE + " missing, creating default one.");
+        if (!new File(InvTweaksConst.CONFIG_TREE_FILE).exists() && 
+                extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE, InvTweaksConst.CONFIG_TREE_FILE)) {
+            InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_TREE_FILE + " missing, creating default one.");
         }
 
         storedConfigLastModified = computeConfigLastModified();
@@ -137,9 +134,9 @@ public class InvTweaksConfigManager {
             
             // Configuration creation
             if (config == null) {
-                config = new InvTweaksConfig(Const.CONFIG_RULES_FILE, Const.CONFIG_TREE_FILE);
-                autoRefillHandler = new AutoRefillHandler(mc, config);
-                shortcutsHandler = new ShortcutsHandler(mc, config);
+                config = new InvTweaksConfig(InvTweaksConst.CONFIG_RULES_FILE, InvTweaksConst.CONFIG_TREE_FILE);
+                autoRefillHandler = new InvTweaksHandlerAutoRefill(mc, config);
+                shortcutsHandler = new InvTweaksHandlerShortcuts(mc, config);
             }
             
             // Configuration loading
@@ -204,7 +201,7 @@ public class InvTweaksConfigManager {
         // Extraction from mods folder
         if (resourceUrl == null) {
 
-            File modFolder = new File(Const.MINECRAFT_DIR + File.separatorChar + "mods");
+            File modFolder = new File(InvTweaksConst.MINECRAFT_DIR + File.separatorChar + "mods");
 
             File[] zips = modFolder.listFiles();
             if (zips != null && zips.length > 0) {

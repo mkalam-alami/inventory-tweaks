@@ -1,22 +1,9 @@
-package net.invtweaks.logic;
-
-import Obfuscation;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import net.invtweaks.Const;
-import net.invtweaks.config.InvTweaksConfig;
-import net.invtweaks.config.SortingRule;
-import net.invtweaks.config.SortingRule.RuleType;
-import net.invtweaks.library.ContainerSectionManager;
-import net.invtweaks.library.ContainerManager.ContainerSection;
-import net.invtweaks.tree.ItemTree;
-import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.ItemStack;
 
 /**
  * Handles the auto-refilling of the hotbar.
@@ -24,13 +11,13 @@ import net.minecraft.src.ItemStack;
  * @author Jimeo Wan
  *
  */
-public class AutoRefillHandler extends Obfuscation {
+public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
     
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     private InvTweaksConfig config = null;
     
-    public AutoRefillHandler(Minecraft mc, InvTweaksConfig config) {
+    public InvTweaksHandlerAutoRefill(Minecraft mc, InvTweaksConfig config) {
 		super(mc);
 		setConfig(config);
 	}
@@ -45,27 +32,28 @@ public class AutoRefillHandler extends Obfuscation {
      */
 	public void autoRefillSlot(int slot, int wantedId, int wantedDamage) throws Exception {
    
-		ContainerSectionManager container = new ContainerSectionManager(
-		        mc, ContainerSection.INVENTORY);
-		ItemStack candidateStack, replacementStack = null;
+		InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(
+		        mc, InvTweaksContainerSection.INVENTORY);
+		ul candidateStack, replacementStack = null;
 		int replacementStackSlot = -1;
 
 		//// Search replacement
 		
-		List<SortingRule> matchingRules = new ArrayList<SortingRule>();
-		List<SortingRule> rules = config.getRules();
-		ItemTree tree = config.getTree();
-		List<ItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
+		List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<InvTweaksConfigSortingRule>();
+		List<InvTweaksConfigSortingRule> rules = config.getRules();
+		InvTweaksItemTree tree = config.getTree();
+		List<InvTweaksItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
 
 		// Find rules that match the slot
-		for (ItemTreeItem item : items) {
+		for (InvTweaksItemTreeItem item : items) {
 			// Fake rules that match the exact item first
-			matchingRules.add(new SortingRule(
+			matchingRules.add(new InvTweaksConfigSortingRule(
 					tree, "D"+(slot-27), item.getName(),
-					Const.INVENTORY_SIZE, Const.INVENTORY_ROW_SIZE));
+					InvTweaksConst.INVENTORY_SIZE, InvTweaksConst.INVENTORY_ROW_SIZE));
 		}
-		for (SortingRule rule : rules) {
-			if (rule.getType() == RuleType.TILE || rule.getType() == RuleType.COLUMN) {
+		for (InvTweaksConfigSortingRule rule : rules) {
+			if (rule.getType() == InvTweaksConfigSortingRuleType.TILE 
+			        || rule.getType() == InvTweaksConfigSortingRuleType.COLUMN) {
 				for (int preferredSlot : rule.getPreferredSlots()) {
 					if (slot == preferredSlot) {
 						matchingRules.add(rule);
@@ -78,11 +66,11 @@ public class AutoRefillHandler extends Obfuscation {
 		// Look only for a matching stack
 		// First, look for the same item,
 		// else one that matches the slot's rules
-		for (SortingRule rule : matchingRules) {
-			for (int i = 0; i < Const.INVENTORY_SIZE; i++) {
+		for (InvTweaksConfigSortingRule rule : matchingRules) {
+			for (int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
 				candidateStack = container.getItemStack(i);
 				if (candidateStack != null) {
-					List<ItemTreeItem> candidateItems = tree.getItems(
+					List<InvTweaksItemTreeItem> candidateItems = tree.getItems(
 							getItemID(candidateStack),
 							getItemDamage(candidateStack));
 					if (tree.matches(candidateItems, rule.getKeyword())) {
@@ -115,14 +103,14 @@ public class AutoRefillHandler extends Obfuscation {
 		     */
 			new Thread(new Runnable() {
 
-				private ContainerSectionManager containerMgr;
+				private InvTweaksContainerSectionManager containerMgr;
 				private int targetedSlot;
 				private int i, expectedItemId;
 				
 				public Runnable init(Minecraft mc,
 						int i, int currentItem) throws Exception {
-					this.containerMgr = new ContainerSectionManager(
-					        mc, ContainerSection.INVENTORY);
+					this.containerMgr = new InvTweaksContainerSectionManager(
+					        mc, InvTweaksContainerSection.INVENTORY);
 					this.targetedSlot = currentItem;
 					this.expectedItemId = getItemID(
 					        containerMgr.getItemStack(i));
@@ -138,21 +126,21 @@ public class AutoRefillHandler extends Obfuscation {
 						int pollingTime = 0;
 						setHasInventoryChanged(false);
 						while(!hasInventoryChanged()
-								&& pollingTime < Const.POLLING_TIMEOUT) {
-							trySleep(Const.POLLING_DELAY);
+								&& pollingTime < InvTweaksConst.POLLING_TIMEOUT) {
+							trySleep(InvTweaksConst.POLLING_DELAY);
 						}
-						if (pollingTime < Const.AUTO_REFILL_DELAY)
-							trySleep(Const.AUTO_REFILL_DELAY - pollingTime);
-						if (pollingTime >= Const.POLLING_TIMEOUT)
+						if (pollingTime < InvTweaksConst.AUTO_REFILL_DELAY)
+							trySleep(InvTweaksConst.AUTO_REFILL_DELAY - pollingTime);
+						if (pollingTime >= InvTweaksConst.POLLING_TIMEOUT)
 							log.warning("Autoreplace timout");
 					}
 					else {
-						trySleep(Const.AUTO_REFILL_DELAY);
+						trySleep(InvTweaksConst.AUTO_REFILL_DELAY);
 					}
 					
 					// In POLLING_DELAY ms, things might have changed
 					try {
-						ItemStack stack = containerMgr.getItemStack(i);
+						ul stack = containerMgr.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (containerMgr.move(i, targetedSlot)) {
 								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_REFILL_SOUND).equals("false")) {
@@ -162,7 +150,7 @@ public class AutoRefillHandler extends Obfuscation {
 								// If item are swapped (like for mushroom soups),
 								// put the item back in the inventory if it is in the hotbar
 								if (containerMgr.getItemStack(i) != null && i >= 27) {
-									for (int j = 0; j < Const.INVENTORY_SIZE; j++) {
+									for (int j = 0; j < InvTweaksConst.INVENTORY_SIZE; j++) {
 										if (containerMgr.getItemStack(j) == null) {
 										    containerMgr.move(i, j);
 											break;

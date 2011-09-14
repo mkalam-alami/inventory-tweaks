@@ -1,4 +1,5 @@
-package net.invtweaks.config;
+
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,11 +16,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.invtweaks.Const;
-import net.invtweaks.tree.ItemTree;
-import net.invtweaks.tree.ItemTreeItem;
-import net.invtweaks.tree.ItemTreeLoader;
-import net.minecraft.src.InvTweaks;
 
 /**
  * The global mod's configuration.
@@ -66,9 +62,9 @@ public class InvTweaksConfig {
     private String rulesFile;
     private String treeFile;
 
-    private InvTweaksProperties properties;
-    private ItemTree tree;
-    private Vector<InventoryConfigRuleset> rulesets;
+    private InvTweaksConfigProperties properties;
+    private InvTweaksItemTree tree;
+    private Vector<InvTweaksConfigInventoryRuleset> rulesets;
     private int currentRuleset = 0;
     private String currentRulesetName = null;
     private Vector<String> invalidKeywords;
@@ -96,7 +92,7 @@ public class InvTweaksConfig {
             saveProperties(); // Needed to append non-saved properties to the file
 
             // Load tree
-            tree = new ItemTreeLoader().load(treeFile);
+            tree = new InvTweaksItemTreeLoader().load(treeFile);
 
             // Read file
             File f = new File(rulesFile);
@@ -109,7 +105,7 @@ public class InvTweaksConfig {
                     .replace("\r\n", "\n").replace('\r', '\n').split("\n");
 
             // Register rules in various configurations (rulesets)
-            InventoryConfigRuleset activeRuleset = new InventoryConfigRuleset(tree, "Default");
+            InvTweaksConfigInventoryRuleset activeRuleset = new InvTweaksConfigInventoryRuleset(tree, "Default");
             boolean defaultRuleset = true, defaultRulesetEmpty = true;
             String invalidKeyword;
 
@@ -122,7 +118,7 @@ public class InvTweaksConfig {
                         activeRuleset.finalize();
                         rulesets.add(activeRuleset);
                     }
-                    activeRuleset = new InventoryConfigRuleset(tree, 
+                    activeRuleset = new InvTweaksConfigInventoryRuleset(tree, 
                             line.substring(0, line.length() - 1));
                 }
 
@@ -149,7 +145,7 @@ public class InvTweaksConfig {
             currentRuleset = 0;
             if (currentRulesetName != null) {
                 int rulesetIndex = 0;
-                for (InventoryConfigRuleset ruleset : rulesets) {
+                for (InvTweaksConfigInventoryRuleset ruleset : rulesets) {
                     if (ruleset.getName().equals(currentRulesetName)) {
                         currentRuleset = rulesetIndex;
                         break;
@@ -172,7 +168,7 @@ public class InvTweaksConfig {
 
     public boolean refreshProperties() throws IOException {
         // Check time of last edit
-        long configLastModified = new File(Const.CONFIG_PROPS_FILE).lastModified();
+        long configLastModified = new File(InvTweaksConst.CONFIG_PROPS_FILE).lastModified();
         if (storedConfigLastModified != configLastModified) {
             storedConfigLastModified = configLastModified;
             loadProperties();
@@ -194,10 +190,10 @@ public class InvTweaksConfig {
                         "(Regarding shortcuts, all key names can be found at: http://www.lwjgl.org/javadoc/org/lwjgl/input/Keyboard.html)");
                 fos.flush();
                 fos.close();
-                storedConfigLastModified = new File(Const.CONFIG_PROPS_FILE).lastModified();
+                storedConfigLastModified = new File(InvTweaksConst.CONFIG_PROPS_FILE).lastModified();
             } catch (IOException e) {
                 InvTweaks.logInGameStatic("Failed to save config file " + 
-                        Const.CONFIG_PROPS_FILE);
+                        InvTweaksConst.CONFIG_PROPS_FILE);
             }
         }
     }
@@ -225,7 +221,7 @@ public class InvTweaksConfig {
         }
     }
 
-    public ItemTree getTree() {
+    public InvTweaksItemTree getTree() {
         return tree;
     }
 
@@ -261,7 +257,7 @@ public class InvTweaksConfig {
      * 
      * @return
      */
-    public Vector<SortingRule> getRules() {
+    public Vector<InvTweaksConfigSortingRule> getRules() {
         return rulesets.get(currentRuleset).getRules();
     }
 
@@ -301,7 +297,7 @@ public class InvTweaksConfig {
     }
 
     public boolean isAutoRefillEnabled(int itemID, int itemDamage) {
-        List<ItemTreeItem> items = tree.getItems(itemID, itemDamage);
+        List<InvTweaksItemTreeItem> items = tree.getItems(itemID, itemDamage);
         Vector<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();
         boolean found = false;
         for (String keyword : autoReplaceRules) {
@@ -422,11 +418,11 @@ public class InvTweaksConfig {
     }
 
     private void reset() {
-        rulesets = new Vector<InventoryConfigRuleset>();
+        rulesets = new Vector<InvTweaksConfigInventoryRuleset>();
         currentRuleset = -1;
 
         // Default property values
-        properties = new InvTweaksProperties();
+        properties = new InvTweaksConfigProperties();
         
         properties.put(PROP_ENABLE_MIDDLE_CLICK, VALUE_TRUE);
         properties.put(PROP_SHOW_CHEST_BUTTONS, VALUE_TRUE);
@@ -477,13 +473,13 @@ public class InvTweaksConfig {
      * @return May return null in case of failure while creating the file.
      */
     private File getPropertyFile() {
-        File configPropsFile = new File(Const.CONFIG_PROPS_FILE);
+        File configPropsFile = new File(InvTweaksConst.CONFIG_PROPS_FILE);
         if (!configPropsFile.exists()) {
             try {
                 configPropsFile.createNewFile();
             } catch (IOException e) {
                 InvTweaks.logInGameStatic("Failed to create the config file "
-                        + Const.CONFIG_PROPS_FILE);
+                        + InvTweaksConst.CONFIG_PROPS_FILE);
                 return null;
             }
         }

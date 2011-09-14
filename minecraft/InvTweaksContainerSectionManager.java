@@ -1,14 +1,7 @@
-package net.invtweaks.library;
-
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import net.invtweaks.library.ContainerManager.ContainerSection;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.Container;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
-
 
 /**
  * Allows to perform various operations on a single section of
@@ -17,13 +10,13 @@ import net.minecraft.src.Slot;
  * @author Jimeo Wan
  *
  */
-public class ContainerSectionManager {
+public class InvTweaksContainerSectionManager {
 
-    private ContainerManager containerMgr;
-    private ContainerSection section;
+    private InvTweaksContainerManager containerMgr;
+    private InvTweaksContainerSection section;
     
-    public ContainerSectionManager(Minecraft mc, ContainerSection section) throws Exception {
-        this.containerMgr = new ContainerManager(mc);
+    public InvTweaksContainerSectionManager(Minecraft mc, InvTweaksContainerSection section) throws Exception {
+        this.containerMgr = new InvTweaksContainerManager(mc);
         this.section = section;
         
         if (!containerMgr.hasSection(section)) {
@@ -59,7 +52,7 @@ public class ContainerSectionManager {
         containerMgr.click(section, index, rightClick);
     }
 
-    public List<Slot> getSlots() {
+    public List<sx> getSlots() {
         return containerMgr.getSlots(section);
     }
 
@@ -75,7 +68,7 @@ public class ContainerSectionManager {
         return containerMgr.isSlotEmpty(section, slot);
     }
 
-    public Slot getSlot(int index) {
+    public sx getSlot(int index) {
         return containerMgr.getSlot(section, index);
     }
     
@@ -92,11 +85,11 @@ public class ContainerSectionManager {
         return containerMgr.getSlotSection(slotNumber) == section;
     }
     
-    public ItemStack getItemStack(int index) throws NullPointerException, IndexOutOfBoundsException {
+    public ul getItemStack(int index) throws NullPointerException, IndexOutOfBoundsException {
         return containerMgr.getItemStack(section, index);
     }
 
-    public Container getContainer() {
+    public cf getContainer() {
         return containerMgr.getContainer();
     }
     

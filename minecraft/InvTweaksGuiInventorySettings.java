@@ -1,5 +1,3 @@
-package net.invtweaks.gui;
-
 import java.awt.Desktop;
 import java.io.File;
 import java.net.URL;
@@ -7,12 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.invtweaks.Const;
-import net.invtweaks.config.InvTweaksConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.GuiButton;
-import net.minecraft.src.GuiScreen;
-import net.minecraft.src.InvTweaks;
 
 import org.lwjgl.util.Point;
 
@@ -22,7 +15,7 @@ import org.lwjgl.util.Point;
  * @author Jimeo Wan
  * 
  */
-public class GuiInventorySettings extends GuiScreen {
+public class InvTweaksGuiInventorySettings extends qr {
 
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
@@ -53,7 +46,7 @@ public class GuiInventorySettings extends GuiScreen {
     private GuiScreen parentScreen;
     private InvTweaksConfig config;
 
-    public GuiInventorySettings(Minecraft mc, GuiScreen parentScreen,
+    public InvTweaksGuiInventorySettings(Minecraft mc, GuiScreen parentScreen,
             InvTweaksConfig config) {
         this.mc = mc;
         this.parentScreen = parentScreen;
@@ -78,7 +71,7 @@ public class GuiInventorySettings extends GuiScreen {
 
         String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
         moveToButtonCoords(i++, p);
-        GuiTooltipButton middleClickBtn = new GuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(), computeBooleanButtonLabel(
+        InvTweaksGuiTooltipButton middleClickBtn = new InvTweaksGuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, MIDDLE_CLICK), "To sort using the middle click");
         controlList.add(middleClickBtn);
         if (middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
@@ -88,10 +81,10 @@ public class GuiInventorySettings extends GuiScreen {
         }
 
         moveToButtonCoords(i++, p);
-        controlList.add(new GuiTooltipButton(ID_SHORTCUTS_HELP, 
+        controlList.add(new InvTweaksGuiTooltipButton(ID_SHORTCUTS_HELP, 
                 p.getX() + 130, p.getY(), 20, 20, "?", "Shortcuts help"));
         String shortcuts = config.getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
-        GuiTooltipButton shortcutsBtn = new GuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130, 20, computeBooleanButtonLabel(
+        InvTweaksGuiTooltipButton shortcutsBtn = new InvTweaksGuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130, 20, computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_SHORTCUTS, SHORTCUTS), "Enables various shortcuts\nto move items around");
         controlList.add(shortcutsBtn);
         if (shortcuts.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
@@ -101,7 +94,7 @@ public class GuiInventorySettings extends GuiScreen {
         }
         
         moveToButtonCoords(i++, p);
-        GuiTooltipButton sortOnPickupBtn = new GuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), computeBooleanButtonLabel(
+        InvTweaksGuiTooltipButton sortOnPickupBtn = new InvTweaksGuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, SORT_ON_PICKUP), "Moves picked up items\nto the right slots");
         controlList.add(sortOnPickupBtn);
         if (mc.isMultiplayerWorld()) {
@@ -112,7 +105,7 @@ public class GuiInventorySettings extends GuiScreen {
         }
 
         moveToButtonCoords(i++, p);
-        controlList.add(new GuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(), computeBooleanButtonLabel(
+        controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, CHEST_BUTTONS), "Adds three buttons\non chests to sort them"));
 
         // Check if links to files are supported, if not disable the buttons
@@ -162,13 +155,13 @@ public class GuiInventorySettings extends GuiScreen {
 
         // Shortcuts help
         case ID_SHORTCUTS_HELP:
-            mc.displayGuiScreen(new GuiShortcutsHelp(mc, this, config));
+            mc.displayGuiScreen(new InvTweaksGuiShortcutsHelp(mc, this, config));
             break;
 
         // Open rules configuration in external editor
         case ID_EDITRULES:
             try {
-                Desktop.getDesktop().open(new File(Const.CONFIG_RULES_FILE));
+                Desktop.getDesktop().open(new File(InvTweaksConst.CONFIG_RULES_FILE));
             } catch (Exception e) {
                 InvTweaks.logInGameErrorStatic("Failed to open rules file", e);
             }
@@ -177,7 +170,7 @@ public class GuiInventorySettings extends GuiScreen {
         // Open tree configuration in external editor
         case ID_EDITTREE:
             try {
-                Desktop.getDesktop().open(new File(Const.CONFIG_TREE_FILE));
+                Desktop.getDesktop().open(new File(InvTweaksConst.CONFIG_TREE_FILE));
             } catch (Exception e) {
                 InvTweaks.logInGameErrorStatic("Failed to open tree file", e);
             }
@@ -186,7 +179,7 @@ public class GuiInventorySettings extends GuiScreen {
         // Open help in external editor
         case ID_HELP:
             try {
-                Desktop.getDesktop().browse(new URL(Const.HELP_URL).toURI());
+                Desktop.getDesktop().browse(new URL(InvTweaksConst.HELP_URL).toURI());
             } catch (Exception e) {
                 InvTweaks.logInGameErrorStatic("Failed to open help", e);
             }

@@ -1,4 +1,5 @@
-package net.invtweaks.tree;
+
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,36 +17,36 @@ import java.util.logging.Logger;
  * @author Jimeo Wan
  *
  */
-public class ItemTree {
+public class InvTweaksItemTree {
 
     public static final int MAX_CATEGORY_RANGE = 1000;
 
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     /** All categories, stored by name */
-    private Map<String, ItemTreeCategory> categories = 
-        new HashMap<String, ItemTreeCategory>();
+    private Map<String, InvTweaksItemTreeCategory> categories = 
+        new HashMap<String, InvTweaksItemTreeCategory>();
 
     /** Items stored by ID. A same ID can hold several names. */
-    private Map<Integer, Vector<ItemTreeItem>> itemsById = 
-        new HashMap<Integer, Vector<ItemTreeItem>>(500);
-    private static Vector<ItemTreeItem> defaultItems = null;
+    private Map<Integer, Vector<InvTweaksItemTreeItem>> itemsById = 
+        new HashMap<Integer, Vector<InvTweaksItemTreeItem>>(500);
+    private static Vector<InvTweaksItemTreeItem> defaultItems = null;
 
     /** Items stored by name. A same name can match several IDs. */
-    private Map<String, Vector<ItemTreeItem>> itemsByName = 
-        new HashMap<String, Vector<ItemTreeItem>>(500);
+    private Map<String, Vector<InvTweaksItemTreeItem>> itemsByName = 
+        new HashMap<String, Vector<InvTweaksItemTreeItem>>(500);
 
     private String rootCategory;
 
-    public ItemTree() {
+    public InvTweaksItemTree() {
         reset();
     }
 
     public void reset() {
 
         if (defaultItems == null) {
-            defaultItems = new Vector<ItemTreeItem>();
-            defaultItems.add(new ItemTreeItem("unknown", -1, -1, Integer.MAX_VALUE));
+            defaultItems = new Vector<InvTweaksItemTreeItem>();
+            defaultItems.add(new InvTweaksItemTreeItem("unknown", -1, -1, Integer.MAX_VALUE));
         }
 
         // Reset tree
@@ -63,22 +64,22 @@ public class ItemTree {
      * @param keyword
      * @return
      */
-    public boolean matches(List<ItemTreeItem> items, String keyword) {
+    public boolean matches(List<InvTweaksItemTreeItem> items, String keyword) {
 
         if (items == null)
             return false;
 
         // The keyword is an item
-        for (ItemTreeItem item : items) {
+        for (InvTweaksItemTreeItem item : items) {
             if (item.getName().equals(keyword)) {
                 return true;
             }
         }
 
         // The keyword is a category
-        ItemTreeCategory category = getCategory(keyword);
+        InvTweaksItemTreeCategory category = getCategory(keyword);
         if (category != null) {
-            for (ItemTreeItem item : items) {
+            for (InvTweaksItemTreeItem item : items) {
                 if (category.contains(item)) {
                     return true;
                 }
@@ -103,7 +104,7 @@ public class ItemTree {
     }
 
     public int getKeywordOrder(String keyword) {
-        List<ItemTreeItem> items = getItems(keyword);
+        List<InvTweaksItemTreeItem> items = getItems(keyword);
         if (items != null && items.size() != 0) {
             return items.get(0).getOrder();
         } else {
@@ -132,7 +133,7 @@ public class ItemTree {
 
         // Or maybe a category ?
         else {
-            ItemTreeCategory category = getCategory(keyword);
+            InvTweaksItemTreeCategory category = getCategory(keyword);
             return category != null;
         }
     }
@@ -140,27 +141,27 @@ public class ItemTree {
     /**
      * Returns a reference to all categories.
      */
-    public Collection<ItemTreeCategory> getAllCategories() {
+    public Collection<InvTweaksItemTreeCategory> getAllCategories() {
         return categories.values();
     }
 
-    public ItemTreeCategory getRootCategory() {
+    public InvTweaksItemTreeCategory getRootCategory() {
         return categories.get(rootCategory);
     }
 
-    public ItemTreeCategory getCategory(String keyword) {
+    public InvTweaksItemTreeCategory getCategory(String keyword) {
         return categories.get(keyword);
     }
 
-    public List<ItemTreeItem> getItems(int id, int damage) {
-        List<ItemTreeItem> items = itemsById.get(id);
-        List<ItemTreeItem> filteredItems = null;
+    public List<InvTweaksItemTreeItem> getItems(int id, int damage) {
+        List<InvTweaksItemTreeItem> items = itemsById.get(id);
+        List<InvTweaksItemTreeItem> filteredItems = null;
         if (items != null) {
             // Filter items of same ID, but different damage value
-            for (ItemTreeItem item : items) {
+            for (InvTweaksItemTreeItem item : items) {
                 if (item.getDamage() != -1 && item.getDamage() != damage) {
                     if (filteredItems == null) {
-                        filteredItems = new ArrayList<ItemTreeItem>(items);
+                        filteredItems = new ArrayList<InvTweaksItemTreeItem>(items);
                     }
                     filteredItems.remove(item);
                 }
@@ -173,12 +174,12 @@ public class ItemTree {
         }
     }
 
-    public List<ItemTreeItem> getItems(String name) {
+    public List<InvTweaksItemTreeItem> getItems(String name) {
         return itemsByName.get(name);
     }
 
-    public ItemTreeItem getRandomItem(Random r) {
-        return (ItemTreeItem) itemsByName.values()
+    public InvTweaksItemTreeItem getRandomItem(Random r) {
+        return (InvTweaksItemTreeItem) itemsByName.values()
                 .toArray()[r.nextInt(itemsByName.size())];
     }
 
@@ -190,13 +191,13 @@ public class ItemTree {
         return categories.containsKey(name);
     }
 
-    protected void setRootCategory(ItemTreeCategory category) {
+    protected void setRootCategory(InvTweaksItemTreeCategory category) {
         rootCategory = category.getName();
         categories.put(rootCategory, category);
     }
 
     protected void addCategory(String parentCategory, 
-            ItemTreeCategory newCategory) throws NullPointerException {
+            InvTweaksItemTreeCategory newCategory) throws NullPointerException {
         // Build tree
         categories.get(parentCategory.toLowerCase()).addCategory(newCategory);
 
@@ -205,7 +206,7 @@ public class ItemTree {
     }
 
     protected void addItem(String parentCategory,
-            ItemTreeItem newItem) throws NullPointerException {
+            InvTweaksItemTreeItem newItem) throws NullPointerException {
         // Build tree
         categories.get(parentCategory.toLowerCase()).addItem(newItem);
 
@@ -213,14 +214,14 @@ public class ItemTree {
         if (itemsByName.containsKey(newItem.getName())) {
             itemsByName.get(newItem.getName()).add(newItem);
         } else {
-            Vector<ItemTreeItem> list = new Vector<ItemTreeItem>();
+            Vector<InvTweaksItemTreeItem> list = new Vector<InvTweaksItemTreeItem>();
             list.add(newItem);
             itemsByName.put(newItem.getName(), list);
         }
         if (itemsById.containsKey(newItem.getId())) {
             itemsById.get(newItem.getId()).add(newItem);
         } else {
-            Vector<ItemTreeItem> list = new Vector<ItemTreeItem>();
+            Vector<InvTweaksItemTreeItem> list = new Vector<InvTweaksItemTreeItem>();
             list.add(newItem);
             itemsById.put(newItem.getId(), list);
         }
@@ -230,7 +231,7 @@ public class ItemTree {
      * For debug purposes. Call log(getRootCategory(), 0) to log the whole tree.
      */
     @SuppressWarnings("unused")
-    private void log(ItemTreeCategory category, int indentLevel) {
+    private void log(InvTweaksItemTreeCategory category, int indentLevel) {
 
         String logIdent = "";
         for (int i = 0; i < indentLevel; i++) {
@@ -238,12 +239,12 @@ public class ItemTree {
         }
         log.info(logIdent + category.getName());
 
-        for (ItemTreeCategory subCategory : category.getSubCategories()) {
+        for (InvTweaksItemTreeCategory subCategory : category.getSubCategories()) {
             log(subCategory, indentLevel + 1);
         }
 
-        for (List<ItemTreeItem> itemList : category.getItems()) {
-            for (ItemTreeItem item : itemList) {
+        for (List<InvTweaksItemTreeItem> itemList : category.getItems()) {
+            for (InvTweaksItemTreeItem item : itemList) {
                 log.info(logIdent + "  " + item + " " + 
                         item.getId() + " " + item.getDamage());
             }

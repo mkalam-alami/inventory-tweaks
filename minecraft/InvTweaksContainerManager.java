@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
  * @author Jimeo Wan
  *
  */
-public class ContainerManager extends Obfuscation {
+public class InvTweaksContainerManager extends InvTweaksObfuscation {
 	
     // TODO: Throw errors when the container isn't available anymore
 
@@ -23,24 +23,8 @@ public class ContainerManager extends Obfuscation {
     public static final int ACTION_TIMEOUT = 500;
     public static final int POLLING_DELAY = 3;
     
-    public enum ContainerSection{
-        /** The player's inventory */ INVENTORY,
-        /** The player's inventory (only the hotbar) */ INVENTORY_HOTBAR,
-        /** The player's inventory (all except the hotbar) */ INVENTORY_NOT_HOTBAR,
-        /** The chest or dispenser contents */ CHEST,
-        /** The crafting input */ CRAFTING_IN,
-        /** The crafting output */ CRAFTING_OUT,
-        /** The armor slots */ ARMOR,
-        /** The furnace input */ FURNACE_IN,
-        /** The furnace output */ FURNACE_OUT,
-        /** The furnace fuel */ FURNACE_FUEL,
-        /** Any other type of slot. For unknown container types (such as
-         * mod containers), only INVENTORY and OTHER sections are defined. */
-        UNKNOWN
-    }
-    
     private cf container;
-    private Map<ContainerSection, List<sx>> slotRefs = new HashMap<ContainerSection, List<sx>>();
+    private Map<InvTweaksContainerSection, List<sx>> slotRefs = new HashMap<InvTweaksContainerSection, List<sx>>();
     
     
     /**
@@ -50,7 +34,7 @@ public class ContainerManager extends Obfuscation {
      * @param mc Minecraft
      */
     @SuppressWarnings({"unchecked"})
-    public ContainerManager(Minecraft mc) {
+    public InvTweaksContainerManager(Minecraft mc) {
         super(mc);
         
         qr currentScreen = getCurrentScreen();
@@ -67,46 +51,46 @@ public class ContainerManager extends Obfuscation {
 
         // Inventory: 4 crafting slots, then 4 armor slots, then inventory
         if (isContainerPlayer(container)) {
-            slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
-            slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 5));
-            slotRefs.put(ContainerSection.ARMOR, slots.subList(5, 9));
+            slotRefs.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+            slotRefs.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(1, 5));
+            slotRefs.put(InvTweaksContainerSection.ARMOR, slots.subList(5, 9));
         }
         
         // Chest/Dispenser
         else if (isContainerChest(container)
                 || isContainerDispenser(container)) {
-            slotRefs.put(ContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
+            slotRefs.put(InvTweaksContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
         }
         
         // Furnace
         else if (isContainerFurnace(container)) {
-            slotRefs.put(ContainerSection.FURNACE_IN, slots.subList(0, 1));
-            slotRefs.put(ContainerSection.FURNACE_FUEL, slots.subList(1, 2));
-            slotRefs.put(ContainerSection.FURNACE_OUT, slots.subList(2, 3));
+            slotRefs.put(InvTweaksContainerSection.FURNACE_IN, slots.subList(0, 1));
+            slotRefs.put(InvTweaksContainerSection.FURNACE_FUEL, slots.subList(1, 2));
+            slotRefs.put(InvTweaksContainerSection.FURNACE_OUT, slots.subList(2, 3));
         }
 
         // Workbench
         else if (isContainerWorkbench(container)) {
-            slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
-            slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 10));
+            slotRefs.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+            slotRefs.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(1, 10));
         }
         
         // Unknown
         else {
             if (size >= INVENTORY_SIZE) {
              // Assuming the container ends with the inventory, just like all vanilla containers.
-                slotRefs.put(ContainerSection.UNKNOWN, slots.subList(0, size-INVENTORY_SIZE));
+                slotRefs.put(InvTweaksContainerSection.UNKNOWN, slots.subList(0, size-INVENTORY_SIZE));
             }
             else {
                 guiWithInventory = false;
-                slotRefs.put(ContainerSection.UNKNOWN, slots.subList(0, size));
+                slotRefs.put(InvTweaksContainerSection.UNKNOWN, slots.subList(0, size));
             }
         }
 
         if (guiWithInventory) {
-            slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
-            slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
-            slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
+            slotRefs.put(InvTweaksContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
+            slotRefs.put(InvTweaksContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
+            slotRefs.put(InvTweaksContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
         }
         
     }
@@ -126,8 +110,8 @@ public class ContainerManager extends Obfuscation {
      * holding an item that couln't be put down.
      * @throws TimeoutException 
      */
-	public boolean move(ContainerSection srcSection, int srcIndex,
-            ContainerSection destSection, int destIndex) throws TimeoutException {
+	public boolean move(InvTweaksContainerSection srcSection, int srcIndex,
+            InvTweaksContainerSection destSection, int destIndex) throws TimeoutException {
 	    
 	    ul srcStack = getItemStack(srcSection, srcIndex);
 	    ul destStack = getItemStack(destSection, destIndex);
@@ -141,9 +125,9 @@ public class ContainerManager extends Obfuscation {
 
         // Put hold item down
         if (getHoldStack() != null) {
-            int firstEmptyIndex = getFirstEmptyIndex(ContainerSection.INVENTORY);
+            int firstEmptyIndex = getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
             if (firstEmptyIndex != -1) {
-                leftClick(ContainerSection.INVENTORY, firstEmptyIndex);
+                leftClick(InvTweaksContainerSection.INVENTORY, firstEmptyIndex);
             }
             else {
                 return false;
@@ -157,7 +141,7 @@ public class ContainerManager extends Obfuscation {
                 && getItemID(srcStack) == getItemID(destStack)
                 && getMaxStackSize(srcStack) == 1) {
             int intermediateSlot = getFirstEmptyUsableSlotNumber();
-            ContainerSection intermediateSection = getSlotSection(intermediateSlot);
+            InvTweaksContainerSection intermediateSection = getSlotSection(intermediateSlot);
             int intermediateIndex = getSlotIndex(intermediateSlot);
             if (intermediateIndex != -1) {
                 // Step 1/3: Dest > Int
@@ -202,8 +186,8 @@ public class ContainerManager extends Obfuscation {
 	 * by a different item (meaning items cannot be moved to destination).
 	 * @throws TimeoutException 
 	 */
-	public boolean moveSome(ContainerSection srcSection, int srcIndex,
-	        ContainerSection destSection, int destIndex,
+	public boolean moveSome(InvTweaksContainerSection srcSection, int srcIndex,
+	        InvTweaksContainerSection destSection, int destIndex,
 	        int amount) throws TimeoutException {
 
 	    ul source = getItemStack(srcSection, srcIndex);
@@ -216,7 +200,7 @@ public class ContainerManager extends Obfuscation {
         int movedAmount = Math.min(amount, sourceSize);
 	    
 	    if (source != null && (destination == null
-	            || areItemStacksEqual(source, destination)) {
+	            || areItemStacksEqual(source, destination))) {
 
 	        leftClick(srcSection, srcIndex);
 	        for (int i = 0; i < movedAmount; i++) {
@@ -233,23 +217,23 @@ public class ContainerManager extends Obfuscation {
 	    
 	}
 
-    public boolean drop(ContainerSection srcSection, int srcIndex) throws TimeoutException {
+    public boolean drop(InvTweaksContainerSection srcSection, int srcIndex) throws TimeoutException {
         return move(srcSection, srcIndex, null, DROP_SLOT);
     }
     
-    public boolean dropSome(ContainerSection srcSection, int srcIndex, int amount) throws TimeoutException {
+    public boolean dropSome(InvTweaksContainerSection srcSection, int srcIndex, int amount) throws TimeoutException {
         return moveSome(srcSection, srcIndex, null, DROP_SLOT, amount);
     }
             
-	public void leftClick(ContainerSection section, int index) throws TimeoutException {
+	public void leftClick(InvTweaksContainerSection section, int index) throws TimeoutException {
         click(section, index, false);
     }
 
-    public void rightClick(ContainerSection section, int index) throws TimeoutException {
+    public void rightClick(InvTweaksContainerSection section, int index) throws TimeoutException {
         click(section, index, true);
     }
 
-    public void click(ContainerSection section, int index, boolean rightClick) throws TimeoutException {
+    public void click(InvTweaksContainerSection section, int index, boolean rightClick) throws TimeoutException {
         
         int slot = indexToSlot(section, index);
        // int timeSpentWaiting = 0;
@@ -310,11 +294,11 @@ public class ContainerManager extends Obfuscation {
         }
     }
 
-    public boolean hasSection(ContainerSection section) {
+    public boolean hasSection(InvTweaksContainerSection section) {
         return slotRefs.containsKey(section);
     }
 
-    public List<sx> getSlots(ContainerSection section) {
+    public List<sx> getSlots(InvTweaksContainerSection section) {
         return slotRefs.get(section); 
     }
 
@@ -334,7 +318,7 @@ public class ContainerManager extends Obfuscation {
      * @param slot
      * @return The size, or 0 if there is no such section.
      */
-    public int getSize(ContainerSection section) {
+    public int getSize(InvTweaksContainerSection section) {
         if (hasSection(section)) {
             return slotRefs.get(section).size();  
         }
@@ -348,10 +332,10 @@ public class ContainerManager extends Obfuscation {
      * @param section
      * @return -1 if no slot is free
      */
-    public int getFirstEmptyIndex(ContainerSection section) {
+    public int getFirstEmptyIndex(InvTweaksContainerSection section) {
         int i = 0;
         for (sx slot : slotRefs.get(section)) { 
-            if (!slot.getHasStack()) {
+            if (!hasStack(slot)) {
                 return i;
             }
             i++;
@@ -363,7 +347,7 @@ public class ContainerManager extends Obfuscation {
      * @param slot
      * @return true if the specified slot exists and is empty, false otherwise.
      */
-    public boolean isSlotEmpty(ContainerSection section, int slot) {
+    public boolean isSlotEmpty(InvTweaksContainerSection section, int slot) {
         if (hasSection(section)) {
             return getItemStack(section, slot) == null;
         }
@@ -372,7 +356,7 @@ public class ContainerManager extends Obfuscation {
         }
     }
 
-    public sx getSlot(ContainerSection section, int index) {
+    public sx getSlot(InvTweaksContainerSection section, int index) {
         List<sx> slots = slotRefs.get(section);
         if (slots != null) {
             return slots.get(index);
@@ -383,11 +367,11 @@ public class ContainerManager extends Obfuscation {
     
     public int getSlotIndex(int slotNumber) {
         // TODO Caching with getSlotSection
-        for (ContainerSection section : slotRefs.keySet()) {
-            if (section != ContainerSection.INVENTORY) {
+        for (InvTweaksContainerSection section : slotRefs.keySet()) {
+            if (section != InvTweaksContainerSection.INVENTORY) {
                 int i = 0;
                 for (sx slot : slotRefs.get(section)) {
-                    if (slot.slotNumber == slotNumber) {
+                    if (getSlotNumber(slot) == slotNumber) {
                         return i;
                     }
                     i++;
@@ -402,12 +386,12 @@ public class ContainerManager extends Obfuscation {
      * @param slotNumber
      * @return null if the slot number is invalid.
      */
-    public ContainerSection getSlotSection(int slotNumber) {
+    public InvTweaksContainerSection getSlotSection(int slotNumber) {
         // TODO Caching with getSlotIndex
-        for (ContainerSection section : slotRefs.keySet()) {
-            if (section != ContainerSection.INVENTORY) {
+        for (InvTweaksContainerSection section : slotRefs.keySet()) {
+            if (section != InvTweaksContainerSection.INVENTORY) {
                 for (sx slot : slotRefs.get(section)) {
-                    if (slot.slotNumber == slotNumber) {
+                    if (getSlotNumber(slot) == slotNumber) {
                         return section;
                     }
                 }
@@ -422,7 +406,7 @@ public class ContainerManager extends Obfuscation {
      * @param slot
      * @return An ItemStack or null.
      */
-    public ul getItemStack(ContainerSection section, int index) 
+    public ul getItemStack(InvTweaksContainerSection section, int index) 
             throws NullPointerException, IndexOutOfBoundsException {
         int slot = indexToSlot(section, index);
         if (slot >= 0 && slot < getSlots(container).size()) {
@@ -437,7 +421,7 @@ public class ContainerManager extends Obfuscation {
     }
 
     private int getFirstEmptyUsableSlotNumber() {
-        for (ContainerSection section : slotRefs.keySet()) {
+        for (InvTweaksContainerSection section : slotRefs.keySet()) {
             for (sx slot : slotRefs.get(section)) {
                 // Use only standard slot (to make sure
                 // we can freely put and remove items there)
@@ -456,14 +440,14 @@ public class ContainerManager extends Obfuscation {
      * @param index
      * @return -1 if not found
      */
-    private int indexToSlot(ContainerSection section, int index) {
+    private int indexToSlot(InvTweaksContainerSection section, int index) {
         if (index == DROP_SLOT) {
             return DROP_SLOT;
         }
         if (hasSection(section)) {
             sx slot = slotRefs.get(section).get(index);
             if (slot != null) {
-                return slot.slotNumber;
+                return getSlotNumber(slot);
             }
             else {
                 return -1;

@@ -1,8 +1,5 @@
-package net.minecraft.src;
-
 import java.util.logging.Logger;
 
-import net.invtweaks.Const;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -28,7 +25,7 @@ public class mod_InvTweaks extends BaseMod {
         Minecraft mc = ModLoader.getMinecraftInstance();
 
         // Register key (listen only for key down events)
-        ModLoader.RegisterKey(this, Const.SORT_KEY_BINDING, false);
+        ModLoader.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
 
         // Register in game hooks
         ModLoader.SetInGameHook(this, true, true);
@@ -41,7 +38,7 @@ public class mod_InvTweaks extends BaseMod {
 
     @Override
     public String Version() {
-        return Const.MOD_VERSION;
+        return InvTweaksConst.MOD_VERSION;
     }
 
     /**
@@ -63,7 +60,7 @@ public class mod_InvTweaks extends BaseMod {
     /**
      * Called by ModLoader for each tick while the player is in a menu.
      */
-    public boolean OnTickInGUI(Minecraft minecraft, GuiScreen guiScreen) {
+    public boolean OnTickInGUI(Minecraft minecraft, qr guiScreen) {
         instance.onTickInGUI(guiScreen);
         return true;
     }
@@ -71,7 +68,7 @@ public class mod_InvTweaks extends BaseMod {
     /**
      * Called by ModLoader when an item has been picked up.
      */
-    public void OnItemPickup(EntityPlayer entityplayer, ItemStack stack) {
+    public void OnItemPickup(qs entityplayer, ul stack) {
         // It's useless to give stack as a parameter since the
         // given object doesn't contain enough information to know
         // which stack in the inventory has been updated. We have to

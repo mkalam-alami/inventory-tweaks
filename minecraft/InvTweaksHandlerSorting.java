@@ -1,7 +1,3 @@
-package net.invtweaks.logic;
-
-import Obfuscation;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,19 +8,7 @@ import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import net.invtweaks.Const;
-import net.invtweaks.config.InvTweaksConfig;
-import net.invtweaks.config.SortingRule;
-import net.invtweaks.library.ContainerManager;
-import net.invtweaks.library.ContainerManager.ContainerSection;
-import net.invtweaks.library.ContainerSectionManager;
-import net.invtweaks.tree.ItemTree;
-import net.invtweaks.tree.ItemTreeItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemArmor;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
 
 /**
  * Core of the sorting behaviour. Allows to move items in a container
@@ -42,7 +26,7 @@ import net.minecraft.src.Slot;
  * @author Jimeo Wan
  *
  */
-public class SortingHandler extends Obfuscation {
+public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
 
@@ -58,19 +42,19 @@ public class SortingHandler extends Obfuscation {
     public static final int ALGORITHM_HORIZONTAL = 2;
     public static final int ALGORITHM_INVENTORY = 3;
 
-    private ContainerSectionManager containerMgr;
+    private InvTweaksContainerSectionManager containerMgr;
     private int algorithm;
     private int size;
     
-    private ItemTree tree;
-    private Vector<SortingRule> rules;
+    private InvTweaksItemTree tree;
+    private Vector<InvTweaksConfigSortingRule> rules;
     private int[] rulePriority;
     private int[] keywordOrder;
     private int[] lockPriorities;
     private boolean[] frozenSlots;
 
-    public SortingHandler(Minecraft mc, InvTweaksConfig config,
-            ContainerSection section, int algorithm) throws Exception {
+    public InvTweaksHandlerSorting(Minecraft mc, InvTweaksConfig config,
+            InvTweaksContainerSection section, int algorithm) throws Exception {
         super(mc);
         
         // Init constants
@@ -90,12 +74,12 @@ public class SortingHandler extends Obfuscation {
 
         // Init attributes
 
-        this.containerMgr = new ContainerSectionManager(mc, section);
+        this.containerMgr = new InvTweaksContainerSectionManager(mc, section);
         this.size = containerMgr.getSize();
         
         this.rules = config.getRules();
         this.tree = config.getTree();
-        if (section == ContainerSection.INVENTORY) {
+        if (section == InvTweaksContainerSection.INVENTORY) {
             this.lockPriorities = config.getLockPriorities();
             this.frozenSlots = config.getFrozenSlots();
             this.algorithm = ALGORITHM_INVENTORY;
@@ -104,7 +88,7 @@ public class SortingHandler extends Obfuscation {
             this.frozenSlots = DEFAULT_FROZEN_SLOTS;
             this.algorithm = algorithm;
             if (algorithm != ALGORITHM_DEFAULT) {
-                computeLineSortingRules(Const.INVENTORY_ROW_SIZE,
+                computeLineSortingRules(InvTweaksConst.INVENTORY_ROW_SIZE,
                         algorithm == ALGORITHM_HORIZONTAL);
             }
         }
@@ -113,7 +97,7 @@ public class SortingHandler extends Obfuscation {
         this.keywordOrder = new int[size];
         for (int i = 0; i < size; i++) {
             this.rulePriority[i] = -1;
-            ItemStack stack = containerMgr.getItemStack(i);
+            ul stack = containerMgr.getItemStack(i);
             if (stack != null) {
                 this.keywordOrder[i] = getItemOrder(stack);
             } else {
@@ -129,7 +113,7 @@ public class SortingHandler extends Obfuscation {
         //      return;
         
         long timer = System.nanoTime();
-        ContainerManager globalContainer = new ContainerManager(mc);
+        InvTweaksContainerManager globalContainer = new InvTweaksContainerManager(mc);
 
         //// Empty hand (needed in SMP)
         if (isMultiplayerWorld()) {
@@ -142,18 +126,18 @@ public class SortingHandler extends Obfuscation {
                 
                 //// Move items out of the crafting slots
                 log.info("Handling crafting slots.");
-                if (globalContainer.hasSection(ContainerSection.CRAFTING_IN)) {
-                    List<Slot> craftingSlots = globalContainer.getSlots(ContainerSection.CRAFTING_IN);
-                    int emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
+                if (globalContainer.hasSection(InvTweaksContainerSection.CRAFTING_IN)) {
+                    List<sx> craftingSlots = globalContainer.getSlots(InvTweaksContainerSection.CRAFTING_IN);
+                    int emptyIndex = globalContainer.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
                     if (emptyIndex != -1) {
-                        for (Slot craftingSlot : craftingSlots) {
-                            if (craftingSlot.getHasStack()) {
+                        for (sx craftingSlot : craftingSlots) {
+                            if (hasStack(craftingSlot)) {
                                 globalContainer.move(
-                                        ContainerSection.CRAFTING_IN,
-                                        globalContainer.getSlotIndex(craftingSlot.slotNumber),
-                                        ContainerSection.INVENTORY, 
+                                        InvTweaksContainerSection.CRAFTING_IN,
+                                        globalContainer.getSlotIndex(getSlotNumber(craftingSlot)),
+                                        InvTweaksContainerSection.INVENTORY, 
                                         emptyIndex);
-                                emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
+                                emptyIndex = globalContainer.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
                                 if(emptyIndex == -1) {
                                     break;
                                 }
@@ -168,7 +152,7 @@ public class SortingHandler extends Obfuscation {
                 
                 log.info("Merging stacks.");
                 for (int i = size - 1; i >= 0; i--) {
-                    ItemStack from = containerMgr.getItemStack(i);
+                    ul from = containerMgr.getItemStack(i);
                     if (from != null) {
 
                         // Move armor parts
@@ -176,13 +160,13 @@ public class SortingHandler extends Obfuscation {
                         if (fromItem.isDamagable()) {
                              if (fromItem instanceof ItemArmor) {
                                  ItemArmor fromItemArmor = (ItemArmor) fromItem;
-                                 List<Slot> armorSlots = globalContainer.getSlots(ContainerSection.ARMOR);
-                                 for (Slot slot : armorSlots) {
+                                 List<sx> armorSlots = globalContainer.getSlots(InvTweaksContainerSection.ARMOR);
+                                 for (sx slot : armorSlots) {
                                      if (slot.isItemValid(from)
                                              && (!slot.getHasStack() || fromItemArmor.armorLevel > 
                                                      ((ItemArmor) slot.getStack().getItem()).armorLevel)) {
-                                         globalContainer.move(ContainerSection.INVENTORY, i,
-                                                 ContainerSection.ARMOR, 
+                                         globalContainer.move(InvTweaksContainerSection.INVENTORY, i,
+                                                 InvTweaksContainerSection.ARMOR, 
                                                  globalContainer.getSlotIndex(slot.slotNumber));
                                      }
                                  }
@@ -194,8 +178,8 @@ public class SortingHandler extends Obfuscation {
                             int j = 0;
                             for (Integer lockPriority : lockPriorities) {
                                 if (lockPriority > 0) {
-                                    ItemStack to = containerMgr.getItemStack(j);
-                                    if (to != null && from.isItemEqual(to)) {
+                                    ul to = containerMgr.getItemStack(j);
+                                    if (to != null && areItemsEqual(from, to)) {
                                         move(i, j, Integer.MAX_VALUE);
                                         markAsNotMoved(j);
                                         if (containerMgr.getItemStack(i) == null) {
@@ -215,22 +199,22 @@ public class SortingHandler extends Obfuscation {
             log.info("Applying rules.");
             
             // Sorts rule by rule, themselves being already sorted by decreasing priority
-            Iterator<SortingRule> rulesIt = rules.iterator();
+            Iterator<InvTweaksConfigSortingRule> rulesIt = rules.iterator();
             while (rulesIt.hasNext()) {
                 
-                SortingRule rule = rulesIt.next();
+                InvTweaksConfigSortingRule rule = rulesIt.next();
                 int rulePriority = rule.getPriority();
     
-                if (log.getLevel() == Const.DEBUG)
+                if (log.getLevel() == InvTweaksConst.DEBUG)
                     log.info("Rule : "+rule.getKeyword()+"("+rulePriority+")");
     
                 // For every item in the inventory
                 for (int i = 0; i < size; i++) {
-                    ItemStack from = containerMgr.getItemStack(i);
+                    ul from = containerMgr.getItemStack(i);
 
                     // If the rule is strong enough to move the item and it matches the item
                     if (hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
-                        List<ItemTreeItem> fromItems = tree.getItems(
+                        List<InvTweaksItemTreeItem> fromItems = tree.getItems(
                                 getItemID(from), getItemDamage(from));
                         if (tree.matches(fromItems, rule.getKeyword())) {
                             
@@ -276,7 +260,7 @@ public class SortingHandler extends Obfuscation {
         //// Sort remaining
         defaultSorting();
 
-        if (log.getLevel() == Const.DEBUG) {
+        if (log.getLevel() == InvTweaksConst.DEBUG) {
             timer = System.nanoTime()-timer;
             log.info("Sorting done in " + timer + "ns");
         }
@@ -326,7 +310,7 @@ public class SortingHandler extends Obfuscation {
      * @throws Exception
      */
     private int putHoldItemDown() throws TimeoutException {
-        ItemStack holdStack = getHoldStack();
+        ul holdStack = getHoldStack();
         if (holdStack != null) {
             // Try to find an unlocked slot first, to avoid
             // impacting too much the sorting
@@ -359,8 +343,8 @@ public class SortingHandler extends Obfuscation {
      */
     private int move(int i, int j, int priority) throws TimeoutException {
 
-        ItemStack from = containerMgr.getItemStack(i);
-        ItemStack to = containerMgr.getItemStack(j);
+        ul from = containerMgr.getItemStack(i);
+        ul to = containerMgr.getItemStack(j);
         
         if (from == null || frozenSlots[j] || frozenSlots[i]) {
             return -1;
@@ -403,8 +387,8 @@ public class SortingHandler extends Obfuscation {
                 
                 // Can be merged?
                 if (!canBeSwappedOrMerged
-                       && from.isItemEqual(to)
-                       && getStackSize(to) < to.getMaxStackSize() ) {
+                       && areItemsEqual(from, to)
+                       && getStackSize(to) < getMaxStackSize(to)) {
                     canBeSwappedOrMerged = true;
                 }
                 
@@ -416,7 +400,7 @@ public class SortingHandler extends Obfuscation {
                     rulePriority[i] = -1;
                     containerMgr.move(i, j);
 
-                    ItemStack remains = containerMgr.getItemStack(i);
+                    ul remains = containerMgr.getItemStack(i);
 
                     if (remains != null) {
                         int dropSlot = i;
@@ -462,7 +446,7 @@ public class SortingHandler extends Obfuscation {
 
     private boolean isOrderedBefore(int i, int j) {
 
-        ItemStack iStack = containerMgr.getItemStack(i),
+        ul iStack = containerMgr.getItemStack(i),
                 jStack = containerMgr.getItemStack(j);
         
         if (jStack == null) {
@@ -478,8 +462,8 @@ public class SortingHandler extends Obfuscation {
                         // Highest damage first for tools, else lowest damage.
                         // No tool ordering for same ID (cannot swap directly)
                         int damageDiff = getItemDamage(iStack) - getItemDamage(jStack);
-                        return (damageDiff < 0 && !iStack.isItemStackDamageable()
-                                || damageDiff > 0 && iStack.isItemStackDamageable());
+                        return (damageDiff < 0 && !isItemStackDamageable(iStack)
+                                || damageDiff > 0 && isItemStackDamageable(iStack));
                     } else {
                         return getStackSize(iStack) > getStackSize(jStack);
                     }
@@ -492,8 +476,8 @@ public class SortingHandler extends Obfuscation {
         }
     }
 
-    private int getItemOrder(ItemStack item) {
-        List<ItemTreeItem> items = tree.getItems(
+    private int getItemOrder(ul item) {
+        List<InvTweaksItemTreeItem> items = tree.getItems(
                 getItemID(item), getItemDamage(item));
         return (items != null && items.size() > 0)
                 ? items.get(0).getOrder()
@@ -502,11 +486,11 @@ public class SortingHandler extends Obfuscation {
     
     private void computeLineSortingRules(int rowSize, boolean horizontal) {
         
-        rules = new Vector<SortingRule>();
+        rules = new Vector<InvTweaksConfigSortingRule>();
         
         
-        Map<ItemTreeItem, Integer> stats = computeContainerStats();
-        List<ItemTreeItem> itemOrder = new ArrayList<ItemTreeItem>();
+        Map<InvTweaksItemTreeItem, Integer> stats = computeContainerStats();
+        List<InvTweaksItemTreeItem> itemOrder = new ArrayList<InvTweaksItemTreeItem>();
 
         int distinctItems = stats.size();
         int columnSize = getContainerColumnSize(rowSize);
@@ -523,11 +507,11 @@ public class SortingHandler extends Obfuscation {
             return;
         
         // (Partially) sort stats by decreasing item stack count
-        List<ItemTreeItem> unorderedItems = new ArrayList<ItemTreeItem>(stats.keySet());
+        List<InvTweaksItemTreeItem> unorderedItems = new ArrayList<InvTweaksItemTreeItem>(stats.keySet());
         boolean hasStacksToOrderFirst = true;
         while (hasStacksToOrderFirst) {
             hasStacksToOrderFirst = false;
-            for (ItemTreeItem item : unorderedItems) {
+            for (InvTweaksItemTreeItem item : unorderedItems) {
                 Integer value = stats.get(item);
                 if (value > ((horizontal) ? rowSize : columnSize)
                         && !itemOrder.contains(item)) {
@@ -555,10 +539,10 @@ public class SortingHandler extends Obfuscation {
         char column = '1', maxColumn = (char) (column - 1 + rowSize);
         
         // Create rules
-        Iterator<ItemTreeItem> it = itemOrder.iterator();
+        Iterator<InvTweaksItemTreeItem> it = itemOrder.iterator();
         while (it.hasNext()) {
             
-            ItemTreeItem item = it.next();
+            InvTweaksItemTreeItem item = it.next();
             
             // Adapt rule dimensions to fit the amount
             int thisSpaceWidth = spaceWidth,
@@ -603,7 +587,7 @@ public class SortingHandler extends Obfuscation {
             if (!horizontal) {
                 constraint += 'v';
             }
-            rules.add(new SortingRule(tree, constraint, item.getName(), size, rowSize));
+            rules.add(new InvTweaksConfigSortingRule(tree, constraint, item.getName(), size, rowSize));
             
             // Check if ther's still room for more rules
             availableSlots -= thisSpaceHeight*thisSpaceWidth;
@@ -643,21 +627,21 @@ public class SortingHandler extends Obfuscation {
         else {
             defaultRule = "a" + maxColumn + "-" + maxRow + "1v";
         }
-        rules.add(new SortingRule(tree, defaultRule, 
+        rules.add(new InvTweaksConfigSortingRule(tree, defaultRule, 
                 tree.getRootCategory().getName(), size, rowSize));
         
     }
     
-    private Map<ItemTreeItem, Integer> computeContainerStats() {
-        Map<ItemTreeItem, Integer> stats = new HashMap<ItemTreeItem, Integer>();
-        Map<Integer, ItemTreeItem> itemSearch = new HashMap<Integer, ItemTreeItem>();
+    private Map<InvTweaksItemTreeItem, Integer> computeContainerStats() {
+        Map<InvTweaksItemTreeItem, Integer> stats = new HashMap<InvTweaksItemTreeItem, Integer>();
+        Map<Integer, InvTweaksItemTreeItem> itemSearch = new HashMap<Integer, InvTweaksItemTreeItem>();
  
         for (int i = 0; i < size; i++) {
-            ItemStack stack = containerMgr.getItemStack(i);
+            ul stack = containerMgr.getItemStack(i);
             if (stack != null) {
                 int itemSearchKey = getItemID(stack)*100000 + 
                         ((getMaxStackSize(stack) != 1) ? getItemDamage(stack) : 0);
-                ItemTreeItem item = itemSearch.get(itemSearchKey);
+                InvTweaksItemTreeItem item = itemSearch.get(itemSearchKey);
                 if (item == null) {
                     item = tree.getItems(getItemID(stack),
                             getItemDamage(stack)).get(0);

@@ -11,8 +11,6 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import com.sun.org.apache.xpath.internal.operations.Gte;
-
 /**
  * Main class for Inventory Tweaks, which maintains various hooks
  * and dispatches the events to the correct handlers.
@@ -499,7 +497,6 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void handleGUILayout(qr guiScreen) {
 
         InvTweaksConfig config = cfgManager.getConfig();

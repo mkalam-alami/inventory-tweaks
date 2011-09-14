@@ -30,10 +30,10 @@ public class InvTweaksObfuscationGuiButton extends vj /* GuiButton */ {
         return f;
     }
     protected int getTexture(Minecraft mc, String texture) {
-        return mc.renderEngine.getTexture(texture);
+        return mc.p.b(texture); // renderengine.getTexture
     }
     protected int getHoverState(boolean mouseOverButton) {
-        return this.z;
+        return this.a(mouseOverButton);
     }
     
     protected boolean isEnabled2() {
@@ -43,17 +43,16 @@ public class InvTweaksObfuscationGuiButton extends vj /* GuiButton */ {
         return this.h;
     }
     
-    // TODO !!!!!
     protected int getXPosition() {
-        return z;
+        return c;
     }
     protected int getYPosition() {
-        return z;
+        return d;
     }
     protected int getWidth() {
-        return z;
+        return a;
     }
     protected int getHeight() {
-        return z;
+        return b;
     }
 }

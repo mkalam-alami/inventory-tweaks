@@ -115,19 +115,19 @@ public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
             for (Object o : controlList) {
                 vj button = (vj) o;
                 if (obf.getId(button) == ID_EDITRULES || obf.getId(button) < ID_EDITTREE) {
-                    obf.setEnabled(obf.isEnabled(button), false);
+                    obf.setEnabled(button, false);
                 }
             }
         }
 
         // Save control list
-        obf.setControlList(controlList);
+        obf.setControlList(this, controlList);
 
     }
     
     public void drawScreen(int i, int j, float f) {
-        k(); // drawDefaultBackground
-        drawCenteredString(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff);
+        k(); // Gui.drawDefaultBackground
+        a(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         super.a(i, j, f); // drawScreen
     }
 

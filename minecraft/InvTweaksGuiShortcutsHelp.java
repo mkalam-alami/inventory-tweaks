@@ -33,8 +33,8 @@ public class InvTweaksGuiShortcutsHelp extends qr {
 
     public void drawScreen(int i, int j, float f) {
         
-        k(); // drawDefaultBackground
-        drawCenteredString(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff);
+        k(); // Gui.drawDefaultBackground
+        a(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         
         int y = obf.getHeight(this) / 6;
 

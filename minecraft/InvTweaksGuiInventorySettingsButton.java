@@ -24,11 +24,11 @@ public class InvTweaksGuiInventorySettingsButton extends InvTweaksGuiIconButton 
 
         // Display string
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
-        drawCenteredString(obf.getFontRenderer(),
-                obf.getDisplayString(this),
-                obf.getXPosition(this) + 5,
-                obf.getYPosition(this) - 1,
-                getTextColor(i, j));
+        a(obf.getFontRenderer(),
+                getDisplayString(),
+                getXPosition() + 5,
+                getYPosition() - 1,
+                getTextColor(i, j)); // Gui.drawCenteredString
     }
 
     /**

@@ -46,10 +46,19 @@ public class InvTweaksObfuscation {
         mc.a(parentScreen);
     }
     protected int getDisplayWidth() {
-        return mc.wut;
+        return mc.d;
     }
     protected int getDisplayHeight() {
-        return mc.wut;
+        return mc.e;
+    }
+    protected fv getGameSettings() {
+        return mc.z;
+    }
+    protected int getKeyBindingForwardKeyCode() {
+        return getKeycode(getGameSettings().m);
+    }
+    protected int getKeyBindingBackKeyCode() {
+        return getKeycode(getGameSettings().o);
     }
 
 	// EntityPlayer members
@@ -173,10 +182,10 @@ public class InvTweaksObfuscation {
     // Item & ItemArmor
     
     protected boolean isDamageable(sv item) {
-        return item.sthg;
+        return item.g();
     }
     protected int getArmorLevel(mt itemArmor) { // ItemArmor
-        return itemArmor.sthg;
+        return itemArmor.a;
     }
 	
 	// PlayerController members
@@ -221,10 +230,10 @@ public class InvTweaksObfuscation {
         return slot.a();
     }
     protected int getXDisplayPosition(sx slot) {
-        return slot.cOUd;
+        return slot.c;
     }
     protected int getYDisplayPosition(sx slot) {
-        return slot.cOUd;
+        return slot.d;
     }
     protected boolean isItemValid(sx item, ul itemStack) {
         return item.b(itemStack);
@@ -242,13 +251,13 @@ public class InvTweaksObfuscation {
         guiButton.h = enabled;
     }
     protected int getId(vj guiButton) { // GuiButton
-        return guiButton.z;
+        return guiButton.g;
     }
     protected void setDisplayString(vj guiButton, String string) {
-        return guiButton.wut = string;
+        guiButton.f = string;
     }
     protected String getDisplayString(vj guiButton) {
-        return guiButton.wut;
+        return guiButton.f;
     }
     
     // Other

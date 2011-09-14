@@ -39,11 +39,17 @@ public class InvTweaksObfuscation {
 	protected qr getCurrentScreen() { // GuiScreen
 		return mc.r;
 	}
-    public kh getFontRenderer() { // FontRenderer
+	protected kh getFontRenderer() { // FontRenderer
         return mc.q;
     }
-    public void displayGuiScreen(qr parentScreen) {
+    protected void displayGuiScreen(qr parentScreen) {
         mc.a(parentScreen);
+    }
+    protected int getDisplayWidth() {
+        return mc.wut;
+    }
+    protected int getDisplayHeight() {
+        return mc.wut;
     }
 
 	// EntityPlayer members
@@ -106,6 +112,9 @@ public class InvTweaksObfuscation {
     protected List<InvTweaksObfuscationGuiButton> getControlList(qr guiScreen) {
         return guiScreen.o;
     }
+    protected void setControlList(qr guiScreen, List<?> controlList) {
+        guiScreen.o = controlList;
+    }
 
     // FontRenderer members
 	
@@ -160,6 +169,15 @@ public class InvTweaksObfuscation {
     protected sv getItem(ul itemStack) { // Item
         return itemStack.a();
     }
+    
+    // Item & ItemArmor
+    
+    protected boolean isDamageable(sv item) {
+        return item.sthg;
+    }
+    protected int getArmorLevel(mt itemArmor) { // ItemArmor
+        return itemArmor.sthg;
+    }
 	
 	// PlayerController members
 
@@ -202,6 +220,15 @@ public class InvTweaksObfuscation {
     protected ul getStack(sx slot) {
         return slot.a();
     }
+    protected int getXDisplayPosition(sx slot) {
+        return slot.cOUd;
+    }
+    protected int getYDisplayPosition(sx slot) {
+        return slot.cOUd;
+    }
+    protected boolean isItemValid(sx item, ul itemStack) {
+        return item.b(itemStack);
+    }
 
     // GuiContainer members
 
@@ -216,6 +243,12 @@ public class InvTweaksObfuscation {
     }
     protected int getId(vj guiButton) { // GuiButton
         return guiButton.z;
+    }
+    protected void setDisplayString(vj guiButton, String string) {
+        return guiButton.wut = string;
+    }
+    protected String getDisplayString(vj guiButton) {
+        return guiButton.wut;
     }
     
     // Other

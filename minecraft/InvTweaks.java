@@ -278,7 +278,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         int l = (obf.getHeight(guiContainer) - obf.getYSize(guiContainer)) / 2;
         i -= k;
         j -= l;
-        return i >= getXDisplayPosition(slot) - 1 && i < getXDisplayPosition(slot) + 16 + 1 && j >= getYDisplayPosition(slot) - 1 && j < getYDisplayPosition(slot) + 16 + 1;
+        return i >= obf.getXDisplayPosition(slot) - 1 && i < obf.getXDisplayPosition(slot) + 16 + 1 && j >= obf.getYDisplayPosition(slot) - 1 && j < obf.getYDisplayPosition(slot) + 16 + 1;
     }
 
     private boolean onTick() {

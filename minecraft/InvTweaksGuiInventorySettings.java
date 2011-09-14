@@ -126,7 +126,7 @@ public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
     }
     
     public void drawScreen(int i, int j, float f) {
-        drawDefaultBackground();
+        k(); // drawDefaultBackground
         drawCenteredString(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff);
         super.a(i, j, f); // drawScreen
     }
@@ -157,7 +157,7 @@ public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
 
         // Shortcuts help
         case ID_SHORTCUTS_HELP:
-            mc.displayGuiScreen(new InvTweaksGuiShortcutsHelp(mc, this, config));
+            obf.displayGuiScreen(new InvTweaksGuiShortcutsHelp(mc, this, config));
             break;
 
         // Open rules configuration in external editor
@@ -188,7 +188,7 @@ public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
             break;
 
         case ID_DONE:
-            mc.displayGuiScreen(parentScreen);
+            obf.displayGuiScreen(parentScreen);
         }
 
     }

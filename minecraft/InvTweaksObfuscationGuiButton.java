@@ -22,7 +22,10 @@ public class InvTweaksObfuscationGuiButton extends vj /* GuiButton */ {
             int xPosition, int i, int j, int k, int l, int m) {
         b(xPosition, i, j, k, l, m);
     }
-    
+    protected void drawRect(int i, int j, int k, int l, int textColor) {
+        a(i, j, k, l, textColor);
+    }
+
     protected String getDisplayString() {
         return f;
     }

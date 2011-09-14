@@ -11,32 +11,32 @@ public class InvTweaksGuiShortcutsHelp extends qr {
     
     private final static int ID_DONE = 0;
 
-    private Minecraft mc;
+    private InvTweaksObfuscation obf;
     private qr parentScreen;
     private InvTweaksConfig config;
     
     public InvTweaksGuiShortcutsHelp(Minecraft mc, 
             qr parentScreen, InvTweaksConfig config) {
-        this.mc = mc;
+        this.obf = new InvTweaksObfuscation(mc);
         this.parentScreen = parentScreen;
         this.config = config;
     }
 
     public void initGui() {
         // Create Done button
-        List<GuiButton> controlList = new LinkedList<GuiButton>();
-        controlList.add(new GuiButton(ID_DONE, 
-                width / 2 - 100, 
-                height / 6 + 168, "Done"));
-        this.controlList = controlList;
+        List<vj> controlList = new LinkedList<vj>();
+        controlList.add(new vj(ID_DONE, 
+                obf.getWidth(this) / 2 - 100, 
+                obf.getHeight(this) / 6 + 168, "Done"));
+        obf.setControlList(this, controlList);
     }
 
     public void drawScreen(int i, int j, float f) {
         
-        drawDefaultBackground();
-        drawCenteredString(fontRenderer, SCREEN_TITLE, width / 2, 20, 0xffffff);
+        k(); // drawDefaultBackground
+        drawCenteredString(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff);
         
-        int y = height / 6;
+        int y = obf.getHeight(this) / 6;
 
         drawShortcutLine("Move", "Left click", 0x0000EEFF, y);
         y += 12;
@@ -74,23 +74,24 @@ public class InvTweaksGuiShortcutsHelp extends qr {
         drawShortcutLine("Craft all", "LSHIFT, RSHIFT + Click", 0x00FF8800, y);
         y += 12;
         drawShortcutLine("Select sorting configuration", "0-9 + " +
-                Keyboard.getKeyName(InvTweaksConst.SORT_KEY_BINDING.keyCode), 0x00FF8800, y);
+                Keyboard.getKeyName(obf.getKeyCode(InvTweaksConst.SORT_KEY_BINDING)), 0x00FF8800, y);
         y += 12;
         
-        super.drawScreen(i, j, f);
+        super.a(i, j, f); // drawScreen
     }
     
     private void drawShortcutLine(String label, String value, int color, int y) {
-        drawString(fontRenderer, label, 50, y, -1);
-        drawString(fontRenderer, value.contains("DEFAULT") ? "-" : value, width / 2 + 40, y, color);
+        a(obf.getFontRenderer(), label, 50, y, -1); // drawString
+        a(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value, 
+                obf.getWidth(this) / 2 + 40, y, color); // drawString
     }
 
-    protected void actionPerformed(GuiButton guibutton) {
+    protected void actionPerformed(vj guibutton) {
 
-        switch (guibutton.id) {
+        switch (obf.getId(guibutton)) {
 
         case ID_DONE:
-            mc.displayGuiScreen(parentScreen);
+            obf.displayGuiScreen(parentScreen);
             break;
         
         }

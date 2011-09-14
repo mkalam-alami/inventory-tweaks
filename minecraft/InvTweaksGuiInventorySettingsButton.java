@@ -18,13 +18,17 @@ public class InvTweaksGuiInventorySettingsButton extends InvTweaksGuiIconButton 
     public void drawButton(Minecraft minecraft, int i, int j) {
         super.drawButton(minecraft, i, j);
 
-        if (!enabled2) {
+        if (!isEnabled2()) {
             return;
         }
 
         // Display string
-        drawCenteredString(minecraft.fontRenderer, displayString,
-                xPosition + 5, yPosition - 1, getTextColor(i, j));
+        InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
+        drawCenteredString(obf.getFontRenderer(),
+                obf.getDisplayString(this),
+                obf.getXPosition(this) + 5,
+                obf.getYPosition(this) - 1,
+                getTextColor(i, j));
     }
 
     /**
@@ -32,16 +36,17 @@ public class InvTweaksGuiInventorySettingsButton extends InvTweaksGuiIconButton 
      */
     public boolean mousePressed(Minecraft minecraft, int i, int j) {
         
+        InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
         InvTweaksConfig config = cfgManager.getConfig();
         
-        if (super.mousePressed(minecraft, i, j)) {
+        if (super.c(minecraft, i, j)) { // mousePressed
             // Put hold item down if necessary
             InvTweaksContainerSectionManager containerMgr;
             
             try {
                 containerMgr = new InvTweaksContainerSectionManager(
                         minecraft, InvTweaksContainerSection.INVENTORY);
-                if (Obfuscation.getHoldStackStatic(minecraft) != null) {
+                if (obf.getHoldStack() != null) {
                     try {
                         // Put hold item down
                         for (int k = containerMgr.getSize() - 1; k >= 0; k--) {
@@ -62,8 +67,9 @@ public class InvTweaksGuiInventorySettingsButton extends InvTweaksGuiIconButton 
             cfgManager.makeSureConfigurationIsLoaded();
 
             // Display menu
-            minecraft.displayGuiScreen(new InvTweaksGuiInventorySettings(minecraft,
-                    Obfuscation.getCurrentScreenStatic(minecraft), config));
+            obf.displayGuiScreen(
+                    new InvTweaksGuiInventorySettings(minecraft,
+                    obf.getCurrentScreen(), config));
             return true;
         } else {
             return false;

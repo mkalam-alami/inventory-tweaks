@@ -39,7 +39,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         
         qr currentScreen = getCurrentScreen();
         if (isGuiContainer(currentScreen)) {
-            this.container = getContainer((GuiContainer) currentScreen);
+            this.container = getContainer((em) currentScreen);
         }
         else {
             this.container = getPlayerContainer();

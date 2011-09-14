@@ -144,7 +144,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (containerMgr.move(i, targetedSlot)) {
 								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_REFILL_SOUND).equals("false")) {
-					    			mc.theWorld.playSoundAtEntity(getThePlayer(), 
+					    			playSoundAtEntity(getTheWorld(), getThePlayer(), 
 					    					"mob.chickenplop", 0.15F, 0.2F);
 								}
 								// If item are swapped (like for mushroom soups),

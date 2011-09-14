@@ -47,6 +47,6 @@ public class InvTweaksConst {
      * Maintained by Minecraft so that its keycode is actually
      * what has been configured by the player (not always the R key).
      */
-    public static final KeyBinding SORT_KEY_BINDING = 
-        new KeyBinding("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
+    public static final ys SORT_KEY_BINDING = 
+        new ys("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
 }

@@ -30,12 +30,21 @@ public class InvTweaksObfuscation {
     protected qs getThePlayer() { // EntityPlayer
         return mc.h;
     }
+    protected rv getTheWorld() { // World
+        return mc.f;
+    }
 	protected hw getPlayerController() { // PlayerController
 		return mc.c;
 	}
 	protected qr getCurrentScreen() { // GuiScreen
 		return mc.r;
 	}
+    public kh getFontRenderer() { // FontRenderer
+        return mc.q;
+    }
+    public void displayGuiScreen(qr parentScreen) {
+        mc.a(parentScreen);
+    }
 
 	// EntityPlayer members
 	
@@ -64,20 +73,49 @@ public class InvTweaksObfuscation {
 		getInventoryPlayer().e = value;
 	}
 	protected void setHoldStack(ul stack) {
-		getInventoryPlayer().b(stack); // MCP name: setItemStack
+		getInventoryPlayer().b(stack); // setItemStack
 	}
 	protected boolean hasInventoryChanged() {
 		return getInventoryPlayer().e;
 	}
 	protected ul getHoldStack() {
-		return getInventoryPlayer().j(); // MCP name: getItemStack
+		return getInventoryPlayer().j(); // getItemStack
 	}
 	protected ul getFocusedStack() {
-		return getInventoryPlayer().b(); // MCP name: getCurrentItem
+		return getInventoryPlayer().b(); // getCurrentItem
 	}
 	protected int getFocusedSlot() {
-		return getInventoryPlayer().c; // MCP name: currentItem
+		return getInventoryPlayer().c; // currentItem
 	}
+	
+    // GuiScreen members
+	
+	protected int getWidth(qr guiScreen) {
+	    return guiScreen.m;
+	}
+    protected int getHeight(qr guiScreen) {
+        return guiScreen.n;
+    }
+    protected int getXSize(qr guiScreen) {
+        return guiScreen.m;
+    }
+    protected int getYSize(qr guiScreen) {
+        return guiScreen.n;
+    }
+    @SuppressWarnings("unchecked")
+    protected List<InvTweaksObfuscationGuiButton> getControlList(qr guiScreen) {
+        return guiScreen.o;
+    }
+
+    // FontRenderer members
+	
+	protected int getStringWidth(kh fontRenderer, String line) {
+	    return fontRenderer.a(line);
+	}
+	protected void drawStringWithShadow(kh fontRenderer,
+            String s, int i, int j, int k) {
+        fontRenderer.a(s, i, j, k);
+    }
 	
 	// ItemStack members
 
@@ -116,6 +154,12 @@ public class InvTweaksObfuscation {
     protected boolean areItemsEqual(ul itemStack1, ul itemStack2) {
         return itemStack1.c(itemStack2); // isItemEqual
     }
+    protected int getAnimationsToGo(ul itemStack) {
+        return itemStack.b;
+    }
+    protected sv getItem(ul itemStack) { // Item
+        return itemStack.a();
+    }
 	
 	// PlayerController members
 
@@ -140,11 +184,11 @@ public class InvTweaksObfuscation {
 
     protected ul getSlotStack(cf container, int i) {
         sx slot = (sx) getSlots(container).get(i);
-        return (slot == null) ? null : getStack(slot); /* getStack */
+        return (slot == null) ? null : getStack(slot); // getStack
     }
 
     protected void setSlotStack(cf container, int i, ul stack) {
-        container.a(i, stack); /* putStackInSlot */
+        container.a(i, stack); // putStackInSlot
     }
 
     // Slot members
@@ -161,8 +205,17 @@ public class InvTweaksObfuscation {
 
     // GuiContainer members
 
-    protected cf getContainer(?? guiContainer) {
-        return guiContainer.inventorySlots;
+    protected cf getContainer(em guiContainer) {
+        return guiContainer.d; /* inventorySlots */
+    }
+
+    // GuiButton
+    
+    protected void setEnabled(vj guiButton, boolean enabled) { // GuiButton
+        guiButton.h = enabled;
+    }
+    protected int getId(vj guiButton) { // GuiButton
+        return guiButton.z;
     }
     
     // Other
@@ -172,8 +225,14 @@ public class InvTweaksObfuscation {
                         .getSimpleName().equals("MLGuiChestBuilding")) // Millenaire mod
                 || isGuiDispenser(guiScreen));
     }
-    protected int getKeycode(KeyBinding keyBinding) {
-        return keyBinding.keyCode;
+    protected int getKeycode(ys keyBinding) {
+        return keyBinding.d;
+    }
+    protected void playSoundAtEntity(rv theWorld, qs thePlayer, String string, float f, float g) {
+        theWorld.a(thePlayer, string, f, g);
+    }
+    protected int getKeyCode(ys keyBinding) { // KeyBinding
+        return keyBinding.d;
     }
 
     // Static access
@@ -194,38 +253,48 @@ public class InvTweaksObfuscation {
         }
     }
     public static ul getHoldStackStatic(Minecraft mc) {
-        return new Obfuscation(mc).getHoldStack();
+        return new InvTweaksObfuscation(mc).getHoldStack();
     }
     public static qr getCurrentScreenStatic(Minecraft mc) {
-        return new Obfuscation(mc).getCurrentScreen();
+        return new InvTweaksObfuscation(mc).getCurrentScreen();
     }
     
 	// Classes
 	
-	protected boolean isGuiContainer(Object o) {
-        return o instanceof ?;
+	protected boolean isGuiContainer(Object o) { // GuiContainer
+        return o instanceof em;
 	}
-    protected boolean isGuiInventory(Object o) {
-        return o instanceof ?;
+    protected boolean isGuiChest(Object o) { // GuiChest
+        return o instanceof tn;
     }
-    protected boolean isGuiEditSign(Object o) {
-        return o instanceof ?;
+    protected boolean isGuiDispenser(Object o) { // GuiDispenser
+        return o instanceof dr;
+    }
+    protected boolean isGuiInventory(Object o) { // GuiInventory
+        return o instanceof abd;
+    }
+    protected boolean isGuiEditSign(Object o) { // GuiEditSign
+        return o instanceof ado;
     }
     
-	protected boolean isContainerPlayer(Object o) {
+	protected boolean isContainerPlayer(Object o) { // ContainerPlayer
 	    return o instanceof r;
 	}
-    protected boolean isContainerChest(Object o) {
-        return o instanceof ContainerChest;
+    protected boolean isContainerChest(Object o) { // ContainerChest
+        return o instanceof az;
     }
-    protected boolean isContainerFurnace(Object o) {
-        return o instanceof ContainerFurnace;
+    protected boolean isContainerFurnace(Object o) { // ContainerFurnace
+        return o instanceof pr;
     }
-    protected boolean isContainerDispenser(Object o) {
-        return o instanceof ContainerDispenser;
+    protected boolean isContainerDispenser(Object o) { // ContainerDispenser
+        return o instanceof zz;
     }
-    protected boolean isContainerWorkbench(Object o) {
-        return o instanceof ContainerWorkbench;
+    protected boolean isContainerWorkbench(Object o) { // ContainerWorkbench
+        return o instanceof uf;
     }
-	
+
+    protected boolean isItemArmor(Object o) { // ItemArmor
+        return o instanceof mt;
+    }
+    
 }

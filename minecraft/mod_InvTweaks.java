@@ -44,7 +44,7 @@ public class mod_InvTweaks extends BaseMod {
     /**
      * Called by ModLoader each time the sorting key is pressed.
      */
-    public final void KeyboardEvent(KeyBinding keyBinding) {
+    public final void KeyboardEvent(ys keyBinding) {
         instance.onSortingKeyPressed();
     }
 

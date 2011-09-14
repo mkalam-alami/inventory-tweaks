@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
  * @author Jimeo Wan
  *
  */
-public class InvTweaksGuiTooltipButton extends GuiButton {
+public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
     
     public final static int DEFAULT_BUTTON_WIDTH = 200;
     public final static int LINE_HEIGHT = 11;
@@ -44,9 +44,11 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     }
 
     public void drawButton(Minecraft minecraft, int i, int j) {
-        super.drawButton(minecraft, i, j);
+        super.a(minecraft, i, j); /* drawButton */
         
-        if (!enabled2) {
+        InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
+        
+        if (!isEnabled2()) {
             return;
         }
         
@@ -67,17 +69,19 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
             // Draw tooltip if hover time is long enough
             if (hoverTime > InvTweaksConst.TOOLTIP_DELAY && tooltipLines != null) {
                 
-                FontRenderer fontRenderer = minecraft.fontRenderer;
+                kh fontRenderer = obf.getFontRenderer();
 
                 // Compute tooltip params
                 int x = i + 12, y = j - LINE_HEIGHT*tooltipLines.length;
                 if (tooltipWidth == -1) {
                     for (String line : tooltipLines) {
-                        tooltipWidth = Math.max(fontRenderer.getStringWidth(line), tooltipWidth);
+                        tooltipWidth = Math.max(
+                                obf.getStringWidth(fontRenderer, line),
+                                tooltipWidth);
                     }
                 }
-                if (x + tooltipWidth > minecraft.currentScreen.width) {
-                    x = minecraft.currentScreen.width - tooltipWidth;
+                if (x + tooltipWidth > obf.getWidth(obf.getCurrentScreen())) {
+                    x = obf.getWidth(obf.getCurrentScreen()) - tooltipWidth;
                 }
                 
                 // Draw background
@@ -88,7 +92,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
                 // Draw lines
                 int lineCount = 0;
                 for (String line : tooltipLines) {
-                    minecraft.fontRenderer.drawStringWithShadow(
+                    obf.drawStringWithShadow(fontRenderer,
                             line, x, y + (lineCount++)*LINE_HEIGHT, -1);
                 }
             }
@@ -97,13 +101,15 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     }
     
     protected boolean isMouseOverButton(int i, int j) {
-        return i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
+        return i >= getXPosition() && j >= getYPosition() 
+            && i < getXPosition() + getWidth() 
+            && j < getYPosition() + getHeight();
     }
     
     protected int getTextColor(int i, int j) {
         
         int textColor = 0xffe0e0e0;
-        if (!enabled) {
+        if (!isEnabled()) {
             textColor = 0xffa0a0a0;
         } else if (isMouseOverButton(i, j)) {
             textColor = 0xffffffa0;

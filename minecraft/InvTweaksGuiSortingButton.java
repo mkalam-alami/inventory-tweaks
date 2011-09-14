@@ -22,23 +22,23 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
     public void drawButton(Minecraft minecraft, int i, int j) {
         super.drawButton(minecraft, i, j);
         
-        if (!enabled2) {
+        if (!isEnabled2()) {
             return;
         }
         
         // Display symbol
         int textColor = getTextColor(i, j);
-        if (displayString.equals("h")) {
-            drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4, textColor);
-            drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7, textColor);
-        } else if (displayString.equals("v")) {
-            drawRect(xPosition + 3, yPosition + 3, xPosition + 4, yPosition + height - 3, textColor);
-            drawRect(xPosition + 6, yPosition + 3, xPosition + 7, yPosition + height - 3, textColor);
+        if (getDisplayString().equals("h")) {
+            drawRect(getXPosition() + 3, getYPosition() + 3, getXPosition() + getWidth() - 3, getYPosition() + 4, textColor);
+            drawRect(getXPosition() + 3, getYPosition() + 6, getXPosition() + getWidth() - 3, getYPosition() + 7, textColor);
+        } else if (getDisplayString().equals("v")) {
+            drawRect(getXPosition() + 3, getYPosition() + 3, getXPosition() + 4, getYPosition() + getHeight() - 3, textColor);
+            drawRect(getXPosition() + 6, getYPosition() + 3, getXPosition() + 7, getYPosition() + getHeight() - 3, textColor);
         } else {
-            drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4, textColor);
-            drawRect(xPosition + 5, yPosition + 4, xPosition + 6, yPosition + 5, textColor);
-            drawRect(xPosition + 4, yPosition + 5, xPosition + 5, yPosition + 6, textColor);
-            drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7, textColor);
+            drawRect(getXPosition() + 3, getYPosition() + 3, getXPosition() + getWidth() - 3, getYPosition() + 4, textColor);
+            drawRect(getXPosition() + 5, getYPosition() + 4, getXPosition() + 6, getYPosition() + 5, textColor);
+            drawRect(getXPosition() + 4, getYPosition() + 5, getXPosition() + 5, getYPosition() + 6, textColor);
+            drawRect(getXPosition() + 3, getYPosition() + 6, getXPosition() + getWidth() - 3, getYPosition() + 7, textColor);
         }
     }
 
@@ -46,7 +46,7 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
      * Sort container
      */
     public boolean mousePressed(Minecraft minecraft, int i, int j) {
-        if (super.mousePressed(minecraft, i, j)) {
+        if (super.c(minecraft, i, j)) { // mousePressed
             try {
                 new InvTweaksHandlerSorting(
                         minecraft, cfgManager.getConfig(),

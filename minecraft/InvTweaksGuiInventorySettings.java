@@ -15,7 +15,7 @@ import org.lwjgl.util.Point;
  * @author Jimeo Wan
  * 
  */
-public class InvTweaksGuiInventorySettings extends qr {
+public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
 
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
@@ -43,29 +43,31 @@ public class InvTweaksGuiInventorySettings extends qr {
     private final static int ID_DONE = 200;
 
     private Minecraft mc;
-    private GuiScreen parentScreen;
+    private InvTweaksObfuscation obf;
+    private qr parentScreen;
     private InvTweaksConfig config;
 
-    public InvTweaksGuiInventorySettings(Minecraft mc, GuiScreen parentScreen,
+    public InvTweaksGuiInventorySettings(Minecraft mc, qr parentScreen,
             InvTweaksConfig config) {
         this.mc = mc;
+        this.obf = new InvTweaksObfuscation(mc);
         this.parentScreen = parentScreen;
         this.config = config;
     }
 
     public void initGui() {
 
-        List<GuiButton> controlList = new LinkedList<GuiButton>();
+        List<vj> controlList = new LinkedList<vj>();
         Point p = new Point();
         int i = 0;
 
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new GuiButton(ID_EDITRULES, p.getX() + 55, height / 6 + 96, "Open the sorting rules file..."));
-        controlList.add(new GuiButton(ID_EDITTREE, p.getX() + 55, height / 6 + 120, "Open the item tree file..."));
-        controlList.add(new GuiButton(ID_HELP, p.getX() + 55, height / 6 + 144, "Open help in browser..."));
-        controlList.add(new GuiButton(ID_DONE, p.getX() + 55, height / 6 + 168, "Done"));
+        controlList.add(new vj(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, "Open the sorting rules file..."));
+        controlList.add(new vj(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, "Open the item tree file..."));
+        controlList.add(new vj(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, "Open help in browser..."));
+        controlList.add(new vj(ID_DONE, p.getX() + 55, obf.getHeight(this) / 6 + 168, "Done"));
 
         // Create settings buttons
 
@@ -76,7 +78,7 @@ public class InvTweaksGuiInventorySettings extends qr {
         controlList.add(middleClickBtn);
         if (middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: middle click not available
-            middleClickBtn.enabled = false;
+            obf.setEnabled(middleClickBtn, false);
             middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(In conflict with Convenient Inventory)");
         }
 
@@ -89,7 +91,7 @@ public class InvTweaksGuiInventorySettings extends qr {
         controlList.add(shortcutsBtn);
         if (shortcuts.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: shortcuts not available
-            shortcutsBtn.enabled = false;
+            obf.setEnabled(shortcutsBtn, false);
             shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(In conflict with Convenient Inventory)");
         }
         
@@ -97,10 +99,10 @@ public class InvTweaksGuiInventorySettings extends qr {
         InvTweaksGuiTooltipButton sortOnPickupBtn = new InvTweaksGuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, SORT_ON_PICKUP), "Moves picked up items\nto the right slots");
         controlList.add(sortOnPickupBtn);
-        if (mc.isMultiplayerWorld()) {
+        if (obf.isMultiplayerWorld()) {
             // Sorting on pickup unavailable in SMP
-            sortOnPickupBtn.enabled = false;
-            sortOnPickupBtn.displayString = SORT_ON_PICKUP + SP_ONLY;
+            obf.setEnabled(sortOnPickupBtn, false);
+            obf.setDisplayString(sortOnPickupBtn, SORT_ON_PICKUP + SP_ONLY);
             sortOnPickupBtn.setTooltip(sortOnPickupBtn.getTooltip() + "\n(Single player only)");
         }
 
@@ -111,27 +113,27 @@ public class InvTweaksGuiInventorySettings extends qr {
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
-                GuiButton button = (GuiButton) o;
-                if (button.id == ID_EDITRULES || button.id < ID_EDITTREE) {
-                    button.enabled = false;
+                vj button = (vj) o;
+                if (obf.getId(button) == ID_EDITRULES || obf.getId(button) < ID_EDITTREE) {
+                    obf.setEnabled(obf.isEnabled(button), false);
                 }
             }
         }
 
         // Save control list
-        this.controlList = controlList;
+        obf.setControlList(controlList);
 
     }
-
+    
     public void drawScreen(int i, int j, float f) {
         drawDefaultBackground();
-        drawCenteredString(fontRenderer, SCREEN_TITLE, width / 2, 20, 0xffffff);
-        super.drawScreen(i, j, f);
+        drawCenteredString(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff);
+        super.a(i, j, f); // drawScreen
     }
 
-    protected void actionPerformed(GuiButton guibutton) {
+    protected void actionPerformed(vj guibutton) {
 
-        switch (guibutton.id) {
+        switch (obf.getId(guibutton)) {
 
         // Toggle middle click shortcut
         case ID_MIDDLE_CLICK:
@@ -192,14 +194,14 @@ public class InvTweaksGuiInventorySettings extends qr {
     }
 
     private void moveToButtonCoords(int buttonOrder, Point p) {
-        p.setX(width / 2 - 155 + ((buttonOrder+1) % 2) * 160);
-        p.setY(height / 6 + (buttonOrder / 2) * 24);
+        p.setX(obf.getWidth(this) / 2 - 155 + ((buttonOrder+1) % 2) * 160);
+        p.setY(obf.getHeight(this) / 6 + (buttonOrder / 2) * 24);
     }
 
-    private void toggleBooleanButton(GuiButton guibutton, String property, String label) {
+    private void toggleBooleanButton(vj guibutton, String property, String label) {
         Boolean enabled = !new Boolean(config.getProperty(property));
         config.setProperty(property, enabled.toString());
-        guibutton.displayString = computeBooleanButtonLabel(property, label);
+        obf.setDisplayString(guibutton, computeBooleanButtonLabel(property, label));
     }
 
     private String computeBooleanButtonLabel(String property, String label) {

@@ -156,18 +156,18 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     if (from != null) {
 
                         // Move armor parts
-                        Item fromItem = from.getItem();
-                        if (fromItem.isDamagable()) {
-                             if (fromItem instanceof ItemArmor) {
-                                 ItemArmor fromItemArmor = (ItemArmor) fromItem;
+                        sv fromItem = getItem(from);
+                        if (isDamageable(fromItem)) {
+                             if (isItemArmor(fromItem)) {
+                                 mt fromItemArmor = (mt) fromItem;
                                  List<sx> armorSlots = globalContainer.getSlots(InvTweaksContainerSection.ARMOR);
                                  for (sx slot : armorSlots) {
-                                     if (slot.isItemValid(from)
-                                             && (!slot.getHasStack() || fromItemArmor.armorLevel > 
-                                                     ((ItemArmor) slot.getStack().getItem()).armorLevel)) {
+                                     if (isItemValid(slot, from)
+                                             && (!hasStack(slot) || getArmorLevel(fromItemArmor) > 
+                                             getArmorLevel(((mt) getItem(getStack(slot)))))) {
                                          globalContainer.move(InvTweaksContainerSection.INVENTORY, i,
                                                  InvTweaksContainerSection.ARMOR, 
-                                                 globalContainer.getSlotIndex(slot.slotNumber));
+                                                 globalContainer.getSlotIndex(getSlotNumber(slot)));
                                      }
                                  }
                              }

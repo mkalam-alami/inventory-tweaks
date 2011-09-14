@@ -106,8 +106,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         }
         
         // Add Minecraft's Up & Down bindings to the shortcuts
-        int upKeyCode = mc.gameSettings.keyBindForward.keyCode,
-            downKeyCode = mc.gameSettings.keyBindBack.keyCode;
+        int upKeyCode = getKeyBindingForwardKeyCode(),
+            downKeyCode = getKeyBindingBackKeyCode();
+        
         shortcuts.get(ShortcutType.MOVE_UP).add(upKeyCode);
         shortcuts.get(ShortcutType.MOVE_DOWN).add(downKeyCode);
         shortcutKeysStatus.put(upKeyCode, false);
@@ -140,19 +141,19 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         return downShortcutKeys;
     }
     
-    public void handleShortcut(GuiContainer guiScreen) {
+    public void handleShortcut(em guiContainer) {
         // IMPORTANT: This method is called before the default action is executed.
         
         updateKeyStatuses();
         
         // Initialization
         int ex = Mouse.getEventX(), ey = Mouse.getEventY();
-        int x = (ex * guiScreen.width) / mc.displayWidth;
-        int y = guiScreen.height - (ey * guiScreen.height) / mc.displayHeight - 1;
+        int x = (ex * getWidth(guiContainer)) / getDisplayWidth();
+        int y = getHeight(guiContainer) - (ey * getHeight(guiContainer)) / getDisplayHeight() - 1;
         boolean shortcutValid = false;
         
         // Check that the slot is not empty
-        sx slot = getSlotAtPosition((GuiContainer) guiScreen, x, y);
+        sx slot = getSlotAtPosition(guiContainer, x, y);
         
         if (slot != null && hasStack(slot)) {
     
@@ -174,7 +175,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             // Choose target section
             try {
                 InvTweaksContainerManager container = new InvTweaksContainerManager(mc);
-                InvTweaksContainerSection srcSection = container.getSlotSection(slot.slotNumber);
+                InvTweaksContainerSection srcSection = container.getSlotSection(getSlotNumber(slot));
                 InvTweaksContainerSection destSection = null;
                 
                 // Set up available sections
@@ -355,8 +356,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
      * @return true if the shortuts listeners have to be reset
      */
     private boolean haveControlsChanged() {
-        return (!shortcutKeysStatus.containsKey(mc.gameSettings.keyBindForward.keyCode)
-                || !shortcutKeysStatus.containsKey(mc.gameSettings.keyBindBack.keyCode));
+        return (!shortcutKeysStatus.containsKey(getKeyBindingForwardKeyCode())
+                || !shortcutKeysStatus.containsKey(getKeyBindingBackKeyCode()));
     }
 
     private void updateKeyStatuses() {
@@ -459,10 +460,10 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         }
     }
     
-    private sx getSlotAtPosition(GuiContainer guiContainer, int i, int j) { 
+    private sx getSlotAtPosition(em guiContainer, int i, int j) { 
         // Copied from GuiContainer
-        for (int k = 0; k < guiContainer.inventorySlots.slots.size(); k++) {
-            sx slot = (sx) guiContainer.inventorySlots.slots.get(k);
+        for (int k = 0; k < getSlots(getContainer(guiContainer)).size(); k++) {
+            sx slot = (sx) getSlots(getContainer(guiContainer)).get(k);
             if (InvTweaks.getIsMouseOverSlot(guiContainer, slot, i, j)) {
                 return slot;
             }

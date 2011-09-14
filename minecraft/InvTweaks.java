@@ -11,6 +11,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import com.sun.org.apache.xpath.internal.operations.Gte;
+
 /**
  * Main class for Inventory Tweaks, which maintains various hooks
  * and dispatches the events to the correct handlers.
@@ -142,7 +144,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 for (int i = 0; i < InvTweaksConst.INVENTORY_HOTBAR_SIZE; i++) {
                     ul currentHotbarStack = containerMgr.getItemStack(i + 27);
                     // Don't move already started stacks
-                    if (currentHotbarStack != null && currentHotbarStack.animationsToGo == 5 && hotbarClone[i] == null) {
+                    if (currentHotbarStack != null && getAnimationsToGo(currentHotbarStack) == 5 && hotbarClone[i] == null) {
                         currentSlot = i + 27;
                     }
                 }
@@ -269,13 +271,14 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     // Used by ShortcutsHandler only, but put here for convenience and 
     // performance, since the xSize/ySize attributes are protected
-    public static boolean getIsMouseOverSlot(GuiContainer guiContainer, sx slot, int i, int j) { // Copied from GuiContainer
+    public static boolean getIsMouseOverSlot(em guiContainer, sx slot, int i, int j) { // Copied from GuiContainer
      // Copied from GuiContainer
-        int k = (guiContainer.width - guiContainer.xSize) / 2;
-        int l = (guiContainer.height - guiContainer.ySize) / 2;
+        InvTweaks obf = getInstance();
+        int k = (obf.getWidth(guiContainer) - obf.getXSize(guiContainer)) / 2;
+        int l = (obf.getHeight(guiContainer) - obf.getYSize(guiContainer)) / 2;
         i -= k;
         j -= l;
-        return i >= slot.xDisplayPosition - 1 && i < slot.xDisplayPosition + 16 + 1 && j >= slot.yDisplayPosition - 1 && j < slot.yDisplayPosition + 16 + 1;
+        return i >= getXDisplayPosition(slot) - 1 && i < getXDisplayPosition(slot) + 16 + 1 && j >= getYDisplayPosition(slot) - 1 && j < getYDisplayPosition(slot) + 16 + 1;
     }
 
     private boolean onTick() {
@@ -327,7 +330,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         // Switch between configurations
         InvTweaksConfig config = cfgManager.getConfig();
         Vector<Integer> downKeys = cfgManager.getShortcutsHandler().getDownShortcutKeys();
-        if (Keyboard.isKeyDown(InvTweaksConst.SORT_KEY_BINDING.keyCode)) {
+        if (Keyboard.isKeyDown(getKeyCode(InvTweaksConst.SORT_KEY_BINDING))) {
             for (int downKey : downKeys) {
                 String newRuleset = null;
                 switch (downKey) {
@@ -445,20 +448,20 @@ public class InvTweaks extends InvTweaksObfuscation {
                         // Check if the middle click target the chest or the
                         // inventory
                         // (copied GuiContainer.getSlotAtPosition algorithm)
-                        GuiContainer guiContainer = (GuiContainer) guiScreen;
-                        Container container = getContainer((GuiContainer) guiScreen);
+                        em guiContainer = (em) guiScreen;
+                        cf container = getContainer((em) guiScreen);
                         int slotCount = getSlots(container).size();
-                        int mouseX = (Mouse.getEventX() * guiContainer.width) / mc.displayWidth;
-                        int mouseY = guiContainer.height - (Mouse.getEventY() * guiContainer.height) / mc.displayHeight - 1;
+                        int mouseX = (Mouse.getEventX() * getWidth(guiContainer)) / getDisplayWidth();
+                        int mouseY = getHeight(guiContainer) - (Mouse.getEventY() * getHeight(guiContainer)) / getDisplayHeight() - 1;
                         int target = 0; // 0 = nothing, 1 = chest, 2 = inventory
                         for (int i = 0; i < slotCount; i++) {
                             sx slot = getSlot(container, i);
-                            int k = (guiContainer.width - guiContainer.xSize) / 2;
-                            int l = (guiContainer.height - guiContainer.ySize) / 2;
-                            if (mouseX - k >= slot.xDisplayPosition - 1 &&
-                                    mouseX - k < slot.xDisplayPosition + 16 + 1 &&
-                                    mouseY - l >= slot.yDisplayPosition - 1 &&
-                                    mouseY - l < slot.yDisplayPosition + 16 + 1) {
+                            int k = (getWidth(guiContainer) - getXSize(guiContainer)) / 2;
+                            int l = (getHeight(guiContainer) - getYSize(guiContainer)) / 2;
+                            if (mouseX - k >= getXDisplayPosition(slot) - 1 &&
+                                    mouseX - k < getXDisplayPosition(slot) + 16 + 1 &&
+                                    mouseY - l >= getYDisplayPosition(slot) - 1 &&
+                                    mouseY - l < getYDisplayPosition(slot) + 16 + 1) {
                                 target = (i < slotCount - InvTweaksConst.INVENTORY_SIZE) ? 1 : 2;
                                 break;
                             }
@@ -467,7 +470,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                         if (target == 1) {
     
                             // Play click
-                            mc.theWorld.playSoundAtEntity(getThePlayer(), "random.click", 0.2F, 1.8F);
+                            playSoundAtEntity(getTheWorld(), getThePlayer(), "random.click", 0.2F, 1.8F);
     
                             long timestamp = System.currentTimeMillis();
                             if (timestamp - chestAlgorithmClickTimestamp > 
@@ -510,9 +513,9 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             // Look for the mods buttons
             boolean customButtonsAdded = false;
-            for (Object o : guiScreen.controlList) {
-                GuiButton button = (GuiButton) o;
-                if (button.id == InvTweaksConst.JIMEOWAN_ID) {
+            for (Object o : getControlList(guiScreen)) {
+                vj button = (vj) o;
+                if (getId(button) == InvTweaksConst.JIMEOWAN_ID) {
                     customButtonsAdded = true;
                     break;
                 }
@@ -522,45 +525,45 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                 // Inventory button
                 if (!isContainer) {
-                    guiScreen.controlList.add(new InvTweaksGuiInventorySettingsButton(
+                    getControlList(guiScreen).add(new InvTweaksGuiInventorySettingsButton(
                             cfgManager, InvTweaksConst.JIMEOWAN_ID,
-                            guiScreen.width / 2 + 73, guiScreen.height / 2 - 78,
+                            getWidth(guiScreen) / 2 + 73, getHeight(guiScreen) / 2 - 78,
                             w, h, "...", "Inventory settings"));
                 }
 
                 // Chest buttons
                 else {
 
-                    GuiContainer guiContainer = (GuiContainer) guiScreen;
+                    em guiContainer = (em) guiScreen;
                     int id = InvTweaksConst.JIMEOWAN_ID,
-                        x = guiContainer.xSize / 2 + guiContainer.width / 2 - 17,
-                        y = (guiContainer.height - guiContainer.ySize) / 2 + 5;
+                        x = getXSize(guiContainer) / 2 + getWidth(guiContainer) / 2 - 17,
+                        y = (getHeight(guiContainer) - getYSize(guiContainer)) / 2 + 5;
 
                     // Settings button
-                    guiScreen.controlList.add(new InvTweaksGuiInventorySettingsButton(
+                    getControlList(guiScreen).add(new InvTweaksGuiInventorySettingsButton(
                             cfgManager, id++, 
                             x - 1, y, w, h, "...", "Inventory settings"));
 
                     // Sorting buttons
                     if (!config.getProperty(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS).equals("false")) {
 
-                        GuiButton button = new InvTweaksGuiSortingButton(
+                        InvTweaksObfuscationGuiButton button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
                                 x - 13, y, w, h, "h", "Sort in rows",
                                 InvTweaksHandlerSorting.ALGORITHM_HORIZONTAL);
-                        guiContainer.controlList.add((GuiButton) button);
+                        getControlList(guiContainer).add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
                                 x - 25, y, w, h, "v", "Sort in columns",
                                 InvTweaksHandlerSorting.ALGORITHM_VERTICAL);
-                        guiContainer.controlList.add((GuiButton) button);
+                        getControlList(guiContainer).add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
                                 x - 37, y, w, h, "s", "Default sorting",
                                 InvTweaksHandlerSorting.ALGORITHM_DEFAULT);
-                        guiContainer.controlList.add((GuiButton) button);
+                        getControlList(guiContainer).add(button);
 
                     }
                 }
@@ -572,7 +575,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void handleShortcuts(qr guiScreen) {
         
         // Check open GUI
-        if (!(guiScreen instanceof GuiContainer)
+        if (!isGuiContainer(guiScreen)
                 || guiScreen.getClass().getSimpleName().equals("MLGuiChestBuilding")) { // Millenaire mod
             return;
         }
@@ -586,7 +589,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 if (cfgManager.getConfig().getProperty(
                         InvTweaksConfig.PROP_ENABLE_SHORTCUTS).equals("true")) {
                     cfgManager.getShortcutsHandler().handleShortcut(
-                            (GuiContainer) guiScreen);
+                            (em) guiScreen);
                 }
             }
         }
@@ -636,7 +639,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         ul[] mainInventory = getMainInventory();
         for (int i = 0; i < 9; i++) {
             if (mainInventory[i] != null) {
-                hotbarClone[i] = mainInventory[i].copy();
+                hotbarClone[i] = copy(mainInventory[i]);
             } else {
                 hotbarClone[i] = null;
             }
@@ -645,7 +648,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private void playClick() {
         if (!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_SOUND).equals("false")) {
-            mc.theWorld.playSoundAtEntity(getThePlayer(), "random.click", 0.2F, 1.8F);
+            playSoundAtEntity(getTheWorld(), getThePlayer(), "random.click", 0.2F, 1.8F);
         }
     }
 

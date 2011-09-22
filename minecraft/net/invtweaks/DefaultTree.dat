@@ -355,7 +355,6 @@
       <edibleFood>
         <mushroomStew id="282"/>
         <rawFood>
-          <rottenFlesh id="367"/>
           <rawPorkchop id="319"/>
           <rawFish id="349"/>
           <rawBeef id="363"/>
@@ -380,6 +379,7 @@
         <sugar id="353"/>
         <cakeBlock id="92"/>
       </unedibleFood>
+      <rottenFlesh id="367"/>
     </food>
     <plant>
       <flower>

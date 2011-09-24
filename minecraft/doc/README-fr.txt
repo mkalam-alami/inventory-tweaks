@@ -7,7 +7,7 @@
 
 1. Vérifiez que ModLoader est bien installé (pour le télécharger : http://www.minecraftforum.net/topic/75440-risugamis-mods)
 2. Supprimez toute ancienne version d'Inventory Tweaks
-3. Mettez le Zip dans le dossier "mods" de Minecraft [OU] Copiez tout le contenu du Zip dans "minecraft.jar"
+3. Mettez ce .jar dans le dossier "mods" de Minecraft [OU] Copiez tout le contenu du .jar dans "minecraft.jar"
 4. Lancez le jeu !
 
 ======= [ UTILISATION ] =======
@@ -25,6 +25,9 @@
 
 * Alt + Clic: Lâcher une pile d'objets
 * 0-9 + Clic: Déplacer la pile vers la barre d'accès rapide
+
+* Maintenir R pendant 1s: Passer à la configuration de tri suivante
+* 0-9 + R: Choisir une configuration de tri
 
 ASTUCE : Les combos comme Mai+Alt+Clic ou Ctrl+Haut+Clic fonctionnent aussi !
 

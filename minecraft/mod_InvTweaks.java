@@ -26,6 +26,8 @@ public class mod_InvTweaks extends BaseMod {
 
         // Register key (listen only for key down events)
         ModLoader.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
+        ModLoader.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
+        ModLoader.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
 
         // Register in game hooks
         ModLoader.SetInGameHook(this, true, true);

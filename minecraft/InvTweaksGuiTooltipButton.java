@@ -43,8 +43,8 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
         }
     }
 
-    public void drawButton(Minecraft minecraft, int i, int j) {
-        super.a(minecraft, i, j); /* drawButton */
+    public void a(Minecraft minecraft, int i, int j) { /* drawButton */
+        super.a(minecraft, i, j); 
         
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
         

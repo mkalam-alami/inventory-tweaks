@@ -4,7 +4,6 @@ lib/
 client/
 isom/
 *.zip
-*.jar
 minecraft/net/minecraft/src/*.java
 *#
 *~

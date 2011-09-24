@@ -1,8 +1,5 @@
 import net.minecraft.client.Minecraft;
 
-
-
-
 /**
  * Obfuscation layer for gui buttons.
  * @author Jimeo Wan

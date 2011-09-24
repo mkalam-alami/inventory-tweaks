@@ -11,7 +11,9 @@ import net.minecraft.client.Minecraft;
  */
 public class InvTweaksObfuscation {
 
-	protected Minecraft mc;
+    //private static final Logger log = Logger.getLogger("InvTweaks");
+
+    protected Minecraft mc;
 	
 	public InvTweaksObfuscation(Minecraft mc) {
 		this.mc = mc;
@@ -111,11 +113,11 @@ public class InvTweaksObfuscation {
     protected int getHeight(qr guiScreen) {
         return guiScreen.n;
     }
-    protected int getXSize(qr guiScreen) {
-        return guiScreen.m;
+    protected int getXSize(em guiScreen) {
+        return guiScreen.b;
     }
-    protected int getYSize(qr guiScreen) {
-        return guiScreen.n;
+    protected int getYSize(em guiScreen) {
+        return guiScreen.c;
     }
     @SuppressWarnings("unchecked")
     protected List<InvTweaksObfuscationGuiButton> getControlList(qr guiScreen) {
@@ -159,7 +161,7 @@ public class InvTweaksObfuscation {
 		return itemStack.c;
 	}
 	protected boolean areItemStacksEqual(ul itemStack1, ul itemStack2) {
-		return ul.a(itemStack1, itemStack2);
+		return itemStack1.c(itemStack2); // ul.a(itemStack1, itemStack2);
 	}
     protected boolean isItemStackDamageable(ul itemStack) {
         return itemStack.e();
@@ -170,7 +172,7 @@ public class InvTweaksObfuscation {
                         && getItemID(itemStack1) == getItemID(itemStack2));
     }
     protected boolean areItemsEqual(ul itemStack1, ul itemStack2) {
-        return itemStack1.c(itemStack2); // isItemEqual
+        return itemStack1.a(itemStack2); // isItemEqual
     }
     protected int getAnimationsToGo(ul itemStack) {
         return itemStack.b;

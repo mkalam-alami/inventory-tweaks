@@ -16,11 +16,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
-
+/**
+ * 
+ * Mod documentation screen, launched when executing the mod jar.
+ * 
+ * @author Jimeo Wan
+ *
+ */
 public class InvTweaksMain {
     
     private final static int WIDTH = 800;
     private final static int HEIGHT = 480;
+    
     private final static String[] LANGUAGES = 
         new String[]{
             "de:Deutsch",
@@ -28,6 +35,9 @@ public class InvTweaksMain {
             "fr:Français",
         };
     private final static String DEFAULT_LANGUAGE = "en";
+
+    private final static String CHANGELOG_FILE = "changelog.txt";
+    private final static String LICENSE_FILE = "license.txt";
     
     private final static JTextArea readmeTextArea = new JTextArea();
 
@@ -56,7 +66,7 @@ public class InvTweaksMain {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         
         // Fill textarea
-        loadReadme(readmeTextArea, null);
+        displayFile(readmeTextArea, getReadmeFile(DEFAULT_LANGUAGE));
         
         
 
@@ -70,7 +80,7 @@ public class InvTweaksMain {
         });
         menuFile.add(menuFileExit);
 
-        JMenu menuLanguage = new JMenu("Language");
+        JMenu menuReadmes = new JMenu("Readme");
         for (String language : LANGUAGES) {
             String[] languageInfo = language.split(":");
             JMenuItem languageItem = new JMenuItem(languageInfo[1]);
@@ -78,22 +88,38 @@ public class InvTweaksMain {
             languageItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     JMenuItem menuItem = (JMenuItem) e.getSource();
-                    loadReadme(readmeTextArea, menuItem.getName());
+                    displayFile(readmeTextArea, 
+                            getReadmeFile(menuItem.getName()));
                 }
             });
-            menuLanguage.add(languageItem);
+            menuReadmes.add(languageItem);
         }
+        JMenuItem menuChangelog = new JMenuItem("Changelog");
+        menuChangelog.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                displayFile(readmeTextArea, CHANGELOG_FILE);
+            }
+        });
+        JMenuItem menuLicense = new JMenuItem("License");
+        menuLicense.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                displayFile(readmeTextArea, LICENSE_FILE);
+            }
+        });
+        
+        JMenu menuView = new JMenu("View");
+        menuView.add(menuReadmes);
+        menuView.add(menuChangelog);
+        menuView.add(menuLicense);
         
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(menuFile);
-        menuBar.add(menuLanguage);
+        menuBar.add(menuView);
         
         
         
         // Frame creation
         JFrame frame = new JFrame();
-        frame.setBounds((int) (windowBounds.getCenterX()-WIDTH/2),
-                (int) (windowBounds.getCenterY()-HEIGHT/2), WIDTH, HEIGHT);
         frame.setTitle("Inventory Tweaks "+InvTweaksConst.MOD_VERSION+" - Readme");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setJMenuBar(menuBar);
@@ -107,21 +133,24 @@ public class InvTweaksMain {
         
         // Show
         frame.pack();
+        frame.setBounds((int) (windowBounds.getCenterX()-WIDTH/2),
+                (int) (windowBounds.getCenterY()-HEIGHT/2), WIDTH, HEIGHT);
         frame.setVisible(true);
         
     }
 
-    private static void loadReadme(JTextArea textArea, String language) {
-
+    private static String getReadmeFile(String language) {
         if (language != null && language.equals(DEFAULT_LANGUAGE)) {
             language = null;
         }
-        
+        return "README"+((language != null) ? "-"+language : "")+".txt";
+    }
+    
+    private static void displayFile(JTextArea textArea, String docFile) {
         InputStream is = null;
         
         try {
-            is = ClassLoader.getSystemResourceAsStream(
-                    "doc/README"+((language != null) ? "-"+language : "")+".txt");
+            is = ClassLoader.getSystemResourceAsStream("doc/"+docFile);
             if (is != null) {
                 textArea.setText("");
                 String line = "";
@@ -133,12 +162,10 @@ public class InvTweaksMain {
                         line = "";
                     }
                 }
-                textArea.setCaretPosition(0);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            textArea.setText("ERROR: Failed to load the request file, sorry about that.\nBut you can still browse to: http://wan.ka.free.fr/?invtweaks");
         } finally {
-            textArea.append("ERROR: Failed to load Readme, sorry about that.\nBut you can still browse to: http://wan.ka.free.fr/?invtweaks");
             if (is != null) {
                 try {
                     is.close();
@@ -147,7 +174,8 @@ public class InvTweaksMain {
                 }
             }
         }
-        
+
+        textArea.setCaretPosition(0);
     }
 
 }

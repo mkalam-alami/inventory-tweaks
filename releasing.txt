@@ -4,34 +4,27 @@
 |==============================================================|
 
 1. Update the mod files
-    * mod_InvTweaks.java version
+    * InvTweaksConst.MOD_VERSION constant
     * Changelog
-    * Readme
-2. Compile & obfuscate
-3. Gather the mod files
-    * Java classes
-    * Default configuration
-    * doc/
-      * changelog.txt
-      * license.txt
-      * README.txt
-4. Zip under the format InvTweaks-v1.X-B1.Z.zip
-5. Quick test from clean Minecraft install
-6. Push to Github & upload to MediaFire
-7. Update website
+    * Readmes
+2. Run "mvn compile antrun:run"
+3. Quick test from clean Minecraft install
+4. Push Jar to Github & upload to MediaFire
+5. Update website
     * Documentation
     * Download link
     * Known problems
     * Changelog
-8. Update forum thread
+6. Update forum thread
     * Announcement (OP + new post)
     * Documentation
     * Download link
     * Known problems
     * Changelog
-9. Update wiki
+7. Update wiki
     * Mods
     * Mods/Inventory Tweaks
-    
-TODO: Python script for steps 2/3/4
-TODO: Online form for step 7
+8. If relevant, update/contact:
+    * Yogbox
+    * Modshelf.net
+    * Minecraft.fr thread

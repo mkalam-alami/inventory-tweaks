@@ -19,8 +19,8 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
         this.algorithm = algorithm;
     }
 
-    public void drawButton(Minecraft minecraft, int i, int j) {
-        super.drawButton(minecraft, i, j);
+    public void a(Minecraft minecraft, int i, int j) { /* drawButton */
+        super.a(minecraft, i, j);
         
         if (!isEnabled2()) {
             return;
@@ -45,7 +45,7 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
     /**
      * Sort container
      */
-    public boolean mousePressed(Minecraft minecraft, int i, int j) {
+    public boolean c(Minecraft minecraft, int i, int j) {
         if (super.c(minecraft, i, j)) { // mousePressed
             try {
                 new InvTweaksHandlerSorting(

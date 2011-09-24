@@ -3,6 +3,9 @@
 | Changelog                                                    |
 |==============================================================|
 
+[09.16.2011] 1.31 Beta (B1.8.1)
+ * (Quickly) updated source code to Minecraft 1.8.1
+
 [09.13.2011] 1.31 (B1.7.3)
  * Added shortcuts to switch between sorting configurations (0-9 + Sort)
  * Up/Down shortcuts now work with the Forward/Backward keys

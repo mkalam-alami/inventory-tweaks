@@ -1,0 +1,76 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.jimeowan</groupId>
+  <artifactId>inventory-tweaks</artifactId>
+  <version>1.31-1.8-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Inventory Tweaks</name>
+  
+  <build>
+    <sourceDirectory>minecraft</sourceDirectory>
+    
+    <plugins>
+      <!-- Compiling settings -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <!-- Packaging/distribution settings -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>        
+        <executions>
+            <execution>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+                <phase>dist</phase>
+            </execution>
+        </executions>
+        <configuration>
+          <target>
+            <ant antfile="${basedir}/build.xml">
+                <target name="package"/>
+            </ant>
+          </target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <!-- Windows only -->
+  <dependencies>
+    <dependency>
+      <groupId>net.minecraft</groupId>
+      <artifactId>minecraft</artifactId>
+      <version>1.8</version>
+      <scope>system</scope>
+      <systemPath>${HOME}/AppData/Roaming/.minecraft/bin/minecraft.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>net.minecraft</groupId>
+      <artifactId>lwjgl</artifactId>
+      <version>1.8</version>
+      <scope>system</scope>
+      <systemPath>${HOME}/AppData/Roaming/.minecraft/bin/lwjgl.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>net.minecraft</groupId>
+      <artifactId>lwjgl_util</artifactId>
+      <version>1.8</version>
+      <scope>system</scope>
+      <systemPath>${HOME}/AppData/Roaming/.minecraft/bin/lwjgl_util.jar</systemPath>
+    </dependency>
+  </dependencies>
+  
+</project>

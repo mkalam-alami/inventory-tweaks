@@ -20,8 +20,8 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
         this.cfgManager = cfgManager;
     }
 
-    public void drawButton(Minecraft minecraft, int i, int j) {
-        super.drawButton(minecraft, i, j);
+    public void a(Minecraft minecraft, int i, int j) { /* drawButton */
+        super.a(minecraft, i, j);
 
         if (!isEnabled2()) {
             return;

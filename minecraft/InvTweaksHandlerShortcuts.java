@@ -3,6 +3,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
 
@@ -16,7 +17,8 @@ import org.lwjgl.input.Mouse;
  */
 public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
-    private final static int DROP_SLOT = -999;
+    private static final int DROP_SLOT = -999;
+    private static final Logger log = Logger.getLogger("InvTweaks");
     
     private ShortcutType defaultAction = ShortcutType.MOVE_ONE_STACK;
     private ShortcutType defaultDestination = null;
@@ -153,9 +155,12 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         boolean shortcutValid = false;
         
         // Check that the slot is not empty
+        log.severe("before test");
         sx slot = getSlotAtPosition(guiContainer, x, y);
+        log.severe("after test");
         
         if (slot != null && hasStack(slot)) {
+            log.severe("in if");
     
             // Choose shortcut type
             ShortcutType shortcutType = defaultAction;
@@ -461,16 +466,17 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     }
     
     private sx getSlotAtPosition(em guiContainer, int i, int j) { 
-        // Copied from GuiContainer
+        // Copied from class 'em' (GuiContainer)
         for (int k = 0; k < getSlots(getContainer(guiContainer)).size(); k++) {
-            sx slot = (sx) getSlots(getContainer(guiContainer)).get(k);
-            if (InvTweaks.getIsMouseOverSlot(guiContainer, slot, i, j)) {
-                return slot;
+            sx localsx = (sx) getSlots(getContainer(guiContainer)).get(k);
+            if (InvTweaks.getIsMouseOverSlot(guiContainer, localsx, i, j)) {
+                return localsx;
             }
         }
         return null;
     }
 
+    
     private ShortcutType propNameToShortcutType(String property) {
         if (property.equals(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS)) {
             return ShortcutType.MOVE_ALL_ITEMS;

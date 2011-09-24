@@ -298,7 +298,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             remaining.addAll(nextRemaining);
         }
         if (iterations == 50) {
-            log.info("Sorting takes too long, aborting.");
+            log.warning("Sorting takes too long, aborting.");
         }
         
     }

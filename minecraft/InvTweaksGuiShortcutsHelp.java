@@ -22,7 +22,7 @@ public class InvTweaksGuiShortcutsHelp extends qr {
         this.config = config;
     }
 
-    public void initGui() {
+    public void a() { /* initGui */
         // Create Done button
         List<vj> controlList = new LinkedList<vj>();
         controlList.add(new vj(ID_DONE, 
@@ -31,7 +31,7 @@ public class InvTweaksGuiShortcutsHelp extends qr {
         obf.setControlList(this, controlList);
     }
 
-    public void drawScreen(int i, int j, float f) {
+    public void a(int i, int j, float f) { /* drawScreen */
         
         k(); // Gui.drawDefaultBackground
         a(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
@@ -81,12 +81,12 @@ public class InvTweaksGuiShortcutsHelp extends qr {
     }
     
     private void drawShortcutLine(String label, String value, int color, int y) {
-        a(obf.getFontRenderer(), label, 50, y, -1); // drawString
-        a(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value, 
+        b(obf.getFontRenderer(), label, 50, y, -1); // drawString
+        b(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value, 
                 obf.getWidth(this) / 2 + 40, y, color); // drawString
     }
 
-    protected void actionPerformed(vj guibutton) {
+    protected void a(vj guibutton) { /* actionPerformed */
 
         switch (obf.getId(guibutton)) {
 

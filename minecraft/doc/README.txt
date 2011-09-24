@@ -7,7 +7,7 @@
 
 1. Make sure ModLoader is already installed (http://www.minecraftforum.net/topic/75440-risugamis-mods)
 2. Remove any previous version of Inventory Tweaks
-3. Put the Zip in the "mods" folder of Minecraft [OR] Put all of the Zip contents in "minecraft.jar"
+3. Put this .jar in the "mods" folder of Minecraft [OR] Put all of the .jar contents in "minecraft.jar"
 4. Launch the game!
 
 ======= [ USE ] =======
@@ -25,6 +25,9 @@
 
 * Alt + Left click: Drop item
 * 0-9 + Left click: Move item to the hotbar
+
+* Hold R for 1s: Switch to next sorting configuration
+* 0-9 + R: Switch to a specific sorting configuration
 
 TIP: Combos like Shift+Alt+Click or Ctrl+Up+Click also work!
 

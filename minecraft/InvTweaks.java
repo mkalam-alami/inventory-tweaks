@@ -270,7 +270,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     // Used by ShortcutsHandler only, but put here for convenience and 
     // performance, since the xSize/ySize attributes are protected
     public static boolean getIsMouseOverSlot(em guiContainer, sx slot, int i, int j) { // Copied from GuiContainer
-     // Copied from GuiContainer
+        // Copied from GuiContainer
         InvTweaks obf = getInstance();
         int k = (obf.getWidth(guiContainer) - obf.getXSize(guiContainer)) / 2;
         int l = (obf.getHeight(guiContainer) - obf.getYSize(guiContainer)) / 2;

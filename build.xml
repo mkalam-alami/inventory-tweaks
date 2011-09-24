@@ -1,0 +1,40 @@
+<project name="InventoryTweaks" default="dist" basedir=".">
+
+    <description>
+        Mod packaging and deployment tasks
+    </description>
+    
+    <!-- Mod version -->
+    <property name="version" value="1.31-1.8.1" />
+    
+    <!-- Properties -->
+    <property name="minecraftModsFolder" location="${user.home}/AppData/Roaming/.minecraft/mods" />
+    <property name="jarName" location="InvTweaks-${version}.jar" />
+
+    <!--- Deployment to Minecraft -->
+    <target name="dist" depends="package">
+        <delete>
+            <fileset dir="${minecraftModsFolder}" includes="InvTweaks*.jar" />
+        </delete>
+        <copy file="${jarName}" todir="${minecraftModsFolder}" />
+    </target>
+    
+    <!--- Packaging task -->
+    <target name="package">
+        <mkdir dir="tmp" />
+        <copy todir="tmp">
+            <fileset dir="bin">
+                <exclude name="*.txt" />
+            </fileset>
+        </copy>
+        <copy file="changelog.txt" todir="tmp/doc" />
+        <copy file="license.txt" todir="tmp/doc" />
+        <jar jarfile="${jarName}" basedir="tmp">
+            <manifest>
+                <attribute name="Main-Class" value="InvTweaksMain"/>
+            </manifest>
+        </jar>
+        <delete dir="tmp" />
+    </target>
+
+</project>

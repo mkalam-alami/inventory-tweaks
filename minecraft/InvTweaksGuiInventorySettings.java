@@ -55,7 +55,7 @@ public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
         this.config = config;
     }
 
-    public void initGui() {
+    public void a() { /* initGui */
 
         List<vj> controlList = new LinkedList<vj>();
         Point p = new Point();
@@ -125,13 +125,13 @@ public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
 
     }
     
-    public void drawScreen(int i, int j, float f) {
+    public void a(int i, int j, float f) { /* drawScreen */
         k(); // Gui.drawDefaultBackground
         a(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         super.a(i, j, f); // drawScreen
     }
 
-    protected void actionPerformed(vj guibutton) {
+    protected void a(vj guibutton) { /* actionPerformed */
 
         switch (obf.getId(guibutton)) {
 

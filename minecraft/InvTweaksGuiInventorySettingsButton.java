@@ -15,8 +15,8 @@ public class InvTweaksGuiInventorySettingsButton extends InvTweaksGuiIconButton 
         super(cfgManager, id, x, y, w, h, displayString, tooltip);
     }
 
-    public void drawButton(Minecraft minecraft, int i, int j) {
-        super.drawButton(minecraft, i, j);
+    public void a(Minecraft minecraft, int i, int j) {
+        super.a(minecraft, i, j);
 
         if (!isEnabled2()) {
             return;
@@ -32,9 +32,9 @@ public class InvTweaksGuiInventorySettingsButton extends InvTweaksGuiIconButton 
     }
 
     /**
-     * Sort container
+     * Displays inventory settings GUI
      */
-    public boolean mousePressed(Minecraft minecraft, int i, int j) {
+    public boolean c(Minecraft minecraft, int i, int j) { /* mousePressed */
         
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
         InvTweaksConfig config = cfgManager.getConfig();

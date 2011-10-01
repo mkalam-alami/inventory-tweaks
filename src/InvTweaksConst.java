@@ -16,6 +16,7 @@ public class InvTweaksConst {
     public static final int SORTING_TIMEOUT = 2999; // > POLLING_TIMEOUT
     public static final int CHEST_ALGORITHM_SWAP_MAX_INTERVAL = 3000;
     public static final int TOOLTIP_DELAY = 1000;
+    public static final long CRAFTING_DELAY = 100;
 
     // File constants
     public static final String MINECRAFT_DIR = InvTweaksObfuscation.getMinecraftDir();
@@ -49,4 +50,5 @@ public class InvTweaksConst {
      */
     public static final ys SORT_KEY_BINDING = 
         new ys("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
+    
 }

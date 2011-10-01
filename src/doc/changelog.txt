@@ -3,7 +3,9 @@
 | Changelog                                                    |
 |==============================================================|
 
-[10.XX.2011] 1.32 (B1.8.1)
+[10.01.2011] 1.32 (B1.8.1)
+ * Shortcuts when a chest is open now moves items to the chest
+ * Fixed shortcuts help screen
  * Updated item tree to 1.9 Beta 2
  
 [09.16.2011] 1.31 Beta (B1.8.1)

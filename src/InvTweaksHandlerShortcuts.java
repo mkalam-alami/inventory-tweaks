@@ -18,6 +18,8 @@ import org.lwjgl.input.Mouse;
 public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
     private static final int DROP_SLOT = -999;
+    
+    @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
     
     private ShortcutType defaultAction = ShortcutType.MOVE_ONE_STACK;
@@ -31,6 +33,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private ul fromStack;
     private InvTweaksContainerSection toSection;
     private ShortcutType shortcutType;
+    private long lastCraftDate = 0;
 
     /**
      * Allows to monitor the keys related to shortcuts
@@ -50,6 +53,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         MOVE_UP,
         MOVE_DOWN,
         MOVE_TO_EMPTY_SLOT,
+        CRAFT,
         DROP
     }
 
@@ -158,6 +162,16 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         sx slot = getSlotAtPosition(guiContainer, x, y);
         
         if (slot != null && hasStack(slot)) {
+
+            InvTweaksContainerManager container = new InvTweaksContainerManager(mc);
+           
+            // Filter shortcuts to let Minecraft ones run
+            if (container.getSlotSection(getSlotNumber(slot)) 
+                    == InvTweaksContainerSection.CRAFTING_OUT
+                   && (shortcutKeysStatus.get(Keyboard.KEY_LSHIFT)
+                   || shortcutKeysStatus.get(Keyboard.KEY_RSHIFT))) {
+                return;
+            }
             
             // Choose shortcut type
             ShortcutType shortcutType = defaultAction;
@@ -173,10 +187,16 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 shortcutType = ShortcutType.MOVE_ONE_ITEM;
                 shortcutValid = true;
             }
+            if (isCraftingShortcutDown()
+                    && container.getSlotSection(getSlotNumber(slot)) 
+                    == InvTweaksContainerSection.CRAFTING_OUT) {
+                /*shortcutType = ShortcutType.CRAFT;
+                shortcutValid = true;*/
+                return; // TODO: Right-click crafting shortcut
+            }
             
             // Choose target section
             try {
-                InvTweaksContainerManager container = new InvTweaksContainerManager(mc);
                 InvTweaksContainerSection srcSection = container.getSlotSection(getSlotNumber(slot));
                 InvTweaksContainerSection destSection = null;
                 
@@ -263,11 +283,12 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     } else {
                         
                         // Drop or move
-                        if (srcSection == InvTweaksContainerSection.CRAFTING_OUT) {
-                            craftAll(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != -1);
-                        } else {
+                        /*if (shortcutType == ShortcutType.CRAFT) {
+                            craft(isActive(ShortcutType.MOVE_ALL_ITEMS) == -1,
+                                    isActive(ShortcutType.DROP) != -1);
+                        } else {*/
                             move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != -1);
-                        }
+                        //}
                     }
                     
                     // Reset mouse status to prevent default action.
@@ -337,25 +358,74 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         }
     }
     
-    private void craftAll(boolean separateStacks, boolean drop) throws Exception {
-        int toIndex = getNextIndex(separateStacks, drop);
+    private void craft(final boolean toHand, final boolean drop) throws Exception {
+        int toIndex = getNextIndex(false, drop);
         sx slot = container.getSlot(fromSection, fromIndex);
-        if (hasStack(slot) ) {
+        long currentTimeMillis = System.currentTimeMillis();
+        // Start crafting only if there is something to craft
+        // and we have waited long enough (CRAFTING_DELAY ms)
+        if (hasStack(slot) && (!toHand || 
+                currentTimeMillis - lastCraftDate >= InvTweaksConst.CRAFTING_DELAY)) {
             // Store the first item type to craft, to make
             // sure it doesn't craft something else in the end
             int idToCraft = getItemID(getStack(slot));
             do {
                 container.move(fromSection, fromIndex, toSection, toIndex);
-                toIndex = getNextIndex(separateStacks, drop);
+                toIndex = getNextIndex(false, drop);
                 if (getHoldStack() != null) {
                     container.leftClick(toSection, toIndex);
-                    toIndex = getNextIndex(separateStacks, drop);
+                    toIndex = getNextIndex(false, drop);
                 }
-            
             } while (hasStack(slot) 
                     && getItemID(getStack(slot)) == idToCraft
                     && toIndex != -1);
-        }
+        } 
+        
+        /*new Thread(new Runnable() {
+            public void run() {
+            try {
+                int toIndex = getNextIndex(false, drop);
+                sx slot = container.getSlot(fromSection, fromIndex);
+                long currentTimeMillis = System.currentTimeMillis();
+                // Start crafting only if there is something to craft
+                // and we have waited long enough (CRAFTING_DELAY ms)
+                if (hasStack(slot) && (!toHand || 
+                        currentTimeMillis - lastCraftDate >= InvTweaksConst.CRAFTING_DELAY)) {
+                    // Craft to hand
+                    if (toHand) {
+                        container.leftClick(fromSection, fromIndex);
+                        lastCraftDate = currentTimeMillis;
+                        try {
+                            Thread.sleep(InvTweaksConst.CRAFTING_DELAY);
+                            log.severe(""+isCraftingShortcutDown());
+                            craft(true, false);
+                        } catch (InterruptedException e) {
+                            log.warning("Quick crafting was interrupted");
+                        } catch (Exception e) {
+                            InvTweaks.logInGameErrorStatic("Quick crafting failed", e);
+                        }
+                    }
+                    // Craft to slot
+                    else {
+                        // Store the first item type to craft, to make
+                        // sure it doesn't craft something else in the end
+                        int idToCraft = getItemID(getStack(slot));
+                        do {
+                            container.move(fromSection, fromIndex, toSection, toIndex);
+                            toIndex = getNextIndex(false, drop);
+                            if (getHoldStack() != null) {
+                                container.leftClick(toSection, toIndex);
+                                toIndex = getNextIndex(false, drop);
+                            }
+                        } while (hasStack(slot) 
+                                && getItemID(getStack(slot)) == idToCraft
+                                && toIndex != -1);
+                    }
+                } 
+            } catch (TimeoutException e) {
+                log.warning("Quick crafting failed: "+e.getMessage());
+            }
+        }}).start();*/
     }
 
     /**
@@ -422,7 +492,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
     /**
      * @param shortcutType
-     * @return The key that made the shortcut active
+     * @return The key that made the shortcut active, or -1 if inactive
      */
     private int isActive(ShortcutType shortcutType) {
         for (Integer keyCode : shortcuts.get(shortcutType)) {
@@ -496,5 +566,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             return null;
         }
     }
-    
+
+    private boolean isCraftingShortcutDown() {
+        return Mouse.isButtonDown(1);
+    }
 }

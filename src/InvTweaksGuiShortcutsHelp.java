@@ -33,20 +33,17 @@ public class InvTweaksGuiShortcutsHelp extends qr {
 
     public void a(int i, int j, float f) { /* drawScreen */
         
+        // Note: 0x0000EEFF = blue color (currently unused)
+        
         k(); // Gui.drawDefaultBackground
         a(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         
         int y = obf.getHeight(this) / 6;
 
-        drawShortcutLine("Move", "Left click", 0x0000EEFF, y);
-        y += 12;
-        drawShortcutLine("Move to empty slot", "Right click", 0x0000EEFF, y);
-        y += 20;
-        
-        drawShortcutLine("Move one stack",
+        /*drawShortcutLine("Move one stack",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_STACK) + " + Click",
                 0x00FFFF00, y);
-        y += 12;
+        y += 12;*/
         drawShortcutLine("Move one item only",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + Click",
                 0x00FFFF00, y);
@@ -54,19 +51,22 @@ public class InvTweaksGuiShortcutsHelp extends qr {
         drawShortcutLine("Move all items of same type",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS) + " + Click",
                 0x00FFFF00, y);
-        y += 20;
+        y += 25;
 
-        drawShortcutLine("Move to upper section",
+        
+        drawShortcutLine("Send to upper section",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_UP) + " + Click",
                 0x0000FF33, y);
         y += 12;
-        drawShortcutLine("Move to lower section",
+        drawShortcutLine("Send to lower section",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DOWN) + " + Click",
                 0x0000FF33, y);
         y += 12;
-        drawShortcutLine("Move to hotbar", "0-9 + Click", 0x0000FF33, y);
-        y += 20;
-
+        drawShortcutLine("Send to hotbar", "0-9 + Click", 0x0000FF33, y);
+        y += 12;
+        drawShortcutLine("Send to empty slot", "(Other shortcut) + Right click", 0x0000FF33, y);
+        y += 25;
+        
         drawShortcutLine("Drop",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DROP) + " + Click",
                 0x00FF8800, y);
@@ -75,7 +75,7 @@ public class InvTweaksGuiShortcutsHelp extends qr {
         y += 12;
         drawShortcutLine("Select sorting configuration", "0-9 + " +
                 Keyboard.getKeyName(obf.getKeyCode(InvTweaksConst.SORT_KEY_BINDING)), 0x00FF8800, y);
-        y += 12;
+        y += 25;
         
         super.a(i, j, f); // drawScreen
     }

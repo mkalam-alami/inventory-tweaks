@@ -369,7 +369,7 @@
 			<painting id="321"/>
 			<sign id="323"/>
 			<bookShelf id="47"/>
-			<musicDisc mine="2256" max="2266" />
+			<musicDisc min="2256" max="2266"/>
 		</decoration>
 		<food>
 			<edibleFood>

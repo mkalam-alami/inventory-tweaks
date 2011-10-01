@@ -155,13 +155,10 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         boolean shortcutValid = false;
         
         // Check that the slot is not empty
-        log.severe("before test");
         sx slot = getSlotAtPosition(guiContainer, x, y);
-        log.severe("after test");
         
         if (slot != null && hasStack(slot)) {
-            log.severe("in if");
-    
+            
             // Choose shortcut type
             ShortcutType shortcutType = defaultAction;
             if (isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != -1) {

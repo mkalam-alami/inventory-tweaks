@@ -1,0 +1,210 @@
+diff --git a/src/InvTweaksConst.java b/src/InvTweaksConst.java
+index ae07b79..0fb20f6 100644
+--- a/src/InvTweaksConst.java
++++ b/src/InvTweaksConst.java
+@@ -27,8 +27,8 @@ public class InvTweaksConst {
+     public static final String OLD_CONFIG_TREE_FILE = MINECRAFT_CONFIG_DIR + "InvTweaksTree.xml";
+     public static final String OLDER_CONFIG_RULES_FILE = MINECRAFT_DIR + "InvTweaksRules.txt";
+     public static final String OLDER_CONFIG_TREE_FILE = MINECRAFT_DIR + "InvTweaksTree.txt";
+-    public static final String DEFAULT_CONFIG_FILE = "/net/invtweaks/DefaultConfig.dat";
+-    public static final String DEFAULT_CONFIG_TREE_FILE = "/net/invtweaks/DefaultTree.dat";
++    public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.dat";
++    public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.dat";
+     public static final String HELP_URL = "http://wan.ka.free.fr/?invtweaks";
+     
+     // Global mod constants
+diff --git a/src/InvTweaksHandlerAutoRefill.java b/src/InvTweaksHandlerAutoRefill.java
+index a929672..ad8e53d 100644
+--- a/src/InvTweaksHandlerAutoRefill.java
++++ b/src/InvTweaksHandlerAutoRefill.java
+@@ -31,66 +31,85 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
+ 	 * @throws Exception 
+      */
+ 	public void autoRefillSlot(int slot, int wantedId, int wantedDamage) throws Exception {
+-   
++
+ 		InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(
+ 		        mc, InvTweaksContainerSection.INVENTORY);
+ 		ul candidateStack, replacementStack = null;
+ 		int replacementStackSlot = -1;
+-
+-		//// Search replacement
+ 		
+ 		List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<InvTweaksConfigSortingRule>();
+ 		List<InvTweaksConfigSortingRule> rules = config.getRules();
+ 		InvTweaksItemTree tree = config.getTree();
+-		List<InvTweaksItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
+-
+-		// Find rules that match the slot
+-		for (InvTweaksItemTreeItem item : items) {
+-			// Since we search a matching item using rules,
+-		    // create a fake one that matches the exact item first
+-			matchingRules.add(new InvTweaksConfigSortingRule(
+-					tree, "D"+(slot-27), item.getName(),
+-					InvTweaksConst.INVENTORY_SIZE, InvTweaksConst.INVENTORY_ROW_SIZE));
+-		}
+-		for (InvTweaksConfigSortingRule rule : rules) {
+-			if (rule.getType() == InvTweaksConfigSortingRuleType.TILE 
+-			        || rule.getType() == InvTweaksConfigSortingRuleType.COLUMN) {
+-				for (int preferredSlot : rule.getPreferredSlots()) {
+-					if (slot == preferredSlot) {
+-						matchingRules.add(rule);
+-						break;
+-					}
+-				}
+-			}
+-		}
+ 		
+-		// Look only for a matching stack
+-		// First, look for the same item,
+-		// else one that matches the slot's rules
+-		for (InvTweaksConfigSortingRule rule : matchingRules) {
+-			for (int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
+-				candidateStack = container.getItemStack(i);
+-				if (candidateStack != null) {
+-					List<InvTweaksItemTreeItem> candidateItems = tree.getItems(
+-							getItemID(candidateStack),
+-							getItemDamage(candidateStack));
+-					if (tree.matches(candidateItems, rule.getKeyword())) {
+-						// Choose stack of lowest size and (in case of tools) highest damage
+-						if (replacementStack == null || 
+-								getStackSize(replacementStack) > getStackSize(candidateStack) ||
+-								(getStackSize(replacementStack) == getStackSize(candidateStack) &&
+-										getMaxStackSize(replacementStack) == 1 &&
+-										getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
+-							replacementStack = candidateStack;
+-							replacementStackSlot = i;
+-						}
+-					}
+-				}
+-			}
+-			if (replacementStack != null) {
+-				break;
+-			}
+-		}
++		// Check that the item is in the tree
++        if (!tree.isItemUnknown(wantedId, wantedDamage)) {
++            
++            //// Search replacement
++            
++    		List<InvTweaksItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
++    
++    		// Find rules that match the slot
++    		for (InvTweaksItemTreeItem item : items) {
++    			// Since we search a matching item using rules,
++    		    // create a fake one that matches the exact item first
++    			matchingRules.add(new InvTweaksConfigSortingRule(
++    					tree, "D"+(slot-27), item.getName(),
++    					InvTweaksConst.INVENTORY_SIZE, InvTweaksConst.INVENTORY_ROW_SIZE));
++    		}
++    		for (InvTweaksConfigSortingRule rule : rules) {
++    			if (rule.getType() == InvTweaksConfigSortingRuleType.TILE 
++    			        || rule.getType() == InvTweaksConfigSortingRuleType.COLUMN) {
++    				for (int preferredSlot : rule.getPreferredSlots()) {
++    					if (slot == preferredSlot) {
++    						matchingRules.add(rule);
++    						break;
++    					}
++    				}
++    			}
++    		}
++    
++    		// Look only for a matching stack
++    		// First, look for the same item,
++    		// else one that matches the slot's rules
++    		for (InvTweaksConfigSortingRule rule : matchingRules) {
++    			for (int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
++    				candidateStack = container.getItemStack(i);
++    				if (candidateStack != null) {
++    					List<InvTweaksItemTreeItem> candidateItems = tree.getItems(
++    							getItemID(candidateStack),
++    							getItemDamage(candidateStack));
++    					if (tree.matches(candidateItems, rule.getKeyword())) {
++    						// Choose stack of lowest size and (in case of tools) highest damage
++    						if (replacementStack == null || 
++    								getStackSize(replacementStack) > getStackSize(candidateStack) ||
++    								(getStackSize(replacementStack) == getStackSize(candidateStack) &&
++    										getMaxStackSize(replacementStack) == 1 &&
++    										getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
++    							replacementStack = candidateStack;
++    							replacementStackSlot = i;
++    						}
++    					}
++    				}
++    			}
++    			if (replacementStack != null) {
++    				break;
++    			}
++    		}
++        }
++        
++        // If item is unknown, look for exact same item
++        else {
++            for (int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
++                candidateStack = container.getItemStack(i);
++                if (candidateStack != null && 
++                        getItemID(candidateStack) == wantedId &&
++                        getItemDamage(candidateStack) == wantedDamage) {
++                    replacementStack = candidateStack;
++                    replacementStackSlot = i;
++                    break;
++                }
++            }
++        }
+ 		
+ 		//// Proceed to replacement
+ 	
+diff --git a/src/InvTweaksItemTree.java b/src/InvTweaksItemTree.java
+index 0e52007..2eb6d10 100644
+--- a/src/InvTweaksItemTree.java
++++ b/src/InvTweaksItemTree.java
+@@ -20,6 +20,7 @@ import java.util.logging.Logger;
+ public class InvTweaksItemTree {
+ 
+     public static final int MAX_CATEGORY_RANGE = 1000;
++    public static final String UNKNOWN_ITEM = "unknown";
+ 
+     private static final Logger log = Logger.getLogger("InvTweaks");
+ 
+@@ -46,7 +47,7 @@ public class InvTweaksItemTree {
+ 
+         if (defaultItems == null) {
+             defaultItems = new Vector<InvTweaksItemTreeItem>();
+-            defaultItems.add(new InvTweaksItemTreeItem("unknown", -1, -1, Integer.MAX_VALUE));
++            defaultItems.add(new InvTweaksItemTreeItem(UNKNOWN_ITEM, -1, -1, Integer.MAX_VALUE));
+         }
+ 
+         // Reset tree
+@@ -152,6 +153,10 @@ public class InvTweaksItemTree {
+     public InvTweaksItemTreeCategory getCategory(String keyword) {
+         return categories.get(keyword);
+     }
++    
++    public boolean isItemUnknown(int id, int damage) {
++        return itemsById.get(id) == null; 
++    }
+ 
+     public List<InvTweaksItemTreeItem> getItems(int id, int damage) {
+         List<InvTweaksItemTreeItem> items = itemsById.get(id);
+diff --git a/src/doc/changelog.txt b/src/doc/changelog.txt
+index 6d9a288..718c25d 100644
+--- a/src/doc/changelog.txt
++++ b/src/doc/changelog.txt
+@@ -3,13 +3,15 @@
+ | Changelog                                                    |
+ |==============================================================|
+ 
+-[10.01.2011] 1.32 (B1.8.1)
++[10.02.2011] 1.32 (B1.8.1)
+  * Fixed crafting shortcut
+  * Fixed shortcuts help screen
+  * Fixed creative mode compatibility issues
+  * Fixed 'move all' shortcut
++ * Fixed auto refill with mod items
+  * Shortcuts now moves items from and to the chests
+- * Updated item tree to 1.9 Beta 2
++ * Updated item tree to 1.9 pre2
++ * Made the item tree replace the existing one if newer (makes a backup)
+  
+ [09.16.2011] 1.31 Beta (B1.8.1)
+  * (Quickly) updated source code to Minecraft 1.8.1

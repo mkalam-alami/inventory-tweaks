@@ -31,66 +31,85 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 	 * @throws Exception 
      */
 	public void autoRefillSlot(int slot, int wantedId, int wantedDamage) throws Exception {
-   
+
 		InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(
 		        mc, InvTweaksContainerSection.INVENTORY);
 		ul candidateStack, replacementStack = null;
 		int replacementStackSlot = -1;
-
-		//// Search replacement
 		
 		List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<InvTweaksConfigSortingRule>();
 		List<InvTweaksConfigSortingRule> rules = config.getRules();
 		InvTweaksItemTree tree = config.getTree();
-		List<InvTweaksItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
-
-		// Find rules that match the slot
-		for (InvTweaksItemTreeItem item : items) {
-			// Since we search a matching item using rules,
-		    // create a fake one that matches the exact item first
-			matchingRules.add(new InvTweaksConfigSortingRule(
-					tree, "D"+(slot-27), item.getName(),
-					InvTweaksConst.INVENTORY_SIZE, InvTweaksConst.INVENTORY_ROW_SIZE));
-		}
-		for (InvTweaksConfigSortingRule rule : rules) {
-			if (rule.getType() == InvTweaksConfigSortingRuleType.TILE 
-			        || rule.getType() == InvTweaksConfigSortingRuleType.COLUMN) {
-				for (int preferredSlot : rule.getPreferredSlots()) {
-					if (slot == preferredSlot) {
-						matchingRules.add(rule);
-						break;
-					}
-				}
-			}
-		}
 		
-		// Look only for a matching stack
-		// First, look for the same item,
-		// else one that matches the slot's rules
-		for (InvTweaksConfigSortingRule rule : matchingRules) {
-			for (int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
-				candidateStack = container.getItemStack(i);
-				if (candidateStack != null) {
-					List<InvTweaksItemTreeItem> candidateItems = tree.getItems(
-							getItemID(candidateStack),
-							getItemDamage(candidateStack));
-					if (tree.matches(candidateItems, rule.getKeyword())) {
-						// Choose stack of lowest size and (in case of tools) highest damage
-						if (replacementStack == null || 
-								getStackSize(replacementStack) > getStackSize(candidateStack) ||
-								(getStackSize(replacementStack) == getStackSize(candidateStack) &&
-										getMaxStackSize(replacementStack) == 1 &&
-										getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
-							replacementStack = candidateStack;
-							replacementStackSlot = i;
-						}
-					}
-				}
-			}
-			if (replacementStack != null) {
-				break;
-			}
-		}
+		// Check that the item is in the tree
+        if (!tree.isItemUnknown(wantedId, wantedDamage)) {
+            
+            //// Search replacement
+            
+    		List<InvTweaksItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
+    
+    		// Find rules that match the slot
+    		for (InvTweaksItemTreeItem item : items) {
+    			// Since we search a matching item using rules,
+    		    // create a fake one that matches the exact item first
+    			matchingRules.add(new InvTweaksConfigSortingRule(
+    					tree, "D"+(slot-27), item.getName(),
+    					InvTweaksConst.INVENTORY_SIZE, InvTweaksConst.INVENTORY_ROW_SIZE));
+    		}
+    		for (InvTweaksConfigSortingRule rule : rules) {
+    			if (rule.getType() == InvTweaksConfigSortingRuleType.TILE 
+    			        || rule.getType() == InvTweaksConfigSortingRuleType.COLUMN) {
+    				for (int preferredSlot : rule.getPreferredSlots()) {
+    					if (slot == preferredSlot) {
+    						matchingRules.add(rule);
+    						break;
+    					}
+    				}
+    			}
+    		}
+    
+    		// Look only for a matching stack
+    		// First, look for the same item,
+    		// else one that matches the slot's rules
+    		for (InvTweaksConfigSortingRule rule : matchingRules) {
+    			for (int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
+    				candidateStack = container.getItemStack(i);
+    				if (candidateStack != null) {
+    					List<InvTweaksItemTreeItem> candidateItems = tree.getItems(
+    							getItemID(candidateStack),
+    							getItemDamage(candidateStack));
+    					if (tree.matches(candidateItems, rule.getKeyword())) {
+    						// Choose stack of lowest size and (in case of tools) highest damage
+    						if (replacementStack == null || 
+    								getStackSize(replacementStack) > getStackSize(candidateStack) ||
+    								(getStackSize(replacementStack) == getStackSize(candidateStack) &&
+    										getMaxStackSize(replacementStack) == 1 &&
+    										getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
+    							replacementStack = candidateStack;
+    							replacementStackSlot = i;
+    						}
+    					}
+    				}
+    			}
+    			if (replacementStack != null) {
+    				break;
+    			}
+    		}
+        }
+        
+        // If item is unknown, look for exact same item
+        else {
+            for (int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
+                candidateStack = container.getItemStack(i);
+                if (candidateStack != null && 
+                        getItemID(candidateStack) == wantedId &&
+                        getItemDamage(candidateStack) == wantedDamage) {
+                    replacementStack = candidateStack;
+                    replacementStackSlot = i;
+                    break;
+                }
+            }
+        }
 		
 		//// Proceed to replacement
 	

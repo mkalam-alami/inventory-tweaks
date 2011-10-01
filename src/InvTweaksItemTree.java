@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 public class InvTweaksItemTree {
 
     public static final int MAX_CATEGORY_RANGE = 1000;
+    public static final String UNKNOWN_ITEM = "unknown";
 
     private static final Logger log = Logger.getLogger("InvTweaks");
 
@@ -46,7 +47,7 @@ public class InvTweaksItemTree {
 
         if (defaultItems == null) {
             defaultItems = new Vector<InvTweaksItemTreeItem>();
-            defaultItems.add(new InvTweaksItemTreeItem("unknown", -1, -1, Integer.MAX_VALUE));
+            defaultItems.add(new InvTweaksItemTreeItem(UNKNOWN_ITEM, -1, -1, Integer.MAX_VALUE));
         }
 
         // Reset tree
@@ -151,6 +152,10 @@ public class InvTweaksItemTree {
 
     public InvTweaksItemTreeCategory getCategory(String keyword) {
         return categories.get(keyword);
+    }
+    
+    public boolean isItemUnknown(int id, int damage) {
+        return itemsById.get(id) == null; 
     }
 
     public List<InvTweaksItemTreeItem> getItems(int id, int damage) {

@@ -27,8 +27,8 @@ public class InvTweaksConst {
     public static final String OLD_CONFIG_TREE_FILE = MINECRAFT_CONFIG_DIR + "InvTweaksTree.xml";
     public static final String OLDER_CONFIG_RULES_FILE = MINECRAFT_DIR + "InvTweaksRules.txt";
     public static final String OLDER_CONFIG_TREE_FILE = MINECRAFT_DIR + "InvTweaksTree.txt";
-    public static final String DEFAULT_CONFIG_FILE = "/net/invtweaks/DefaultConfig.dat";
-    public static final String DEFAULT_CONFIG_TREE_FILE = "/net/invtweaks/DefaultTree.dat";
+    public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.dat";
+    public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.dat";
     public static final String HELP_URL = "http://wan.ka.free.fr/?invtweaks";
     
     // Global mod constants

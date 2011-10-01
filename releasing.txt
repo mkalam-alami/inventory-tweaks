@@ -7,7 +7,7 @@
     * InvTweaksConst.MOD_VERSION constant
     * Changelog
     * Readmes
-2. Run "mvn compile antrun:run"
+2. Run "mvn clean install"
 3. Quick test from clean Minecraft install
 4. Push Jar to Github & upload to MediaFire
 5. Update website

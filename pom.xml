@@ -11,7 +11,7 @@
   <name>Inventory Tweaks</name>
   
   <build>
-    <sourceDirectory>minecraft</sourceDirectory>
+    <sourceDirectory>src</sourceDirectory>
     
     <plugins>
       <!-- Compiling settings -->
@@ -34,7 +34,7 @@
                 <goals>
                     <goal>run</goal>
                 </goals>
-                <phase>dist</phase>
+                <phase>install</phase>
             </execution>
         </executions>
         <configuration>

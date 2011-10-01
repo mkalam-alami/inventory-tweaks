@@ -210,19 +210,24 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 
                 if (destinationModifier == 0) {
                     // Default behavior
-                    switch (srcSection) {
-
-                    case INVENTORY_HOTBAR:
-                        destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR;
-                        break;
-                        
-                    case CRAFTING_IN:
-                    case FURNACE_IN:
-                        destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR;
-                        break;
-                        
-                    default:
-                        destSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
+                    if (isGuiChest(guiContainer)) {
+                        switch (srcSection) {
+                        case CHEST:
+                            destSection = InvTweaksContainerSection.INVENTORY; break;
+                        default:
+                            destSection = InvTweaksContainerSection.CHEST; break;
+                        }
+                    }
+                    else {
+                        switch (srcSection) {
+                        case INVENTORY_HOTBAR:
+                            destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;
+                        case CRAFTING_IN:
+                        case FURNACE_IN:
+                            destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;
+                        default:
+                            destSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
+                        }
                     }
                 }
                 

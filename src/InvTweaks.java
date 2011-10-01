@@ -92,19 +92,19 @@ public class InvTweaks extends InvTweaksObfuscation {
      */
     public final void onSortingKeyPressed() {
         synchronized (this) {
+            
+            // Check config loading success
             if (!cfgManager.makeSureConfigurationIsLoaded()) {
                 return;
             }
-
-            // Check config loading success & current GUI
+            
+            // Check current GUI
             qr guiScreen = getCurrentScreen();
-            if (guiScreen != null && !(isGuiContainer(guiScreen)) /* GuiContainer */) {
-
-                return;
+            if (guiScreen == null || isGuiContainer(guiScreen)
+                    && !isGuiContainerCreative(guiScreen)) {
+                // Sorting!
+                handleSorting(guiScreen);
             }
-
-            // Sorting!
-            handleSorting(guiScreen);
         }
     }
 
@@ -487,7 +487,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                             handleSorting(guiScreen);
                         }
     
-                    } else {
+                    } else if (!isGuiContainerCreative(guiScreen)) {
                         handleSorting(guiScreen);
                     }
                 }
@@ -530,6 +530,9 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                 // Chest buttons
                 else {
+                    
+                    // Reset sorting algorithm selector
+                    chestAlgorithmClickTimestamp = 0;
 
                     em guiContainer = (em) guiScreen;
                     int id = InvTweaksConst.JIMEOWAN_ID,

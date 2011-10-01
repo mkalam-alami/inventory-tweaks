@@ -167,7 +167,7 @@ public class InvTweaksObfuscation {
         return itemStack.e();
     }
     protected boolean areSameItemType(ul itemStack1, ul itemStack2) {
-        return areItemStacksEqual(itemStack1, itemStack2) ||
+        return areItemsEqual(itemStack1, itemStack2) ||
                 (isItemStackDamageable(itemStack1)
                         && getItemID(itemStack1) == getItemID(itemStack2));
     }
@@ -308,6 +308,9 @@ public class InvTweaksObfuscation {
 	protected boolean isGuiContainer(Object o) { // GuiContainer
         return o instanceof em;
 	}
+    protected boolean isGuiContainerCreative(Object o) { // GuiContainer
+        return o instanceof on;
+    }
     protected boolean isGuiChest(Object o) { // GuiChest
         return o instanceof tn;
     }

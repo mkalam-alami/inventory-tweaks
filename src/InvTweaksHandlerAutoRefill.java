@@ -46,7 +46,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
 		// Find rules that match the slot
 		for (InvTweaksItemTreeItem item : items) {
-			// Fake rules that match the exact item first
+			// Since we search a matching item using rules,
+		    // create a fake one that matches the exact item first
 			matchingRules.add(new InvTweaksConfigSortingRule(
 					tree, "D"+(slot-27), item.getName(),
 					InvTweaksConst.INVENTORY_SIZE, InvTweaksConst.INVENTORY_ROW_SIZE));
@@ -62,7 +63,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 				}
 			}
 		}
-
+		
 		// Look only for a matching stack
 		// First, look for the same item,
 		// else one that matches the slot's rules

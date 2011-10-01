@@ -336,18 +336,18 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     
                 case MOVE_ALL_ITEMS:
                 {
+                    ul stackToMatch = copy(fromStack);
                     for (sx slot : container.getSlots(fromSection)) {
-                        if (hasStack(slot) && areSameItemType(fromStack, getStack(slot))) {
+                        if (hasStack(slot) && areSameItemType(stackToMatch, getStack(slot))) {
                             int fromIndex = container.getSlotIndex(getSlotNumber(slot));
                             while (hasStack(slot) && toIndex != -1 && 
                                     !(fromSection == toSection && fromIndex == toIndex)) {
-                                boolean moveResult = container.move(fromSection, fromIndex,
-                                        toSection, toIndex);
-                                if (!moveResult) {
-                                    break;
-                                }
+                                container.move(fromSection, fromIndex, toSection, toIndex);
                                 toIndex = getNextIndex(separateStacks, drop);
                             }
+                        }
+                        if (toIndex == -1) {
+                            break;
                         }
                     }
                 }
@@ -358,6 +358,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         }
     }
     
+    @SuppressWarnings("unused")
     private void craft(final boolean toHand, final boolean drop) throws Exception {
         int toIndex = getNextIndex(false, drop);
         sx slot = container.getSlot(fromSection, fromIndex);

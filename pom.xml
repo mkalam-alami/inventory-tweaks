@@ -6,7 +6,7 @@
 
   <groupId>net.jimeowan</groupId>
   <artifactId>inventory-tweaks</artifactId>
-  <version>1.31-1.8-SNAPSHOT</version>
+  <version>1.32-1.8.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Inventory Tweaks</name>
   
@@ -40,7 +40,7 @@
         <configuration>
           <target>
             <ant antfile="${basedir}/build.xml">
-                <target name="package"/>
+                <target name="dist"/>
             </ant>
           </target>
         </configuration>
@@ -55,21 +55,21 @@
       <artifactId>minecraft</artifactId>
       <version>1.8</version>
       <scope>system</scope>
-      <systemPath>${HOME}/AppData/Roaming/.minecraft/bin/minecraft.jar</systemPath>
+      <systemPath>${user.home}/AppData/Roaming/.minecraft/bin/minecraft.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>net.minecraft</groupId>
       <artifactId>lwjgl</artifactId>
       <version>1.8</version>
       <scope>system</scope>
-      <systemPath>${HOME}/AppData/Roaming/.minecraft/bin/lwjgl.jar</systemPath>
+      <systemPath>${user.home}/AppData/Roaming/.minecraft/bin/lwjgl.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>net.minecraft</groupId>
       <artifactId>lwjgl_util</artifactId>
       <version>1.8</version>
       <scope>system</scope>
-      <systemPath>${HOME}/AppData/Roaming/.minecraft/bin/lwjgl_util.jar</systemPath>
+      <systemPath>${user.home}/AppData/Roaming/.minecraft/bin/lwjgl_util.jar</systemPath>
     </dependency>
   </dependencies>
   

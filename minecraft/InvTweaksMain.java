@@ -32,7 +32,7 @@ public class InvTweaksMain {
         new String[]{
             "de:Deutsch",
             "en:English",
-            "fr:FranÃ§ais",
+            "fr:Français",
         };
     private final static String DEFAULT_LANGUAGE = "en";
 
@@ -120,7 +120,7 @@ public class InvTweaksMain {
         
         // Frame creation
         JFrame frame = new JFrame();
-        frame.setTitle("Inventory Tweaks "+InvTweaksConst.MOD_VERSION+" - Readme");
+        frame.setTitle("Inventory Tweaks "+InvTweaksConst.MOD_VERSION+" Help");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setJMenuBar(menuBar);
         

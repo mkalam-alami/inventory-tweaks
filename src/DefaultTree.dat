@@ -470,6 +470,7 @@
 			<waterBottle id="373" damage="0"/>
 		<potions>
 		<potionIngredient>
+			<netherWart id="372"/>
 			<redstone id="331"/>
 			<glowstoneDust id="348"/>
 			<sugar id="353"/>

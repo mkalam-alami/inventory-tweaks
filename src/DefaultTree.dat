@@ -452,6 +452,11 @@
 			<lilyPad id="111"/>
 		</plant>
 		<potionIngredient>
+			<redstone id="331"/>
+			<glowstoneDust id="348"/>
+			<sugar id="353"/>
+			<ghastTear id="370"/>
+			<spiderEye id="375"/>
 			<fermentedSpiderEye id="376"/>
 			<blazePowder id="377"/>
 			<magmaCream id="378"/>

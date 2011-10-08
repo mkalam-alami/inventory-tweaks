@@ -451,6 +451,24 @@
 			<melonStem id="105"/>
 			<lilyPad id="111"/>
 		</plant>
+		<potions>
+			<potionHealing>
+				<potionHealing2 id="373" damage="33"/>
+				<potionHealing1 id="373" damage="1"/>
+				<potionHealing1 id="373" damage="65"/>
+			</potionHealing>
+			<potionFireResist>
+				<potionFireResist8 id="373" damage="67"/>
+				<potionFireresist3 id="373" damage="35"/>
+				<potionFireResist3 id="373" damage="3"/>
+			</potionFireResist>
+			<noEffects>
+				<potionAwkward id="373" damage="32"/>
+				<potionThick id="373" damaga="16"/>
+			</noEffecst>
+			<potion id="373"/>
+			<waterBottle id="373" damage="0"/>
+		<potions>
 		<potionIngredient>
 			<redstone id="331"/>
 			<glowstoneDust id="348"/>

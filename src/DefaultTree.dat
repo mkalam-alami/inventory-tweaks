@@ -148,6 +148,7 @@
 				<lava id="11"/>
 			</liquid>
 			<portal id="90"/>
+			<airPortal id="120"/>
 			<air id="0"/>
 			<fire id="51"/>
 			<obsidian id="49"/>
@@ -340,6 +341,10 @@
 			<jukebox id="84"/>
 			<tnt id="46"/>
 			<bowl id="281"/>
+			<cauldron id="380"/>
+			<brewingStand id="379"/>
+			<enchantmentTable id="116"/>
+			<eyeOfEnder id="381"/>
 		</utility>
 		<bucket>
 			<emptyBucket id="325"/>

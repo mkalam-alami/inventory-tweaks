@@ -344,7 +344,7 @@
 			<cauldron id="380"/>
 			<brewingStand id="379"/>
 			<enchantmentTable id="116"/>
-			<eyeOfEnder id="381
+			<eyeOfEnder id="381" />
 			<enderEye id="381"/>
 		</utility>
 		<bucket>

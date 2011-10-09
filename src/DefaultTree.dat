@@ -21,7 +21,7 @@
 # THE FILE IS BROKEN AND I DON'T KNOW WHAT TO DO =(
 # Just delete this file, the default tree will be reloaded next time you sort something.
 
-# CREDITS: Thanks to Larandar (also know as CapitaineGloumi) for their contributions.
+# CREDITS: Thanks to Larandar for his contributions.
 -->
 <!-- Note: 'stuff' matches everything, even items that don't appear here -->
 <stuff>
@@ -344,7 +344,8 @@
 			<cauldron id="380"/>
 			<brewingStand id="379"/>
 			<enchantmentTable id="116"/>
-			<eyeOfEnder id="381"/>
+			<eyeOfEnder id="381
+			<enderEye id="381"/>
 		</utility>
 		<bucket>
 			<emptyBucket id="325"/>
@@ -469,8 +470,8 @@
 			</potionFireResist>
 			<noEffects>
 				<potionAwkward id="373" damage="32"/>
-				<potionThick id="373" damaga="16"/>
-			</noEffecst>
+				<potionThick id="373" damage="16"/>
+			</noEffects>
 			<potion id="373"/>
 			<waterBottle id="373" damage="0"/>
 		<potions>

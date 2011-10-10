@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
 |==============================================================|
 | INVENTORY TWEAKS Mod - By Jimeo Wan (jimeo.wan at gmail.com) |
@@ -474,7 +474,7 @@
 			</noEffects>
 			<potion id="373"/>
 			<waterBottle id="373" damage="0"/>
-		<potions>
+		</potions>
 		<potionIngredient>
 			<netherWart id="372"/>
 			<redstone id="331"/>

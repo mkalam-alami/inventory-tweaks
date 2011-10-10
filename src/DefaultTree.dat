@@ -472,7 +472,7 @@
 				<potionAwkward id="373" damage="32"/>
 				<potionThick id="373" damage="16"/>
 			</noEffects>
-			<potion id="373"/>
+			<anyPotion id="373"/>
 			<waterBottle id="373" damage="0"/>
 		</potions>
 		<potionIngredient>

@@ -1,11 +1,8 @@
-This Open Source mod aims to implement a sorting feature for inventories in [Minecraft][1], a game by [Mojang AB][2]. Since everyone has his own habits on how to organize items, this mods tries to be as customizable as possible, without being annoying to set up.
+## What's this project about
 
-For documentation about how to use or install the mod, see the [main page of Inventory Tweaks][3]. This place is for developers!
+This Open Source project (see [License](https://github.com/mkalam-alami/inventory-tweaks/blob/master/src/doc/license.txt)) is a client mod for [Minecraft](http://www.minecraft.net/), a game by [Mojang AB](http://mojang.com/). It implements various features to help players with the management of inventories and chests. A lot of effort has been put to make it as customizable as possible, without being annoying to set up.
 
-## Developer information
+## Get started
 
-See the [Wiki](https://github.com/jimeowan/inventory-tweaks/wiki).
-
-[1]: http://www.minecraft.net/
-[2]: http://mojang.com/
-[3]: http://wan.ka.free.fr/?invtweaks
+* For documentation about how to use or install the mod, see the [main page of Inventory Tweaks](http://wan.ka.free.fr/?invtweaks). This place is for developers!
+* To start coding, please take a look at the [project's wiki](https://github.com/mkalam-alami/inventory-tweaks/wiki).

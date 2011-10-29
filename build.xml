@@ -19,12 +19,13 @@
     <!-- Deployment to Minecraft task -->
     <target name="dist" depends="package">
         <echo>Installing...</echo>
+        <echo>  - Removing possible older version</echo>
         <delete>
             <fileset dir="${modsDir}" includes="InvTweaks*.jar" />
         </delete>
-        <echo>  - Removed possible older version</echo>
+        <echo>  - Copying jar to mods folder</echo>
         <copy file="${jarName}" todir="${modsDir}" />
-        <echo>  - Copied jar to mods folder</echo>
+        <echo>  - Done!</echo>
     </target>
 
     <!--- Packaging task -->
@@ -36,6 +37,9 @@
             <fileset dir="bin">
                 <exclude name="*.txt" />
             </fileset>
+        	<fileset>
+                <filename name="doc/" />
+            </fileset>
         </copy>
         <echo>  - Copying files</echo>
         <jar jarfile="${jarName}" basedir="tmp">
@@ -43,9 +47,8 @@
                 <attribute name="Main-Class" value="InvTweaksMain"/>
             </manifest>
         </jar>
-        <echo>  - Running package scripts</echo>
-        <delete dir="tmp" />
         <echo>  - Cleaning up</echo>
+        <delete dir="tmp" />
     </target>
 	
 </project>

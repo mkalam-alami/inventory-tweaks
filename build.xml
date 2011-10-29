@@ -37,9 +37,6 @@
             <fileset dir="bin">
                 <exclude name="*.txt" />
             </fileset>
-        	<fileset>
-                <filename name="doc/" />
-            </fileset>
         </copy>
         <echo>  - Copying files</echo>
         <jar jarfile="${jarName}" basedir="tmp">

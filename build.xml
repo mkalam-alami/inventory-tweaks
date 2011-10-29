@@ -8,31 +8,44 @@
     <property name="version" value="1.32-1.8.1" />
     
     <!-- Properties -->
-    <property name="minecraftModsFolder" location="${user.home}/AppData/Roaming/.minecraft/mods" />
     <property name="jarName" location="InvTweaks-${version}.jar" />
-
-    <!--- Deployment to Minecraft -->
+	<condition property="modsDir" value="${user.home}:Library:Application\ Support:minecraft:mods">
+        <os name="Mac OS X"/>
+    </condition>
+    <condition property="modsDir" value="${user.home}/AppData/Roaming/.minecraft/mods">
+        <os family="windows"/>
+    </condition>
+	
+    <!-- Deployment to Minecraft task -->
     <target name="dist" depends="package">
+        <echo>Installing...</echo>
         <delete>
-            <fileset dir="${minecraftModsFolder}" includes="InvTweaks*.jar" />
+            <fileset dir="${modsDir}" includes="InvTweaks*.jar" />
         </delete>
-        <copy file="${jarName}" todir="${minecraftModsFolder}" />
+        <echo>  - Removed possible older version</echo>
+        <copy file="${jarName}" todir="${modsDir}" />
+        <echo>  - Copied jar to mods folder</echo>
     </target>
-    
+
     <!--- Packaging task -->
     <target name="package">
+        <echo>Running packaging script...</echo>
         <mkdir dir="tmp" />
+        <echo>  - Making temporary directory</echo>
         <copy todir="tmp">
             <fileset dir="bin">
                 <exclude name="*.txt" />
             </fileset>
         </copy>
+        <echo>  - Copying files</echo>
         <jar jarfile="${jarName}" basedir="tmp">
             <manifest>
                 <attribute name="Main-Class" value="InvTweaksMain"/>
             </manifest>
         </jar>
+        <echo>  - Running package scripts</echo>
         <delete dir="tmp" />
+        <echo>  - Cleaning up</echo>
     </target>
-
+	
 </project>

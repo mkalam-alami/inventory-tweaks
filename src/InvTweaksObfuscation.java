@@ -264,11 +264,6 @@ public class InvTweaksObfuscation {
     
     // Other
 
-    protected boolean isChestOrDispenser(qr guiScreen) {
-        return ((isGuiChest(guiScreen) && !guiScreen.getClass()
-                        .getSimpleName().equals("MLGuiChestBuilding")) // Millenaire mod
-                || isGuiDispenser(guiScreen));
-    }
     protected int getKeycode(ys keyBinding) {
         return keyBinding.d;
     }

@@ -262,11 +262,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     }
                 }
                 
-                // Don't trigger the shortcut if we don't know on what we are clicking.
-                if (srcSection == InvTweaksContainerSection.UNKNOWN) {
-                    shortcutValid = false;
-                }
-                
                 if (shortcutValid || isActive(ShortcutType.DROP) != -1) {
                     
                     initAction(getSlotNumber(slot), shortcutType, destSection);

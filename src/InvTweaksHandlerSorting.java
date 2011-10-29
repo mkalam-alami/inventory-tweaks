@@ -54,7 +54,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private boolean[] frozenSlots;
 
     public InvTweaksHandlerSorting(Minecraft mc, InvTweaksConfig config,
-            InvTweaksContainerSection section, int algorithm) throws Exception {
+            InvTweaksContainerSection section, int algorithm, int rowSize) throws Exception {
         super(mc);
         
         // Init constants
@@ -88,7 +88,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             this.frozenSlots = DEFAULT_FROZEN_SLOTS;
             this.algorithm = algorithm;
             if (algorithm != ALGORITHM_DEFAULT) {
-                computeLineSortingRules(InvTweaksConst.INVENTORY_ROW_SIZE,
+                computeLineSortingRules(rowSize,
                         algorithm == ALGORITHM_HORIZONTAL);
             }
         }

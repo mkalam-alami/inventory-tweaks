@@ -34,6 +34,8 @@ public class InvTweaks extends InvTweaksObfuscation {
      */
     private InvTweaksConfigManager cfgManager = null;
     
+    private InvTweaksModCompatibility modCompatibility = InvTweaksModCompatibility.getInstance();
+    
     /**
      * Attributes to remember the status of chest sorting
      * while using middle clicks.
@@ -379,7 +381,8 @@ public class InvTweaks extends InvTweaksObfuscation {
         try {
             new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
                     InvTweaksContainerSection.INVENTORY,
-                    InvTweaksHandlerSorting.ALGORITHM_INVENTORY).sort();
+                    InvTweaksHandlerSorting.ALGORITHM_INVENTORY,
+                    InvTweaksConst.INVENTORY_ROW_SIZE).sort();
         } catch (Exception e) {
             logInGame("Failed to sort inventory: " + e.getMessage());
         }
@@ -441,10 +444,9 @@ public class InvTweaks extends InvTweaksObfuscation {
                 if (!chestAlgorithmButtonDown) {
                     chestAlgorithmButtonDown = true;
     
-                    if (isChestOrDispenser(guiScreen)) {
+                    if (isValidChest(guiScreen)) {
     
-                        // Check if the middle click target the chest or the
-                        // inventory
+                        // Check if the middle click target the chest or the inventory
                         // (copied GuiContainer.getSlotAtPosition algorithm)
                         em guiContainer = (em) guiScreen;
                         cf container = getContainer((em) guiScreen);
@@ -477,7 +479,9 @@ public class InvTweaks extends InvTweaksObfuscation {
                             }
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-                                        InvTweaksContainerSection.CHEST, chestAlgorithm).sort();
+                                        InvTweaksContainerSection.CHEST,
+                                        chestAlgorithm,
+                                        getContainerRowSize(guiContainer)).sort();
                             } catch (Exception e) {
                                 logInGameError("Failed to sort container", e);
                             }
@@ -500,11 +504,9 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void handleGUILayout(qr guiScreen) {
 
         InvTweaksConfig config = cfgManager.getConfig();
-        boolean isContainer = isChestOrDispenser(guiScreen);
+        boolean isValidChest = isValidChest(guiScreen);
 
-        if (isContainer || isGuiInventory(guiScreen)
-                || guiScreen.getClass().getSimpleName()
-                        .equals("GuiInventoryMoreSlots") /* Aether mod */) {
+        if (isValidChest || isValidInventory(guiScreen)) {
 
             int w = 10, h = 10;
 
@@ -521,7 +523,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             if (!customButtonsAdded) {
 
                 // Inventory button
-                if (!isContainer) {
+                if (!isValidChest) {
                     getControlList(guiScreen).add(new InvTweaksGuiInventorySettingsButton(
                             cfgManager, InvTweaksConst.JIMEOWAN_ID,
                             getWidth(guiScreen) / 2 + 73, getHeight(guiScreen) / 2 - 78,
@@ -547,22 +549,27 @@ public class InvTweaks extends InvTweaksObfuscation {
                     // Sorting buttons
                     if (!config.getProperty(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS).equals("false")) {
 
+                        int rowSize = getContainerRowSize(guiContainer);
+                        
                         InvTweaksObfuscationGuiButton button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
                                 x - 13, y, w, h, "h", "Sort in rows",
-                                InvTweaksHandlerSorting.ALGORITHM_HORIZONTAL);
+                                InvTweaksHandlerSorting.ALGORITHM_HORIZONTAL,
+                                rowSize);
                         getControlList(guiContainer).add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
                                 x - 25, y, w, h, "v", "Sort in columns",
-                                InvTweaksHandlerSorting.ALGORITHM_VERTICAL);
+                                InvTweaksHandlerSorting.ALGORITHM_VERTICAL,
+                                rowSize);
                         getControlList(guiContainer).add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
                                 x - 37, y, w, h, "s", "Default sorting",
-                                InvTweaksHandlerSorting.ALGORITHM_DEFAULT);
+                                InvTweaksHandlerSorting.ALGORITHM_DEFAULT,
+                                rowSize);
                         getControlList(guiContainer).add(button);
 
                     }
@@ -596,6 +603,37 @@ public class InvTweaks extends InvTweaksObfuscation {
         else {
             mouseWasDown = false;
         }
+    }
+
+    private int getContainerRowSize(em guiContainer) {
+        if (isGuiChest(guiContainer)) {
+            return InvTweaksConst.CHEST_ROW_SIZE;
+        }
+        else if (isGuiDispenser(guiContainer)) {
+            return InvTweaksConst.DISPENSER_ROW_SIZE;
+        }
+        else {
+            return modCompatibility.getSpecialChestRowSize(
+                    guiContainer, InvTweaksConst.CHEST_ROW_SIZE);
+        }
+    }
+
+    private boolean isValidChest(qr guiScreen) {
+        if (isGuiContainer(guiScreen)) {
+            em guiContainer = (em) guiScreen;
+            return (isGuiChest(guiScreen) || isGuiDispenser(guiScreen) ||
+              (isGuiContainer(guiScreen) && modCompatibility.isSpecialChest(guiContainer)))
+                    && !modCompatibility.isForbiddenChest(guiContainer);
+        }
+        else {
+            return false;
+        }
+    }
+    
+    private boolean isValidInventory(qr guiScreen) {
+        return isGuiInventory(guiScreen) || 
+            (isGuiContainer(guiScreen) 
+                    && modCompatibility.isSpecialInventory((em) guiScreen));
     }
 
     private boolean isTimeForPolling() {

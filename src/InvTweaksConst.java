@@ -40,6 +40,8 @@ public class InvTweaksConst {
     // Minecraft constants
     public static final int INVENTORY_SIZE = 36;
     public static final int INVENTORY_ROW_SIZE = 9;
+    public static final int CHEST_ROW_SIZE = INVENTORY_ROW_SIZE;
+    public static final int DISPENSER_ROW_SIZE = 3;
     public static final int INVENTORY_HOTBAR_SIZE = INVENTORY_ROW_SIZE;
     public static final int PLAYER_INVENTORY_WINDOW_ID = 0;
     

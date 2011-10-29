@@ -1,3 +1,8 @@
+/**
+ * Names for specific parts of containers.
+ * For unknown container types (such as mod containers),
+ * only INVENTORY and CHEST sections are available.
+ */
 public enum InvTweaksContainerSection {
     /** The player's inventory */
     INVENTORY,
@@ -5,7 +10,8 @@ public enum InvTweaksContainerSection {
     INVENTORY_HOTBAR,
     /** The player's inventory (all except the hotbar) */
     INVENTORY_NOT_HOTBAR,
-    /** The chest or dispenser contents */
+    /** The chest or dispenser contents.
+     * Also used for unknown container contents. */
     CHEST,
     /** The crafting input */
     CRAFTING_IN,
@@ -18,10 +24,5 @@ public enum InvTweaksContainerSection {
     /** The furnace output */
     FURNACE_OUT,
     /** The furnace fuel */
-    FURNACE_FUEL,
-    /**
-     * Any other type of slot. For unknown container types (such as mod
-     * containers), only INVENTORY and OTHER sections are defined.
-     */
-    UNKNOWN
+    FURNACE_FUEL
 }

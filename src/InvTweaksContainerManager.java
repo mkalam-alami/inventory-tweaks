@@ -78,12 +78,12 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         // Unknown
         else {
             if (size >= INVENTORY_SIZE) {
-             // Assuming the container ends with the inventory, just like all vanilla containers.
-                slotRefs.put(InvTweaksContainerSection.UNKNOWN, slots.subList(0, size-INVENTORY_SIZE));
+                // Assuming the container ends with the inventory, just like all vanilla containers.
+                slotRefs.put(InvTweaksContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
             }
             else {
                 guiWithInventory = false;
-                slotRefs.put(InvTweaksContainerSection.UNKNOWN, slots.subList(0, size));
+                slotRefs.put(InvTweaksContainerSection.CHEST, slots.subList(0, size));
             }
         }
 

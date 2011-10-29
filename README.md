@@ -5,4 +5,4 @@ This Open Source project (see [License](https://github.com/mkalam-alami/inventor
 ## Get started
 
 * For documentation about how to use or install the mod, see the [main page of Inventory Tweaks](http://wan.ka.free.fr/?invtweaks). This place is for developers!
-* To start coding, please take a look at the [project's wiki](https://github.com/mkalam-alami/inventory-tweaks/wiki).
+* To start coding, all is explained on the [project's wiki](https://github.com/mkalam-alami/inventory-tweaks/wiki).

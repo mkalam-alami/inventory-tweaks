@@ -1,18 +1,16 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.jimeowan</groupId>
   <artifactId>inventory-tweaks</artifactId>
-  <version>1.32-1.8.1-SNAPSHOT</version>
+  <version>1.32-1.8.1</version>
   <packaging>jar</packaging>
   <name>Inventory Tweaks</name>
-  
+
   <build>
     <sourceDirectory>src</sourceDirectory>
-    
+    <finalName>InvTweaks-${project.version}</finalName>
     <plugins>
       <!-- Compiling settings -->
       <plugin>
@@ -28,49 +26,91 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.6</version>        
+        <version>1.6</version>
         <executions>
-            <execution>
-                <goals>
-                    <goal>run</goal>
-                </goals>
-                <phase>install</phase>
-            </execution>
+          <execution>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>install</phase>
+          </execution>
         </executions>
         <configuration>
           <target>
             <ant antfile="${basedir}/build.xml">
-                <target name="dist"/>
+              <target name="dist" />
             </ant>
           </target>
         </configuration>
       </plugin>
     </plugins>
   </build>
-  
-  <!-- Windows only -->
+
+  <profiles>
+    <!-- Define Minecraft location according to OS -->
+    <profile>
+      <id>minecraft-path-windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <minecraft.path>
+          ${user.home}/AppData/Roaming/.minecraft/bin/
+        </minecraft.path>
+      </properties>
+    </profile>
+    <profile>
+      <id>minecraft-path-mac</id>
+      <activation>
+        <os>
+          <family>mac</family> <!-- Untested -->
+        </os>
+      </activation>
+      <properties>
+        <minecraft.path>
+          ${user.home}:Library:Application\ Support:minecraft:mods
+        </minecraft.path>
+      </properties>
+    </profile>
+    <profile>
+      <id>minecraft-path-linux</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <minecraft.path>
+          ${user.home}/.minecraft/bin/
+        </minecraft.path>
+      </properties>
+    </profile>
+  </profiles>
+
   <dependencies>
     <dependency>
       <groupId>net.minecraft</groupId>
       <artifactId>minecraft</artifactId>
       <version>1.8</version>
       <scope>system</scope>
-      <systemPath>${user.home}/AppData/Roaming/.minecraft/bin/minecraft.jar</systemPath>
+      <systemPath>${minecraft.path}minecraft.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>net.minecraft</groupId>
       <artifactId>lwjgl</artifactId>
       <version>1.8</version>
       <scope>system</scope>
-      <systemPath>${user.home}/AppData/Roaming/.minecraft/bin/lwjgl.jar</systemPath>
+      <systemPath>${minecraft.path}lwjgl.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>net.minecraft</groupId>
       <artifactId>lwjgl_util</artifactId>
       <version>1.8</version>
       <scope>system</scope>
-      <systemPath>${user.home}/AppData/Roaming/.minecraft/bin/lwjgl_util.jar</systemPath>
+      <systemPath>${minecraft.path}lwjgl_util.jar</systemPath>
     </dependency>
   </dependencies>
-  
+
 </project>

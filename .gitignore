@@ -11,5 +11,6 @@ minecraft/net/minecraft/src/*.java
 *.rej
 .classpath
 .project
+.settings
 InvTweaks-*/
 files/

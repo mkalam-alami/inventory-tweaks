@@ -32,7 +32,7 @@ public class InvTweaksMain {
         new String[]{
             "de:Deutsch",
             "en:English",
-            "fr:Français",
+            "fr:Francais",
         };
     private final static String DEFAULT_LANGUAGE = "en";
 

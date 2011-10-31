@@ -1,51 +1,44 @@
 <project name="InventoryTweaks" default="dist" basedir=".">
 
-    <description>
+	<description>
         Mod packaging and deployment tasks
     </description>
-    
-    <!-- Mod version -->
-    <property name="version" value="1.32-1.8.1" />
-    
-    <!-- Properties -->
-    <property name="jarName" location="InvTweaks-${version}.jar" />
-	<condition property="modsDir" value="${user.home}:Library:Application\ Support:minecraft:mods">
-        <os name="Mac OS X"/>
-    </condition>
-    <condition property="modsDir" value="${user.home}/AppData/Roaming/.minecraft/mods">
-        <os family="windows"/>
-    </condition>
-	
-    <!-- Deployment to Minecraft task -->
-    <target name="dist" depends="package">
-        <echo>Installing...</echo>
-        <echo>  - Removing possible older version</echo>
-        <delete>
-            <fileset dir="${modsDir}" includes="InvTweaks*.jar" />
-        </delete>
-        <echo>  - Copying jar to mods folder</echo>
-        <copy file="${jarName}" todir="${modsDir}" />
-        <echo>  - Done!</echo>
-    </target>
 
-    <!--- Packaging task -->
-    <target name="package">
-        <echo>Running packaging script...</echo>
-        <mkdir dir="tmp" />
-        <echo>  - Making temporary directory</echo>
-        <copy todir="tmp">
-            <fileset dir="bin">
-                <exclude name="*.txt" />
-            </fileset>
-        </copy>
-        <echo>  - Copying files</echo>
-        <jar jarfile="${jarName}" basedir="tmp">
-            <manifest>
-                <attribute name="Main-Class" value="InvTweaksMain"/>
-            </manifest>
-        </jar>
-        <echo>  - Cleaning up</echo>
-        <delete dir="tmp" />
-    </target>
-	
+	<!-- Mod version -->
+	<property name="version" value="1.32-1.8.1" />
+
+	<!-- Properties -->
+	<property name="jarPath" location="target/InvTweaks-${version}.jar" />
+	<condition property="modsDir" value="${user.home}/AppData/Roaming/.minecraft/mods">
+		<os family="windows" />
+	</condition>
+	<condition property="modsDir" value="${user.home}:Library:Application\ Support:minecraft:mods">
+		<os name="Mac OS X" />
+	</condition>
+	<condition property="modsDir" value="${user.home}/.minecraft/mods">
+		<os family="unix" />
+	</condition>
+
+	<!-- Deployment to Minecraft task -->
+	<target name="dist">
+		<echo>Installing...</echo>
+		<echo>  - Removing possible older version</echo>
+		<delete>
+			<fileset dir="${modsDir}" includes="InvTweaks*.jar" />
+		</delete>
+		<echo>  - Copying jar to mods folder</echo>
+		<copy file="${jarPath}" todir="${modsDir}" />
+		<echo>  - Done!</echo>
+	</target>
+
+	<!--- Building/packaging task -->
+	<target name="build">
+		<echo>Building with Maven...</echo>
+		<exec executable="mvn">
+			<arg value="clean" />
+			<arg value="package" />
+		</exec>
+		<echo>  - Done!</echo>
+	</target>
+
 </project>

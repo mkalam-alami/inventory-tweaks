@@ -8,7 +8,7 @@
 	<property name="version" value="1.32-1.8.1" />
 
 	<!-- Properties -->
-	<property name="jarPath" location="target/InvTweaks-${version}.jar" />
+	<property name="zipPath" location="target/InvTweaks-${version}.zip" />
 	<condition property="modsDir" value="${user.home}/AppData/Roaming/.minecraft/mods">
 		<os family="windows" />
 	</condition>
@@ -24,10 +24,10 @@
 		<echo>Installing...</echo>
 		<echo>  - Removing possible older version</echo>
 		<delete>
-			<fileset dir="${modsDir}" includes="InvTweaks*.jar" />
+			<fileset dir="${modsDir}" includes="InvTweaks*.zip" />
 		</delete>
 		<echo>  - Copying jar to mods folder</echo>
-		<copy file="${jarPath}" todir="${modsDir}" />
+		<copy file="${zipPath}" todir="${modsDir}" />
 		<echo>  - Done!</echo>
 	</target>
 

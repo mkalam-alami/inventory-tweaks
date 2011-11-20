@@ -10,7 +10,7 @@
 
   <build>
     <sourceDirectory>src</sourceDirectory>
-    <finalName>InvTweaks-${project.version}</finalName>
+    <finalName>InvTweaks-${project.version}.zip</finalName>
     <plugins>
       <!-- Compiling settings -->
       <plugin>

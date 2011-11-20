@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
  * License: MIT
  *
  */
-public class mod_InvTweaks extends BaseMod_InvTweaks {
+public class mod_InvTweaks implements BaseMod_InvTweaks {
 
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
@@ -46,7 +46,7 @@ public class mod_InvTweaks extends BaseMod_InvTweaks {
     /**
      * Called by ModLoader each time the sorting key is pressed.
      */
-    public final void KeyboardEvent(aby keyBinding) {
+    public void KeyboardEvent(aby keyBinding) {
         instance.onSortingKeyPressed();
     }
 

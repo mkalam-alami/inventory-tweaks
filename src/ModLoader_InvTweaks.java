@@ -3,17 +3,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.lwjgl.input.Keyboard;
+
 import net.minecraft.client.Minecraft;
 
 public abstract class ModLoader_InvTweaks {
 
     private static final Logger logger = Logger.getLogger("InvTweaks");
 
-    private static final Map<BaseMod_InvTweaks, Boolean> inGameHooks = new HashMap<BaseMod_InvTweaks, Boolean>();
-    
-    private static final Map<BaseMod_InvTweaks, Boolean> inGUIHooks = new HashMap<BaseMod_InvTweaks, Boolean>();
-    
     private static Minecraft instance;
+
+    private static final Map<aby, boolean[]> keyMap = new HashMap<aby, boolean[]>();
+
+    private static long clock = 0L;
+
+    private static InvTweaksObfuscation obf;
+
+    /** Mod instanciation */
+    private static final BaseMod_InvTweaks mod = new mod_InvTweaks();
+
+    public static void init() {
+        instance = getMinecraftInstance();
+        obf = new InvTweaksObfuscation(instance);
+        instance.u = new EntityRendererProxy_InvTweaks(instance);
+    }
 
     public static Minecraft getMinecraftInstance() {
         if (instance == null) {
@@ -42,18 +55,15 @@ public abstract class ModLoader_InvTweaks {
     }
 
     public static void RegisterKey(BaseMod_InvTweaks mod, aby keyBinding, boolean repeat) {
-        // TODO
+        keyMap.put(keyBinding, new boolean[] { repeat, false });
     }
 
     public static void SetInGameHook(BaseMod_InvTweaks mod, boolean enable, boolean useClock) {
-        if (enable) inGameHooks.put(mod, Boolean.valueOf(useClock)); else
-                 inGameHooks.remove(mod);
+        // Do nothing, InvTweaks is registered in the code
     }
 
     public static void SetInGUIHook(BaseMod_InvTweaks mod, boolean enable, boolean useClock) {
-
-         if (enable) inGUIHooks.put(mod, Boolean.valueOf(useClock)); else
-             inGUIHooks.remove(mod);
+        // Do nothing, InvTweaks is registered in the code
     }
 
     @SuppressWarnings("unchecked")
@@ -77,5 +87,37 @@ public abstract class ModLoader_InvTweaks {
         else
             throw new RuntimeException(e);
     }
-    
+
+    public static void OnTick(float tick, Minecraft game) {
+
+        long newclock = 0L;
+
+        if (obf.getTheWorld() != null) {
+            newclock = obf.getTheWorld().t(); // getCurrentTime()
+            if (clock != newclock) {
+                mod.OnTickInGame(game);
+            }
+        }
+        if (obf.getCurrentScreen() != null && clock != newclock) {
+            mod.OnTickInGUI(instance, obf.getCurrentScreen());
+        }
+        if (clock != newclock) {
+            for (aby keyBinding : keyMap.keySet()) {
+                boolean state = Keyboard.isKeyDown(keyBinding.d);
+                boolean[] keyInfo = keyMap.get(keyBinding);
+                boolean oldState = keyInfo[1];
+                keyInfo[1] = state;
+                if ((state) && (!oldState || keyInfo[0])) {
+                    mod.KeyboardEvent(keyBinding);
+                }
+            }
+        }
+
+        clock = newclock;
+    }
+
+    public static void OnItemPickup(vi entityplayer, dk stack) {
+        mod.OnItemPickup(entityplayer, stack);
+    }
+
 }

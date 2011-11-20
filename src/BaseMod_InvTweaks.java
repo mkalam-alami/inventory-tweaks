@@ -1,6 +1,16 @@
+import net.minecraft.client.Minecraft;
 
-public abstract class BaseMod_InvTweaks {
 
-    public abstract String Version();
+public interface BaseMod_InvTweaks {
+
+    String Version();
+
+    void KeyboardEvent(aby keyBinding);
+    
+    boolean OnTickInGUI(Minecraft game, xe guiScreen);
+    
+    boolean OnTickInGame(Minecraft minecraft);
+    
+    void OnItemPickup(vi entityplayer, dk stack);
     
 }

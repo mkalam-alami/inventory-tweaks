@@ -9,7 +9,8 @@
   <name>Inventory Tweaks</name>
 
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src</sourceDirectory>    
+    
     <finalName>InvTweaks-${project.version}.zip</finalName>
     <plugins>
       <!-- Compiling settings -->

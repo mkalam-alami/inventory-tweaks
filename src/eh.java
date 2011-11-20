@@ -10,6 +10,11 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
+/**
+ * 
+ * @author Mojang, Jimeo Wan
+ *
+ */
 public class eh extends xe {
     private static final Random a = new Random();
 
@@ -72,6 +77,7 @@ public class eh extends xe {
         else if ((localCalendar.get(2) + 1 == 1) && (localCalendar.get(5) == 1)) {
             this.c = "Happy new year!";
         }
+        this.c = "Inventory Tweaks!";
 
         qp localqp = qp.a();
 

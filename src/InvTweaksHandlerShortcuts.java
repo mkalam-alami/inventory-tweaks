@@ -30,7 +30,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private InvTweaksContainerManager container;
     private InvTweaksContainerSection fromSection;
     private int fromIndex;
-    private ul fromStack;
+    private dk fromStack;
     private InvTweaksContainerSection toSection;
     private ShortcutType shortcutType;
     private long lastCraftDate = 0;
@@ -147,7 +147,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         return downShortcutKeys;
     }
     
-    public void handleShortcut(em guiContainer) {
+    public void handleShortcut(mg guiContainer) {
         // IMPORTANT: This method is called before the default action is executed.
         
         updateKeyStatuses();
@@ -159,7 +159,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         boolean shortcutValid = false;
         
         // Check that the slot is not empty
-        sx slot = getSlotAtPosition(guiContainer, x, y);
+        vv slot = getSlotAtPosition(guiContainer, x, y);
         
         if (slot != null && hasStack(slot)) {
 
@@ -314,7 +314,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 
                 case MOVE_ONE_STACK:
                 {
-                    sx slot = container.getSlot(fromSection, fromIndex);
+                    vv slot = container.getSlot(fromSection, fromIndex);
                     while (hasStack(slot) && toIndex != -1) {
                         container.move(fromSection, fromIndex, toSection, toIndex);
                         toIndex = getNextIndex(separateStacks, drop);
@@ -331,8 +331,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     
                 case MOVE_ALL_ITEMS:
                 {
-                    ul stackToMatch = copy(fromStack);
-                    for (sx slot : container.getSlots(fromSection)) {
+                    dk stackToMatch = copy(fromStack);
+                    for (vv slot : container.getSlots(fromSection)) {
                         if (hasStack(slot) && areSameItemType(stackToMatch, getStack(slot))) {
                             int fromIndex = container.getSlotIndex(getSlotNumber(slot));
                             while (hasStack(slot) && toIndex != -1 && 
@@ -356,7 +356,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     @SuppressWarnings("unused")
     private void craft(final boolean toHand, final boolean drop) throws Exception {
         int toIndex = getNextIndex(false, drop);
-        sx slot = container.getSlot(fromSection, fromIndex);
+        vv slot = container.getSlot(fromSection, fromIndex);
         long currentTimeMillis = System.currentTimeMillis();
         // Start crafting only if there is something to craft
         // and we have waited long enough (CRAFTING_DELAY ms)
@@ -459,9 +459,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         // Try to merge with existing slot
         if (!emptySlotOnly) {
             int i = 0;
-            for (sx slot : container.getSlots(toSection)) {
+            for (vv slot : container.getSlots(toSection)) {
                 if (hasStack(slot)) {
-                    ul stack = getStack(slot);
+                    dk stack = getStack(slot);
                     if (areItemsEqual(stack, fromStack)
                             && getStackSize(stack) < getMaxStackSize(stack)) {
                         result = i;
@@ -533,10 +533,10 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         }
     }
     
-    private sx getSlotAtPosition(em guiContainer, int i, int j) { 
-        // Copied from class 'em' (GuiContainer)
+    private vv getSlotAtPosition(mg guiContainer, int i, int j) { 
+        // Copied from class 'mg' (GuiContainer)
         for (int k = 0; k < getSlots(getContainer(guiContainer)).size(); k++) {
-            sx localsx = (sx) getSlots(getContainer(guiContainer)).get(k);
+            vv localsx = (vv) getSlots(getContainer(guiContainer)).get(k);
             if (InvTweaks.getIsMouseOverSlot(guiContainer, localsx, i, j)) {
                 return localsx;
             }

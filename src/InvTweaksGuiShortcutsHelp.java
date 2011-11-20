@@ -5,18 +5,18 @@ import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Keyboard;
 
-public class InvTweaksGuiShortcutsHelp extends qr {
+public class InvTweaksGuiShortcutsHelp extends xe /* GuiScreen */ {
 
     private final static String SCREEN_TITLE = "Shortcuts help";
     
     private final static int ID_DONE = 0;
 
     private InvTweaksObfuscation obf;
-    private qr parentScreen;
+    private xe parentScreen;
     private InvTweaksConfig config;
     
     public InvTweaksGuiShortcutsHelp(Minecraft mc, 
-            qr parentScreen, InvTweaksConfig config) {
+            xe parentScreen, InvTweaksConfig config) {
         this.obf = new InvTweaksObfuscation(mc);
         this.parentScreen = parentScreen;
         this.config = config;
@@ -24,8 +24,8 @@ public class InvTweaksGuiShortcutsHelp extends qr {
 
     public void a() { /* initGui */
         // Create Done button
-        List<vj> controlList = new LinkedList<vj>();
-        controlList.add(new vj(ID_DONE, 
+        List<ct> controlList = new LinkedList<ct>(); /* GuiButton */
+        controlList.add(new ct(ID_DONE, 
                 obf.getWidth(this) / 2 - 100, 
                 obf.getHeight(this) / 6 + 168, "Done"));
         obf.setControlList(this, controlList);
@@ -86,7 +86,7 @@ public class InvTweaksGuiShortcutsHelp extends qr {
                 obf.getWidth(this) / 2 + 40, y, color); // drawString
     }
 
-    protected void a(vj guibutton) { /* actionPerformed */
+    protected void a(ct guibutton) { /* actionPerformed */
 
         switch (obf.getId(guibutton)) {
 

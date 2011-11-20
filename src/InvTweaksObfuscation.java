@@ -4,7 +4,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 
 /**
- * Minecraft 1.8 Obfuscation layer
+ * Minecraft 1.0 Obfuscation layer
  * 
  * @author Jimeo Wan
  *
@@ -22,29 +22,29 @@ public class InvTweaksObfuscation {
 	// Minecraft members
 
 	protected void addChatMessage(String message) {
-		if (mc.v != null) {
-			mc.v.a(message);
+		if (mc.w != null) {
+			mc.w.a(message);
 		}
 	}
 	protected boolean isMultiplayerWorld() {
 		return mc.l();
 	}
-    protected qs getThePlayer() { // EntityPlayer
+    protected di /* extends vi */ getThePlayer() { // EntityPlayer
         return mc.h;
     }
-    protected rv getTheWorld() { // World
+    protected ry getTheWorld() { // World
         return mc.f;
     }
-	protected hw getPlayerController() { // PlayerController
+	protected aes getPlayerController() { // PlayerController
 		return mc.c;
 	}
-	protected qr getCurrentScreen() { // GuiScreen
-		return mc.r;
+	protected xe getCurrentScreen() { // GuiScreen
+		return mc.s;
 	}
-	protected kh getFontRenderer() { // FontRenderer
+	protected abe getFontRenderer() { // FontRenderer
         return mc.q;
     }
-    protected void displayGuiScreen(qr parentScreen) {
+    protected void displayGuiScreen(xe parentScreen) {
         mc.a(parentScreen);
     }
     protected int getDisplayWidth() {
@@ -53,53 +53,53 @@ public class InvTweaksObfuscation {
     protected int getDisplayHeight() {
         return mc.e;
     }
-    protected fv getGameSettings() {
-        return mc.z;
+    protected ki getGameSettings() {
+        return mc.A;
     }
     protected int getKeyBindingForwardKeyCode() {
-        return getKeycode(getGameSettings().m);
+        return getKeycode(getGameSettings().n);
     }
     protected int getKeyBindingBackKeyCode() {
-        return getKeycode(getGameSettings().o);
+        return getKeycode(getGameSettings().p);
     }
 
 	// EntityPlayer members
 	
-	protected ui getInventoryPlayer() { // InventoryPlayer
-		return getThePlayer().as;
+	protected x getInventoryPlayer() { // InventoryPlayer
+		return getThePlayer().by;
 	}
-	protected ul getCurrentEquippedItem() { // ItemStack
-		return getThePlayer().aj();
+	protected dk getCurrentEquippedItem() { // ItemStack
+		return getThePlayer().aH();
 	}
-	protected cf getCraftingInventory() { // Container
-		return getThePlayer().au;
+	protected pj getCraftingInventory() { // Container
+		return getThePlayer().bA;
 	}
-    protected r getPlayerContainer() { // ContainerPlayer
-        return (r) getThePlayer().at; // MCP name: inventorySlots
+    protected gd getPlayerContainer() { // ContainerPlayer
+        return (gd) getThePlayer().bz; // MCP name: inventorySlots
     }
 
 	// InventoryPlayer members
 	
-	protected ul[] getMainInventory() {
+	protected dk[] getMainInventory() {
 		return getInventoryPlayer().a;
 	}
-	protected void setMainInventory(ul[] value) {
+	protected void setMainInventory(dk[] value) {
 		getInventoryPlayer().a = value;
 	}
 	protected void setHasInventoryChanged(boolean value) {
 		getInventoryPlayer().e = value;
 	}
-	protected void setHoldStack(ul stack) {
+	protected void setHoldStack(dk stack) {
 		getInventoryPlayer().b(stack); // setItemStack
 	}
 	protected boolean hasInventoryChanged() {
 		return getInventoryPlayer().e;
 	}
-	protected ul getHoldStack() {
-		return getInventoryPlayer().j(); // getItemStack
+	protected dk getHoldStack() {
+		return getInventoryPlayer().i(); // getItemStack
 	}
-	protected ul getFocusedStack() {
-		return getInventoryPlayer().b(); // getCurrentItem
+	protected dk getFocusedStack() {
+		return getInventoryPlayer().a(); // getCurrentItem
 	}
 	protected int getFocusedSlot() {
 		return getInventoryPlayer().c; // currentItem
@@ -107,170 +107,171 @@ public class InvTweaksObfuscation {
 	
     // GuiScreen members
 	
-	protected int getWidth(qr guiScreen) {
+	protected int getWidth(xe guiScreen) {
 	    return guiScreen.m;
 	}
-    protected int getHeight(qr guiScreen) {
+    protected int getHeight(xe guiScreen) {
         return guiScreen.n;
     }
-    protected int getXSize(em guiScreen) {
-        return guiScreen.b;
+    protected int getXSize(mg guiContainer) { // GuiContainer
+        return guiContainer.b;
     }
-    protected int getYSize(em guiScreen) {
-        return guiScreen.c;
+    protected int getYSize(mg guiContainer) {
+        return guiContainer.c;
     }
+    
     @SuppressWarnings("unchecked")
-    protected List<InvTweaksObfuscationGuiButton> getControlList(qr guiScreen) {
+    protected List<InvTweaksObfuscationGuiButton> getControlList(xe guiScreen) {
         return guiScreen.o;
     }
-    protected void setControlList(qr guiScreen, List<?> controlList) {
+    protected void setControlList(xe guiScreen, List<?> controlList) {
         guiScreen.o = controlList;
     }
 
     // FontRenderer members
 	
-	protected int getStringWidth(kh fontRenderer, String line) {
+	protected int getStringWidth(abe fontRenderer, String line) {
 	    return fontRenderer.a(line);
 	}
-	protected void drawStringWithShadow(kh fontRenderer,
+	protected void drawStringWithShadow(abe fontRenderer,
             String s, int i, int j, int k) {
         fontRenderer.a(s, i, j, k);
     }
 	
 	// ItemStack members
 
-	protected ul createItemStack(int id, int size, int damage) {
-		return new ul(id, size, damage);
+	protected dk createItemStack(int id, int size, int damage) {
+		return new dk(id, size, damage);
 	}
-	protected ul copy(ul itemStack) {
+	protected dk copy(dk itemStack) {
 		return itemStack.k();
 	}
-	protected int getItemDamage(ul itemStack) {
+	protected int getItemDamage(dk itemStack) {
 		return itemStack.i();
 	}
-	protected int getMaxStackSize(ul itemStack) {
+	protected int getMaxStackSize(dk itemStack) {
 		return itemStack.c();
 	}
-	protected int getStackSize(ul itemStack) {
+	protected int getStackSize(dk itemStack) {
 		return itemStack.a;
 	}
-	protected void setStackSize(ul itemStack, int value) {
+	protected void setStackSize(dk itemStack, int value) {
 		itemStack.a = value;
 	}
-	protected int getItemID(ul itemStack) {
+	protected int getItemID(dk itemStack) {
 		return itemStack.c;
 	}
-	protected boolean areItemStacksEqual(ul itemStack1, ul itemStack2) {
-		return itemStack1.c(itemStack2); // ul.a(itemStack1, itemStack2);
+	protected boolean areItemStacksEqual(dk itemStack1, dk itemStack2) {
+		return itemStack1.c(itemStack2); // dk.a(itemStack1, itemStack2);
 	}
-    protected boolean isItemStackDamageable(ul itemStack) {
+    protected boolean isItemStackDamageable(dk itemStack) {
         return itemStack.e();
     }
-    protected boolean areSameItemType(ul itemStack1, ul itemStack2) {
+    protected boolean areSameItemType(dk itemStack1, dk itemStack2) {
         return areItemsEqual(itemStack1, itemStack2) ||
                 (isItemStackDamageable(itemStack1)
                         && getItemID(itemStack1) == getItemID(itemStack2));
     }
-    protected boolean areItemsEqual(ul itemStack1, ul itemStack2) {
+    protected boolean areItemsEqual(dk itemStack1, dk itemStack2) {
         return itemStack1.a(itemStack2); // isItemEqual
     }
-    protected int getAnimationsToGo(ul itemStack) {
+    protected int getAnimationsToGo(dk itemStack) {
         return itemStack.b;
     }
-    protected sv getItem(ul itemStack) { // Item
+    protected acy getItem(dk itemStack) { // Item
         return itemStack.a();
     }
     
     // Item & ItemArmor
     
-    protected boolean isDamageable(sv item) {
-        return item.g();
+    protected boolean isDamageable(acy item) {
+        return item.h();
     }
-    protected int getArmorLevel(mt itemArmor) { // ItemArmor
+    protected int getArmorLevel(agi itemArmor) { // ItemArmor
         return itemArmor.a;
     }
 	
 	// PlayerController members
 
-	protected ul clickInventory(hw playerController,
+	protected dk clickInventory(aes playerController,
 			int windowId, int slot, int clickButton,
-			boolean shiftHold, qs entityPlayer) {
+			boolean shiftHold, vi entityPlayer) {
 		return playerController.a(windowId, slot, clickButton,
 				shiftHold, entityPlayer);
 	}
 	
 	// Container members
 	
-	protected int getWindowId(cf container) {
+	protected int getWindowId(pj container) {
 		return container.f;
 	}
-	protected List<?> getSlots(cf container) {
+	protected List<?> getSlots(pj container) {
 		return container.e;
 	}
-    protected sx getSlot(cf container, int i) { // Slot
-        return (sx) getSlots(container).get(i);
+    protected vv getSlot(pj container, int i) { // Slot
+        return (vv) getSlots(container).get(i);
     }
 
-    protected ul getSlotStack(cf container, int i) {
-        sx slot = (sx) getSlots(container).get(i);
+    protected dk getSlotStack(pj container, int i) {
+        vv slot = (vv) getSlots(container).get(i);
         return (slot == null) ? null : getStack(slot); // getStack
     }
 
-    protected void setSlotStack(cf container, int i, ul stack) {
+    protected void setSlotStack(pj container, int i, dk stack) {
         container.a(i, stack); // putStackInSlot
     }
 
     // Slot members
     
-    protected boolean hasStack(sx slot) { 
-        return slot.b();
+    protected boolean hasStack(vv slot) { 
+        return slot.c();
     }
-    protected int getSlotNumber(sx slot) {
-        return slot.b;
-    }
-    protected ul getStack(sx slot) {
-        return slot.a();
-    }
-    protected int getXDisplayPosition(sx slot) {
-        return slot.c;
-    }
-    protected int getYDisplayPosition(sx slot) {
+    protected int getSlotNumber(vv slot) {
         return slot.d;
     }
-    protected boolean isItemValid(sx item, ul itemStack) {
-        return item.b(itemStack);
+    protected dk getStack(vv slot) {
+        return slot.b();
+    }
+    protected int getXDisplayPosition(vv slot) {
+        return slot.e;
+    }
+    protected int getYDisplayPosition(vv slot) {
+        return slot.d;
+    }
+    protected boolean isItemValid(vv item, dk itemStack) {
+        return item.a(itemStack);
     }
 
     // GuiContainer members
 
-    protected cf getContainer(em guiContainer) {
+    protected pj getContainer(mg guiContainer) {
         return guiContainer.d; /* inventorySlots */
     }
 
     // GuiButton
     
-    protected void setEnabled(vj guiButton, boolean enabled) { // GuiButton
+    protected void setEnabled(ct guiButton, boolean enabled) { // GuiButton
         guiButton.h = enabled;
     }
-    protected int getId(vj guiButton) { // GuiButton
-        return guiButton.g;
-    }
-    protected void setDisplayString(vj guiButton, String string) {
-        guiButton.f = string;
-    }
-    protected String getDisplayString(vj guiButton) {
+    protected int getId(ct guiButton) { // GuiButton
         return guiButton.f;
+    }
+    protected void setDisplayString(ct guiButton, String string) {
+        guiButton.e = string;
+    }
+    protected String getDisplayString(ct guiButton) {
+        return guiButton.e;
     }
     
     // Other
 
-    protected int getKeycode(ys keyBinding) {
+    protected int getKeycode(aby keyBinding) {
         return keyBinding.d;
     }
-    protected void playSoundAtEntity(rv theWorld, qs thePlayer, String string, float f, float g) {
+    protected void playSoundAtEntity(ry theWorld, di thePlayer, String string, float f, float g) {
         theWorld.a(thePlayer, string, f, g);
     }
-    protected int getKeyCode(ys keyBinding) { // KeyBinding
+    protected int getKeyCode(aby keyBinding) { // KeyBinding
         return keyBinding.d;
     }
 
@@ -291,52 +292,55 @@ public class InvTweaksObfuscation {
             return absolutePath + File.separatorChar;
         }
     }
-    public static ul getHoldStackStatic(Minecraft mc) {
+    public static dk getHoldStackStatic(Minecraft mc) {
         return new InvTweaksObfuscation(mc).getHoldStack();
     }
-    public static qr getCurrentScreenStatic(Minecraft mc) {
+    public static xe getCurrentScreenStatic(Minecraft mc) {
         return new InvTweaksObfuscation(mc).getCurrentScreen();
     }
     
 	// Classes
 	
 	protected boolean isGuiContainer(Object o) { // GuiContainer
-        return o instanceof em;
+        return o instanceof mg;
 	}
-    protected boolean isGuiContainerCreative(Object o) { // GuiContainer
-        return o instanceof on;
+    protected boolean isGuiContainerCreative(Object o) { // GuiContainerCreative
+        return o instanceof aec;
     }
     protected boolean isGuiChest(Object o) { // GuiChest
-        return o instanceof tn;
+        return o instanceof gj;
     }
     protected boolean isGuiDispenser(Object o) { // GuiDispenser
-        return o instanceof dr;
+        return o instanceof wt;
     }
     protected boolean isGuiInventory(Object o) { // GuiInventory
-        return o instanceof abd;
+        return o instanceof hw;
     }
     protected boolean isGuiEditSign(Object o) { // GuiEditSign
-        return o instanceof ado;
+        return o instanceof fl;
     }
     
 	protected boolean isContainerPlayer(Object o) { // ContainerPlayer
-	    return o instanceof r;
+	    return o instanceof gd;
 	}
     protected boolean isContainerChest(Object o) { // ContainerChest
-        return o instanceof az;
+        return o instanceof ak;
     }
     protected boolean isContainerFurnace(Object o) { // ContainerFurnace
-        return o instanceof pr;
+        return o instanceof eg;
     }
     protected boolean isContainerDispenser(Object o) { // ContainerDispenser
-        return o instanceof zz;
+        return o instanceof qu;
     }
     protected boolean isContainerWorkbench(Object o) { // ContainerWorkbench
-        return o instanceof uf;
+        return o instanceof ace;
     }
 
     protected boolean isItemArmor(Object o) { // ItemArmor
-        return o instanceof mt;
+        return o instanceof agi;
     }
-    
+
+    protected boolean isSlot(Object o) { // Slot
+        return o instanceof vv;
+    }
 }

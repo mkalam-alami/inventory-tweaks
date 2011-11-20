@@ -40,7 +40,7 @@ public class InvTweaksItemTreeItem extends InvTweaksObfuscation implements Compa
         return order;
     }
 
-    public boolean matchesStack(ul stack) {
+    public boolean matchesStack(dk stack) {
         return getItemID(stack) == id && 
                 (getMaxStackSize(stack) == 1 || getItemDamage(stack) == damage);
     }

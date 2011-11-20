@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
  * @author Jimeo Wan
  *
  */
-public class InvTweaksObfuscationGuiButton extends vj /* GuiButton */ {
+public class InvTweaksObfuscationGuiButton extends ct /* GuiButton */ {
 
     public InvTweaksObfuscationGuiButton(int arg0, int arg1, int arg2, int arg3, int arg4, String arg5) {
         super(arg0, arg1, arg2, arg3, arg4, arg5);
@@ -24,7 +24,7 @@ public class InvTweaksObfuscationGuiButton extends vj /* GuiButton */ {
     }
 
     protected String getDisplayString() {
-        return f;
+        return e;
     }
     protected int getTexture(Minecraft mc, String texture) {
         return mc.p.b(texture); // renderengine.getTexture
@@ -34,10 +34,10 @@ public class InvTweaksObfuscationGuiButton extends vj /* GuiButton */ {
     }
     
     protected boolean isEnabled2() {
-        return this.i;
+        return this.h;
     }
     protected boolean isEnabled() {
-        return this.h;
+        return this.g;
     }
     
     protected int getXPosition() {

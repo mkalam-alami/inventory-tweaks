@@ -15,7 +15,7 @@ import org.lwjgl.util.Point;
  * @author Jimeo Wan
  * 
  */
-public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
+public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
 
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
@@ -44,10 +44,10 @@ public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
 
     private Minecraft mc;
     private InvTweaksObfuscation obf;
-    private qr parentScreen;
+    private xe parentScreen;
     private InvTweaksConfig config;
 
-    public InvTweaksGuiInventorySettings(Minecraft mc, qr parentScreen,
+    public InvTweaksGuiInventorySettings(Minecraft mc, xe parentScreen,
             InvTweaksConfig config) {
         this.mc = mc;
         this.obf = new InvTweaksObfuscation(mc);
@@ -57,17 +57,17 @@ public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
 
     public void a() { /* initGui */
 
-        List<vj> controlList = new LinkedList<vj>();
+        List<ct> controlList = new LinkedList<ct>(); /* List<GuiButton> */
         Point p = new Point();
         int i = 0;
 
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new vj(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, "Open the sorting rules file..."));
-        controlList.add(new vj(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, "Open the item tree file..."));
-        controlList.add(new vj(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, "Open help in browser..."));
-        controlList.add(new vj(ID_DONE, p.getX() + 55, obf.getHeight(this) / 6 + 168, "Done"));
+        controlList.add(new ct(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, "Open the sorting rules file..."));
+        controlList.add(new ct(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, "Open the item tree file..."));
+        controlList.add(new ct(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, "Open help in browser..."));
+        controlList.add(new ct(ID_DONE, p.getX() + 55, obf.getHeight(this) / 6 + 168, "Done"));
 
         // Create settings buttons
 
@@ -113,7 +113,7 @@ public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
-                vj button = (vj) o;
+                ct button = (ct) o;
                 if (obf.getId(button) == ID_EDITRULES || obf.getId(button) < ID_EDITTREE) {
                     obf.setEnabled(button, false);
                 }
@@ -131,7 +131,7 @@ public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
         super.a(i, j, f); // drawScreen
     }
 
-    protected void a(vj guibutton) { /* actionPerformed */
+    protected void a(ct guibutton) { /* actionPerformed */
 
         switch (obf.getId(guibutton)) {
 
@@ -198,7 +198,7 @@ public class InvTweaksGuiInventorySettings extends qr /* GuiScreen */ {
         p.setY(obf.getHeight(this) / 6 + (buttonOrder / 2) * 24);
     }
 
-    private void toggleBooleanButton(vj guibutton, String property, String label) {
+    private void toggleBooleanButton(ct guibutton, String property, String label) {
         Boolean enabled = !new Boolean(config.getProperty(property));
         config.setProperty(property, enabled.toString());
         obf.setDisplayString(guibutton, computeBooleanButtonLabel(property, label));

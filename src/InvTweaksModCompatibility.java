@@ -19,7 +19,7 @@ public class InvTweaksModCompatibility {
      * @param guiContainer
      * @return
      */
-    public boolean isSpecialChest(em guiContainer) {
+    public boolean isSpecialChest(mg guiContainer) {
         return is(guiContainer, "GuiAlchest"); // Equivalent Exchange
     }
 
@@ -30,7 +30,7 @@ public class InvTweaksModCompatibility {
      * @param defaultValue
      * @return
      */
-    public int getSpecialChestRowSize(em guiContainer, int defaultValue) {
+    public int getSpecialChestRowSize(mg guiContainer, int defaultValue) {
         if (is(guiContainer, "GuiAlchest")) { // Equivalent Exchange
             return 13;
         }
@@ -43,7 +43,7 @@ public class InvTweaksModCompatibility {
      * @param guiContainer
      * @return
      */
-    public boolean isSpecialInventory(em guiContainer) {
+    public boolean isSpecialInventory(mg guiContainer) {
         return is(guiContainer, "GuiInventoryMoreSlots"); // Aether mod
     }
 
@@ -53,11 +53,11 @@ public class InvTweaksModCompatibility {
      * @param guiContainer
      * @return
      */
-    public boolean isForbiddenChest(em guiContainer) {
+    public boolean isForbiddenChest(mg guiContainer) {
         return is(guiContainer, "MLGuiChestBuilding"); // Millenaire mod
     }
     
-    private static final boolean is(em guiContainer, String className) {
+    private static final boolean is(mg guiContainer, String className) {
         return guiContainer.getClass().getSimpleName().contains(className);
     }
 

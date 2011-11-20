@@ -46,7 +46,7 @@ public class mod_InvTweaks extends BaseMod {
     /**
      * Called by ModLoader each time the sorting key is pressed.
      */
-    public final void KeyboardEvent(ys keyBinding) {
+    public final void KeyboardEvent(aby keyBinding) {
         instance.onSortingKeyPressed();
     }
 
@@ -62,7 +62,7 @@ public class mod_InvTweaks extends BaseMod {
     /**
      * Called by ModLoader for each tick while the player is in a menu.
      */
-    public boolean OnTickInGUI(Minecraft minecraft, qr guiScreen) {
+    public boolean OnTickInGUI(Minecraft minecraft, xe guiScreen) {
         instance.onTickInGUI(guiScreen);
         return true;
     }
@@ -70,7 +70,7 @@ public class mod_InvTweaks extends BaseMod {
     /**
      * Called by ModLoader when an item has been picked up.
      */
-    public void OnItemPickup(qs entityplayer, ul stack) {
+    public void OnItemPickup(vi entityplayer, dk stack) {
         // It's useless to give stack as a parameter since the
         // given object doesn't contain enough information to know
         // which stack in the inventory has been updated. We have to

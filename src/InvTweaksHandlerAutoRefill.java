@@ -34,7 +34,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
 		InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(
 		        mc, InvTweaksContainerSection.INVENTORY);
-		ul candidateStack, replacementStack = null;
+		dk candidateStack, replacementStack = null;
 		int replacementStackSlot = -1;
 		
 		List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<InvTweaksConfigSortingRule>();
@@ -160,7 +160,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 					
 					// In POLLING_DELAY ms, things might have changed
 					try {
-						ul stack = containerMgr.getItemStack(i);
+						dk stack = containerMgr.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (containerMgr.move(i, targetedSlot)) {
 								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_REFILL_SOUND).equals("false")) {

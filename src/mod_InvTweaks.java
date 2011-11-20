@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
  * License: MIT
  *
  */
-public class mod_InvTweaks extends BaseMod {
+public class mod_InvTweaks extends BaseMod_InvTweaks {
 
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
@@ -22,16 +22,16 @@ public class mod_InvTweaks extends BaseMod {
 
     public mod_InvTweaks() {
 
-        Minecraft mc = ModLoader.getMinecraftInstance();
+        Minecraft mc = ModLoader_InvTweaks.getMinecraftInstance();
 
         // Register key (listen only for key down events)
-        ModLoader.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
-        ModLoader.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
-        ModLoader.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
+        ModLoader_InvTweaks.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
+        ModLoader_InvTweaks.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
+        ModLoader_InvTweaks.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
 
         // Register in game hooks
-        ModLoader.SetInGameHook(this, true, true);
-        ModLoader.SetInGUIHook(this, true, false);
+        ModLoader_InvTweaks.SetInGameHook(this, true, true);
+        ModLoader_InvTweaks.SetInGUIHook(this, true, false);
 
         // Instantiate mod core
         instance = new InvTweaks(mc);

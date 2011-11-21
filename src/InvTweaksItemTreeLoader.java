@@ -64,17 +64,15 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
             String name, Attributes attributes) throws SAXException {
 
         String rangeMinAttr = attributes.getValue(ATTR_RANGE_MIN);
-        
-        // Tree version
-        if (treeVersion == null) {
-            treeVersion = attributes.getValue(ATTR_TREE_VERSION);
-            if (treeVersion != null) {
-                return;
-            }
-        }
+        String treeVersion = attributes.getValue(ATTR_TREE_VERSION);
         
         // Category
-        if (attributes.getLength() == 0 || rangeMinAttr != null) {
+        if (attributes.getLength() == 0 || rangeMinAttr != null  || treeVersion != null) {
+
+            // Tree version
+            if (treeVersion != null) {
+                this.treeVersion = treeVersion;
+            }
             
             if (categoryStack.isEmpty()) {
                 // Root category

@@ -126,7 +126,7 @@ public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
     }
     
     public void a(int i, int j, float f) { /* drawScreen */
-        k(); // Gui.drawDefaultBackground
+        j(); // Gui.drawDefaultBackground
         a(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         super.a(i, j, f); // drawScreen
     }

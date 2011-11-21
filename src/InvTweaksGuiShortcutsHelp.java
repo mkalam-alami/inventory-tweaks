@@ -35,7 +35,7 @@ public class InvTweaksGuiShortcutsHelp extends xe /* GuiScreen */ {
         
         // Note: 0x0000EEFF = blue color (currently unused)
         
-        k(); // Gui.drawDefaultBackground
+        j(); // Gui.drawDefaultBackground
         a(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         
         int y = obf.getHeight(this) / 6;

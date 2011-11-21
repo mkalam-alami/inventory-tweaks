@@ -7,7 +7,7 @@
 
 1. Vérifiez que ModLoader est bien installé (pour le télécharger : http://www.minecraftforum.net/topic/75440-risugamis-mods)
 2. Supprimez toute ancienne version d'Inventory Tweaks
-3. Mettez ce .jar dans le dossier "mods" de Minecraft [OU] Copiez tout le contenu du .jar dans "minecraft.jar"
+3. Mettez ce .zip dans le dossier "mods" de Minecraft [OU] Copiez tout le contenu du .zip dans "minecraft.jar"
 4. Lancez le jeu !
 
 ======= [ UTILISATION ] =======

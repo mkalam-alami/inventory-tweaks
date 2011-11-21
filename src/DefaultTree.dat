@@ -24,7 +24,7 @@
 # CREDITS: Thanks to Larandar for his contributions.
 -->
 <!-- Note: 'stuff' matches everything, even items that don't appear here -->
-<stuff>
+<stuff version="100">
 	<equipment>
 		<weapon>
 			<sword>
@@ -109,6 +109,8 @@
 				<stone id="1"/>
 				<cobblestone id="4"/>
 				<mossStone id="48"/>
+                <endStone id="121"/>
+                <whiteStone id="121"/>
 			</stones>
 			<oreBlock>
 				<coalOreBlock id="16"/>
@@ -149,11 +151,14 @@
 			</liquid>
 			<portal id="90"/>
 			<airPortal id="120"/>
+            <endPortal id="119"/>
+            <endPortalFrame id="120"/>
 			<air id="0"/>
 			<fire id="51"/>
 			<obsidian id="49"/>
 			<hugeBrownMushroom id="99"/>
 			<hugeRedMushroom id="100"/>
+            <dragonEgg id="122"/>
 			<hiddenSilverfish id="97"/>
 		</naturalBlock>
 		<wool>
@@ -229,6 +234,10 @@
 				</oreBlock>
 				<stick id="280"/>
 			</constructionBlock>
+            <itemBlock>
+                <cauldronBlock id="118"/>
+                <brewingStandBlock id="117"/>
+            </itemBlock>
 		</manufacturedBlock>
 		<mechanism>
 			<rails>
@@ -457,25 +466,9 @@
 			<melonStem id="105"/>
 			<lilyPad id="111"/>
 		</plant>
-		<potions>
-			<potionHealing>
-				<potionHealing2 id="373" damage="33"/>
-				<potionHealing1 id="373" damage="1"/>
-				<potionHealing1 id="373" damage="65"/>
-			</potionHealing>
-			<potionFireResist>
-				<potionFireResist8 id="373" damage="67"/>
-				<potionFireresist3 id="373" damage="35"/>
-				<potionFireResist3 id="373" damage="3"/>
-			</potionFireResist>
-			<noEffects>
-				<potionAwkward id="373" damage="32"/>
-				<potionThick id="373" damage="16"/>
-			</noEffects>
-			<anyPotion id="373"/>
-			<waterBottle id="373" damage="0"/>
-		</potions>
-		<potionIngredient>
+        <potion id="373"/>
+		<glassBottle id="374"/>
+        <potionIngredient>
 			<netherWart id="372"/>
 			<redstone id="331"/>
 			<glowstoneDust id="348"/>
@@ -485,6 +478,7 @@
 			<fermentedSpiderEye id="376"/>
 			<blazePowder id="377"/>
 			<magmaCream id="378"/>
+			<glisteringMelon id="382"/>
 		</potionIngredient>
 	</item>
 </stuff>

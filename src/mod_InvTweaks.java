@@ -9,37 +9,37 @@ import net.minecraft.client.Minecraft;
  * 
  * Contact: jimeo.wan (at) gmail (dot) com
  * Website: {@link http://wan.ka.free.fr/?invtweaks}
- * Source code: {@link https://github.com/jimeowan/inventory-tweaks}
+ * Source code: {@link https://github.com/mkalam-alami/inventory-tweaks}
  * License: MIT
  *
  */
-public class mod_InvTweaks implements BaseMod_InvTweaks {
+public class mod_InvTweaks extends BaseMod {
 
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     private InvTweaks instance;
 
-    public mod_InvTweaks() {
-
-        Minecraft mc = ModLoader_InvTweaks.getMinecraftInstance();
+    @Override
+    public void load() {
+        
+        Minecraft mc = ModLoader.getMinecraftInstance();
 
         // Register key (listen only for key down events)
-        ModLoader_InvTweaks.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
-        ModLoader_InvTweaks.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
-        ModLoader_InvTweaks.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
+        ModLoader.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
+        ModLoader.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
+        ModLoader.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
 
         // Register in game hooks
-        ModLoader_InvTweaks.SetInGameHook(this, true, true);
-        ModLoader_InvTweaks.SetInGUIHook(this, true, false);
+        ModLoader.SetInGameHook(this, true, true);
+        ModLoader.SetInGUIHook(this, true, false);
 
         // Instantiate mod core
         instance = new InvTweaks(mc);
-
     }
 
     @Override
-    public String Version() {
+    public String getVersion() {
         return InvTweaksConst.MOD_VERSION;
     }
 

@@ -5,7 +5,7 @@
     </description>
 
 	<!-- Mod version -->
-	<property name="version" value="1.32-1.8.1" />
+	<property name="version" value="1.33-1.0.0" />
 
 	<!-- Properties -->
 	<property name="zipPath" location="target/InvTweaks-${version}.zip" />

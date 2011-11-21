@@ -54,7 +54,7 @@ public class mod_InvTweaks extends BaseMod {
      * Called by ModLoader for each tick during the game (except when a menu is
      * open).
      */
-    public boolean OnTickInGame(Minecraft minecraft) {
+    public boolean OnTickInGame(float clock, Minecraft minecraft) {
         instance.onTickInGame();
         return true;
     }
@@ -62,7 +62,7 @@ public class mod_InvTweaks extends BaseMod {
     /**
      * Called by ModLoader for each tick while the player is in a menu.
      */
-    public boolean OnTickInGUI(Minecraft minecraft, xe guiScreen) {
+    public boolean OnTickInGUI(float clock, Minecraft minecraft, xe guiScreen) {
         instance.onTickInGUI(guiScreen);
         return true;
     }

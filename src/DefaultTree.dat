@@ -24,7 +24,7 @@
 # CREDITS: Thanks to Larandar for his contributions.
 -->
 <!-- Note: 'stuff' matches everything, even items that don't appear here -->
-<stuff version="100">
+<stuff treeVersion="1.0.0">
 	<equipment>
 		<weapon>
 			<sword>

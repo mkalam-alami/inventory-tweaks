@@ -23,9 +23,11 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     private final static String ATTR_RANGE_MAX = "max";
     private final static String ATTR_ID = "id";
     private final static String ATTR_DAMAGE = "damage";
+    private final static String ATTR_TREE_VERSION = "treeVersion";
 
     private InvTweaksItemTree tree;
 
+    private String treeVersion = null;
     private int itemOrder = 0;
     private LinkedList<String> categoryStack = new LinkedList<String>();
 
@@ -33,15 +35,26 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         tree = new InvTweaksItemTree();
     }
 
+    public boolean isValidVersion(String filePath) throws Exception {
+        synchronized (this) {
+            treeVersion = null;
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            SAXParser parser = parserFactory.newSAXParser();
+            parser.parse(new File(filePath), this);
+        }
+        return InvTweaksConst.TREE_VERSION.equals(treeVersion);
+    }
+    
     public InvTweaksItemTree load(String filePath) throws Exception {
-        tree.reset();
-        categoryStack.clear();
-        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        SAXParser parser = parserFactory.newSAXParser();
-        parser.parse(new File(filePath), this);
-        if (!categoryStack.isEmpty()) {
-            InvTweaks.logInGameStatic("Warning: The tree file seems to be broken "
-                    + "(is '" + categoryStack.getLast() + "' closed correctly?)");
+        synchronized (this) {
+            categoryStack.clear();
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            SAXParser parser = parserFactory.newSAXParser();
+            parser.parse(new File(filePath), this);
+            if (!categoryStack.isEmpty()) {
+                InvTweaks.logInGameStatic("Warning: The tree file seems to be broken "
+                        + "(is '" + categoryStack.getLast() + "' closed correctly?)");
+            }
         }
         return tree;
     }
@@ -51,10 +64,18 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
             String name, Attributes attributes) throws SAXException {
 
         String rangeMinAttr = attributes.getValue(ATTR_RANGE_MIN);
-
+        
+        // Tree version
+        if (treeVersion == null) {
+            treeVersion = attributes.getValue(ATTR_TREE_VERSION);
+            if (treeVersion != null) {
+                return;
+            }
+        }
+        
         // Category
         if (attributes.getLength() == 0 || rangeMinAttr != null) {
-
+            
             if (categoryStack.isEmpty()) {
                 // Root category
                 tree.setRootCategory(new InvTweaksItemTreeCategory(name));

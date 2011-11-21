@@ -98,8 +98,16 @@ public class InvTweaksConfigManager {
      */
     private boolean loadConfig() {
 
-        // Compatibility: Move/Remove old files
+        // Compatibility: Tree version check
+        try {
+            if (!(new InvTweaksItemTreeLoader().isValidVersion(InvTweaksConst.CONFIG_TREE_FILE))) {
+                backupFile(new File(InvTweaksConst.CONFIG_TREE_FILE), InvTweaksConst.CONFIG_TREE_FILE);
+            }
+        } catch (Exception e) {
+            log.warning("Failed to check item tree version");
+        }
 
+        // Compatibility: File names check
         if (new File(InvTweaksConst.OLDER_CONFIG_RULES_FILE).exists()) {
             if (new File(InvTweaksConst.CONFIG_RULES_FILE).exists()) {
                 backupFile(new File(InvTweaksConst.CONFIG_RULES_FILE), InvTweaksConst.CONFIG_RULES_FILE);
@@ -162,18 +170,12 @@ public class InvTweaksConfigManager {
         }
     }
 
-    private void backupFile(File file, String baseName) {
-        String newFileName;
-        if (new File(baseName + ".bak").exists()) {
-            int i = 1;
-            while (new File(baseName + ".bak" + i).exists()) {
-                i++;
-            }
-            newFileName = baseName + ".bak" + i;
-        } else {
-            newFileName = baseName + ".bak";
+    private void backupFile(File file, String name) {
+        File newFile = new File(name + ".bak");
+        if (newFile.exists()) {
+            newFile.delete();
         }
-        file.renameTo(new File(newFileName));
+        file.renameTo(newFile);
     }
 
     private boolean extractFile(String resource, String destination) {

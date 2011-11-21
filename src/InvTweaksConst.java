@@ -7,6 +7,7 @@ public class InvTweaksConst {
 
     // Version-specific mod constants
     public static final String MOD_VERSION = "1.33 (1.0.0)";
+    public static final String TREE_VERSION = "1.0.0";
 
     // Mod timing constants
     public static final int RULESET_SWAP_DELAY = 1000;

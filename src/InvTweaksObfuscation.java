@@ -236,7 +236,7 @@ public class InvTweaksObfuscation {
         return slot.e;
     }
     protected int getYDisplayPosition(vv slot) {
-        return slot.d;
+        return slot.f;
     }
     protected boolean isItemValid(vv item, dk itemStack) {
         return item.a(itemStack);

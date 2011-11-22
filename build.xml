@@ -1,13 +1,13 @@
 <project name="InventoryTweaks" default="dist" basedir=".">
 
 	<description>
-        Mod packaging and deployment tasks
+		Deployment to Minecraft task
     </description>
 
 	<!-- Mod version -->
 	<property name="version" value="1.33-1.0.0" />
 
-	<!-- Properties -->
+	<!-- OS-specific properties -->
 	<property name="zipPath" location="target/InvTweaks-${version}.zip" />
 	<condition property="modsDir" value="${user.home}/AppData/Roaming/.minecraft/mods">
 		<os family="windows" />
@@ -19,25 +19,14 @@
 		<os family="unix" />
 	</condition>
 
-	<!-- Deployment to Minecraft task -->
 	<target name="dist">
 		<echo>Installing...</echo>
 		<echo>  - Removing possible older version</echo>
 		<delete>
-			<fileset dir="${modsDir}" includes="InvTweaks*.zip" />
+			<fileset dir="${modsDir}" includes="InvTweaks*" />
 		</delete>
 		<echo>  - Copying jar to mods folder</echo>
 		<copy file="${zipPath}" todir="${modsDir}" />
-		<echo>  - Done!</echo>
-	</target>
-
-	<!--- Building/packaging task -->
-	<target name="build">
-		<echo>Building with Maven...</echo>
-		<exec executable="mvn">
-			<arg value="clean" />
-			<arg value="compile" />
-		</exec>
 		<echo>  - Done!</echo>
 	</target>
 

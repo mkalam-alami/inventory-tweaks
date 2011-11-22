@@ -1,117 +1,151 @@
 ﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>net.jimeowan</groupId>
-  <artifactId>inventory-tweaks</artifactId>
-  <version>1.33-1.0.0</version>
-  <packaging>jar</packaging>
-  <name>Inventory Tweaks</name>
+    <groupId>net.jimeowan</groupId>
+    <artifactId>inventory-tweaks</artifactId>
+    <version>1.33-1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Inventory Tweaks</name>
 
-  <build>
-    <sourceDirectory>src</sourceDirectory>    
-    
-    <finalName>InvTweaks-${project.version}.zip</finalName>
-    <plugins>
-      <!-- Compiling settings -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-      <!-- Packaging/distribution settings -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.6</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <phase>install</phase>
-          </execution>
-        </executions>
-        <configuration>
-          <target>
-            <ant antfile="${basedir}/build.xml">
-              <target name="dist" />
-            </ant>
-          </target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <properties>
+        <archiveName>InvTweaks-${project.version}</archiveName>
+    </properties>
 
-  <profiles>
-    <!-- Define Minecraft location according to OS -->
-    <profile>
-      <id>minecraft-path-windows</id>
-      <activation>
-        <os>
-          <family>windows</family>
-        </os>
-      </activation>
-      <properties>
-        <minecraft.path>
-          ${user.home}/AppData/Roaming/.minecraft/bin/
-        </minecraft.path>
-      </properties>
-    </profile>
-    <profile>
-      <id>minecraft-path-mac</id>
-      <activation>
-        <os>
-          <family>mac</family> <!-- Untested -->
-        </os>
-      </activation>
-      <properties>
-        <minecraft.path>
-          ${user.home}:Library:Application\ Support:minecraft:mods
-        </minecraft.path>
-      </properties>
-    </profile>
-    <profile>
-      <id>minecraft-path-linux</id>
-      <activation>
-        <os>
-          <family>unix</family>
-        </os>
-      </activation>
-      <properties>
-        <minecraft.path>
-          ${user.home}/.minecraft/bin/
-        </minecraft.path>
-      </properties>
-    </profile>
-  </profiles>
+    <build>
+        <finalName>${archiveName}</finalName>
 
-  <dependencies>
-    <dependency>
-      <groupId>net.minecraft</groupId>
-      <artifactId>minecraft</artifactId>
-      <version>1.8</version>
-      <scope>system</scope>
-      <systemPath>${minecraft.path}minecraft.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>net.minecraft</groupId>
-      <artifactId>lwjgl</artifactId>
-      <version>1.8</version>
-      <scope>system</scope>
-      <systemPath>${minecraft.path}lwjgl.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>net.minecraft</groupId>
-      <artifactId>lwjgl_util</artifactId>
-      <version>1.8</version>
-      <scope>system</scope>
-      <systemPath>${minecraft.path}lwjgl_util.jar</systemPath>
-    </dependency>
-  </dependencies>
+        <!-- Custom project layout -->
+        <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource>
+                <targetPath>.</targetPath>
+                <filtering>false</filtering>
+                <directory>src</directory>
+                <includes>
+                    <include>doc/*</include>
+                    <include>*.dat</include>
+                </includes>
+                <excludes>
+                    <exclude>*.java</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- Compiling settings -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <!-- Package renaming -->
+                    <execution>
+                        <id>move</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <zip basedir="target/classes" destfile="target/${archiveName}.zip" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <!-- Deploy to Minecraft install -->
+                    <execution>
+                        <id>deploy</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <target>
+                                <ant antfile="${basedir}/build.xml">
+                                    <target name="dist" />
+                                </ant>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- Define Minecraft location according to OS -->
+        <profile>
+            <id>minecraft-path-windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <minecraft.path>
+                    ${user.home}/AppData/Roaming/.minecraft/bin/
+                </minecraft.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>minecraft-path-mac</id>
+            <activation>
+                <os>
+                    <family>mac</family> <!-- Untested -->
+                </os>
+            </activation>
+            <properties>
+                <minecraft.path>
+                    ${user.home}:Library:Application\ Support:minecraft:mods
+                </minecraft.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>minecraft-path-linux</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <minecraft.path>
+                    ${user.home}/.minecraft/bin/
+                </minecraft.path>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>minecraft</artifactId>
+            <version>1.8</version>
+            <scope>system</scope>
+            <systemPath>${minecraft.path}minecraft.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>lwjgl</artifactId>
+            <version>1.8</version>
+            <scope>system</scope>
+            <systemPath>${minecraft.path}lwjgl.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>lwjgl_util</artifactId>
+            <version>1.8</version>
+            <scope>system</scope>
+            <systemPath>${minecraft.path}lwjgl_util.jar</systemPath>
+        </dependency>
+    </dependencies>
 
 </project>

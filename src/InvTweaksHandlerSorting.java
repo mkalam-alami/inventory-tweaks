@@ -35,7 +35,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     private static int[] DEFAULT_LOCK_PRIORITIES = null;
     private static boolean[] DEFAULT_FROZEN_SLOTS = null;
-    private static final int MAX_CONTAINER_SIZE = 100;
+    private static final int MAX_CONTAINER_SIZE = 200;
     
     public static final int ALGORITHM_DEFAULT = 0;
     public static final int ALGORITHM_VERTICAL = 1;

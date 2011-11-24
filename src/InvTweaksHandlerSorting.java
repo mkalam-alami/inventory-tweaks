@@ -161,14 +161,16 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                              if (isItemArmor(fromItem)) {
                                  mt fromItemArmor = (mt) fromItem;
                                  List<sx> armorSlots = globalContainer.getSlots(InvTweaksContainerSection.ARMOR);
-                                 for (sx slot : armorSlots) {
-                                     if (isItemValid(slot, from)
-                                             && (!hasStack(slot) || getArmorLevel(fromItemArmor) > 
-                                             getArmorLevel(((mt) getItem(getStack(slot)))))) {
-                                         globalContainer.move(InvTweaksContainerSection.INVENTORY, i,
-                                                 InvTweaksContainerSection.ARMOR, 
-                                                 globalContainer.getSlotIndex(getSlotNumber(slot)));
-                                     }
+                                 if (armorSlots != null) {  // Sort click on inventory with a chest open: no armor
+                                   for (sx slot : armorSlots) {
+                                       if (isItemValid(slot, from)
+                                               && (!hasStack(slot) || getArmorLevel(fromItemArmor) > 
+                                               getArmorLevel(((mt) getItem(getStack(slot)))))) {
+                                           globalContainer.move(InvTweaksContainerSection.INVENTORY, i,
+                                                   InvTweaksContainerSection.ARMOR, 
+                                                   globalContainer.getSlotIndex(getSlotNumber(slot)));
+                                       }
+                                   }
                                  }
                              }
                         }

@@ -31,9 +31,9 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
         this.keyword = keyword;
         this.constraint = constraint;
-        this.type = getRuleType(constraint);
         this.containerSize = containerSize;
         this.containerRowSize = containerRowSize;
+        this.type = getRuleType(constraint,containerRowSize);
         this.preferredPositions = getRulePreferredPositions(constraint);
 
         // Compute priority
@@ -162,14 +162,14 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
             // Extract chars
             for (int i = 0; i < constraint.length(); i++) {
                 char c = constraint.charAt(i);
-                if (c <= '9') {
+                if ( c >= '1' && c - '1'<=containerRowSize) {
                     // 1 column = 0, 9 column = 8
                     column = c - '1';
-                } else if (c == 'r') {
-                    reverse = true;
-                } else {
+                } else if ( c >='a' && c - 'a' <=containerColumnSize ) {
                     // A row = 0, D row = 3, H row = 7
                     row = c - 'a';
+                } else if (c == 'r') {
+                    reverse = true;
                 }
             }
 
@@ -198,13 +198,13 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
         return result;
     }
 
-    public static InvTweaksConfigSortingRuleType getRuleType(String constraint) {
+    public static InvTweaksConfigSortingRuleType getRuleType(String constraint, int rowSize) {
 
         InvTweaksConfigSortingRuleType result = InvTweaksConfigSortingRuleType.TILE;
 
         if (constraint.length() == 1 || (constraint.length() == 2 && constraint.contains("r"))) {
             constraint = constraint.replace("r", "");
-            if (constraint.getBytes()[0] <= '9')
+            if (constraint.charAt(0)-'1' <= rowSize && constraint.charAt(0)>='1')
                 result = InvTweaksConfigSortingRuleType.COLUMN;
             else {
                 result = InvTweaksConfigSortingRuleType.ROW;

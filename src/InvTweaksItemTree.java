@@ -171,11 +171,19 @@ public class InvTweaksItemTree {
                     filteredItems.remove(item);
                 }
             }
+            if (filteredItems !=null && filteredItems.isEmpty()) {
+              //Generate a dummy if I've run out of items
+              InvTweaksItemTreeItem newItem=new InvTweaksItemTreeItem(String.format("UnknownItem-%d-%d",id,damage),id,damage,id*16+damage);
+              addItem(getRootCategory().getName(),newItem);
+              return getItems(id,damage);
+            }
             return (filteredItems != null && !filteredItems.isEmpty())
                     ? filteredItems : items;
         } else {
-            log.warning("Unknown item id: " + id);
-            return defaultItems;
+            // Generate a dummy item at the root for sorting 
+            InvTweaksItemTreeItem newItem=new InvTweaksItemTreeItem(String.format("UnknownItem-%d-%d",id,damage),id,damage,id*16+damage);
+            addItem(getRootCategory().getName(),newItem);
+            return getItems(id,damage);
         }
     }
 

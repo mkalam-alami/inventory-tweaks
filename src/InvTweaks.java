@@ -512,13 +512,14 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             // Look for the mods buttons
             boolean customButtonsAdded = false;
-            List<InvTweaksObfuscationGuiButton> controlList = 
-                (List<InvTweaksObfuscationGuiButton>) getControlList(guiScreen);
+            List<Object> controlList = getControlList(guiScreen);
             for (Object o : controlList) {
-                ct button = (ct) o;
-                if (getId(button) == InvTweaksConst.JIMEOWAN_ID) {
-                    customButtonsAdded = true;
-                    break;
+                if (isGuiButton(o)) {
+                    ct button = (ct) o;
+                    if (getId(button) == InvTweaksConst.JIMEOWAN_ID) {
+                        customButtonsAdded = true;
+                        break;
+                    }
                 }
             }
 
@@ -526,7 +527,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                 // Inventory button
                 if (!isValidChest) {
-                    getControlList(guiScreen).add(new InvTweaksGuiInventorySettingsButton(
+                    controlList.add(new InvTweaksGuiInventorySettingsButton(
                             cfgManager, InvTweaksConst.JIMEOWAN_ID,
                             getWidth(guiScreen) / 2 + 73, getHeight(guiScreen) / 2 - 78,
                             w, h, "...", "Inventory settings"));
@@ -544,7 +545,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                         y = (getHeight(guiContainer) - getYSize(guiContainer)) / 2 + 5;
 
                     // Settings button
-                    getControlList(guiScreen).add(new InvTweaksGuiInventorySettingsButton(
+                    controlList.add(new InvTweaksGuiInventorySettingsButton(
                             cfgManager, id++, 
                             x - 1, y, w, h, "...", "Inventory settings"));
 
@@ -558,21 +559,21 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 x - 13, y, w, h, "h", "Sort in rows",
                                 InvTweaksHandlerSorting.ALGORITHM_HORIZONTAL,
                                 rowSize);
-                        getControlList(guiContainer).add(button);
+                        controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
                                 x - 25, y, w, h, "v", "Sort in columns",
                                 InvTweaksHandlerSorting.ALGORITHM_VERTICAL,
                                 rowSize);
-                        getControlList(guiContainer).add(button);
+                        controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
                                 x - 37, y, w, h, "s", "Default sorting",
                                 InvTweaksHandlerSorting.ALGORITHM_DEFAULT,
                                 rowSize);
-                        getControlList(guiContainer).add(button);
+                        controlList.add(button);
 
                     }
                 }

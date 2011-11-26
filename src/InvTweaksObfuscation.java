@@ -119,9 +119,8 @@ public class InvTweaksObfuscation {
     protected int getYSize(mg guiContainer) {
         return guiContainer.c;
     }
-    
     @SuppressWarnings("unchecked")
-    protected List<InvTweaksObfuscationGuiButton> getControlList(xe guiScreen) {
+    protected List<Object> getControlList(xe guiScreen) {
         return guiScreen.o;
     }
     protected void setControlList(xe guiScreen, List<?> controlList) {
@@ -318,6 +317,9 @@ public class InvTweaksObfuscation {
     }
     protected boolean isGuiEditSign(Object o) { // GuiEditSign
         return o instanceof fl;
+    }
+    protected boolean isGuiButton(Object o) { // GuiButton
+        return o instanceof ct;
     }
     
 	protected boolean isContainerPlayer(Object o) { // ContainerPlayer

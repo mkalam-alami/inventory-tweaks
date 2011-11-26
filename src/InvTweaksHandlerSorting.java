@@ -14,15 +14,6 @@ import net.minecraft.client.Minecraft;
  * Core of the sorting behaviour. Allows to move items in a container
  * (inventory or chest) with respect to the mod's configuration.
  * 
- * Here are the different layers of functions, from high to low levels:
- * moveStack
- *   |- swapOrMerge
- *       |- remove
- *           |- putStackInSlot
- *       |- put
- *           |- putStackInSlot
- *       |- click (SMP only)
- * 
  * @author Jimeo Wan
  *
  */

@@ -35,7 +35,7 @@ public class InvTweaksModCompatibility {
     public int getSpecialChestRowSize(mg guiContainer, int defaultValue) {
         if (is(guiContainer, "GuiAlchest")) { // Equivalent Exchange
             return 13;
-        } else if (is(guiContainer, "GuiDiamondChest")) { //Iron chests
+        } else if (is(guiContainer, "GuiDiamondChest")) { // Iron chests (IC2)
           return 12;
         } else if (is(guiContainer, "GuiGoldChest")) {
           return 9;
@@ -51,16 +51,6 @@ public class InvTweaksModCompatibility {
      */
     public boolean isSpecialInventory(mg guiContainer) {
         return is(guiContainer, "GuiInventoryMoreSlots"); // Aether mod
-    }
-
-    /**
-     * Returns true if the guiScreen is a GuiChest or a GuiDispenser
-     * but should not be handled for sorting/shortcuts.
-     * @param guiContainer
-     * @return
-     */
-    public boolean isForbiddenChest(mg guiContainer) {
-        return is(guiContainer, "MLGuiChestBuilding"); // Millenaire mod
     }
     
     private static final boolean is(mg guiContainer, String className) {

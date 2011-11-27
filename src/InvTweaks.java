@@ -626,8 +626,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         if (isGuiContainer(guiScreen)) {
             mg guiContainer = (mg) guiScreen;
             return (isGuiChest(guiScreen) || isGuiDispenser(guiScreen) ||
-              (isGuiContainer(guiScreen) && modCompatibility.isSpecialChest(guiContainer)))
-                    && !modCompatibility.isForbiddenChest(guiContainer);
+              (isGuiContainer(guiScreen) && modCompatibility.isSpecialChest(guiContainer)));
         }
         else {
             return false;

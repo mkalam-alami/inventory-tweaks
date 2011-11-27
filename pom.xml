@@ -4,7 +4,7 @@
 
     <groupId>net.jimeowan</groupId>
     <artifactId>inventory-tweaks</artifactId>
-    <version>1.33-1.0.0</version>
+    <version>1.34-1.0.0</version>
     <packaging>jar</packaging>
     <name>Inventory Tweaks</name>
 

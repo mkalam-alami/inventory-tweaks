@@ -11,10 +11,8 @@ import net.minecraft.client.Minecraft;
  */
 public class InvTweaksObfuscation {
 
-    //private static final Logger log = Logger.getLogger("InvTweaks");
-
     protected Minecraft mc;
-	
+    
 	public InvTweaksObfuscation(Minecraft mc) {
 		this.mc = mc;
 	}
@@ -301,41 +299,41 @@ public class InvTweaksObfuscation {
 	// Classes
 	
 	protected boolean isGuiContainer(Object o) { // GuiContainer
-        return o instanceof mg;
+	    return isGuiInventory(o) || isGuiChest(o) || isGuiDispenser(o);
 	}
     protected boolean isGuiContainerCreative(Object o) { // GuiContainerCreative
-        return o instanceof aec;
+        return o.getClass().equals(aec.class);
     }
     protected boolean isGuiChest(Object o) { // GuiChest
-        return o instanceof gj;
+        return o.getClass().equals(gj.class);
     }
     protected boolean isGuiDispenser(Object o) { // GuiDispenser
-        return o instanceof wt;
+        return o.getClass().equals(wt.class);
     }
     protected boolean isGuiInventory(Object o) { // GuiInventory
-        return o instanceof hw;
+        return o.getClass().equals(hw.class);
     }
     protected boolean isGuiEditSign(Object o) { // GuiEditSign
-        return o instanceof fl;
+        return o.getClass().equals(fl.class);
     }
     protected boolean isGuiButton(Object o) { // GuiButton
         return o instanceof ct;
     }
     
 	protected boolean isContainerPlayer(Object o) { // ContainerPlayer
-	    return o instanceof gd;
+	    return o.getClass().equals(gd.class);
 	}
     protected boolean isContainerChest(Object o) { // ContainerChest
-        return o instanceof ak;
+        return o.getClass().equals(ak.class);
     }
     protected boolean isContainerFurnace(Object o) { // ContainerFurnace
-        return o instanceof eg;
+        return o.getClass().equals(eg.class);
     }
     protected boolean isContainerDispenser(Object o) { // ContainerDispenser
-        return o instanceof qu;
+        return o.getClass().equals(qu.class);
     }
     protected boolean isContainerWorkbench(Object o) { // ContainerWorkbench
-        return o instanceof ace;
+        return o.getClass().equals(ace.class);
     }
 
     protected boolean isItemArmor(Object o) { // ItemArmor

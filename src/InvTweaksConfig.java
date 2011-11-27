@@ -49,7 +49,6 @@ public class InvTweaksConfig {
 
     public static final String VALUE_TRUE = "true";
     public static final String VALUE_FALSE = "false";
-    public static final Object VALUE_DEFAULT = "DEFAULT"; // For shortcuts
     public static final String VALUE_CI_COMPATIBILITY = "convenientInventoryCompatibility";
     
     public static final String LOCKED = "LOCKED";
@@ -431,9 +430,9 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_SORTING_SOUND, VALUE_TRUE);
         properties.put(PROP_ENABLE_SHORTCUTS, VALUE_TRUE);
         
-        properties.put(PROP_SHORTCUT_ALL_ITEMS, "LSHIFT, RSHIFT");
+        properties.put(PROP_SHORTCUT_ALL_ITEMS, "LSHIFT, RSHIFT"); // TODO
         properties.put(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");
-        properties.put(PROP_SHORTCUT_ONE_STACK, VALUE_DEFAULT);
+        properties.put(PROP_SHORTCUT_ONE_STACK, "LSHIFT, RSHIFT");
         properties.put(PROP_SHORTCUT_UP, "UP");
         properties.put(PROP_SHORTCUT_DOWN, "DOWN");
         properties.put(PROP_SHORTCUT_DROP, "LALT, RALT");

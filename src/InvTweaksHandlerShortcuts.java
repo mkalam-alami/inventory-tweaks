@@ -72,41 +72,24 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 InvTweaksConfig.PROP_SHORTCUT_PREFIX);
         for (String key : keys.keySet()) {
             
-            String value = keys.get(key);
-            
-            if (value.equals(InvTweaksConfig.VALUE_DEFAULT)) {
-                // Customize default behaviour
-                ShortcutType newDefault = propNameToShortcutType(key);
-                if (newDefault == ShortcutType.MOVE_ALL_ITEMS
-                        || newDefault == ShortcutType.MOVE_ONE_ITEM
-                        || newDefault == ShortcutType.MOVE_ONE_STACK) {
-                    defaultAction = newDefault;
-                }
-                else if (newDefault == ShortcutType.MOVE_DOWN
-                        || newDefault == ShortcutType.MOVE_UP) {
-                    defaultDestination = newDefault;
-                }
+            // Register shortcut mappings
+            String[] keyNames = keys.get(key).split("[ ]*,[ ]*");
+            List<Integer> keyBindings = new LinkedList<Integer>();
+            for (String keyName : keyNames) {
+                // - Accept both KEY_### and ###, in case someone
+                //   takes the LWJGL Javadoc at face value
+                // - Accept LALT & RALT instead of LMENU & RMENU
+                keyBindings.add(Keyboard.getKeyIndex(
+                        keyName.replace("KEY_", "").replace("ALT", "MENU")));
             }
-            else {
-                // Register shortcut mappings
-                String[] keyNames = keys.get(key).split("[ ]*,[ ]*");
-                List<Integer> keyBindings = new LinkedList<Integer>();
-                for (String keyName : keyNames) {
-                    // - Accept both KEY_### and ###, in case someone
-                    //   takes the LWJGL Javadoc at face value
-                    // - Accept LALT & RALT instead of LMENU & RMENU
-                    keyBindings.add(Keyboard.getKeyIndex(
-                            keyName.replace("KEY_", "").replace("ALT", "MENU")));
-                }
-                ShortcutType shortcutType = propNameToShortcutType(key);
-                if (shortcutType != null) {
-                    shortcuts.put(shortcutType, keyBindings);
-                }
-                
-                // Register key status listener
-                for (Integer keyCode : keyBindings) {
-                    shortcutKeysStatus.put(keyCode, false);
-                }
+            ShortcutType shortcutType = propNameToShortcutType(key);
+            if (shortcutType != null) {
+                shortcuts.put(shortcutType, keyBindings);
+            }
+            
+            // Register key status listener
+            for (Integer keyCode : keyBindings) {
+                shortcutKeysStatus.put(keyCode, false);
             }
             
         }

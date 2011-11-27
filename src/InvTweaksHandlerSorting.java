@@ -26,7 +26,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     private static int[] DEFAULT_LOCK_PRIORITIES = null;
     private static boolean[] DEFAULT_FROZEN_SLOTS = null;
-    private static final int MAX_CONTAINER_SIZE = 100;
+    private static final int MAX_CONTAINER_SIZE = 200;
     
     public static final int ALGORITHM_DEFAULT = 0;
     public static final int ALGORITHM_VERTICAL = 1;
@@ -151,15 +151,15 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                         if (isDamageable(fromItem)) {
                              if (isItemArmor(fromItem)) {
                                  agi fromItemArmor = (agi) fromItem;
-                                 List<vv> armorSlots = globalContainer.getSlots(InvTweaksContainerSection.ARMOR);
-                                 for (vv slot : armorSlots) {
-                                     if (isItemValid(slot, from)
-                                             && (!hasStack(slot) || getArmorLevel(fromItemArmor) > 
-                                             getArmorLevel(((agi) getItem(getStack(slot)))))) {
-                                         globalContainer.move(InvTweaksContainerSection.INVENTORY, i,
-                                                 InvTweaksContainerSection.ARMOR, 
-                                                 globalContainer.getSlotIndex(getSlotNumber(slot)));
-                                     }
+                                 if (globalContainer.hasSection(InvTweaksContainerSection.ARMOR)) {
+                                     List<vv> armorSlots = globalContainer.getSlots(InvTweaksContainerSection.ARMOR);
+                                     for (vv slot : armorSlots) {
+                                        if (isItemValid(slot, from)
+                                                && (!hasStack(slot) || getArmorLevel(fromItemArmor) > getArmorLevel(((agi) getItem(getStack(slot)))))) {
+                                            globalContainer.move(InvTweaksContainerSection.INVENTORY, i, InvTweaksContainerSection.ARMOR,
+                                                    globalContainer.getSlotIndex(getSlotNumber(slot)));
+                                        }
+                                    }
                                  }
                              }
                         }

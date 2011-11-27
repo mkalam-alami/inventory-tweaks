@@ -55,6 +55,7 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
                         section, algorithm, rowSize).sort();
             } catch (Exception e) {
                 InvTweaks.logInGameErrorStatic("Failed to sort container", e);
+                e.printStackTrace();
             }
             return true;
         } else {

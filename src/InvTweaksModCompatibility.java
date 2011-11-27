@@ -20,7 +20,9 @@ public class InvTweaksModCompatibility {
      * @return
      */
     public boolean isSpecialChest(mg guiContainer) {
-        return is(guiContainer, "GuiAlchest"); // Equivalent Exchange
+        return is(guiContainer, "GuiAlchest") // Equivalent Exchange
+          || is(guiContainer, "GuiDiamondChest")
+          || is(guiContainer, "GuiGoldChest"); // Iron chests (IC2)
     }
 
     /**
@@ -33,6 +35,10 @@ public class InvTweaksModCompatibility {
     public int getSpecialChestRowSize(mg guiContainer, int defaultValue) {
         if (is(guiContainer, "GuiAlchest")) { // Equivalent Exchange
             return 13;
+        } else if (is(guiContainer, "GuiDiamondChest")) { //Iron chests
+          return 12;
+        } else if (is(guiContainer, "GuiGoldChest")) {
+          return 9;
         }
         return defaultValue;
     }

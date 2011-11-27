@@ -178,9 +178,11 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             if (isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != -1) {
                 shortcutType = ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT;
                 shortcutValid = true;
-            }
-            if (isActive(ShortcutType.MOVE_ALL_ITEMS) != -1) {
+            } else if (isActive(ShortcutType.MOVE_ALL_ITEMS) != -1) {
                 shortcutType = ShortcutType.MOVE_ALL_ITEMS;
+                shortcutValid = true;
+            } else if (isActive(ShortcutType.MOVE_ONE_STACK) != -1) {
+                shortcutType = ShortcutType.MOVE_ONE_STACK;
                 shortcutValid = true;
             }
             else if (isActive(ShortcutType.MOVE_ONE_ITEM) != -1) {
@@ -226,26 +228,21 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 }
                 
                 if (destinationModifier == 0) {
-                    // Default behavior
-                    if (isGuiChest(guiContainer)) {
                         switch (srcSection) {
                         case CHEST:
                             destSection = InvTweaksContainerSection.INVENTORY; break;
-                        default:
-                            destSection = InvTweaksContainerSection.CHEST; break;
-                        }
-                    }
-                    else {
-                        switch (srcSection) {
                         case INVENTORY_HOTBAR:
                             destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;
                         case CRAFTING_IN:
                         case FURNACE_IN:
                             destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;
                         default:
-                            destSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
+                            if (availableSections.contains(InvTweaksContainerSection.CHEST)) {
+                              destSection = InvTweaksContainerSection.CHEST;
+                            } else {
+                              destSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
+                            }
                         }
-                    }
                 }
                 
                 else {

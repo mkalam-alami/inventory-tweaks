@@ -385,6 +385,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     InvTweaksConst.INVENTORY_ROW_SIZE).sort();
         } catch (Exception e) {
             logInGame("Failed to sort inventory: " + e.getMessage());
+            e.printStackTrace();
         }
 
         playClick();
@@ -484,6 +485,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                                         getContainerRowSize(guiContainer)).sort();
                             } catch (Exception e) {
                                 logInGameError("Failed to sort container", e);
+                                e.printStackTrace();
                             }
                             chestAlgorithm = (chestAlgorithm + 1) % 3;
                             chestAlgorithmClickTimestamp = timestamp;

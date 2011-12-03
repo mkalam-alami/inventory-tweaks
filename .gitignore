@@ -3,6 +3,9 @@ target/
 lib/
 client/
 isom/
+InvTweaks-*/
+files/
+launcher/
 *.zip
 *.jar
 minecraft/net/minecraft/src/*.java
@@ -12,5 +15,3 @@ minecraft/net/minecraft/src/*.java
 .classpath
 .project
 .settings
-InvTweaks-*/
-files/

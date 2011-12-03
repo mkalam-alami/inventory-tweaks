@@ -587,8 +587,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void handleShortcuts(xe guiScreen) {
         
         // Check open GUI
-        if (!isGuiContainer(guiScreen)
-                || guiScreen.getClass().getSimpleName().equals("MLGuiChestBuilding")) { // Millenaire mod
+        if (!isGuiContainer(guiScreen)) {
             return;
         }
         

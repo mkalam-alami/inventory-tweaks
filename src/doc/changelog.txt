@@ -8,7 +8,8 @@
  * Mods support now more restrictive (less supported mods, but less crashes)
     * Support for the IronChests mod
     * Improved support for Equivalent Exchange
- * Made possible to create rules for unknown mod items
+ * Made it possible to create rules for unknown mod items
+ * Fixed sorting being impossible while in workbenches
 
 [11.21.2011] 1.33 (B1.0.0)
  * Updated source code and item tree to Minecraft 1.0.0

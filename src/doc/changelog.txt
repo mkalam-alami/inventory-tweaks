@@ -12,7 +12,7 @@
     * Support for the IronChests mod
 	* Support for the Multi Page Chest mod
     * Improved support for Equivalent Exchange
-    * Made it possible to create rules for unknown mod items [TODO TEST]
+    * Made it possible to create rules for unknown mod items
     * No more crashes with unsupported mods
  * Sorting can now be assigned to any mouse button
  * Fixed sorting being impossible while in workbenches

@@ -39,12 +39,14 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     /**
      * Allows to monitor the keys related to shortcuts
      */
-    private Map<Integer, Boolean> shortcutKeysStatus;
+    private Map<Integer, Boolean> shortcutKeysStatus
+    	= new HashMap<Integer, Boolean>();
     
     /**
      * Stores shortcuts mappings
      */
-    private Map<ShortcutType, List<Integer>> shortcuts;
+    private Map<ShortcutType, List<InvTweaksShortcutMapping>> shortcuts
+    	= new HashMap<ShortcutType, List<InvTweaksShortcutMapping>>();
     
     private enum ShortcutType {
         MOVE_TO_SPECIFIC_HOTBAR_SLOT,
@@ -65,23 +67,20 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     }
     
     public void reset() {
-        
-        shortcutKeysStatus = new HashMap<Integer, Boolean>();
-        shortcuts = new HashMap<ShortcutType, List<Integer>>();
+        shortcutKeysStatus.clear();
+        shortcuts.clear();
         
         Map<String, String> keys = config.getProperties(
                 InvTweaksConfig.PROP_SHORTCUT_PREFIX);
         for (String key : keys.keySet()) {
             
             // Register shortcut mappings
-            String[] keyNames = keys.get(key).split("[ ]*,[ ]*");
-            List<Integer> keyBindings = new LinkedList<Integer>();
-            for (String keyName : keyNames) {
-                // - Accept both KEY_### and ###, in case someone
-                //   takes the LWJGL Javadoc at face value
-                // - Accept LALT & RALT instead of LMENU & RMENU
-                keyBindings.add(Keyboard.getKeyIndex(
-                        keyName.replace("KEY_", "").replace("ALT", "MENU")));
+            String[] keyMappings = keys.get(key).split("[ ]*,[ ]*");
+            List<InvTweaksShortcutMapping> keyBindings = 
+            	new LinkedList<InvTweaksShortcutMapping>();
+            for (String keyMapping : keyMappings) {
+            	String[] keysToHold = keyMapping.split("\\+");
+                keyBindings.add(new InvTweaksShortcutMapping(keysToHold));
             }
             ShortcutType shortcutType = propNameToShortcutType(key);
             if (shortcutType != null) {
@@ -89,8 +88,10 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             }
             
             // Register key status listener
-            for (Integer keyCode : keyBindings) {
-                shortcutKeysStatus.put(keyCode, false);
+            for (InvTweaksShortcutMapping mapping : keyBindings) {
+            	for (Integer keyCode : mapping.getKeyCodes()) {
+            		shortcutKeysStatus.put(keyCode, false);
+            	}
             }
             
         }
@@ -99,13 +100,15 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         int upKeyCode = getKeyBindingForwardKeyCode(),
             downKeyCode = getKeyBindingBackKeyCode();
         
-        shortcuts.get(ShortcutType.MOVE_UP).add(upKeyCode);
-        shortcuts.get(ShortcutType.MOVE_DOWN).add(downKeyCode);
+        shortcuts.get(ShortcutType.MOVE_UP).add(
+        		new InvTweaksShortcutMapping(upKeyCode));
+        shortcuts.get(ShortcutType.MOVE_DOWN).add(
+        		new InvTweaksShortcutMapping(downKeyCode));
         shortcutKeysStatus.put(upKeyCode, false);
         shortcutKeysStatus.put(downKeyCode, false);
         
         // Add hotbar shortcuts (1-9) mappings & listeners
-        List<Integer> keyBindings = new LinkedList<Integer>();
+        List<InvTweaksShortcutMapping> hotbarBindings = new LinkedList<InvTweaksShortcutMapping>();
         int[] hotbarKeys = {Keyboard.KEY_1, Keyboard.KEY_2, Keyboard.KEY_3, 
                 Keyboard.KEY_4, Keyboard.KEY_5, Keyboard.KEY_6,
                 Keyboard.KEY_7, Keyboard.KEY_8, Keyboard.KEY_9,
@@ -113,10 +116,10 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 Keyboard.KEY_NUMPAD4, Keyboard.KEY_NUMPAD5, Keyboard.KEY_NUMPAD6, 
                 Keyboard.KEY_NUMPAD7, Keyboard.KEY_NUMPAD8, Keyboard.KEY_NUMPAD9};
         for (int i : hotbarKeys) {
-            keyBindings.add(i);
+        	hotbarBindings.add(new InvTweaksShortcutMapping(i));
             shortcutKeysStatus.put(i, false);
         }
-        shortcuts.put(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT, keyBindings);
+        shortcuts.put(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT, hotbarBindings);
         
     }
     
@@ -159,17 +162,17 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             
             // Choose shortcut type
             ShortcutType shortcutType = defaultAction;
-            if (isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != -1) {
+            if (isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != null) {
                 shortcutType = ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT;
                 shortcutValid = true;
-            } else if (isActive(ShortcutType.MOVE_ALL_ITEMS) != -1) {
+            } else if (isActive(ShortcutType.MOVE_ALL_ITEMS) != null) {
                 shortcutType = ShortcutType.MOVE_ALL_ITEMS;
                 shortcutValid = true;
-            } else if (isActive(ShortcutType.MOVE_ONE_STACK) != -1) {
+            } else if (isActive(ShortcutType.MOVE_ONE_STACK) != null) {
                 shortcutType = ShortcutType.MOVE_ONE_STACK;
                 shortcutValid = true;
             }
-            else if (isActive(ShortcutType.MOVE_ONE_ITEM) != -1) {
+            else if (isActive(ShortcutType.MOVE_ONE_ITEM) != null) {
                 shortcutType = ShortcutType.MOVE_ONE_ITEM;
                 shortcutValid = true;
             }
@@ -202,11 +205,11 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 
                 // Check for destination modifiers
                 int destinationModifier = 0; 
-                if (isActive(ShortcutType.MOVE_UP) != -1
+                if (isActive(ShortcutType.MOVE_UP) != null
                         || defaultDestination == ShortcutType.MOVE_UP) {
                     destinationModifier = -1;
                 }
-                else if (isActive(ShortcutType.MOVE_DOWN) != -1
+                else if (isActive(ShortcutType.MOVE_DOWN) != null
                         || defaultDestination == ShortcutType.MOVE_DOWN) {
                     destinationModifier = 1;
                 }
@@ -243,18 +246,20 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     }
                 }
                 
-                if (shortcutValid || isActive(ShortcutType.DROP) != -1) {
+                if (shortcutValid || isActive(ShortcutType.DROP) != null) {
                     
                     initAction(getSlotNumber(slot), shortcutType, destSection);
                     
                     if (shortcutType == ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
                         
                         // Move to specific hotbar slot
-                        String keyName = Keyboard.getKeyName(
-                                isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT));
-                        int destIndex = -1+Integer.parseInt(keyName.replace("NUMPAD", ""));
-                        container.move(fromSection, fromIndex,
-                                InvTweaksContainerSection.INVENTORY_HOTBAR, destIndex);
+                    	InvTweaksShortcutMapping hotbarShortcut = isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
+                    	if (hotbarShortcut != null && !hotbarShortcut.getKeyCodes().isEmpty()) {
+                    		 String keyName = Keyboard.getKeyName(hotbarShortcut.getKeyCodes().get(0));
+                             int destIndex = -1+Integer.parseInt(keyName.replace("NUMPAD", ""));
+                             container.move(fromSection, fromIndex,
+                                     InvTweaksContainerSection.INVENTORY_HOTBAR, destIndex);
+                    	}
                         
                     } else {
                         
@@ -263,7 +268,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                             craft(isActive(ShortcutType.MOVE_ALL_ITEMS) == -1,
                                     isActive(ShortcutType.DROP) != -1);
                         } else {*/
-                            move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != -1);
+                            move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != null);
                         //}
                     }
                     
@@ -469,17 +474,15 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
     /**
      * @param shortcutType
-     * @return The key that made the shortcut active, or -1 if inactive
+     * @return The shortcut that made the shortcut active, or null if inactive
      */
-    private int isActive(ShortcutType shortcutType) {
-        for (Integer keyCode : shortcuts.get(shortcutType)) {
-            if (shortcutKeysStatus.get(keyCode) && 
-                    // AltGr also activates LCtrl, make sure the real LCtrl has been pressed
-                    (keyCode != 29 || !Keyboard.isKeyDown(184))) {
-                return keyCode;
-            }
+    private InvTweaksShortcutMapping isActive(ShortcutType shortcutType) {
+        for (InvTweaksShortcutMapping mapping : shortcuts.get(shortcutType)) {
+        	if (mapping.isTriggered(shortcutKeysStatus)) {
+        		return mapping;
+        	}
         }
-        return -1;
+        return null;
     }
 
     private void initAction(int fromSlot, ShortcutType shortcutType, InvTweaksContainerSection destSection) throws Exception {

@@ -33,9 +33,8 @@ D LOCKED
 
 # MULTIPLE CONFIGURATIONS
 # Any word followed by a colon ':' defines a new configuration (ex: "Fighting:").
-# You can then swap between the configurations by:
-# - Pressing the sorting key + 1-9 (1 will load the first configuration, etc.)
-# - Holding the sorting key for 1 second
+# You can then swap between the configurations by pressing the sorting key + 1-9
+# (1 will load the first configuration, etc.)
 
 # ADVANCED RULES
 # r modifier         = Reverse the sorting order for a row/column (ex: "Ar sword" sorts from right to left)

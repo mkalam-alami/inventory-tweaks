@@ -41,10 +41,10 @@ public class InvTweaksGuiShortcutsHelp extends xe /* GuiScreen */ {
         
         int y = obf.getHeight(this) / 6;
 
-        /*drawShortcutLine("Move one stack",
+        drawShortcutLine("Move one stack",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_STACK) + " + Click",
                 0x00FFFF00, y);
-        y += 12;*/
+        y += 12;
         drawShortcutLine("Move one item only",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + Click",
                 0x00FFFF00, y);
@@ -65,7 +65,7 @@ public class InvTweaksGuiShortcutsHelp extends xe /* GuiScreen */ {
         y += 12;
         drawShortcutLine("Send to hotbar", "0-9 + Click", 0x0000FF33, y);
         y += 12;
-        drawShortcutLine("Send to empty slot", "(Other shortcut) + Right click", 0x0000FF33, y);
+        drawShortcutLine("Send to empty slot", "(Any shortcut) + Right instead of left click", 0x0000FF33, y);
         y += 25;
         
         drawShortcutLine("Drop",
@@ -82,9 +82,9 @@ public class InvTweaksGuiShortcutsHelp extends xe /* GuiScreen */ {
     }
     
     private void drawShortcutLine(String label, String value, int color, int y) {
-        b(obf.getFontRenderer(), label, 50, y, -1); // drawString
+        b(obf.getFontRenderer(), label, 30, y, -1); // drawString
         b(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value, 
-                obf.getWidth(this) / 2 + 40, y, color); // drawString
+                obf.getWidth(this) / 2 - 20, y, color); // drawString
     }
 
     protected void a(ct guibutton) { /* actionPerformed */

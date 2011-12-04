@@ -14,15 +14,16 @@ public class InvTweaksModCompatibility {
     }
     
     /**
-     * Returns true if the container is a chest/dispenser,
+     * Returns true if the screen is a chest/dispenser,
      * despite not being a GuiChest or a GuiDispenser.
      * @param guiContainer
      * @return
      */
-    public boolean isSpecialChest(mg guiContainer) {
-        return is(guiContainer, "GuiAlchest") // Equivalent Exchange
-          || is(guiContainer, "GuiDiamondChest")
-          || is(guiContainer, "GuiGoldChest"); // Iron chests (IC2)
+    public boolean isSpecialChest(xe guiScreen) {
+        return is(guiScreen, "GuiAlchest") // Equivalent Exchange
+          || is(guiScreen, "GuiDiamondChest") // Iron chests (IC2)
+          || is(guiScreen, "GuiGoldChest")
+          || is(guiScreen, "GuiMultiPageChest"); // Multi Page chest
     }
 
     /**
@@ -39,22 +40,23 @@ public class InvTweaksModCompatibility {
           return 12;
         } else if (is(guiContainer, "GuiGoldChest")) {
           return 9;
-        }
+	    } else if (is(guiContainer, "GuiMultiPageChest")) { // Multi Page chest
+	      return 13;
+	    }
         return defaultValue;
     }
     
     /**
-     * Returns true if the container is the inventory screen,
-     * despite not being a GuiInventory.
-     * @param guiContainer
+     * Returns true if the screen is the inventory screen, despite not being a GuiInventory.
+     * @param guiScreen
      * @return
      */
-    public boolean isSpecialInventory(mg guiContainer) {
-        return is(guiContainer, "GuiInventoryMoreSlots"); // Aether mod
+    public boolean isSpecialInventory(xe guiScreen) {
+        return is(guiScreen, "GuiInventoryMoreSlots"); // Aether mod
     }
     
-    private static final boolean is(mg guiContainer, String className) {
-        return guiContainer.getClass().getSimpleName().contains(className);
+    private static final boolean is(xe guiScreen, String className) {
+        return guiScreen.getClass().getSimpleName().contains(className);
     }
 
 

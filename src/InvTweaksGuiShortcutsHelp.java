@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Keyboard;
 
+
 public class InvTweaksGuiShortcutsHelp extends xe /* GuiScreen */ {
 
     private final static String SCREEN_TITLE = "Shortcuts help";

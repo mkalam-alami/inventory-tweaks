@@ -12,9 +12,12 @@ import net.minecraft.client.Minecraft;
 public class InvTweaksObfuscation {
 
     protected Minecraft mc;
+
+    protected InvTweaksModCompatibility mods;
     
 	public InvTweaksObfuscation(Minecraft mc) {
 		this.mc = mc;
+		this.mods = InvTweaksModCompatibility.getInstance();
 	}
 	
 	// Minecraft members
@@ -297,11 +300,17 @@ public class InvTweaksObfuscation {
     }
     
 	// Classes
-	
-	protected boolean isGuiContainer(Object o) { // GuiContainer
-	    return o != null && (isGuiInventory(o) || isGuiChest(o)
-	    		|| isGuiDispenser(o) || isGuiWorkbench(o));
-	}
+
+    protected boolean isValidChest(xe guiScreen) {
+        return guiScreen != null && (isGuiChest(guiScreen)
+        		|| isGuiDispenser(guiScreen)
+        		|| mods.isSpecialChest(guiScreen));
+    }
+	protected boolean isValidInventory(xe guiScreen) {
+        return guiScreen != null && (isGuiInventory(guiScreen)
+        		|| isGuiWorkbench(guiScreen)
+        		|| mods.isSpecialInventory(guiScreen));
+    }
     protected boolean isGuiContainerCreative(Object o) { // GuiContainerCreative
         return o != null && o.getClass().equals(aec.class);
     }

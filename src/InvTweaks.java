@@ -11,6 +11,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+
 /**
  * Main class for Inventory Tweaks, which maintains various hooks
  * and dispatches the events to the correct handlers.
@@ -102,8 +103,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             
             // Check current GUI
             xe guiScreen = getCurrentScreen();
-            if (guiScreen == null || isGuiContainer(guiScreen)
-                    && !isGuiContainerCreative(guiScreen)) {
+            if (guiScreen == null || (isValidChest(guiScreen) || isValidInventory(guiScreen))) {
                 // Sorting!
                 handleSorting(guiScreen);
             }
@@ -587,7 +587,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void handleShortcuts(xe guiScreen) {
         
         // Check open GUI
-        if (!isGuiContainer(guiScreen)) {
+        if (!(isValidChest(guiScreen) || isValidInventory(guiScreen))) {
             return;
         }
         
@@ -630,23 +630,6 @@ public class InvTweaks extends InvTweaksObfuscation {
     		return Mouse.isButtonDown(100 + keyCode);
     	}
 	}
-
-	private boolean isValidChest(xe guiScreen) {
-        if (isGuiContainer(guiScreen)) {
-            mg guiContainer = (mg) guiScreen;
-            return (isGuiChest(guiScreen) || isGuiDispenser(guiScreen) ||
-              (isGuiContainer(guiScreen) && modCompatibility.isSpecialChest(guiContainer)));
-        }
-        else {
-            return false;
-        }
-    }
-    
-    private boolean isValidInventory(xe guiScreen) {
-        return isGuiInventory(guiScreen) || 
-            (isGuiContainer(guiScreen) 
-                    && modCompatibility.isSpecialInventory((mg) guiScreen));
-    }
 
     private boolean isTimeForPolling() {
         if (tickNumber - lastPollingTickNumber >= InvTweaksConst.POLLING_DELAY) {

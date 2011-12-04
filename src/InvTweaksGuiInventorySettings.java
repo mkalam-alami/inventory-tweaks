@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 
 import org.lwjgl.util.Point;
 
+
 /**
  * The inventory and chest settings menu.
  * 

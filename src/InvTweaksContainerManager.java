@@ -39,7 +39,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         super(mc);
         
         xe currentScreen = getCurrentScreen();
-        if (isGuiContainer(currentScreen)) {
+        if (isValidChest(currentScreen)) {
             this.container = getContainer((mg) currentScreen);
         }
         else {

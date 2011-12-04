@@ -160,31 +160,36 @@ public class InvTweaksItemTree {
 
     public List<InvTweaksItemTreeItem> getItems(int id, int damage) {
         List<InvTweaksItemTreeItem> items = itemsById.get(id);
-        List<InvTweaksItemTreeItem> filteredItems = null;
-        if (items != null) {
-            // Filter items of same ID, but different damage value
+        List<InvTweaksItemTreeItem> filteredItems = new ArrayList<InvTweaksItemTreeItem>();
+        
+        // Filter items of same ID, but different damage value
+        if (items != null && !items.isEmpty()) {
             for (InvTweaksItemTreeItem item : items) {
                 if (item.getDamage() != -1 && item.getDamage() != damage) {
-                    if (filteredItems == null) {
-                        filteredItems = new ArrayList<InvTweaksItemTreeItem>(items);
+                    if (filteredItems.isEmpty()) {
+                        filteredItems.addAll(items);
                     }
                     filteredItems.remove(item);
                 }
             }
-            if (filteredItems !=null && filteredItems.isEmpty()) {
-              //Generate a dummy if I've run out of items
-              InvTweaksItemTreeItem newItem=new InvTweaksItemTreeItem(String.format("UnknownItem-%d-%d",id,damage),id,damage,id*16+damage);
-              addItem(getRootCategory().getName(),newItem);
-              return getItems(id,damage);
-            }
-            return (filteredItems != null && !filteredItems.isEmpty())
-                    ? filteredItems : items;
-        } else {
-            // Generate a dummy item at the root for sorting 
-            InvTweaksItemTreeItem newItem=new InvTweaksItemTreeItem(String.format("UnknownItem-%d-%d",id,damage),id,damage,id*16+damage);
-            addItem(getRootCategory().getName(),newItem);
-            return getItems(id,damage);
         }
+        
+        // If there's no matching item, create new ones
+        if (filteredItems.isEmpty()) {
+        	InvTweaksItemTreeItem newItemId = new InvTweaksItemTreeItem(
+					String.format("%d-%d", id, damage),
+					id, damage, 5000 + id * 16 + damage);
+        	InvTweaksItemTreeItem newItemDamage = new InvTweaksItemTreeItem(
+					Integer.toString(id),
+					id, -1, 5000 + id * 16);
+			addItem(getRootCategory().getName(), newItemId);
+			addItem(getRootCategory().getName(), newItemDamage);
+			filteredItems.add(newItemId);
+			filteredItems.add(newItemDamage);
+        }
+    
+        return (filteredItems != null && !filteredItems.isEmpty())
+        		? filteredItems : items;
     }
 
     public List<InvTweaksItemTreeItem> getItems(String name) {

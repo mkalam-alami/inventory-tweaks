@@ -23,7 +23,7 @@ public class InvTweaksModCompatibility {
         return is(guiScreen, "GuiAlchest") // Equivalent Exchange
           || is(guiScreen, "GuiDiamondChest") // Iron chests (IC2)
           || is(guiScreen, "GuiGoldChest")
-          || is(guiScreen, "GuiMultiPageChest"); // Multi Page chest
+         /* || is(guiScreen, "GuiMultiPageChest")*/; // Multi Page chest
     }
 
     /**

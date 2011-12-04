@@ -106,14 +106,21 @@ public class InvTweaksConfigInventoryRuleset {
 					String keyword = words[1].toLowerCase();
 					boolean isValidKeyword = tree.isKeywordValid(keyword);
 					
-					// If invalid keyword, guess something similar
+					// If invalid keyword, guess something similar,
+					// but check first if it's not an item ID
+					// (can be used to make rules for unknown items)
 					if (!isValidKeyword) {
-						Vector<String> wordVariants = getKeywordVariants(keyword);
-						for (String wordVariant : wordVariants) {
-							if (tree.isKeywordValid(wordVariant.toLowerCase())) {
-								isValidKeyword = true;
-								keyword = wordVariant;
-								break;
+						if (keyword.matches("^[0-9-]*$")) {
+							isValidKeyword = true;
+						}
+						else {
+							Vector<String> wordVariants = getKeywordVariants(keyword);
+							for (String wordVariant : wordVariants) {
+								if (tree.isKeywordValid(wordVariant.toLowerCase())) {
+									isValidKeyword = true;
+									keyword = wordVariant;
+									break;
+								}
 							}
 						}
 					}
@@ -132,10 +139,11 @@ public class InvTweaksConfigInventoryRuleset {
 			}
 
 			// Autoreplace rule
-			else if (words[0].equals(InvTweaksConfig.AUTOREPLACE)) {
+			else if (words[0].equals(InvTweaksConfig.AUTOREFILL)
+					|| words[0].equals("AUTOREPLACE")) { // Compatibility
 				words[1] = words[1].toLowerCase();
 				if (tree.isKeywordValid(words[1]) || 
-						words[1].equals(InvTweaksConfig.AUTOREPLACE_NOTHING)) {
+						words[1].equals(InvTweaksConfig.AUTOREFILL_NOTHING)) {
 					autoReplaceRules.add(words[1]);
 				}
 				return null;

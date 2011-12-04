@@ -8,18 +8,20 @@
 Default:
 D LOCKED
 
-======== [ HELP ] ========
+======== [ GETTING STARTED ] ========
 
-# HOWTO
+# Full documentation at: http://wan.ka.free.fr/?invtweaks
+
+# SORTING RULES
 # Each line you type is a new constraint you add for sorting your inventory.
-# This configuration has no impact on how chests can be sorted.
-# You can specify :
-#   * a particular slot (ex: "D1 sword")
-#   * a whole row (ex: "D sword")
-#   * a whole column (ex: "1 sword")
-#   * a rectangle, defined by two slots (ex: "A5-C9 stuff")
-# All the keywords you can use can be found in the InvTweaksTree.xml file.
-# Note: you don't need to restart the game to reload your configuration, just press the sorting key.
+# After any change, just press the sorting key to reload the settings. Some examples:
+# * "D1 sword" puts any sword in row D, column 1 (see grid below)
+# * "A edibleFood" fills the A row with food
+# * "1 ironPickaxe" fills the 1 column with an iron pickaxe
+# * "A1-C4 blocks" fills the rectangle with any blocks
+# Open the 'InvTweaksTree.txt' file for a list of available keywords. If an item
+# is missing from the item tree (for example mod items), you can either add it 
+# or create a rule by ID. Examples: "D5 203", "D9 12345-13"
 
 # INVENTORY GRID
 #     1   2   3   4   5   6   7   8   9
@@ -32,8 +34,8 @@ D LOCKED
 # MULTIPLE CONFIGURATIONS
 # Any word followed by a colon ':' defines a new configuration (ex: "Fighting:").
 # You can then swap between the configurations by:
+# - Pressing the sorting key + 1-9 (1 will load the first configuration, etc.)
 # - Holding the sorting key for 1 second
-# - Pressing 1-9 + the sorting key (1 will load the first configuration, etc.)
 
 # ADVANCED RULES
 # r modifier         = Reverse the sorting order for a row/column (ex: "Ar sword" sorts from right to left)
@@ -41,9 +43,9 @@ D LOCKED
 # "LOCKED" rule      = Locks a part of the inventory so that stuff doesn't go there (ex: "D LOCKED").
 #                      Is overriden by more specific rules ("D LOCKED" is overriden by "D1 torch" or "1 swords").
 # "FROZEN" rule      = Completely ignores the slot during sorting (ex: "D8 FROZEN").
-# "AUTOREPLACE" rule = Allows to customize what can be automatically replaced
-#                      (ex: "AUTOREPLACE tools" restricts the item replacement to tools).
-#                      You can disable completely the feature using "AUTOREPLACE nothing".
+# "AUTOREFILL" rule  = Allows to customize what can be automatically replaced
+#                      (ex: "AUTOREFILL tools" restricts the item replacement to tools).
+#                      You can disable completely the feature using "AUTOREFILL nothing".
 
 # TIPS
 # * Rows are, by default, sorted from left to right, and columns from bottom to top.

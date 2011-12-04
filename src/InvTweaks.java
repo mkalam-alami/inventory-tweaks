@@ -224,7 +224,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     
     /**
      * To be called on each tick when a menu is open.
-     * Handles the GUi additions and the middle clicking.
+     * Handles the GUI additions and the middle clicking.
      * @param guiScreen
      */
     public void onTickInGUI(xe guiScreen) {
@@ -298,7 +298,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
 
         // If the key is hold for 1s, switch config
-        if (Keyboard.isKeyDown(getKeycode(InvTweaksConst.SORT_KEY_BINDING))) {
+        if (isSortingShortcutDown()) {
             long currentTime = System.currentTimeMillis();
             if (sortingKeyPressedDate == 0) {
                 sortingKeyPressedDate = currentTime;
@@ -330,7 +330,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         // Switch between configurations
         InvTweaksConfig config = cfgManager.getConfig();
         Vector<Integer> downKeys = cfgManager.getShortcutsHandler().getDownShortcutKeys();
-        if (Keyboard.isKeyDown(getKeyCode(InvTweaksConst.SORT_KEY_BINDING))) {
+        if (isSortingShortcutDown()) {
             for (int downKey : downKeys) {
                 String newRuleset = null;
                 switch (downKey) {
@@ -493,7 +493,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                             handleSorting(guiScreen);
                         }
     
-                    } else if (!isGuiContainerCreative(guiScreen)) {
+                    } else if (isGuiInventory(guiScreen) || isGuiWorkbench(guiScreen)) {
                         handleSorting(guiScreen);
                     }
                 }
@@ -621,7 +621,17 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
     }
 
-    private boolean isValidChest(xe guiScreen) {
+    private boolean isSortingShortcutDown() {
+    	int keyCode = getKeyCode(InvTweaksConst.SORT_KEY_BINDING);
+    	if (keyCode > 0) {
+    		return Keyboard.isKeyDown(keyCode);
+    	}
+    	else {
+    		return Mouse.isButtonDown(100 + keyCode);
+    	}
+	}
+
+	private boolean isValidChest(xe guiScreen) {
         if (isGuiContainer(guiScreen)) {
             mg guiContainer = (mg) guiScreen;
             return (isGuiChest(guiScreen) || isGuiDispenser(guiScreen) ||

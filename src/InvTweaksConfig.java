@@ -30,6 +30,8 @@ public class InvTweaksConfig {
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
 
+    public static final String PROP_VERSION = "version";
+    
     // Sorting settings
     public static final String PROP_ENABLE_MIDDLE_CLICK = "enableMiddleClick";
     public static final String PROP_SHOW_CHEST_BUTTONS = "showChestButtons";
@@ -432,38 +434,46 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_SORTING_SOUND, VALUE_TRUE);
         properties.put(PROP_ENABLE_SHORTCUTS, VALUE_TRUE);
         
-        properties.put(PROP_SHORTCUT_ALL_ITEMS, "LSHIFT, RSHIFT"); // TODO
+        properties.put(PROP_SHORTCUT_ALL_ITEMS, "LCONTROL+LSHIFT, RCONTROL+RSHIFT");
         properties.put(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");
         properties.put(PROP_SHORTCUT_ONE_STACK, "LSHIFT, RSHIFT");
         properties.put(PROP_SHORTCUT_UP, "UP");
         properties.put(PROP_SHORTCUT_DOWN, "DOWN");
         properties.put(PROP_SHORTCUT_DROP, "LALT, RALT");
 
+        properties.put(PROP_VERSION, InvTweaksConst.MOD_VERSION.split(" ")[0]);
 
         invalidKeywords = new Vector<String>();
     }
 
     private void loadProperties() throws IOException {
         File configPropsFile = getPropertyFile();
+        InvTweaksConfigProperties newProperties = new InvTweaksConfigProperties();
         if (configPropsFile != null) {
             FileInputStream fis = new FileInputStream(configPropsFile);
-            properties.load(fis);
+            newProperties.load(fis);
             fis.close();
             resolveConvenientInventoryConflicts();
         }
-        properties.sortKeys();
+        newProperties.sortKeys();
         
-        // 1.30 patch: rename wrong shortcuts
-        if (((String) properties.get(PROP_SHORTCUT_DROP)).contains("META"))
-            properties.setProperty(PROP_SHORTCUT_DROP, "LALT, RALT");
-        if (((String) properties.get(PROP_SHORTCUT_ONE_ITEM)).contains("CTRL"))
-            properties.setProperty(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");
+        // XXX 1.34 update: force shortcuts reset
+        if (properties.get(PROP_VERSION) != null) {
         
-        // Retro-compatibility: rename autoreplace
-        if (properties.contains("enableAutoreplaceSound")) {
-            properties.put(PROP_ENABLE_AUTO_REFILL_SOUND, 
-                    (String) properties.get("enableAutoreplaceSound"));
-            properties.remove("enableAutoreplaceSound");
+            properties = newProperties;
+            
+            // XXX 1.30 patch: rename wrong shortcuts
+            if (((String) properties.get(PROP_SHORTCUT_DROP)).contains("META"))
+                properties.setProperty(PROP_SHORTCUT_DROP, "LALT, RALT");
+            if (((String) properties.get(PROP_SHORTCUT_ONE_ITEM)).contains("CTRL"))
+                properties.setProperty(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");
+            
+            // Retro-compatibility: rename autoreplace
+            if (properties.contains("enableAutoreplaceSound")) {
+                properties.put(PROP_ENABLE_AUTO_REFILL_SOUND, 
+                        (String) properties.get("enableAutoreplaceSound"));
+                properties.remove("enableAutoreplaceSound");
+            }
         }
     }
 

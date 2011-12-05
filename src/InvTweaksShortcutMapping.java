@@ -54,12 +54,6 @@ public class InvTweaksShortcutMapping {
     		}
     	}
 		return true;
-		/*
-
-        if (shortcutKeysStatus.get(keyCode) && 
-                (keyCode != 29 || !Keyboard.isKeyDown(184))) {
-            return keyCode;
-        }*/
     }
     
     public List<Integer> getKeyCodes() {

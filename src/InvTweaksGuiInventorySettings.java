@@ -40,7 +40,8 @@ public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
 
     private final static int ID_EDITRULES = 100;
     private final static int ID_EDITTREE = 101;
-    private final static int ID_HELP = 102;
+    private final static int ID_EDITSHORTCUTS = 102;
+    private final static int ID_HELP = 103;
     private final static int ID_DONE = 200;
 
     private Minecraft mc;
@@ -65,8 +66,9 @@ public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new ct(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, "Open the sorting rules file..."));
-        controlList.add(new ct(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, "Open the item tree file..."));
+        controlList.add(new ct(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 72, "Open the sorting rules file..."));
+        controlList.add(new ct(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 96, "Open the item tree file..."));
+        controlList.add(new ct(ID_EDITSHORTCUTS, p.getX() + 55, obf.getHeight(this) / 6 + 120, "Open the shortcuts mappings file..."));
         controlList.add(new ct(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, "Open help in browser..."));
         controlList.add(new ct(ID_DONE, p.getX() + 55, obf.getHeight(this) / 6 + 168, "Done"));
 
@@ -115,7 +117,7 @@ public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
                 ct button = (ct) o;
-                if (obf.getId(button) == ID_EDITRULES || obf.getId(button) < ID_EDITTREE) {
+                if (obf.getId(button) >= ID_EDITRULES && obf.getId(button) <= ID_HELP) {
                     obf.setEnabled(button, false);
                 }
             }
@@ -179,7 +181,16 @@ public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
             }
             break;
 
-        // Open help in external editor
+        // Open shortcuts mappings in external editor
+        case ID_EDITSHORTCUTS:
+            try {
+                Desktop.getDesktop().open(new File(InvTweaksConst.CONFIG_PROPS_FILE));
+            } catch (Exception e) {
+                InvTweaks.logInGameErrorStatic("Failed to open mappings file", e);
+            }
+            break;
+
+        // Open help in browser
         case ID_HELP:
             try {
                 Desktop.getDesktop().browse(new URL(InvTweaksConst.HELP_URL).toURI());

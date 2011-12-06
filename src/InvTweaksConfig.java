@@ -14,6 +14,7 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -115,8 +116,7 @@ public class InvTweaksConfig {
             for (String line : configLines) {
                 // Change ruleset
                 if (line.matches("^[\\w]*\\:$")) {
-                    // Make sure not to add an empty default config to the
-                    // rulesets
+                    // Make sure not to add an empty default config to the rulesets
                     if (!defaultRuleset || !defaultRulesetEmpty) {
                         activeRuleset.finalize();
                         rulesets.add(activeRuleset);
@@ -440,7 +440,7 @@ public class InvTweaksConfig {
         properties.put(PROP_SHORTCUT_UP, "UP");
         properties.put(PROP_SHORTCUT_DOWN, "DOWN");
         properties.put(PROP_SHORTCUT_DROP, "LALT, RALT");
-
+        
         properties.put(PROP_VERSION, InvTweaksConst.MOD_VERSION.split(" ")[0]);
 
         invalidKeywords = new Vector<String>();
@@ -458,15 +458,20 @@ public class InvTweaksConfig {
         newProperties.sortKeys();
         
         // XXX 1.34 update: force shortcuts reset
-        if (properties.get(PROP_VERSION) != null) {
+        if (newProperties.get(PROP_VERSION) != null) {
         
-            properties = newProperties;
+            // Override default values
+            for (Entry<Object, Object> entry : newProperties.entrySet()) {
+                properties.put(entry.getKey(), entry.getValue());
+            }
             
             // XXX 1.30 patch: rename wrong shortcuts
-            if (((String) properties.get(PROP_SHORTCUT_DROP)).contains("META"))
+            if (properties.contains(PROP_SHORTCUT_DROP) && ((String) properties.get(PROP_SHORTCUT_DROP)).contains("META")) {
                 properties.setProperty(PROP_SHORTCUT_DROP, "LALT, RALT");
-            if (((String) properties.get(PROP_SHORTCUT_ONE_ITEM)).contains("CTRL"))
+            }
+            if (properties.contains(PROP_SHORTCUT_DROP) && ((String) properties.get(PROP_SHORTCUT_ONE_ITEM)).contains("CTRL")) {
                 properties.setProperty(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");
+            }
             
             // Retro-compatibility: rename autoreplace
             if (properties.contains("enableAutoreplaceSound")) {

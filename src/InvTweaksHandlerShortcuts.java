@@ -34,7 +34,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private dk fromStack;
     private InvTweaksContainerSection toSection;
     private ShortcutType shortcutType;
-    private long lastCraftDate = 0;
 
     /**
      * Allows to monitor the keys related to shortcuts
@@ -69,46 +68,29 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     public void reset() {
         shortcutKeysStatus.clear();
         shortcuts.clear();
-        
+
+        // Register shortcut mappings
         Map<String, String> keys = config.getProperties(
                 InvTweaksConfig.PROP_SHORTCUT_PREFIX);
         for (String key : keys.keySet()) {
-            
-            // Register shortcut mappings
             String[] keyMappings = keys.get(key).split("[ ]*,[ ]*");
-            List<InvTweaksShortcutMapping> keyBindings = 
-            	new LinkedList<InvTweaksShortcutMapping>();
-            for (String keyMapping : keyMappings) {
-            	String[] keysToHold = keyMapping.split("\\+");
-                keyBindings.add(new InvTweaksShortcutMapping(keysToHold));
-            }
             ShortcutType shortcutType = propNameToShortcutType(key);
             if (shortcutType != null) {
-                shortcuts.put(shortcutType, keyBindings);
+                for (String keyMapping : keyMappings) {
+                	String[] keysToHold = keyMapping.split("\\+");
+                	registerShortcutMapping(shortcutType, new InvTweaksShortcutMapping(keysToHold));
+                }
             }
-            
-            // Register key status listener
-            for (InvTweaksShortcutMapping mapping : keyBindings) {
-            	for (Integer keyCode : mapping.getKeyCodes()) {
-            		shortcutKeysStatus.put(keyCode, false);
-            	}
-            }
-            
         }
         
-        // Add Minecraft's Up & Down bindings to the shortcuts
+        // Add Minecraft's Up & Down mappings
         int upKeyCode = getKeyBindingForwardKeyCode(),
             downKeyCode = getKeyBindingBackKeyCode();
         
-        shortcuts.get(ShortcutType.MOVE_UP).add(
-        		new InvTweaksShortcutMapping(upKeyCode));
-        shortcuts.get(ShortcutType.MOVE_DOWN).add(
-        		new InvTweaksShortcutMapping(downKeyCode));
-        shortcutKeysStatus.put(upKeyCode, false);
-        shortcutKeysStatus.put(downKeyCode, false);
+        registerShortcutMapping(ShortcutType.MOVE_UP, new InvTweaksShortcutMapping(upKeyCode));
+        registerShortcutMapping(ShortcutType.MOVE_DOWN, new InvTweaksShortcutMapping(downKeyCode));
         
-        // Add hotbar shortcuts (1-9) mappings & listeners
-        List<InvTweaksShortcutMapping> hotbarBindings = new LinkedList<InvTweaksShortcutMapping>();
+        // Add hotbar shortcuts (1-9) mappings
         int[] hotbarKeys = {Keyboard.KEY_1, Keyboard.KEY_2, Keyboard.KEY_3, 
                 Keyboard.KEY_4, Keyboard.KEY_5, Keyboard.KEY_6,
                 Keyboard.KEY_7, Keyboard.KEY_8, Keyboard.KEY_9,
@@ -116,13 +98,27 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 Keyboard.KEY_NUMPAD4, Keyboard.KEY_NUMPAD5, Keyboard.KEY_NUMPAD6, 
                 Keyboard.KEY_NUMPAD7, Keyboard.KEY_NUMPAD8, Keyboard.KEY_NUMPAD9};
         for (int i : hotbarKeys) {
-        	hotbarBindings.add(new InvTweaksShortcutMapping(i));
-            shortcutKeysStatus.put(i, false);
+            registerShortcutMapping(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT, new InvTweaksShortcutMapping(i));
         }
-        shortcuts.put(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT, hotbarBindings);
         
     }
     
+    private void registerShortcutMapping(ShortcutType type, InvTweaksShortcutMapping mapping) {
+        // Register shortcut
+        if (shortcuts.containsKey(type)) {
+            shortcuts.get(type).add(mapping);
+        }
+        else {
+            List<InvTweaksShortcutMapping> newMappingList = new LinkedList<InvTweaksShortcutMapping>();
+            newMappingList.add(mapping);
+            shortcuts.put(type, newMappingList);
+        }
+        // Register key status listeners
+        for (int keyCode : mapping.getKeyCodes()) {
+            shortcutKeysStatus.put(keyCode, false);
+        }
+    }
+
     public Vector<Integer> getDownShortcutKeys() {
         updateKeyStatuses();
         Vector<Integer> downShortcutKeys = new Vector<Integer>();
@@ -175,13 +171,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             else if (isActive(ShortcutType.MOVE_ONE_ITEM) != null) {
                 shortcutType = ShortcutType.MOVE_ONE_ITEM;
                 shortcutValid = true;
-            }
-            if (isCraftingShortcutDown()
-                    && container.getSlotSection(getSlotNumber(slot)) 
-                    == InvTweaksContainerSection.CRAFTING_OUT) {
-                /*shortcutType = ShortcutType.CRAFT;
-                shortcutValid = true;*/
-                return; // TODO: Right-click crafting shortcut
             }
             
             // Choose target section
@@ -251,7 +240,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     initAction(getSlotNumber(slot), shortcutType, destSection);
                     
                     if (shortcutType == ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
-                        
                         // Move to specific hotbar slot
                     	InvTweaksShortcutMapping hotbarShortcut = isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
                     	if (hotbarShortcut != null && !hotbarShortcut.getKeyCodes().isEmpty()) {
@@ -262,14 +250,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     	}
                         
                     } else {
-                        
                         // Drop or move
-                        /*if (shortcutType == ShortcutType.CRAFT) {
-                            craft(isActive(ShortcutType.MOVE_ALL_ITEMS) == -1,
-                                    isActive(ShortcutType.DROP) != -1);
-                        } else {*/
-                            move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != null);
-                        //}
+                        move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != null);
                     }
                     
                     // Reset mouse status to prevent default action.
@@ -337,77 +319,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             }
             
         }
-    }
-    
-    @SuppressWarnings("unused")
-    private void craft(final boolean toHand, final boolean drop) throws Exception {
-        int toIndex = getNextIndex(false, drop);
-        vv slot = container.getSlot(fromSection, fromIndex);
-        long currentTimeMillis = System.currentTimeMillis();
-        // Start crafting only if there is something to craft
-        // and we have waited long enough (CRAFTING_DELAY ms)
-        if (hasStack(slot) && (!toHand || 
-                currentTimeMillis - lastCraftDate >= InvTweaksConst.CRAFTING_DELAY)) {
-            // Store the first item type to craft, to make
-            // sure it doesn't craft something else in the end
-            int idToCraft = getItemID(getStack(slot));
-            do {
-                container.move(fromSection, fromIndex, toSection, toIndex);
-                toIndex = getNextIndex(false, drop);
-                if (getHoldStack() != null) {
-                    container.leftClick(toSection, toIndex);
-                    toIndex = getNextIndex(false, drop);
-                }
-            } while (hasStack(slot) 
-                    && getItemID(getStack(slot)) == idToCraft
-                    && toIndex != -1);
-        } 
-        
-        /*new Thread(new Runnable() {
-            public void run() {
-            try {
-                int toIndex = getNextIndex(false, drop);
-                sx slot = container.getSlot(fromSection, fromIndex);
-                long currentTimeMillis = System.currentTimeMillis();
-                // Start crafting only if there is something to craft
-                // and we have waited long enough (CRAFTING_DELAY ms)
-                if (hasStack(slot) && (!toHand || 
-                        currentTimeMillis - lastCraftDate >= InvTweaksConst.CRAFTING_DELAY)) {
-                    // Craft to hand
-                    if (toHand) {
-                        container.leftClick(fromSection, fromIndex);
-                        lastCraftDate = currentTimeMillis;
-                        try {
-                            Thread.sleep(InvTweaksConst.CRAFTING_DELAY);
-                            log.severe(""+isCraftingShortcutDown());
-                            craft(true, false);
-                        } catch (InterruptedException e) {
-                            log.warning("Quick crafting was interrupted");
-                        } catch (Exception e) {
-                            InvTweaks.logInGameErrorStatic("Quick crafting failed", e);
-                        }
-                    }
-                    // Craft to slot
-                    else {
-                        // Store the first item type to craft, to make
-                        // sure it doesn't craft something else in the end
-                        int idToCraft = getItemID(getStack(slot));
-                        do {
-                            container.move(fromSection, fromIndex, toSection, toIndex);
-                            toIndex = getNextIndex(false, drop);
-                            if (getHoldStack() != null) {
-                                container.leftClick(toSection, toIndex);
-                                toIndex = getNextIndex(false, drop);
-                            }
-                        } while (hasStack(slot) 
-                                && getItemID(getStack(slot)) == idToCraft
-                                && toIndex != -1);
-                    }
-                } 
-            } catch (TimeoutException e) {
-                log.warning("Quick crafting failed: "+e.getMessage());
-            }
-        }}).start();*/
     }
 
     /**
@@ -490,11 +401,17 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         // Set up context
         this.container = new InvTweaksContainerManager(mc);
         this.fromSection = container.getSlotSection(fromSlot);
+        if (shortcutType.equals(ShortcutType.MOVE_ALL_ITEMS) // If move all to chest, move both items from inventory and hotbar
+                && (this.fromSection == InvTweaksContainerSection.INVENTORY_HOTBAR
+                        || this.fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR)
+                && this.toSection == InvTweaksContainerSection.CHEST) {
+            this.fromSection = InvTweaksContainerSection.INVENTORY;
+        }
         this.fromIndex = container.getSlotIndex(fromSlot);
         this.fromStack = container.getItemStack(fromSection, fromIndex);
         this.shortcutType = shortcutType;
         this.toSection = destSection;
-        
+
         // Put hold stack down
         if (getHoldStack() != null) {
             
@@ -528,7 +445,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         return null;
     }
 
-    
     private ShortcutType propNameToShortcutType(String property) {
         if (property.equals(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS)) {
             return ShortcutType.MOVE_ALL_ITEMS;
@@ -546,8 +462,5 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             return null;
         }
     }
-
-    private boolean isCraftingShortcutDown() {
-        return Mouse.isButtonDown(1);
-    }
+    
 }

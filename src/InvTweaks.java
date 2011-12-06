@@ -106,7 +106,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     /**
      * To be called everytime a stack has been picked up.
-     * Moves the picked up item in anothet slot that matches best the current configuration.
+     * Moves the picked up item in another slot that matches best the current configuration.
      */
     public void onItemPickup() {
 

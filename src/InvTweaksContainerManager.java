@@ -370,11 +370,24 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             return null;
         }
     }
-    
+
     public int getSlotIndex(int slotNumber) {
+        return getSlotIndex(slotNumber, false);
+    }
+    
+    /**
+     * 
+     * @param slotNumber
+     * @param preferInventory Set to true if you prefer to have the index according
+     * to the whole inventory, instead of a more specific section (hotbar/not hotbar)
+     * @return
+     */
+    public int getSlotIndex(int slotNumber, boolean preferInventory) {
         // TODO Caching with getSlotSection
         for (InvTweaksContainerSection section : slotRefs.keySet()) {
-            if (section != InvTweaksContainerSection.INVENTORY) {
+            if (!preferInventory && section != InvTweaksContainerSection.INVENTORY
+                    || (preferInventory && section != InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
+                            && section != InvTweaksContainerSection.INVENTORY_HOTBAR)) {
                 int i = 0;
                 for (vv slot : slotRefs.get(section)) {
                     if (getSlotNumber(slot) == slotNumber) {

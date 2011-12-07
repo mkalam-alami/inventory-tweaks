@@ -3,6 +3,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,11 @@ import org.lwjgl.input.Mouse;
  */
 public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
+    /*
+     * TODO: Big refactoring to make functions less context-dependant
+     * (pass all as parameters instead of using class attributes)
+     */
+    
     private static final int DROP_SLOT = -999;
     
     @SuppressWarnings("unused")
@@ -300,24 +306,33 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 case MOVE_ALL_ITEMS:
                 {
                     dk stackToMatch = copy(fromStack);
-                    for (vv slot : container.getSlots(fromSection)) {
-                        if (hasStack(slot) && areSameItemType(stackToMatch, getStack(slot))) {
-                            int fromIndex = container.getSlotIndex(getSlotNumber(slot));
-                            while (hasStack(slot) && toIndex != -1 && 
-                                    !(fromSection == toSection && fromIndex == toIndex)) {
-                                container.move(fromSection, fromIndex, toSection, toIndex);
-                                toIndex = getNextIndex(separateStacks, drop);
-                            }
-                        }
-                        if (toIndex == -1) {
-                            break;
-                        }
+                    moveAll(fromSection, toSection, separateStacks, drop, stackToMatch);
+                    if (fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
+                            && toSection == InvTweaksContainerSection.CHEST) {
+                        moveAll(InvTweaksContainerSection.INVENTORY_HOTBAR, toSection, separateStacks, drop, stackToMatch);
                     }
                 }
                     
                 }
             }
             
+        }
+    }
+    
+    private void moveAll(InvTweaksContainerSection fromSection, InvTweaksContainerSection toSection, 
+            boolean separateStacks, boolean drop, dk stackToMatch) throws TimeoutException {
+        int toIndex = getNextIndex(separateStacks, drop);
+        for (vv slot : container.getSlots(fromSection)) {
+            if (hasStack(slot) && areSameItemType(stackToMatch, getStack(slot))) {
+                int fromIndex = container.getSlotIndex(getSlotNumber(slot));
+                while (hasStack(slot) && toIndex != -1 && !(fromSection == toSection && fromIndex == toIndex)) {
+                    container.move(fromSection, fromIndex, toSection, toIndex);
+                    toIndex = getNextIndex(separateStacks, drop);
+                }
+            }
+            if (toIndex == -1) {
+                break;
+            }
         }
     }
 
@@ -401,12 +416,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         // Set up context
         this.container = new InvTweaksContainerManager(mc);
         this.fromSection = container.getSlotSection(fromSlot);
-        if (shortcutType.equals(ShortcutType.MOVE_ALL_ITEMS) // If move all to chest, move both items from inventory and hotbar
-                && (this.fromSection == InvTweaksContainerSection.INVENTORY_HOTBAR
-                        || this.fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR)
-                && this.toSection == InvTweaksContainerSection.CHEST) {
-            this.fromSection = InvTweaksContainerSection.INVENTORY;
-        }
         this.fromIndex = container.getSlotIndex(fromSlot);
         this.fromStack = container.getItemStack(fromSection, fromIndex);
         this.shortcutType = shortcutType;

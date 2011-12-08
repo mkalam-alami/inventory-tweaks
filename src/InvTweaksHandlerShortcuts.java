@@ -136,7 +136,13 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         return downShortcutKeys;
     }
     
-    public void handleShortcut(mg guiContainer) {
+    public void handleShortcut(xe guiContainer) {
+        //Let ContainerManager decide if we're a good screen or not
+        try {
+          container = new InvTweaksContainerManager(mc,guiContainer);
+        } catch (IllegalArgumentException iae) {
+          return;
+        }
         // IMPORTANT: This method is called before the default action is executed.
         
         updateKeyStatuses();
@@ -148,12 +154,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         boolean shortcutValid = false;
         
         // Check that the slot is not empty
-        vv slot = getSlotAtPosition(guiContainer, x, y);
+        vv slot = getSlotAtPosition(container.getGUI(), x, y);
         
         if (slot != null && hasStack(slot)) {
-
-            InvTweaksContainerManager container = new InvTweaksContainerManager(mc);
-           
             // Filter shortcuts to let Minecraft ones run
             if (container.getSlotSection(getSlotNumber(slot)) 
                     == InvTweaksContainerSection.CRAFTING_OUT
@@ -271,6 +274,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     
             } catch (Exception e) {
                InvTweaks.logInGameErrorStatic("Failed to trigger shortcut", e);
+               e.printStackTrace();
             }
         }
             
@@ -290,7 +294,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 {
                     vv slot = container.getSlot(fromSection, fromIndex);
                     while (hasStack(slot) && toIndex != -1) {
-                        container.move(fromSection, fromIndex, toSection, toIndex);
+                        boolean success = container.move(fromSection, fromIndex, toSection, toIndex);
+                        if (!success)
+                          break;
                         toIndex = getNextIndex(separateStacks, drop);
                     }
                     break;
@@ -414,7 +420,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private void initAction(int fromSlot, ShortcutType shortcutType, InvTweaksContainerSection destSection) throws Exception {
         
         // Set up context
-        this.container = new InvTweaksContainerManager(mc);
         this.fromSection = container.getSlotSection(fromSlot);
         this.fromIndex = container.getSlotIndex(fromSlot);
         this.fromStack = container.getItemStack(fromSection, fromIndex);

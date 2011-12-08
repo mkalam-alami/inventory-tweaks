@@ -27,7 +27,12 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     private Map<InvTweaksContainerSection, List<vv>> slotRefs 
             = new HashMap<InvTweaksContainerSection, List<vv>>();
     
+    private mg guiContainer;
     
+    
+    public InvTweaksContainerManager(Minecraft mc) {
+      this(mc,null);
+    }
     /**
      * Creates an container manager linked to the currently available container:
      * - If a container GUI is open, the manager gives access to this container contents.
@@ -35,15 +40,18 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param mc Minecraft
      */
     @SuppressWarnings({"unchecked"})
-    public InvTweaksContainerManager(Minecraft mc) {
+    public InvTweaksContainerManager(Minecraft mc, xe guiScreen) {
         super(mc);
-        
-        xe currentScreen = getCurrentScreen();
-        if (isValidChest(currentScreen)) {
-            this.container = getContainer((mg) currentScreen);
-        }
-        else {
-            this.container = getPlayerContainer();
+        if (guiScreen != null) {
+          try {
+            this.guiContainer = (mg)guiScreen;
+            this.container = getContainer((mg)guiScreen);
+          } catch (ClassCastException cce) {
+            throw new IllegalArgumentException(cce);
+          }
+        } else {
+          this.guiContainer = null;
+          this.container = getPlayerContainer();
         }
         
         List<vv> slots = (List<vv>) getSlots(container);
@@ -101,6 +109,9 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         
     }
     
+    public mg getGUI() {
+      return this.guiContainer;
+    }
     /**
      * Moves a stack from source to destination, adapting the behavior 
      * according to the context:
@@ -136,6 +147,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
                 leftClick(InvTweaksContainerSection.INVENTORY, firstEmptyIndex);
             }
             else {
+                System.out.printf("No empty slot for hand\n");
                 return false;
             }
         }

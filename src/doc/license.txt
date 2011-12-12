@@ -1,6 +1,6 @@
 |==============================================================|
 | INVENTORY TWEAKS Mod - By Jimeo Wan (jimeo.wan at gmail.com) |
-| License                                                      |
+| License (MIT)                                                |
 |==============================================================|
 
 Copyright (c) 2011 Jimeo Wan

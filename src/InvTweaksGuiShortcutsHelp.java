@@ -55,7 +55,7 @@ public class InvTweaksGuiShortcutsHelp extends xe /* GuiScreen */ {
         y += 25;
 
         
-        drawShortcutLine("Send to upper section",
+        drawShortcutLine("Send to upper section*",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_UP) + " + Click",
                 0x0000FF33, y);
         y += 12;
@@ -76,15 +76,19 @@ public class InvTweaksGuiShortcutsHelp extends xe /* GuiScreen */ {
         y += 12;
         drawShortcutLine("Select sorting configuration", "0-9 + " +
                 Keyboard.getKeyName(obf.getKeyCode(InvTweaksConst.SORT_KEY_BINDING)), 0x00FF8800, y);
-        y += 25;
+        y += 20;
+        
+        b(obf.getFontRenderer(), "*Useful on brewing stands, crafting tables, etc.", 30, y, 0x00666666); // drawString
         
         super.a(i, j, f); // drawScreen
     }
     
     private void drawShortcutLine(String label, String value, int color, int y) {
         b(obf.getFontRenderer(), label, 30, y, -1); // drawString
-        b(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value, 
-                obf.getWidth(this) / 2 - 20, y, color); // drawString
+        if (value != null) {
+	        b(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value.replaceAll(", ", " or "), 
+	                obf.getWidth(this) / 2 - 30, y, color); // drawString
+        }
     }
 
     protected void a(ct guibutton) { /* actionPerformed */

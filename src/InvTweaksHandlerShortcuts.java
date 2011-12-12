@@ -195,6 +195,20 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 else if (container.hasSection(InvTweaksContainerSection.FURNACE_IN)) {
                     availableSections.add(InvTweaksContainerSection.FURNACE_IN);
                 }
+                else if (container.hasSection(InvTweaksContainerSection.BREWING_INGREDIENT)) {
+                	dk stack = container.getStack(slot);
+                	if (stack != null) {
+                		if (getItemID(stack) == 373 && getItemDamage(stack) == 0 /* Water Bottle */) {
+                			availableSections.add(InvTweaksContainerSection.BREWING_BOTTLES);
+                		}
+                		else {
+                			availableSections.add(InvTweaksContainerSection.BREWING_INGREDIENT);
+                		}
+                	}
+                }
+                else if (container.hasSection(InvTweaksContainerSection.ENCHANTMENT)) {
+                    availableSections.add(InvTweaksContainerSection.ENCHANTMENT);
+                }
                 availableSections.add(InvTweaksContainerSection.INVENTORY_NOT_HOTBAR);
                 availableSections.add(InvTweaksContainerSection.INVENTORY_HOTBAR);
                 
@@ -289,7 +303,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 case MOVE_ONE_STACK:
                 {
                     vv slot = container.getSlot(fromSection, fromIndex);
-                    if (fromSection != InvTweaksContainerSection.CRAFTING_OUT) {
+                    if (fromSection != InvTweaksContainerSection.CRAFTING_OUT
+                    		&& toSection != InvTweaksContainerSection.ENCHANTMENT) {
                         boolean canStillMove = true;
                         while (hasStack(slot) && toIndex != -1 && canStillMove) {
                             canStillMove = container.move(fromSection, fromIndex, toSection, toIndex);

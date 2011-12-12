@@ -39,7 +39,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         super(mc);
         
         xe currentScreen = getCurrentScreen();
-        if (isValidChest(currentScreen)) {
+        if (isGuiContainer(currentScreen)) {
             this.container = getContainer((mg) currentScreen);
         }
         else {
@@ -80,8 +80,19 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             slotRefs.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(0, 1));
             slotRefs.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(1, 10));
         }
+
+        // Enchantment table
+        else if (isContainerEnchantmentTable(container)) {
+            slotRefs.put(InvTweaksContainerSection.ENCHANTMENT, slots.subList(0, 1));
+        }
         
-        // Unknown
+        // Brewing stand
+        else if (isContainerBrewingStand(container)) {
+            slotRefs.put(InvTweaksContainerSection.BREWING_BOTTLES, slots.subList(0, 3));
+            slotRefs.put(InvTweaksContainerSection.BREWING_INGREDIENT, slots.subList(3, 4));
+        }
+        
+        // Unknown = chest
         else {
             if (size >= INVENTORY_SIZE) {
                 // Assuming the container ends with the inventory, just like all vanilla containers.

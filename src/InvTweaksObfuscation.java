@@ -306,7 +306,12 @@ public class InvTweaksObfuscation {
 	protected boolean isValidInventory(xe guiScreen) {
         return guiScreen != null && (isGuiInventory(guiScreen)
         		|| isGuiWorkbench(guiScreen)
+                || isGuiBrewingStand(guiScreen)
+                || isGuiEnchantmentTable(guiScreen)
         		|| mods.isSpecialInventory(guiScreen));
+    }
+    protected boolean isGuiContainer(Object o) { // GuiContainer (abstract class)
+        return o != null && o instanceof mg;
     }
     protected boolean isGuiContainerCreative(Object o) { // GuiContainerCreative
         return o != null && o.getClass().equals(aec.class);
@@ -326,6 +331,12 @@ public class InvTweaksObfuscation {
     protected boolean isGuiWorkbench(Object o) { // GuiCrafting
         return o != null && o.getClass().equals(uv.class);
     }
+    protected boolean isGuiBrewingStand(Object o) { // GuiBrewingStand
+        return o != null && o.getClass().equals(cy.class);
+    }
+    protected boolean isGuiEnchantmentTable(Object o) { // GuiEnchantmentTable
+        return o != null && o.getClass().equals(zw.class);
+    }
     protected boolean isGuiButton(Object o) { // GuiButton
         return o != null && o instanceof ct;
     }
@@ -344,6 +355,12 @@ public class InvTweaksObfuscation {
     }
     protected boolean isContainerWorkbench(Object o) { // ContainerWorkbench
         return o != null && o.getClass().equals(ace.class);
+    }
+    protected boolean isContainerBrewingStand(Object o) { // ContainerBrewingStand
+        return o != null && o.getClass().equals(ok.class);
+    }
+    protected boolean isContainerEnchantmentTable(Object o) { // ContainerEnchantmentTable
+        return o != null && o.getClass().equals(ahk.class);
     }
 
     protected boolean isItemArmor(Object o) { // ItemArmor

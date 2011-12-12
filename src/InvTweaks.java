@@ -478,7 +478,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                             handleSorting(guiScreen);
                         }
     
-                    } else if (isGuiInventory(guiScreen) || isGuiWorkbench(guiScreen)) {
+                    } else if (isValidInventory(guiScreen)) {
                         handleSorting(guiScreen);
                     }
                 }
@@ -493,7 +493,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         InvTweaksConfig config = cfgManager.getConfig();
         boolean isValidChest = isValidChest(guiScreen);
 
-        if (isValidChest || isValidInventory(guiScreen)) {
+        if (isValidChest || isGuiInventory(guiScreen) || isGuiWorkbench(guiScreen)) {
 
             int w = 10, h = 10;
 

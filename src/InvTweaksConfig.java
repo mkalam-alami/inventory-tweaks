@@ -56,11 +56,11 @@ public class InvTweaksConfig {
     public static final String VALUE_FALSE = "false";
     public static final String VALUE_CI_COMPATIBILITY = "convenientInventoryCompatibility";
     
-    public static final String LOCKED = "LOCKED";
-    public static final String FROZEN = "FROZEN";
-    public static final String AUTOREFILL = "AUTOREFILL";
+    public static final String LOCKED = "locked";
+    public static final String FROZEN = "frozen";
+    public static final String AUTOREFILL = "autorefill";
     public static final String AUTOREFILL_NOTHING = "nothing";
-    public static final String DEBUG = "DEBUG";
+    public static final String DEBUG = "debug";
     public static final boolean DEFAULT_AUTO_REFILL_BEHAVIOUR = true;
 
     private String rulesFile;
@@ -114,28 +114,33 @@ public class InvTweaksConfig {
             String invalidKeyword;
 
             for (String line : configLines) {
-                // Change ruleset
-                if (line.matches("^[\\w]*\\:$")) {
-                    // Make sure not to add an empty default config to the rulesets
-                    if (!defaultRuleset || !defaultRulesetEmpty) {
-                        activeRuleset.finalize();
-                        rulesets.add(activeRuleset);
+                String trimmedLine = line.trim();
+                if (!trimmedLine.isEmpty()) {
+                    // Change ruleset
+                    if (trimmedLine.matches("^[\\w]*[\\s]*\\:$")) {
+                        // Make sure not to add an empty default config to the rulesets
+                        if (!defaultRuleset || !defaultRulesetEmpty) {
+                            activeRuleset.finalize();
+                            rulesets.add(activeRuleset);
+                        }
+                        activeRuleset = new InvTweaksConfigInventoryRuleset(tree, 
+                                trimmedLine.substring(0, trimmedLine.length() - 1));
                     }
-                    activeRuleset = new InvTweaksConfigInventoryRuleset(tree, 
-                            line.substring(0, line.length() - 1));
-                }
-
-                // Register line
-                try {
-                    invalidKeyword = activeRuleset.registerLine(line);
-                    if (defaultRuleset) {
-                        defaultRulesetEmpty = false;
+    
+                    // Register line
+                    else {
+                        try {
+                            invalidKeyword = activeRuleset.registerLine(trimmedLine);
+                            if (defaultRuleset) {
+                                defaultRulesetEmpty = false;
+                            }
+                            if (invalidKeyword != null) {
+                                invalidKeywords.add(invalidKeyword);
+                            }
+                        } catch (InvalidParameterException e) {
+                            // Invalid line (comments), no problem
+                        }
                     }
-                    if (invalidKeyword != null) {
-                        invalidKeywords.add(invalidKeyword);
-                    }
-                } catch (InvalidParameterException e) {
-                    // Invalid line (comments), no problem
                 }
             }
 

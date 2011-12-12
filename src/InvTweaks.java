@@ -60,6 +60,11 @@ public class InvTweaks extends InvTweaksObfuscation {
     private int tickNumber = 0, lastPollingTickNumber = -InvTweaksConst.POLLING_DELAY;
     
     /**
+    * Stores when the sorting key was last pressed (allows to detect long key holding)
+    */
+    private long sortingKeyPressedDate = 0;
+    
+    /**
      * Creates an instance of the mod, and loads the configuration
      * from the files, creating them if necessary.
      * @param mc
@@ -223,6 +228,7 @@ public class InvTweaks extends InvTweaksObfuscation {
      */
     public void onTickInGUI(xe guiScreen) {
         synchronized (this) {
+            handleMiddleClick(guiScreen); // Called before the rest to be able to trigger config reload 
             if (!onTick()) {
                 return;
             }
@@ -230,7 +236,6 @@ public class InvTweaks extends InvTweaksObfuscation {
                 unlockKeysIfNecessary();
             }
             handleGUILayout(guiScreen);
-            handleMiddleClick(guiScreen);
             handleShortcuts(guiScreen);
         }
     }
@@ -290,6 +295,64 @@ public class InvTweaks extends InvTweaksObfuscation {
         if (currentScreen == null || isGuiInventory(currentScreen)) {
             cloneHotbar();
         }
+
+        // Switch between configurations (shorcut)
+        Vector<Integer> downKeys = cfgManager.getShortcutsHandler().getDownShortcutKeys();
+        if (isSortingShortcutDown()) {
+            for (int downKey : downKeys) {
+                String newRuleset = null;
+                if (downKey >= Keyboard.KEY_1 && downKey <= Keyboard.KEY_9) {
+                    newRuleset = config.switchConfig(downKey - Keyboard.KEY_1);
+                }
+                else {
+                    switch (downKey) {
+                    case Keyboard.KEY_NUMPAD1: newRuleset = config.switchConfig(0); break;
+                    case Keyboard.KEY_NUMPAD2: newRuleset = config.switchConfig(1); break;
+                    case Keyboard.KEY_NUMPAD3: newRuleset = config.switchConfig(2); break;
+                    case Keyboard.KEY_NUMPAD4: newRuleset = config.switchConfig(3); break;
+                    case Keyboard.KEY_NUMPAD5: newRuleset = config.switchConfig(4); break;
+                    case Keyboard.KEY_NUMPAD6: newRuleset = config.switchConfig(5); break;
+                    case Keyboard.KEY_NUMPAD7: newRuleset = config.switchConfig(6); break;
+                    case Keyboard.KEY_NUMPAD8: newRuleset = config.switchConfig(7); break;
+                    case Keyboard.KEY_NUMPAD9: newRuleset = config.switchConfig(8); break;
+                    }
+                }
+                if (downKey >= Keyboard.KEY_NUMPAD1 && downKey <= Keyboard.KEY_NUMPAD9) {
+                    newRuleset = config.switchConfig(downKey - Keyboard.KEY_NUMPAD1 + 1);
+                }
+                
+                if (newRuleset != null) {
+                    logInGame("'" + newRuleset + "' enabled");
+                    // Hack to prevent 2nd way to switch configs from being enabled
+                    sortingKeyPressedDate = Integer.MAX_VALUE; 
+                }
+            }
+        }
+
+        // Switch between configurations (by holding the sorting key)
+        if (isSortingShortcutDown()) {
+            long currentTime = System.currentTimeMillis();
+            if (sortingKeyPressedDate == 0) {
+                sortingKeyPressedDate = currentTime;
+            } else if (currentTime - sortingKeyPressedDate > InvTweaksConst.RULESET_SWAP_DELAY
+                    && sortingKeyPressedDate != Integer.MAX_VALUE) {
+                String previousRuleset = config.getCurrentRulesetName();
+                String newRuleset = config.switchConfig();
+                if (newRuleset == null) {
+                    logInGameError("Failed to switch the configuration", null);
+                }
+                // Log only if there is more than 1 ruleset
+                else if (!previousRuleset.equals(newRuleset)) {
+                    logInGame("'" + newRuleset + "' enabled");
+                    handleSorting(currentScreen);
+                }
+                sortingKeyPressedDate = currentTime;
+            }
+        } else {
+            sortingKeyPressedDate = 0;
+        }
+        
+        
 
         return true;
 
@@ -415,7 +478,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                             handleSorting(guiScreen);
                         }
     
-                    } else if (isGuiInventory(guiScreen) || isGuiWorkbench(guiScreen)) {
+                    } else if (isValidInventory(guiScreen)) {
                         handleSorting(guiScreen);
                     }
                 }
@@ -430,7 +493,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         InvTweaksConfig config = cfgManager.getConfig();
         boolean isValidChest = isValidChest(guiScreen);
 
-        if (isValidChest || isValidInventory(guiScreen)) {
+        if (isValidChest || isGuiInventory(guiScreen) || isGuiWorkbench(guiScreen)) {
 
             int w = 10, h = 10;
 
@@ -529,39 +592,6 @@ public class InvTweaks extends InvTweaksObfuscation {
         else {
             mouseWasDown = false;
         }
-        
-        // Switch between configurations
-        InvTweaksConfig config = cfgManager.getConfig();
-        Vector<Integer> downKeys = cfgManager.getShortcutsHandler().getDownShortcutKeys();
-        if (isSortingShortcutDown()) {
-            for (int downKey : downKeys) {
-                String newRuleset = null;
-            	if (downKey >= Keyboard.KEY_1 && downKey <= Keyboard.KEY_9) {
-            		newRuleset = config.switchConfig(downKey - Keyboard.KEY_1);
-            	}
-            	else {
-            		switch (downKey) {
-                    case Keyboard.KEY_NUMPAD1: newRuleset = config.switchConfig(0); break;
-                    case Keyboard.KEY_NUMPAD2: newRuleset = config.switchConfig(1); break;
-                    case Keyboard.KEY_NUMPAD3: newRuleset = config.switchConfig(2); break;
-                    case Keyboard.KEY_NUMPAD4: newRuleset = config.switchConfig(3); break;
-                    case Keyboard.KEY_NUMPAD5: newRuleset = config.switchConfig(4); break;
-                    case Keyboard.KEY_NUMPAD6: newRuleset = config.switchConfig(5); break;
-                    case Keyboard.KEY_NUMPAD7: newRuleset = config.switchConfig(6); break;
-                    case Keyboard.KEY_NUMPAD8: newRuleset = config.switchConfig(7); break;
-                    case Keyboard.KEY_NUMPAD9: newRuleset = config.switchConfig(8); break;
-            		}
-            	}
-            	if (downKey >= Keyboard.KEY_NUMPAD1 && downKey <= Keyboard.KEY_NUMPAD9) {
-            		newRuleset = config.switchConfig(downKey - Keyboard.KEY_NUMPAD1 + 1);
-            	}
-                
-                if (newRuleset != null) {
-                    logInGame("'" + newRuleset + "' enabled");
-                }
-            }
-        }
-        
         
     }
 

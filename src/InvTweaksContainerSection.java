@@ -24,5 +24,11 @@ public enum InvTweaksContainerSection {
     /** The furnace output */
     FURNACE_OUT,
     /** The furnace fuel */
-    FURNACE_FUEL
+    FURNACE_FUEL,
+    /** The enchantment table slot */
+    ENCHANTMENT,
+    /** The three bottles slots in brewing tables */
+    BREWING_BOTTLES,
+    /** The top slot in brewing tables */
+    BREWING_INGREDIENT
 }

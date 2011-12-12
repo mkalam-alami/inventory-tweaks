@@ -289,9 +289,16 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 case MOVE_ONE_STACK:
                 {
                     vv slot = container.getSlot(fromSection, fromIndex);
-                    while (hasStack(slot) && toIndex != -1) {
+                    if (fromSection != InvTweaksContainerSection.CRAFTING_OUT) {
+                        boolean canStillMove = true;
+                        while (hasStack(slot) && toIndex != -1 && canStillMove) {
+                            canStillMove = container.move(fromSection, fromIndex, toSection, toIndex);
+                            toIndex = getNextIndex(separateStacks, drop);
+                        }
+                    }
+                    else {
+                        // Move only once, since the crafting output might be refilled
                         container.move(fromSection, fromIndex, toSection, toIndex);
-                        toIndex = getNextIndex(separateStacks, drop);
                     }
                     break;
     
@@ -325,8 +332,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         for (vv slot : container.getSlots(fromSection)) {
             if (hasStack(slot) && areSameItemType(stackToMatch, getStack(slot))) {
                 int fromIndex = container.getSlotIndex(getSlotNumber(slot));
-                while (hasStack(slot) && toIndex != -1 && !(fromSection == toSection && fromIndex == toIndex)) {
-                    container.move(fromSection, fromIndex, toSection, toIndex);
+                boolean canStillMove = true;
+                while (hasStack(slot) && toIndex != -1 && !(fromSection == toSection && fromIndex == toIndex) && canStillMove) {
+                    canStillMove = container.move(fromSection, fromIndex, toSection, toIndex);
                     toIndex = getNextIndex(separateStacks, drop);
                 }
             }
@@ -424,17 +432,18 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         // Put hold stack down
         if (getHoldStack() != null) {
             
-            container.leftClick(fromSection, fromIndex);
+            if (fromSection != InvTweaksContainerSection.CRAFTING_OUT) {
+                container.leftClick(fromSection, fromIndex);
+            }
             
-            // Sometimes (ex: crafting output) we can't put back the item
+            // Sometimes (ex: crafting/furnace output) we can't put back the item
             // in the slot, in that case choose a new one.
             if (getHoldStack() != null) {
+                // TODO Merge with existing stack if possible
                 int firstEmptyIndex = container.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
                 if (firstEmptyIndex != -1) {
-                   fromSection = InvTweaksContainerSection.INVENTORY;
                    fromSlot = firstEmptyIndex;
-                   container.leftClick(fromSection, fromSlot);
-                   
+                   container.leftClick(InvTweaksContainerSection.INVENTORY, fromSlot);
                 }
                 else {
                     throw new Exception("Couldn't put hold item down");

@@ -355,6 +355,7 @@
 			<enchantmentTable id="116"/>
 			<eyeOfEnder id="381" />
 			<enderEye id="381"/>
+			<spawnerEgg id="383" />
 		</utility>
 		<bucket>
 			<emptyBucket id="325"/>

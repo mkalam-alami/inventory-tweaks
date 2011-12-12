@@ -364,7 +364,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         // Sorting
         try {
-            new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
+            new InvTweaksHandlerSorting(mc, guiScreen, cfgManager.getConfig(),
                     InvTweaksContainerSection.INVENTORY,
                     InvTweaksHandlerSorting.ALGORITHM_INVENTORY,
                     InvTweaksConst.INVENTORY_ROW_SIZE).sort();
@@ -464,7 +464,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 chestAlgorithm = InvTweaksHandlerSorting.ALGORITHM_DEFAULT;
                             }
                             try {
-                                new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
+                                new InvTweaksHandlerSorting(mc, guiScreen, cfgManager.getConfig(),
                                         InvTweaksContainerSection.CHEST,
                                         chestAlgorithm,
                                         getContainerRowSize(guiContainer)).sort();
@@ -545,21 +545,21 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 cfgManager, id++,
                                 x - 13, y, w, h, "h", "Sort in rows",
                                 InvTweaksHandlerSorting.ALGORITHM_HORIZONTAL,
-                                rowSize);
+                                rowSize,guiContainer);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
                                 x - 25, y, w, h, "v", "Sort in columns",
                                 InvTweaksHandlerSorting.ALGORITHM_VERTICAL,
-                                rowSize);
+                                rowSize,guiContainer);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
                                 x - 37, y, w, h, "s", "Default sorting",
                                 InvTweaksHandlerSorting.ALGORITHM_DEFAULT,
-                                rowSize);
+                                rowSize,guiContainer);
                         controlList.add(button);
 
                     }
@@ -570,12 +570,12 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
     
     private void handleShortcuts(xe guiScreen) {
-        
+/*        
         // Check open GUI
         if (!(isValidChest(guiScreen) || isValidInventory(guiScreen))) {
             return;
         }
-        
+*/        
         // Configurable shortcuts
         if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1)) {
             if (!mouseWasDown) {
@@ -585,7 +585,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 // trigger a shortcut according to the pressed keys.
                 if (cfgManager.getConfig().getProperty(
                         InvTweaksConfig.PROP_ENABLE_SHORTCUTS).equals("true")) {
-                    cfgManager.getShortcutsHandler().handleShortcut((mg) guiScreen);
+                    cfgManager.getShortcutsHandler().handleShortcut(guiScreen);
                 }
             }
         }

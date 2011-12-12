@@ -11,14 +11,16 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
     
     private int algorithm;
     private int rowSize;
+    private mg guiContainer;
 
     public InvTweaksGuiSortingButton(InvTweaksConfigManager cfgManager, 
             int id, int x, int y, int w, int h,
             String displayString, String tooltip,
-            int algorithm, int rowSize) {
+            int algorithm, int rowSize, mg guiContainer) {
         super(cfgManager, id, x, y, w, h, displayString, tooltip);
         this.algorithm = algorithm;
         this.rowSize = rowSize;
+        this.guiContainer = guiContainer;
     }
 
     public void a(Minecraft minecraft, int i, int j) { /* drawButton */
@@ -51,7 +53,7 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
         if (super.c(minecraft, i, j)) { // mousePressed
             try {
                 new InvTweaksHandlerSorting(
-                        minecraft, cfgManager.getConfig(),
+                        minecraft, guiContainer, cfgManager.getConfig(),
                         section, algorithm, rowSize).sort();
             } catch (Exception e) {
                 InvTweaks.logInGameErrorStatic("Failed to sort container", e);

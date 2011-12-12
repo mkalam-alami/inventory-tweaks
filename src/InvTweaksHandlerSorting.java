@@ -45,7 +45,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private int[] lockPriorities;
     private boolean[] frozenSlots;
 
-    public InvTweaksHandlerSorting(Minecraft mc, InvTweaksConfig config,
+    public InvTweaksHandlerSorting(Minecraft mc, xe guiScreen, InvTweaksConfig config,
             InvTweaksContainerSection section, int algorithm, int rowSize) throws Exception {
         super(mc);
         
@@ -66,7 +66,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
         // Init attributes
 
-        this.containerMgr = new InvTweaksContainerSectionManager(mc, section);
+        this.containerMgr = new InvTweaksContainerSectionManager(mc, guiScreen, section);
         this.size = containerMgr.getSize();
         
         this.rules = config.getRules();

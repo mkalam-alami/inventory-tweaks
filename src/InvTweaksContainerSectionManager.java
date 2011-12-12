@@ -16,7 +16,10 @@ public class InvTweaksContainerSectionManager {
     private InvTweaksContainerSection section;
     
     public InvTweaksContainerSectionManager(Minecraft mc, InvTweaksContainerSection section) throws Exception {
-        this.containerMgr = new InvTweaksContainerManager(mc);
+      this(mc,null,section);
+    }
+    public InvTweaksContainerSectionManager(Minecraft mc, xe guiScreen, InvTweaksContainerSection section) throws Exception {
+        this.containerMgr = new InvTweaksContainerManager(mc, guiScreen);
         this.section = section;
         
         if (!containerMgr.hasSection(section)) {

@@ -37,7 +37,7 @@ public class InvTweaksConfigInventoryRuleset {
 	 */
 	public InvTweaksConfigInventoryRuleset(InvTweaksItemTree tree, String name) {
 		this.tree = tree;
-		this.name = name;
+		this.name = name.trim();
 		
 		lockPriorities = new int[InvTweaksConst.INVENTORY_SIZE];
 		for (int i = 0; i < lockPriorities.length; i++) {

@@ -58,10 +58,10 @@ public class InvTweaksObfuscation {
         return mc.A;
     }
     protected int getKeyBindingForwardKeyCode() {
-        return getKeycode(getGameSettings().n);
+        return getKeyCode(getGameSettings().n);
     }
     protected int getKeyBindingBackKeyCode() {
-        return getKeycode(getGameSettings().p);
+        return getKeyCode(getGameSettings().p);
     }
 
 	// EntityPlayer members
@@ -265,9 +265,6 @@ public class InvTweaksObfuscation {
     
     // Other
 
-    protected int getKeycode(aby keyBinding) {
-        return keyBinding.d;
-    }
     protected void playSoundAtEntity(ry theWorld, di thePlayer, String string, float f, float g) {
         theWorld.a(thePlayer, string, f, g);
     }

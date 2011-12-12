@@ -18,6 +18,7 @@
  * Sorting can now be assigned to any mouse button
  * Fixed sorting being impossible while in workbenches
  * Fixed possible crashes on external errors
+ * Unnecessary spaces/tabs are now tolerated in configs
 
 [11.21.2011] 1.33 (B1.0.0)
  * Updated source code and item tree to Minecraft 1.0.0

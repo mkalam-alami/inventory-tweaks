@@ -9,11 +9,11 @@
     <name>Inventory Tweaks</name>
 
     <properties>
-        <archiveName>InvTweaks-${project.version}</archiveName>
+        <archive.name>InvTweaks-${project.version}</archive.name>
     </properties>
 
     <build>
-        <finalName>${archiveName}</finalName>
+        <finalName>${archive.name}</finalName>
 
         <!-- Custom project layout -->
         <sourceDirectory>src</sourceDirectory>
@@ -57,7 +57,7 @@
                         <phase>package</phase>
                         <configuration>
                             <target>
-                                <zip basedir="target/classes" destfile="target/${archiveName}.zip" />
+                                <zip basedir="target/classes" destfile="target/${archive.name}.zip" />
                             </target>
                         </configuration>
                     </execution>
@@ -92,9 +92,8 @@
                 </os>
             </activation>
             <properties>
-                <minecraft.path>
-                    ${user.home}/AppData/Roaming/.minecraft/bin/
-                </minecraft.path>
+                <minecraft.path>${user.home}/AppData/Roaming/.minecraft/</minecraft.path>
+                <minecraft.bin.path>${minecraft.path}bin/</minecraft.bin.path>
             </properties>
         </profile>
         <profile>
@@ -105,9 +104,8 @@
                 </os>
             </activation>
             <properties>
-                <minecraft.path>
-                    ${user.home}:Library:Application\ Support:minecraft:mods
-                </minecraft.path>
+                <minecraft.path>${user.home}:Library:Application\ Support:minecraft</minecraft.path>
+                <minecraft.bin.path>${minecraft.path}:bin</minecraft.bin.path>
             </properties>
         </profile>
         <profile>
@@ -118,9 +116,8 @@
                 </os>
             </activation>
             <properties>
-                <minecraft.path>
-                    ${user.home}/.minecraft/bin/
-                </minecraft.path>
+                <minecraft.path>${user.home}/.minecraft/</minecraft.path>
+                <minecraft.bin.path>${minecraft.path}bin/</minecraft.bin.path>
             </properties>
         </profile>
     </profiles>
@@ -129,23 +126,23 @@
         <dependency>
             <groupId>net.minecraft</groupId>
             <artifactId>minecraft</artifactId>
-            <version>1.8</version>
+            <version>any</version>
             <scope>system</scope>
-            <systemPath>${minecraft.path}minecraft.jar</systemPath>
+            <systemPath>${minecraft.bin.path}minecraft.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.minecraft</groupId>
             <artifactId>lwjgl</artifactId>
             <version>1.8</version>
             <scope>system</scope>
-            <systemPath>${minecraft.path}lwjgl.jar</systemPath>
+            <systemPath>${minecraft.bin.path}lwjgl.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.minecraft</groupId>
             <artifactId>lwjgl_util</artifactId>
             <version>1.8</version>
             <scope>system</scope>
-            <systemPath>${minecraft.path}lwjgl_util.jar</systemPath>
+            <systemPath>${minecraft.bin.path}lwjgl_util.jar</systemPath>
         </dependency>
     </dependencies>
 

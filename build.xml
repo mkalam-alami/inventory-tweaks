@@ -21,11 +21,12 @@
 	<!-- Mod archive distribution -->
 	<target name="dist">
 		<echo>Installing...</echo>
+		<mkdir dir="${modsDir}" />
 		<echo>  - Removing possible older version</echo>
 		<delete>
 			<fileset dir="${modsDir}" includes="InvTweaks*" />
 		</delete>
-		<echo>  - Copying jar to mods folder</echo>
+		<echo>  - Copying zip to mods folder</echo>
 		<copy todir="${modsDir}">
 			<fileset dir="target/" includes="InvTweaks*.zip" />
 		</copy>

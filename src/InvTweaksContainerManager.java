@@ -150,8 +150,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
                 return false;
             }
         }
-        
-        boolean destinationEmpty = getItemStack(destSection, destIndex) == null;
 
         // Use intermediate slot if we have to swap tools, maps, etc.
         if (destStack != null
@@ -180,7 +178,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         else {
             leftClick(srcSection, srcIndex);
             leftClick(destSection, destIndex);
-            if (!destinationEmpty) {
+            if (getHoldStack() != null) {
+                // FIXME What if we can't put the item back in the source? (for example crafting/furnace output)
                 leftClick(srcSection, srcIndex);
             }
         }

@@ -62,9 +62,9 @@ public class InvTweaksConfigInventoryRuleset {
 	 */
 	public String registerLine(String rawLine) throws InvalidParameterException {
 
-		String[] words = rawLine.split(" ");
-		String lineText = rawLine.toLowerCase();
-		InvTweaksConfigSortingRule newRule = null;
+        InvTweaksConfigSortingRule newRule = null;
+        String lineText = rawLine.replaceAll("[\\s]+", " ").toLowerCase();
+		String[] words = lineText.split(" ");
 
 		// Parse valid lines only
 		if (words.length == 2) {
@@ -74,6 +74,7 @@ public class InvTweaksConfigInventoryRuleset {
 					|| lineText.matches("^[a-d][1-9]-[a-d][1-9][rv]?[rv]? [\\w]*$")) {
 				
 				words[0] = words[0].toLowerCase();
+				words[1] = words[1];
 				
 				// Locking rule
 				if (words[1].equals(InvTweaksConfig.LOCKED)) {
@@ -140,7 +141,7 @@ public class InvTweaksConfigInventoryRuleset {
 
 			// Autoreplace rule
 			else if (words[0].equals(InvTweaksConfig.AUTOREFILL)
-					|| words[0].equals("AUTOREPLACE")) { // Compatibility
+					|| words[0].equals("autoreplace")) { // Compatibility
 				words[1] = words[1].toLowerCase();
 				if (tree.isKeywordValid(words[1]) || 
 						words[1].equals(InvTweaksConfig.AUTOREFILL_NOTHING)) {

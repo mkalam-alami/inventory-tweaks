@@ -223,6 +223,7 @@ public class InvTweaks extends InvTweaksObfuscation {
      */
     public void onTickInGUI(xe guiScreen) {
         synchronized (this) {
+            handleMiddleClick(guiScreen); // Called before the rest to be able to trigger config reload 
             if (!onTick()) {
                 return;
             }
@@ -230,7 +231,6 @@ public class InvTweaks extends InvTweaksObfuscation {
                 unlockKeysIfNecessary();
             }
             handleGUILayout(guiScreen);
-            handleMiddleClick(guiScreen);
             handleShortcuts(guiScreen);
         }
     }

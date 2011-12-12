@@ -8,6 +8,7 @@
    * Enabled shortcuts with keys combinations
    * Shift + click now moves one stack (like in vanilla)
    * Changed 'move all' default shortcut to Ctrl + Shift + Click
+   * Support for brewing stands & enchantment tables
    * Some shortcuts improvements and fixes
  * Reworked mod support:
     * Support for the IronChests mod

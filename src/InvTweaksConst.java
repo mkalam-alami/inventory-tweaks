@@ -6,7 +6,7 @@ import org.lwjgl.input.Keyboard;
 public class InvTweaksConst {
 
     // Version-specific mod constants
-    public static final String MOD_VERSION = "1.34 (1.0.0)";
+    public static final String MOD_VERSION = "1.34b (1.0.0)";
     public static final String TREE_VERSION = "1.0.0";
 
     // Mod timing constants

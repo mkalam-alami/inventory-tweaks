@@ -160,7 +160,10 @@ public class InvTweaksItemTree {
 
     public List<InvTweaksItemTreeItem> getItems(int id, int damage) {
         List<InvTweaksItemTreeItem> items = itemsById.get(id);
-        List<InvTweaksItemTreeItem> filteredItems = new ArrayList<InvTweaksItemTreeItem>(items);
+        List<InvTweaksItemTreeItem> filteredItems = new ArrayList<InvTweaksItemTreeItem>();
+        if (items != null) {
+        	filteredItems.addAll(items);
+        }
         
         // Filter items of same ID, but different damage value
         if (items != null && !items.isEmpty()) {

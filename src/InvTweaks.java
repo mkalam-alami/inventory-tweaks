@@ -338,11 +338,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                     && sortingKeyPressedDate != Integer.MAX_VALUE) {
                 String previousRuleset = config.getCurrentRulesetName();
                 String newRuleset = config.switchConfig();
-                if (newRuleset == null) {
-                    logInGameError("Failed to switch the configuration", null);
-                }
                 // Log only if there is more than 1 ruleset
-                else if (!previousRuleset.equals(newRuleset)) {
+                if (newRuleset != null && !previousRuleset.equals(newRuleset)) {
                     logInGame("'" + newRuleset + "' enabled");
                     handleSorting(currentScreen);
                 }

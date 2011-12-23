@@ -193,10 +193,16 @@
 			<jackOLantern id="91"/>
 			<constructionBlock>
 				<woodenPlank id="5"/>
-				<brick id="45"/>
-				<brickBlock id="45"/>
-				<stoneBrick id="62"/>
-				<netherBrick id="112"/>
+				<bricks>
+					<brick id="45"/>
+					<brickBlock id="45"/>
+					<stoneBricks>
+						<normalStoneBrick id="98" damage="0" />
+						<mossyStoneBrick id="98" damage="1" />
+						<crackedStoneBrick id="98" damage="2" />
+					</stoneBricks>
+					<netherBrick id="112"/>
+				</bricks>
 				<glass>
 					<glassBlock id="20"/>
 					<glassPane id="102"/>

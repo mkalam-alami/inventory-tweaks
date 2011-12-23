@@ -22,8 +22,15 @@ public class InvTweaksModCompatibility {
     public boolean isSpecialChest(xe guiScreen) {
         return is(guiScreen, "GuiAlchest") // Equivalent Exchange
           || is(guiScreen, "GuiDiamondChest") // Iron chests (IC2)
-          || is(guiScreen, "GuiGoldChest")
-         /* || is(guiScreen, "GuiMultiPageChest")*/; // Multi Page chest
+          || is(guiScreen, "GuiGoldChest") // Iron chests (IC2)
+          || is(guiScreen, "GuiMultiPageChest") // Multi Page chest
+          || is(guiScreen, "GuiGoldSafe") // More Storage
+          || is(guiScreen, "GuiLocker") // More Storage
+          || is(guiScreen, "GuiDualLocker") // More Storage
+          || is(guiScreen, "GuiSafe") // More Storage
+          || is(guiScreen, "GuiCabinet") // More Storage
+          || is(guiScreen, "GuiTower") // More Storage
+          ;
     }
 
     /**
@@ -42,6 +49,10 @@ public class InvTweaksModCompatibility {
           return 9;
 	    } else if (is(guiContainer, "GuiMultiPageChest")) { // Multi Page chest
 	      return 13;
+	    } else if (is(guiContainer, "GuiLocker") // More Storage
+	    		|| is(guiContainer, "GuiDualLocker")
+	    		|| is(guiContainer, "GuiTower")) {
+	      return 8;
 	    }
         return defaultValue;
     }

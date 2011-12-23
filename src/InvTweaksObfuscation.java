@@ -306,6 +306,7 @@ public class InvTweaksObfuscation {
 	protected boolean isValidInventory(xe guiScreen) {
         return guiScreen != null && (isGuiInventory(guiScreen)
         		|| isGuiWorkbench(guiScreen)
+        		|| isGuiFurnace(guiScreen)
                 || isGuiBrewingStand(guiScreen)
                 || isGuiEnchantmentTable(guiScreen)
         		|| mods.isSpecialInventory(guiScreen));
@@ -339,6 +340,9 @@ public class InvTweaksObfuscation {
     }
     protected boolean isGuiButton(Object o) { // GuiButton
         return o != null && o instanceof ct;
+    }
+    protected boolean isGuiFurnace(Object o) { // GuiButton
+        return o != null && o instanceof aaw;
     }
     
 	protected boolean isContainerPlayer(Object o) { // ContainerPlayer

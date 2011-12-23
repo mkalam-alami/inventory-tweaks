@@ -3,6 +3,11 @@
 | Changelog                                                    |
 |==============================================================|
 
+[XX.XX.20XX] 1.35 (B1.0.0)
+ * Fixed a sorting error 
+ * Fixed the brick IDs in the item tree
+ * Fixed sorting being impossible while in a furnace
+
 [12.12.2011] 1.34 (B1.0.0)
  * Shortcuts:
    * Enabled shortcuts with keys combinations

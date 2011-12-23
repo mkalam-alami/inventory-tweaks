@@ -228,7 +228,12 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         case CHEST:
                             destSection = InvTweaksContainerSection.INVENTORY; break;
                         case INVENTORY_HOTBAR:
-                            destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;
+							if (availableSections.contains(InvTweaksContainerSection.CHEST)) {
+								destSection = InvTweaksContainerSection.CHEST;
+							} else {
+								destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR;
+							}
+							break;
                         case CRAFTING_IN:
                         case FURNACE_IN:
                             destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;

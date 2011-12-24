@@ -1,4 +1,4 @@
-<img src="http://wan.ka.free.fr/site/img/invtweaks.png" />
+<img src="http://modding.kalam-alami.net/site/img/invtweaks.png" />
 
 ## What's this project about
 

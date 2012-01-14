@@ -74,8 +74,15 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
         y += 12;
         drawShortcutLine("Craft all", "LSHIFT, RSHIFT + Click", 0x00FF8800, y);
         y += 12;
-        drawShortcutLine("Select sorting configuration", "0-9 + " +
-                Keyboard.getKeyName(obf.getKeyCode(InvTweaksConst.SORT_KEY_BINDING)), 0x00FF8800, y);
+        
+        String sortKeyName;
+        try {
+        	sortKeyName = Keyboard.getKeyName(obf.getKeyCode(InvTweaksConst.SORT_KEY_BINDING));
+        }
+        catch (Exception e) {
+        	sortKeyName = "(Sort key)";
+        }
+        drawShortcutLine("Select sorting configuration", "0-9 + " +sortKeyName, 0x00FF8800, y);
         y += 20;
         
         b(obf.getFontRenderer(), "*Useful on brewing stands, crafting tables, etc.", 30, y, 0x00666666); // drawString

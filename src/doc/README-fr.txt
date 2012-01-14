@@ -13,6 +13,6 @@
 ====== [ LIENS ] ======
 
 * Topic Minecraft Forum (en anglais) : http://www.minecraftforum.net/topic/323444-inventory-tweaks
-* Topic Minecraft.fr : minecraft.fr/forum/index.php?threads/14906/
-* Site officiel (en anglais) : http://wan.ka.free.fr/?invtweaks
-* Code source : https://github.com/jimeowan/inventory-tweaks
+* Topic Minecraft.fr : http://minecraft.fr/forum/index.php?threads/14906/
+* Site officiel (en anglais) : http://modding.kalam-alami.net/?invtweaks
+* Code source : https://github.com/mkalam-alami/inventory-tweaks

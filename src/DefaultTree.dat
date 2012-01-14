@@ -5,21 +5,15 @@
 | Tree configuration                                           |
 |==============================================================|
 
-# WHAT IS THIS?
-# This file is used to store all the keywords you can use to create tem rules, but also to define the item orders.
+# Q: WHAT IS THIS?
+# A: This file is used to store all the keywords you can use to create tem rules, but also to define the item orders.
 # You can move/change all that you want, but it's recommanded not to delete any default item.
-# It's ok if you add a same item to different categories.
 
-# ADD AN ITEM
-# Default tag: <itemName id="##" />
-# Damage-specific tag: <itemName id="##" damage="##" />
+# Q: THE FILE IS BROKEN AND I DON'T KNOW WHAT TO DO =(
+# A: Just delete this file, the default tree will be reloaded next time you sort something!
 
-# ADD A CATEGORY
-# Default tag: <categoryName> (don't forget to close it with </categoryName>)
-# By item range: <categoryName min="##" max="##" />
-  
-# THE FILE IS BROKEN AND I DON'T KNOW WHAT TO DO =(
-# Just delete this file, the default tree will be reloaded next time you sort something.
+# FULL DOCUMENTATION
+# http://modding.kalam-alami.net/?invtweaks
 
 # CREDITS: Thanks to Larandar for his contributions.
 -->

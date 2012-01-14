@@ -13,5 +13,5 @@
 ====== [ LINKS ] ======
 
 * Minecraft Forum thread: http://www.minecraftforum.net/topic/323444-inventory-tweaks
-* Official website: http://wan.ka.free.fr/?invtweaks
-* Source code: https://github.com/jimeowan/inventory-tweaks
+* Official website: http://modding.kalam-alami.net/?invtweaks
+* Source code: https://github.com/mkalam-alami/inventory-tweaks

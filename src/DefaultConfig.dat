@@ -5,12 +5,9 @@
 
 ====== [ SETTINGS ] ======
 
-Default:
 D LOCKED
 
 ======== [ GETTING STARTED ] ========
-
-# Full documentation at: http://wan.ka.free.fr/?invtweaks
 
 # SORTING RULES
 # Each line you type is a new constraint you add for sorting your inventory.
@@ -19,9 +16,7 @@ D LOCKED
 # * "A edibleFood" fills the A row with food
 # * "1 ironPickaxe" fills the 1 column with an iron pickaxe
 # * "A1-C4 blocks" fills the rectangle with any blocks
-# Open the 'InvTweaksTree.txt' file for a list of available keywords. If an item
-# is missing from the item tree (for example mod items), you can either add it 
-# or create a rule by ID. Examples: "D5 203", "D9 12345-13"
+# * "D LOCKED" avoids items from the hotbar to move out of it when sorting
 
 # INVENTORY GRID
 #     1   2   3   4   5   6   7   8   9
@@ -31,21 +26,10 @@ D LOCKED
 #  
 # D [D1][D2][D3][D4][D5][D6][D7][D8][D9]
 
-# MULTIPLE CONFIGURATIONS
-# Any word followed by a colon ':' defines a new configuration (ex: "Fighting:").
-# You can then swap between the configurations by pressing the sorting key + 1-9
-# (1 will load the first configuration, etc.)
+# AVAILABLE KEYWORDS
+# Open the 'InvTweaksTree.txt' file for a list of available keywords. If an item
+# is missing from the item tree (for example mod items), you can either add it 
+# or create a rule by ID. Examples: "D5 203", "D9 12345-13"
 
-# ADVANCED RULES
-# r modifier         = Reverse the sorting order for a row/column (ex: "Ar sword" sorts from right to left)
-# v modifier         = For rectangle rules. Sorts vertically instead of horizontally (ex: "A1-B8v blocks")
-# "LOCKED" rule      = Locks a part of the inventory so that stuff doesn't go there (ex: "D LOCKED").
-#                      Is overriden by more specific rules ("D LOCKED" is overriden by "D1 torch" or "1 swords").
-# "FROZEN" rule      = Completely ignores the slot during sorting (ex: "D8 FROZEN").
-# "AUTOREFILL" rule  = Allows to customize what can be automatically replaced
-#                      (ex: "AUTOREFILL tools" restricts the item replacement to tools).
-#                      You can disable completely the feature using "AUTOREFILL nothing".
-
-# TIPS
-# * Rows are, by default, sorted from left to right, and columns from bottom to top.
-# * The rectangle rules "A1-C3", "C3-A1", "A3-C1" and "C1-A3" don't behave exactly the same!
+# FULL DOCUMENTATION
+# http://modding.kalam-alami.net/?invtweaks

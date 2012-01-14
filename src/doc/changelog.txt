@@ -3,7 +3,13 @@
 | Changelog                                                    |
 |==============================================================|
 
-[12.24.2011] 1.35 (B1.0.0)
+[01.14.2012] 1.36 (1.1)
+ * Updated the mod to Minecraft 1.1
+ * Improved the settings screen and added a few options
+ * Fixed a rare crash when opening the shortcuts help
+ * Fixed a crash when removing properties from the .cfg file
+ 
+[12.24.2011] 1.35 (1.0.0)
  * Fixed a sorting error 
  * Fixed the brick IDs in the item tree
  * Shift+click on hotbar now moves the stacks to the chest
@@ -12,7 +18,7 @@
  * Fixed support for the Multi-Page Chest mod
  * Added support for the More Storage mod
 
-[12.12.2011] 1.34 (B1.0.0)
+[12.12.2011] 1.34 (1.0.0)
  * Shortcuts:
    * Enabled shortcuts with keys combinations
    * Shift + click now moves one stack (like in vanilla)
@@ -29,7 +35,7 @@
  * Fixed possible crashes on external errors
  * Unnecessary spaces/tabs are now tolerated in configs
 
-[11.21.2011] 1.33 (B1.0.0)
+[11.21.2011] 1.33 (1.0.0)
  * Updated source code and item tree to Minecraft 1.0.0
  * Partial support for Equivalent Exchange containers
  * The item tree file is now updated automatically (backups and replaces the old one)

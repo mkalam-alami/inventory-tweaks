@@ -150,9 +150,9 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     if (from != null) {
 
                         // Move armor parts
-                    	if (sortArmorParts) {
-	                        ww fromItem = getItem(from);
-	                        if (isDamageable(fromItem)) {
+	                    ww fromItem = getItem(from);
+	                    if (isDamageable(fromItem)) {
+	                        if (sortArmorParts) {
 	                             if (isItemArmor(fromItem)) {
 	                            	 po fromItemArmor = (po) fromItem;
 	                                 if (globalContainer.hasSection(InvTweaksContainerSection.ARMOR)) {

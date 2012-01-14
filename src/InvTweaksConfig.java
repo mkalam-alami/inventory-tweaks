@@ -38,7 +38,8 @@ public class InvTweaksConfig {
     public static final String PROP_SHOW_CHEST_BUTTONS = "showChestButtons";
     public static final String PROP_ENABLE_SORTING_ON_PICKUP = "enableSortingOnPickup";
 	public static final String PROP_ENABLE_AUTO_EQUIP_ARMOR = "enableAutoEquipArmor";
-    
+	public static final String PROP_ENABLE_AUTO_REFILL = "enableAutoRefill";
+
     // Shortcuts
     public static final String PROP_ENABLE_SHORTCUTS = "enableShortcuts";
     public static final String PROP_SHORTCUT_PREFIX = "shortcutKey";
@@ -49,9 +50,10 @@ public class InvTweaksConfig {
     public static final String PROP_SHORTCUT_UP = "shortcutKeyToUpperSection";
     public static final String PROP_SHORTCUT_DOWN = "shortcutKeyToLowerSection";
     
-    // Sound
-    public static final String PROP_ENABLE_SORTING_SOUND = "enableSortingSound";
-    public static final String PROP_ENABLE_AUTO_REFILL_SOUND = "enableAutoRefillSound";
+    // Other
+    public static final String PROP_ENABLE_SOUNDS = "enableSounds";
+    public static final String PROP_OBSOLETE_ENABLE_SORTING_SOUND = "enableSortingSound";
+    public static final String PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND = "enableAutoRefillSound";
 
     public static final String VALUE_TRUE = "true";
     public static final String VALUE_FALSE = "false";
@@ -313,24 +315,29 @@ public class InvTweaksConfig {
     }
 
     public boolean isAutoRefillEnabled(int itemID, int itemDamage) {
-        List<InvTweaksItemTreeItem> items = tree.getItems(itemID, itemDamage);
-        Vector<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();
-        boolean found = false;
-        for (String keyword : autoReplaceRules) {
-            if (keyword.equals(AUTOREFILL_NOTHING))
-                return false;
-            if (tree.matches(items, keyword))
-                found = true;
-        }
-        if (found)
-            return true;
-        else {
-            if (autoReplaceRules.isEmpty()) {
-                return DEFAULT_AUTO_REFILL_BEHAVIOUR;
-            } else {
-                return false;
-            }
-        }
+    	if (!getProperty(PROP_ENABLE_AUTO_REFILL).equals(VALUE_FALSE)) {
+	        List<InvTweaksItemTreeItem> items = tree.getItems(itemID, itemDamage);
+	        Vector<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();
+	        boolean found = false;
+	        for (String keyword : autoReplaceRules) {
+	            if (keyword.equals(AUTOREFILL_NOTHING))
+	                return false;
+	            if (tree.matches(items, keyword))
+	                found = true;
+	        }
+	        if (found)
+	            return true;
+	        else {
+	            if (autoReplaceRules.isEmpty()) {
+	                return DEFAULT_AUTO_REFILL_BEHAVIOUR;
+	            } else {
+	                return false;
+	            }
+	        }
+    	}
+    	else {
+    		return false;
+    	}
     }
 
     /**
@@ -443,8 +450,8 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_MIDDLE_CLICK, VALUE_TRUE);
         properties.put(PROP_SHOW_CHEST_BUTTONS, VALUE_TRUE);
         properties.put(PROP_ENABLE_SORTING_ON_PICKUP, VALUE_FALSE);
-        properties.put(PROP_ENABLE_AUTO_REFILL_SOUND, VALUE_TRUE);
-        properties.put(PROP_ENABLE_SORTING_SOUND, VALUE_TRUE);
+        properties.put(PROP_ENABLE_AUTO_REFILL, VALUE_TRUE);
+        properties.put(PROP_ENABLE_SOUNDS, VALUE_TRUE);
         properties.put(PROP_ENABLE_SHORTCUTS, VALUE_TRUE);
         properties.put(PROP_ENABLE_AUTO_EQUIP_ARMOR, VALUE_FALSE);
         
@@ -471,6 +478,10 @@ public class InvTweaksConfig {
         }
         newProperties.sortKeys();
         
+        // XXX 1.35 Obsolete properties removal
+        newProperties.remove(PROP_OBSOLETE_ENABLE_SORTING_SOUND);
+        newProperties.remove(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND);
+        
         // XXX 1.34 update: force shortcuts reset
         if (newProperties.get(PROP_VERSION) != null) {
         
@@ -489,7 +500,7 @@ public class InvTweaksConfig {
             
             // Retro-compatibility: rename autoreplace
             if (properties.contains("enableAutoreplaceSound")) {
-                properties.put(PROP_ENABLE_AUTO_REFILL_SOUND, 
+                properties.put(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND, 
                         (String) properties.get("enableAutoreplaceSound"));
                 properties.remove("enableAutoreplaceSound");
             }

@@ -164,7 +164,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 						yq stack = containerMgr.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (containerMgr.move(i, targetedSlot)) {
-								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_REFILL_SOUND).equals("false")) {
+								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS).equals(InvTweaksConfig.VALUE_FALSE)) {
 					    			playSoundAtEntity(getTheWorld(), getThePlayer(), 
 					    					"mob.chickenplop", 0.15F, 0.2F);
 								}

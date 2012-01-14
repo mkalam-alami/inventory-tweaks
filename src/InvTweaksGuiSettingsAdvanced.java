@@ -21,10 +21,12 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
     private final static int ID_SORT_ON_PICKUP = 1;
     private final static int ID_AUTO_EQUIP_ARMOR = 2;
+    private final static int ID_ENABLE_SOUNDS = 3;
     private final static int ID_EDITSHORTCUTS = 100;
     
     private final static String LABEL_SORT_ON_PICKUP = "Sort on pickup";
     private final static String LABEL_EQUIP_ARMOR = "Auto-equip armor";
+    private final static String LABEL_ENABLE_SOUNDS = "Sound";
 
     private final static String SP_ONLY = ": Only in SP";
     
@@ -48,7 +50,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton sortOnPickupBtn = new InvTweaksGuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, LABEL_SORT_ON_PICKUP), "Moves picked up items\nto the right slots");
+                InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, LABEL_SORT_ON_PICKUP), "Avoids to fill the hotbar with\neverything that you pickup");
         controlList.add(sortOnPickupBtn);
         if (obf.isMultiplayerWorld()) {
             // Sorting on pickup unavailable in SMP
@@ -61,6 +63,12 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, LABEL_EQUIP_ARMOR), "Equips the best available\narmor when sorting");
         controlList.add(autoEquipArmorBtn);
+        
+        moveToButtonCoords(i++, p);
+        moveToButtonCoords(i++, p);
+        InvTweaksGuiTooltipButton enableSoundsBtn = new InvTweaksGuiTooltipButton(ID_ENABLE_SOUNDS, p.getX(), p.getY(), computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_ENABLE_SOUNDS, LABEL_ENABLE_SOUNDS), "Play sounds when sorting\nor when auto-refill is triggered");
+        controlList.add(enableSoundsBtn);
         
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
@@ -76,6 +84,14 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         obf.setControlList(this, controlList);
 
     }
+
+	public void a(int i, int j, float f) { /* drawScreen */
+		super.a(i, j, f);
+        Point p = new Point();
+        moveToButtonCoords(1, p);
+        b(obf.getFontRenderer(), "Note: On PvP servers, the auto-refill & auto-equip armor", p.getX(), 100, 0x999999); // Gui.drawCenteredString
+        b(obf.getFontRenderer(), "options are often considered cheating!", p.getX(), 110, 0x999999);
+    }
     
     protected void a(zr guibutton) { /* actionPerformed */
     	
@@ -89,6 +105,11 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         // Toggle shortcuts
         case ID_AUTO_EQUIP_ARMOR:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, LABEL_EQUIP_ARMOR);
+            break;
+            
+        // Toggle sounds
+        case ID_ENABLE_SOUNDS:
+            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SOUNDS, LABEL_ENABLE_SOUNDS);
             break;
 
         // Open shortcuts mappings in external editor

@@ -356,7 +356,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private void handleSorting(ug guiScreen) {
-
+    	
         yq selectedItem = getMainInventory()[getFocusedSlot()];
 
         // Sorting
@@ -453,7 +453,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                         if (target == 1) {
     
                             // Play click
-                            playSoundAtEntity(getTheWorld(), getThePlayer(), "random.click", 0.2F, 1.8F);
+                            playClick();
     
                             long timestamp = System.currentTimeMillis();
                             if (timestamp - chestAlgorithmClickTimestamp > 
@@ -664,7 +664,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private void playClick() {
-        if (!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_SOUND).equals("false")) {
+        if (!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS).equals(InvTweaksConfig.VALUE_FALSE)) {
             playSoundAtEntity(getTheWorld(), getThePlayer(), "random.click", 0.2F, 1.8F);
         }
     }

@@ -271,6 +271,9 @@ public class InvTweaksObfuscation {
     protected int getKeyCode(ads keyBinding) { // KeyBinding
         return keyBinding.d;
     }
+    protected String getLocalizedString(String key) {
+    	return abn.a().b(key);
+    }
 
     // Static access
 
@@ -297,7 +300,6 @@ public class InvTweaksObfuscation {
     }
     
 	// Classes
-    // TODO
     
     protected boolean isValidChest(ug guiScreen) {
         return guiScreen != null && (isGuiChest(guiScreen)

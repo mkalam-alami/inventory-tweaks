@@ -24,7 +24,8 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private final static int ID_CHESTS_BUTTONS = 2;
     private final static int ID_SHORTCUTS = 3;
     private final static int ID_SHORTCUTS_HELP = 4;
-    private final static int ID_MORE_OPTIONS = 5;
+    private final static int ID_AUTO_REFILL = 5;
+    private final static int ID_MORE_OPTIONS = 6;
     private final static int ID_EDITRULES = 100;
     private final static int ID_EDITTREE = 101;
     private final static int ID_HELP = 102;
@@ -32,6 +33,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private final static String LABEL_MIDDLE_CLICK = "Middle click";
     private final static String LABEL_CHEST_BUTTONS = "Chest buttons";
     private final static String LABEL_SHORTCUTS = "Shortcuts";
+    private final static String LABEL_AUTO_REFILL = "Auto-refill";
     private final static String LABEL_MORE_OPTIONS = "More options...";
     
     public InvTweaksGuiSettings(Minecraft mc, ug parentScreen, InvTweaksConfig config) {
@@ -77,14 +79,21 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             obf.setEnabled(shortcutsBtn, false);
             shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(In conflict with Convenient Inventory)");
         }
-        
+
         moveToButtonCoords(i++, p);
-        controlList.add(new InvTweaksGuiTooltipButton(ID_MORE_OPTIONS, p.getX(), p.getY(), LABEL_MORE_OPTIONS));
-    
+        InvTweaksGuiTooltipButton autoRefillBtn = new InvTweaksGuiTooltipButton(ID_AUTO_REFILL, p.getX(), p.getY(), computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_ENABLE_AUTO_REFILL, LABEL_AUTO_REFILL), "Replaces broken tools & emptied stacks\nwith others from your inventory");
+        controlList.add(autoRefillBtn);
+        
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, LABEL_CHEST_BUTTONS), "Adds three buttons\non chests to sort them"));
 
+        moveToButtonCoords(i++, p);
+        moveToButtonCoords(i++, p);
+        controlList.add(new InvTweaksGuiTooltipButton(ID_MORE_OPTIONS, p.getX(), p.getY(), LABEL_MORE_OPTIONS, "Even more cool stuff"));
+    
+        
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {

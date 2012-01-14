@@ -22,7 +22,7 @@ public class mod_InvTweaks extends BaseMod {
 
 	@Override
 	public void load() {
-
+		
 		Minecraft mc = ModLoader.getMinecraftInstance();
 
 		// Register key (listen only for key down events)
@@ -45,7 +45,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Called by ModLoader each time the sorting key is pressed.
 	 */
-	public void KeyboardEvent(aby keyBinding) {
+	public void KeyboardEvent(ads keyBinding) {
 		instance.onSortingKeyPressed();
 	}
 

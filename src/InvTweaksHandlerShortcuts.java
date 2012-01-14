@@ -37,7 +37,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private InvTweaksContainerManager container;
     private InvTweaksContainerSection fromSection;
     private int fromIndex;
-    private dk fromStack;
+    private yq fromStack;
     private InvTweaksContainerSection toSection;
     private ShortcutType shortcutType;
 
@@ -136,7 +136,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         return downShortcutKeys;
     }
     
-    public void handleShortcut(mg guiContainer) {
+    public void handleShortcut(ft guiContainer) {
         // IMPORTANT: This method is called before the default action is executed.
         
         updateKeyStatuses();
@@ -148,7 +148,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         boolean shortcutValid = false;
         
         // Check that the slot is not empty
-        vv slot = getSlotAtPosition(guiContainer, x, y);
+        wz slot = getSlotAtPosition(guiContainer, x, y);
         
         if (slot != null && hasStack(slot)) {
 
@@ -196,7 +196,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     availableSections.add(InvTweaksContainerSection.FURNACE_IN);
                 }
                 else if (container.hasSection(InvTweaksContainerSection.BREWING_INGREDIENT)) {
-                	dk stack = container.getStack(slot);
+                	yq stack = container.getStack(slot);
                 	if (stack != null) {
                 		if (getItemID(stack) == 373 && getItemDamage(stack) == 0 /* Water Bottle */) {
                 			availableSections.add(InvTweaksContainerSection.BREWING_BOTTLES);
@@ -307,7 +307,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 
                 case MOVE_ONE_STACK:
                 {
-                    vv slot = container.getSlot(fromSection, fromIndex);
+                    wz slot = container.getSlot(fromSection, fromIndex);
                     if (fromSection != InvTweaksContainerSection.CRAFTING_OUT
                     		&& toSection != InvTweaksContainerSection.ENCHANTMENT) {
                         boolean canStillMove = true;
@@ -332,7 +332,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     
                 case MOVE_ALL_ITEMS:
                 {
-                    dk stackToMatch = copy(fromStack);
+                    yq stackToMatch = copy(fromStack);
                     moveAll(fromSection, toSection, separateStacks, drop, stackToMatch);
                     if (fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
                             && toSection == InvTweaksContainerSection.CHEST) {
@@ -347,9 +347,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     }
     
     private void moveAll(InvTweaksContainerSection fromSection, InvTweaksContainerSection toSection, 
-            boolean separateStacks, boolean drop, dk stackToMatch) throws TimeoutException {
+            boolean separateStacks, boolean drop, yq stackToMatch) throws TimeoutException {
         int toIndex = getNextIndex(separateStacks, drop);
-        for (vv slot : container.getSlots(fromSection)) {
+        for (wz slot : container.getSlots(fromSection)) {
             if (hasStack(slot) && areSameItemType(stackToMatch, getStack(slot))) {
                 int fromIndex = container.getSlotIndex(getSlotNumber(slot));
                 boolean canStillMove = true;
@@ -399,9 +399,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         // Try to merge with existing slot
         if (!emptySlotOnly) {
             int i = 0;
-            for (vv slot : container.getSlots(toSection)) {
+            for (wz slot : container.getSlots(toSection)) {
                 if (hasStack(slot)) {
-                    dk stack = getStack(slot);
+                    yq stack = getStack(slot);
                     if (areItemsEqual(stack, fromStack)
                             && getStackSize(stack) < getMaxStackSize(stack)) {
                         result = i;
@@ -472,10 +472,10 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         }
     }
     
-    private vv getSlotAtPosition(mg guiContainer, int i, int j) { 
+    private wz getSlotAtPosition(ft guiContainer, int i, int j) { 
         // Copied from class 'mg' (GuiContainer)
         for (int k = 0; k < getSlots(getContainer(guiContainer)).size(); k++) {
-            vv localsx = (vv) getSlots(getContainer(guiContainer)).get(k);
+            wz localsx = (wz) getSlots(getContainer(guiContainer)).get(k);
             if (InvTweaks.getIsMouseOverSlot(guiContainer, localsx, i, j)) {
                 return localsx;
             }

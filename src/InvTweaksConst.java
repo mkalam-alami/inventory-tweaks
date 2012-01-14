@@ -5,11 +5,16 @@ import org.lwjgl.input.Keyboard;
 
 public class InvTweaksConst {
 
-    // Version-specific mod constants
-    public static final String MOD_VERSION = "1.35 (1.0.0)";
+    // Mod version
+    public static final String MOD_VERSION = "1.36 (1.1)";
+
+    // Mod tree version
+    // Change only when the tree evolves significantly enough to need to override all configs
     public static final String TREE_VERSION = "1.0.0";
 
-    // Mod timing constants
+    
+    
+    // Timing constants
     public static final int RULESET_SWAP_DELAY = 1000;
     public static final int AUTO_REFILL_DELAY = 200;
     public static final int POLLING_DELAY = 3;
@@ -51,7 +56,7 @@ public class InvTweaksConst {
      * Maintained by Minecraft so that its keycode is actually
      * what has been configured by the player (not always the R key).
      */
-    public static final aby SORT_KEY_BINDING = 
-        new aby("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
+    public static final ads SORT_KEY_BINDING = 
+        new ads("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
     
 }

@@ -61,7 +61,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Called by ModLoader for each tick while the player is in a menu.
 	 */
-	public boolean OnTickInGUI(float clock, Minecraft minecraft, xe guiScreen) {
+	public boolean OnTickInGUI(float clock, Minecraft minecraft, ug guiScreen) {
 		if (guiScreen != null) {
 			instance.onTickInGUI(guiScreen);
 		}
@@ -71,7 +71,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Called by ModLoader when an item has been picked up.
 	 */
-	public void OnItemPickup(vi entityplayer, dk stack) {
+	public void OnItemPickup(xb entityplayer, yq stack) {
 		// It's useless to give stack as a parameter since the
 		// given object doesn't contain enough information to know
 		// which stack in the inventory has been updated. We have to

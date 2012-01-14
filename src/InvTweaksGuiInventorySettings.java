@@ -16,7 +16,7 @@ import org.lwjgl.util.Point;
  * @author Jimeo Wan
  * 
  */
-public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
+public class InvTweaksGuiInventorySettings extends ug /* GuiScreen */ {
 
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
@@ -46,10 +46,10 @@ public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
 
     private Minecraft mc;
     private InvTweaksObfuscation obf;
-    private xe parentScreen;
+    private ug parentScreen;
     private InvTweaksConfig config;
 
-    public InvTweaksGuiInventorySettings(Minecraft mc, xe parentScreen,
+    public InvTweaksGuiInventorySettings(Minecraft mc, ug parentScreen,
             InvTweaksConfig config) {
         this.mc = mc;
         this.obf = new InvTweaksObfuscation(mc);
@@ -59,18 +59,18 @@ public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
 
     public void a() { /* initGui */
 
-        List<ct> controlList = new LinkedList<ct>(); /* List<GuiButton> */
+        List<zr> controlList = new LinkedList<zr>(); /* List<GuiButton> */
         Point p = new Point();
         int i = 0;
 
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new ct(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 72, "Open the sorting rules file..."));
-        controlList.add(new ct(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 96, "Open the item tree file..."));
-        controlList.add(new ct(ID_EDITSHORTCUTS, p.getX() + 55, obf.getHeight(this) / 6 + 120, "Open the shortcuts mappings file..."));
-        controlList.add(new ct(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, "Open help in browser..."));
-        controlList.add(new ct(ID_DONE, p.getX() + 55, obf.getHeight(this) / 6 + 168, "Done"));
+        controlList.add(new zr(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 72, "Open the sorting rules file..."));
+        controlList.add(new zr(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 96, "Open the item tree file..."));
+        controlList.add(new zr(ID_EDITSHORTCUTS, p.getX() + 55, obf.getHeight(this) / 6 + 120, "Open the shortcuts mappings file..."));
+        controlList.add(new zr(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, "Open help in browser..."));
+        controlList.add(new zr(ID_DONE, p.getX() + 55, obf.getHeight(this) / 6 + 168, "Done"));
 
         // Create settings buttons
 
@@ -115,8 +115,7 @@ public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
 
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
-            for (Object o : controlList) {
-                ct button = (ct) o;
+            for (zr button : controlList) {
                 if (obf.getId(button) >= ID_EDITRULES && obf.getId(button) <= ID_HELP) {
                     obf.setEnabled(button, false);
                 }
@@ -129,12 +128,12 @@ public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
     }
     
     public void a(int i, int j, float f) { /* drawScreen */
-        j(); // Gui.drawDefaultBackground
+        k(); // Gui.drawDefaultBackground
         a(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         super.a(i, j, f); // drawScreen
     }
 
-    protected void a(ct guibutton) { /* actionPerformed */
+    protected void a(zr guibutton) { /* actionPerformed */
 
         switch (obf.getId(guibutton)) {
 
@@ -210,7 +209,7 @@ public class InvTweaksGuiInventorySettings extends xe /* GuiScreen */ {
         p.setY(obf.getHeight(this) / 6 + (buttonOrder / 2) * 24);
     }
 
-    private void toggleBooleanButton(ct guibutton, String property, String label) {
+    private void toggleBooleanButton(zr guibutton, String property, String label) {
         Boolean enabled = !new Boolean(config.getProperty(property));
         config.setProperty(property, enabled.toString());
         obf.setDisplayString(guibutton, computeBooleanButtonLabel(property, label));

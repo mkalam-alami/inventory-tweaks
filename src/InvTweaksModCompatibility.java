@@ -19,7 +19,7 @@ public class InvTweaksModCompatibility {
      * @param guiContainer
      * @return
      */
-    public boolean isSpecialChest(xe guiScreen) {
+    public boolean isSpecialChest(ug guiScreen) {
         return is(guiScreen, "GuiAlchest") // Equivalent Exchange
           || is(guiScreen, "GuiDiamondChest") // Iron chests (IC2)
           || is(guiScreen, "GuiGoldChest") // Iron chests (IC2)
@@ -40,7 +40,7 @@ public class InvTweaksModCompatibility {
      * @param defaultValue
      * @return
      */
-    public int getSpecialChestRowSize(mg guiContainer, int defaultValue) {
+    public int getSpecialChestRowSize(ft guiContainer, int defaultValue) {
         if (is(guiContainer, "GuiAlchest")) { // Equivalent Exchange
             return 13;
         } else if (is(guiContainer, "GuiDiamondChest")) { // Iron chests (IC2)
@@ -62,11 +62,11 @@ public class InvTweaksModCompatibility {
      * @param guiScreen
      * @return
      */
-    public boolean isSpecialInventory(xe guiScreen) {
+    public boolean isSpecialInventory(ug guiScreen) {
         return is(guiScreen, "GuiInventoryMoreSlots"); // Aether mod
     }
     
-    private static final boolean is(xe guiScreen, String className) {
+    private static final boolean is(ug guiScreen, String className) {
         return guiScreen.getClass().getSimpleName().contains(className);
     }
 

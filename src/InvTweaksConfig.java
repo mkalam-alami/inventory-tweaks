@@ -37,6 +37,7 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_MIDDLE_CLICK = "enableMiddleClick";
     public static final String PROP_SHOW_CHEST_BUTTONS = "showChestButtons";
     public static final String PROP_ENABLE_SORTING_ON_PICKUP = "enableSortingOnPickup";
+	public static final String PROP_ENABLE_AUTO_EQUIP_ARMOR = "enableAutoEquipArmor";
     
     // Shortcuts
     public static final String PROP_ENABLE_SHORTCUTS = "enableShortcuts";
@@ -62,6 +63,7 @@ public class InvTweaksConfig {
     public static final String AUTOREFILL_NOTHING = "nothing";
     public static final String DEBUG = "debug";
     public static final boolean DEFAULT_AUTO_REFILL_BEHAVIOUR = true;
+
 
     private String rulesFile;
     private String treeFile;
@@ -217,8 +219,14 @@ public class InvTweaksConfig {
         return result;
     }
     
+    /**
+     * Get a configuration property value
+     * @param key
+     * @return The value or "" (never null)
+     */
     public String getProperty(String key) {
-        return properties.getProperty(key);
+    	String value =  properties.getProperty(key);
+    	return (value != null) ? value : "";
     }
 
     public void setProperty(String key, String value) {
@@ -434,10 +442,11 @@ public class InvTweaksConfig {
         
         properties.put(PROP_ENABLE_MIDDLE_CLICK, VALUE_TRUE);
         properties.put(PROP_SHOW_CHEST_BUTTONS, VALUE_TRUE);
-        properties.put(PROP_ENABLE_SORTING_ON_PICKUP, VALUE_TRUE);
+        properties.put(PROP_ENABLE_SORTING_ON_PICKUP, VALUE_FALSE);
         properties.put(PROP_ENABLE_AUTO_REFILL_SOUND, VALUE_TRUE);
         properties.put(PROP_ENABLE_SORTING_SOUND, VALUE_TRUE);
         properties.put(PROP_ENABLE_SHORTCUTS, VALUE_TRUE);
+        properties.put(PROP_ENABLE_AUTO_EQUIP_ARMOR, VALUE_FALSE);
         
         properties.put(PROP_SHORTCUT_ALL_ITEMS, "LCONTROL+LSHIFT, RCONTROL+RSHIFT");
         properties.put(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");

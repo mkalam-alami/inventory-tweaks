@@ -37,6 +37,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private InvTweaksContainerSectionManager containerMgr;
     private int algorithm;
     private int size;
+    private boolean sortArmorParts;
     
     private InvTweaksItemTree tree;
     private Vector<InvTweaksConfigSortingRule> rules;
@@ -68,6 +69,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
         this.containerMgr = new InvTweaksContainerSectionManager(mc, section);
         this.size = containerMgr.getSize();
+        this.sortArmorParts = config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR).equals(InvTweaksConfig.VALUE_TRUE);
         
         this.rules = config.getRules();
         this.tree = config.getTree();
@@ -148,22 +150,24 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     if (from != null) {
 
                         // Move armor parts
-                        ww fromItem = getItem(from);
-                        if (isDamageable(fromItem)) {
-                             if (isItemArmor(fromItem)) {
-                            	 po fromItemArmor = (po) fromItem;
-                                 if (globalContainer.hasSection(InvTweaksContainerSection.ARMOR)) {
-                                     List<wz> armorSlots = globalContainer.getSlots(InvTweaksContainerSection.ARMOR);
-                                     for (wz slot : armorSlots) {
-                                        if (isItemValid(slot, from)
-                                                && (!hasStack(slot) || getArmorLevel(fromItemArmor) > getArmorLevel(((po) getItem(getStack(slot)))))) {
-                                            globalContainer.move(InvTweaksContainerSection.INVENTORY, i, InvTweaksContainerSection.ARMOR,
-                                                    globalContainer.getSlotIndex(getSlotNumber(slot)));
-                                        }
-                                    }
-                                 }
-                             }
-                        }
+                    	if (sortArmorParts) {
+	                        ww fromItem = getItem(from);
+	                        if (isDamageable(fromItem)) {
+	                             if (isItemArmor(fromItem)) {
+	                            	 po fromItemArmor = (po) fromItem;
+	                                 if (globalContainer.hasSection(InvTweaksContainerSection.ARMOR)) {
+	                                     List<wz> armorSlots = globalContainer.getSlots(InvTweaksContainerSection.ARMOR);
+	                                     for (wz slot : armorSlots) {
+	                                        if (isItemValid(slot, from)
+	                                                && (!hasStack(slot) || getArmorLevel(fromItemArmor) > getArmorLevel(((po) getItem(getStack(slot)))))) {
+	                                            globalContainer.move(InvTweaksContainerSection.INVENTORY, i, InvTweaksContainerSection.ARMOR,
+	                                                    globalContainer.getSlotIndex(getSlotNumber(slot)));
+	                                        }
+	                                    }
+	                                 }
+	                             }
+	                        }
+                    	}
                         
                         // Stackable objects are never damageable
                         else {

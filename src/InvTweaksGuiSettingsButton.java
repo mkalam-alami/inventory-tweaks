@@ -8,9 +8,9 @@ import net.minecraft.client.Minecraft;
  * @author Jimeo Wan
  *
  */
-public class InvTweaksGuiInventorySettingsButton extends InvTweaksGuiIconButton {
+public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
     
-    public InvTweaksGuiInventorySettingsButton(InvTweaksConfigManager cfgManager,
+    public InvTweaksGuiSettingsButton(InvTweaksConfigManager cfgManager,
             int id, int x, int y, int w, int h,
             String displayString, String tooltip) {
         super(cfgManager, id, x, y, w, h, displayString, tooltip);
@@ -69,8 +69,7 @@ public class InvTweaksGuiInventorySettingsButton extends InvTweaksGuiIconButton 
 
             // Display menu
             obf.displayGuiScreen(
-                    new InvTweaksGuiInventorySettings(minecraft,
-                    obf.getCurrentScreen(), config));
+                    new InvTweaksGuiSettings(minecraft, obf.getCurrentScreen(), config));
             return true;
         } else {
             return false;

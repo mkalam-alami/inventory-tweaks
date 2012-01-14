@@ -511,7 +511,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                 // Inventory button
                 if (!isValidChest) {
-                    controlList.add(new InvTweaksGuiInventorySettingsButton(
+                    controlList.add(new InvTweaksGuiSettingsButton(
                             cfgManager, InvTweaksConst.JIMEOWAN_ID,
                             getWidth(guiScreen) / 2 + 73, getHeight(guiScreen) / 2 - 78,
                             w, h, "...", "Inventory settings"));
@@ -529,7 +529,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                         y = (getHeight(guiContainer) - getYSize(guiContainer)) / 2 + 5;
 
                     // Settings button
-                    controlList.add(new InvTweaksGuiInventorySettingsButton(
+                    controlList.add(new InvTweaksGuiSettingsButton(
                             cfgManager, id++, 
                             x - 1, y, w, h, "...", "Inventory settings"));
 

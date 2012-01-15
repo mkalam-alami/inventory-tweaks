@@ -41,10 +41,15 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
         
         int y = obf.getHeight(this) / 6;
 
-        drawShortcutLine("Move one stack",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_STACK) + " + Click",
-                0x00FFFF00, y);
+        drawShortcutLine("Move one stack", "LSHIFT or RSHIFT + Click", 0x00FFFF00, y);
         y += 12;
+        drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_UP, obf.getKeyBindingForwardKeyCode(), "(Forward)")
+        		+ " + Click", 0x00FFFF00, y);
+        y += 12;
+        drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_DOWN, obf.getKeyBindingBackKeyCode(), "(Back)") 
+        		+ " + Click", 0x00FFFF00, y);
+        y += 12;
+        
         drawShortcutLine("Move one item only",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + Click",
                 0x00FFFF00, y);
@@ -55,17 +60,9 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
         y += 25;
 
         
-        drawShortcutLine("Send to upper section*",
-        		buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_UP, obf.getKeyBindingForwardKeyCode(), "(Forward)")
-        		+ " + Click", 0x0000FF33, y);
+        drawShortcutLine("Move to hotbar", "0-9 + Click", 0x0000FF33, y);
         y += 12;
-        drawShortcutLine("Send to lower section", 
-        		buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_DOWN, obf.getKeyBindingBackKeyCode(), "(Back)") 
-        		+ " + Click", 0x0000FF33, y);
-        y += 12;
-        drawShortcutLine("Send to hotbar", "0-9 + Click", 0x0000FF33, y);
-        y += 12;
-        drawShortcutLine("Send to empty slot", "(Any shortcut) + Right instead of left click", 0x0000FF33, y);
+        drawShortcutLine("Move to empty slot", "(Any shortcut) + Right instead of left click", 0x0000FF33, y);
         y += 25;
         
         drawShortcutLine("Drop",
@@ -78,8 +75,6 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
         String sortKeyName = getKeyName(obf.getKeyCode(InvTweaksConst.SORT_KEY_BINDING), "(Sort Key)");
         drawShortcutLine("Select sorting configuration", "0-9 + " +sortKeyName, 0x00FF8800, y);
         y += 20;
-        
-        b(obf.getFontRenderer(), "*Useful on brewing stands, crafting tables, etc.", 30, y, 0x00666666); // drawString
         
         super.a(i, j, f); // drawScreen
     }

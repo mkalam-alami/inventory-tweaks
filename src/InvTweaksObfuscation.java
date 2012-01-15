@@ -17,7 +17,7 @@ public class InvTweaksObfuscation {
     
 	public InvTweaksObfuscation(Minecraft mc) {
 		this.mc = mc;
-		this.mods = InvTweaksModCompatibility.getInstance();
+		this.mods = new InvTweaksModCompatibility(this);
 	}
 	
 	// Minecraft members
@@ -273,6 +273,9 @@ public class InvTweaksObfuscation {
     }
     protected String getLocalizedString(String key) {
     	return abn.a().b(key);
+    }
+    protected int getSpecialChestRowSize(ft guiContainer, int defaultValue) {
+    	return mods.getSpecialChestRowSize(guiContainer, defaultValue);
     }
 
     // Static access

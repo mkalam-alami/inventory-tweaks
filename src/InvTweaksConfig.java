@@ -1,8 +1,3 @@
-
-
-
-
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -44,7 +39,7 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_SHORTCUTS = "enableShortcuts";
     public static final String PROP_SHORTCUT_PREFIX = "shortcutKey";
     public static final String PROP_SHORTCUT_ONE_ITEM = "shortcutKeyOneItem";
-    public static final String PROP_SHORTCUT_ONE_STACK = "shortcutKeyOneStack";
+    public static final String PROP_OBSOLETE_SHORTCUT_ONE_STACK = "shortcutKeyOneStack";
     public static final String PROP_SHORTCUT_ALL_ITEMS = "shortcutKeyAllItems";
     public static final String PROP_SHORTCUT_DROP = "shortcutKeyDrop";
     public static final String PROP_SHORTCUT_UP = "shortcutKeyToUpperSection";
@@ -457,7 +452,6 @@ public class InvTweaksConfig {
         
         properties.put(PROP_SHORTCUT_ALL_ITEMS, "LCONTROL+LSHIFT, RCONTROL+RSHIFT");
         properties.put(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");
-        properties.put(PROP_SHORTCUT_ONE_STACK, "LSHIFT, RSHIFT");
         properties.put(PROP_SHORTCUT_UP, "UP");
         properties.put(PROP_SHORTCUT_DOWN, "DOWN");
         properties.put(PROP_SHORTCUT_DROP, "LALT, RALT");
@@ -481,6 +475,7 @@ public class InvTweaksConfig {
         // XXX 1.35 Obsolete properties removal
         newProperties.remove(PROP_OBSOLETE_ENABLE_SORTING_SOUND);
         newProperties.remove(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND);
+        newProperties.remove(PROP_OBSOLETE_SHORTCUT_ONE_STACK);
         
         // XXX 1.34 update: force shortcuts reset
         if (newProperties.get(PROP_VERSION) != null) {

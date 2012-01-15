@@ -35,8 +35,6 @@ public class InvTweaks extends InvTweaksObfuscation {
      */
     private InvTweaksConfigManager cfgManager = null;
     
-    private InvTweaksModCompatibility modCompatibility = InvTweaksModCompatibility.getInstance();
-    
     /**
      * Attributes to remember the status of chest sorting
      * while using middle clicks.
@@ -268,6 +266,10 @@ public class InvTweaks extends InvTweaksObfuscation {
         return instance;
     }
 
+    public static Minecraft getMinecraftInstance() {
+        return instance.mc;
+    }
+    
     // Used by ShortcutsHandler only, but put here for convenience and 
     // performance, since the xSize/ySize attributes are protected
     public static boolean getIsMouseOverSlot(ft guiContainer, wz slot, int i, int j) { // Copied from GuiContainer
@@ -600,8 +602,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             return InvTweaksConst.DISPENSER_ROW_SIZE;
         }
         else {
-            return modCompatibility.getSpecialChestRowSize(
-                    guiContainer, InvTweaksConst.CHEST_ROW_SIZE);
+            return getSpecialChestRowSize(guiContainer, InvTweaksConst.CHEST_ROW_SIZE);
         }
     }
 

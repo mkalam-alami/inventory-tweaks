@@ -1,3 +1,5 @@
+import net.minecraft.client.Minecraft;
+
 public class InvTweaksModCompatibility {
     
     private static InvTweaksModCompatibility instance = null;
@@ -22,14 +24,22 @@ public class InvTweaksModCompatibility {
     public boolean isSpecialChest(xe guiScreen) {
         return is(guiScreen, "GuiAlchest") // Equivalent Exchange
           || is(guiScreen, "GuiDiamondChest") // Iron chests (IC2)
-          || is(guiScreen, "GuiGoldChest") // Iron chests (IC2)
+          || is(guiScreen, "GuiGoldChest") 
           || is(guiScreen, "GuiMultiPageChest") // Multi Page chest
           || is(guiScreen, "GuiGoldSafe") // More Storage
-          || is(guiScreen, "GuiLocker") // More Storage
-          || is(guiScreen, "GuiDualLocker") // More Storage
-          || is(guiScreen, "GuiSafe") // More Storage
-          || is(guiScreen, "GuiCabinet") // More Storage
-          || is(guiScreen, "GuiTower") // More Storage
+          || is(guiScreen, "GuiLocker")
+          || is(guiScreen, "GuiDualLocker")
+          || is(guiScreen, "GuiSafe") 
+          || is(guiScreen, "GuiCabinet") 
+          || is(guiScreen, "GuiTower")
+          || is(guiScreen, "GuiBufferChest") // Red Power 2
+          || is(guiScreen, "GuiRetriever")
+          || is(guiScreen, "GuiItemDetect")
+          || is(guiScreen, "GuiAlloyFurnace")
+          || is(guiScreen, "GuiDeploy")
+          || is(guiScreen, "GuiSorter")
+          || is(guiScreen, "GuiFilter")
+          || is(guiScreen, "GuiNuclearReactor") // IC²
           ;
     }
 
@@ -53,6 +63,20 @@ public class InvTweaksModCompatibility {
 	    		|| is(guiContainer, "GuiDualLocker")
 	    		|| is(guiContainer, "GuiTower")) {
 	      return 8;
+	    } else if (is(guiContainer, "GuiBufferChest")) { // Red Power 2
+	      return 4;
+	    } else if (is(guiContainer, "GuiSorter")) {
+	      return 8;
+	    } else if (is(guiContainer, "GuiRetriever")
+	    		|| is(guiContainer, "GuiItemDetect")
+	    		|| is(guiContainer, "GuiAlloyFurnace")
+	    		|| is(guiContainer, "GuiDeploy")
+	    		|| is(guiContainer, "GuiFilter")) {
+	      return 3;
+	    } else if (is(guiContainer, "GuiNuclearReactor")) { // IC²
+	    	Minecraft mc = ModLoader.getMinecraftInstance();
+	    	InvTweaksObfuscation obf = new InvTweaksObfuscation(mc);
+	    	return (obf.getSlots(obf.getContainer(guiContainer)).size() - 36) / 6;
 	    }
         return defaultValue;
     }

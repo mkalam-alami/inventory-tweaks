@@ -441,7 +441,6 @@ public class InvTweaksConfig {
         
         properties.put(PROP_SHORTCUT_ALL_ITEMS, "LCONTROL+LSHIFT, RCONTROL+RSHIFT");
         properties.put(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");
-        properties.put(PROP_SHORTCUT_ONE_STACK, "LSHIFT, RSHIFT");
         properties.put(PROP_SHORTCUT_UP, "UP");
         properties.put(PROP_SHORTCUT_DOWN, "DOWN");
         properties.put(PROP_SHORTCUT_DROP, "LALT, RALT");
@@ -461,6 +460,9 @@ public class InvTweaksConfig {
             resolveConvenientInventoryConflicts();
         }
         newProperties.sortKeys();
+        
+        // XXX 1.35 Deprecation
+        newProperties.remove(PROP_SHORTCUT_ONE_STACK);
         
         // XXX 1.34 update: force shortcuts reset
         if (newProperties.get(PROP_VERSION) != null) {

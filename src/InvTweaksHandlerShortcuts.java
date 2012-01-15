@@ -29,9 +29,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
     
-    private ShortcutType defaultAction = ShortcutType.MOVE_ONE_STACK;
-    private ShortcutType defaultDestination = null;
-    
     // Context attributes
     private InvTweaksConfig config;
     private InvTweaksContainerManager container;
@@ -55,8 +52,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     
     private enum ShortcutType {
         MOVE_TO_SPECIFIC_HOTBAR_SLOT,
-        MOVE_ONE_STACK,
         MOVE_ONE_ITEM,
+        MOVE_ONE_STACK,
         MOVE_ALL_ITEMS,
         MOVE_UP,
         MOVE_DOWN,
@@ -145,7 +142,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         int ex = Mouse.getEventX(), ey = Mouse.getEventY();
         int x = (ex * getWidth(guiContainer)) / getDisplayWidth();
         int y = getHeight(guiContainer) - (ey * getHeight(guiContainer)) / getDisplayHeight() - 1;
-        boolean shortcutValid = false;
         
         // Check that the slot is not empty
         vv slot = getSlotAtPosition(guiContainer, x, y);
@@ -155,28 +151,20 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             InvTweaksContainerManager container = new InvTweaksContainerManager(mc);
            
             // Filter shortcuts to let Minecraft ones run
-            if (container.getSlotSection(getSlotNumber(slot)) 
-                    == InvTweaksContainerSection.CRAFTING_OUT
-                   && (shortcutKeysStatus.get(Keyboard.KEY_LSHIFT)
-                   || shortcutKeysStatus.get(Keyboard.KEY_RSHIFT))) {
+            if ((shortcutKeysStatus.get(Keyboard.KEY_LSHIFT) || shortcutKeysStatus.get(Keyboard.KEY_RSHIFT))
+            		&& getDownShortcutKeys().size() == 1) {
                 return;
             }
             
             // Choose shortcut type
-            ShortcutType shortcutType = defaultAction;
+            ShortcutType shortcutType = null;
             if (isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != null) {
                 shortcutType = ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT;
-                shortcutValid = true;
             } else if (isActive(ShortcutType.MOVE_ALL_ITEMS) != null) {
                 shortcutType = ShortcutType.MOVE_ALL_ITEMS;
-                shortcutValid = true;
-            } else if (isActive(ShortcutType.MOVE_ONE_STACK) != null) {
-                shortcutType = ShortcutType.MOVE_ONE_STACK;
-                shortcutValid = true;
             }
             else if (isActive(ShortcutType.MOVE_ONE_ITEM) != null) {
                 shortcutType = ShortcutType.MOVE_ONE_ITEM;
-                shortcutValid = true;
             }
             
             // Choose target section
@@ -214,12 +202,10 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 
                 // Check for destination modifiers
                 int destinationModifier = 0; 
-                if (isActive(ShortcutType.MOVE_UP) != null
-                        || defaultDestination == ShortcutType.MOVE_UP) {
+                if (isActive(ShortcutType.MOVE_UP) != null) {
                     destinationModifier = -1;
                 }
-                else if (isActive(ShortcutType.MOVE_DOWN) != null
-                        || defaultDestination == ShortcutType.MOVE_DOWN) {
+                else if (isActive(ShortcutType.MOVE_DOWN) != null) {
                     destinationModifier = 1;
                 }
                 
@@ -248,7 +234,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 
                 else {
                     // Specific destination
-                    shortcutValid = true;
                     int srcSectionIndex = availableSections.indexOf(srcSection);
                     if (srcSectionIndex != -1) {
                         destSection = availableSections.get(
@@ -258,9 +243,12 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     else {
                         destSection = InvTweaksContainerSection.INVENTORY;
                     }
+                    if (shortcutType == null) {
+                    	shortcutType = ShortcutType.MOVE_ONE_STACK;
+                    }
                 }
                 
-                if (shortcutValid || isActive(ShortcutType.DROP) != null) {
+                if (shortcutType != null || isActive(ShortcutType.DROP) != null) {
                     
                     initAction(getSlotNumber(slot), shortcutType, destSection);
                     
@@ -304,7 +292,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             toIndex = getNextIndex(separateStacks, drop);
             if (toIndex != -1) {
                 switch (shortcutType) {
-                
+
                 case MOVE_ONE_STACK:
                 {
                     vv slot = container.getSlot(fromSection, fromIndex);
@@ -492,8 +480,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             return ShortcutType.DROP;
         } else if (property.equals(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM)) {
             return ShortcutType.MOVE_ONE_ITEM;
-        } else if (property.equals(InvTweaksConfig.PROP_SHORTCUT_ONE_STACK)) {
-            return ShortcutType.MOVE_ONE_STACK;
         } else if (property.equals(InvTweaksConfig.PROP_SHORTCUT_UP)) {
             return ShortcutType.MOVE_UP;
         } else {

@@ -187,7 +187,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 else if (container.hasSection(InvTweaksContainerSection.BREWING_INGREDIENT)) {
                 	yq stack = container.getStack(slot);
                 	if (stack != null) {
-                		if (getItemID(stack) == 373 && getItemDamage(stack) == 0 /* Water Bottle */) {
+                		if (getItemID(stack) == 373 /* Water Bottle/Potions */) {
                 			availableSections.add(InvTweaksContainerSection.BREWING_BOTTLES);
                 		}
                 		else {

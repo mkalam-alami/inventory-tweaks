@@ -55,6 +55,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         MOVE_ONE_STACK,
         MOVE_ONE_ITEM,
         MOVE_ALL_ITEMS,
+        MOVE_EVERYTHING,
         MOVE_UP,
         MOVE_DOWN,
         MOVE_TO_EMPTY_SLOT,
@@ -164,8 +165,15 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 shortcutType = ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT;
             } else if (isActive(ShortcutType.MOVE_ALL_ITEMS) != null) {
                 shortcutType = ShortcutType.MOVE_ALL_ITEMS;
+            } else if (isActive(ShortcutType.MOVE_EVERYTHING) != null) {
+                shortcutType = ShortcutType.MOVE_EVERYTHING;
             } else if (isActive(ShortcutType.MOVE_ONE_ITEM) != null) {
-                shortcutType = ShortcutType.MOVE_ONE_ITEM;
+            	if (fromSection == InvTweaksContainerSection.CRAFTING_OUT) {
+            		shortcutType = ShortcutType.MOVE_ONE_STACK;
+            	}
+            	else {
+            		shortcutType = ShortcutType.MOVE_ONE_ITEM;
+            	}
             }
             
             // Choose target section
@@ -327,7 +335,18 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                             && toSection == InvTweaksContainerSection.CHEST) {
                         moveAll(InvTweaksContainerSection.INVENTORY_HOTBAR, toSection, separateStacks, drop, stackToMatch);
                     }
+                    break;
                 }
+                
+		        case MOVE_EVERYTHING:
+		        {
+		        	moveAll(fromSection, toSection, separateStacks, drop, null);
+                    if (fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
+                            && toSection == InvTweaksContainerSection.CHEST) {
+                        moveAll(InvTweaksContainerSection.INVENTORY_HOTBAR, toSection, separateStacks, drop, null);
+                    }
+                    break;
+		        }
                     
                 }
             }
@@ -339,7 +358,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             boolean separateStacks, boolean drop, yq stackToMatch) throws TimeoutException {
         int toIndex = getNextIndex(separateStacks, drop);
         for (wz slot : container.getSlots(fromSection)) {
-            if (hasStack(slot) && areSameItemType(stackToMatch, getStack(slot))) {
+            if (hasStack(slot) && (stackToMatch == null || areSameItemType(stackToMatch, getStack(slot)))) {
                 int fromIndex = container.getSlotIndex(getSlotNumber(slot));
                 boolean canStillMove = true;
                 while (hasStack(slot) && toIndex != -1 && !(fromSection == toSection && fromIndex == toIndex) && canStillMove) {
@@ -420,11 +439,14 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
      * @return The shortcut that made the shortcut active, or null if inactive
      */
     private InvTweaksShortcutMapping isActive(ShortcutType shortcutType) {
-        for (InvTweaksShortcutMapping mapping : shortcuts.get(shortcutType)) {
-        	if (mapping.isTriggered(shortcutKeysStatus)) {
-        		return mapping;
-        	}
-        }
+    	List<InvTweaksShortcutMapping> mappings = shortcuts.get(shortcutType);
+    	if (mappings != null) {
+	        for (InvTweaksShortcutMapping mapping : mappings) {
+	        	if (mapping.isTriggered(shortcutKeysStatus)) {
+	        		return mapping;
+	        	}
+	        }
+    	}
         return null;
     }
 
@@ -475,6 +497,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private ShortcutType propNameToShortcutType(String property) {
         if (property.equals(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS)) {
             return ShortcutType.MOVE_ALL_ITEMS;
+        } else if (property.equals(InvTweaksConfig.PROP_SHORTCUT_EVERYTHING)) {
+            return ShortcutType.MOVE_EVERYTHING;
         } else if (property.equals(InvTweaksConfig.PROP_SHORTCUT_DOWN)) {
             return ShortcutType.MOVE_DOWN;
         } else if (property.equals(InvTweaksConfig.PROP_SHORTCUT_DROP)) {

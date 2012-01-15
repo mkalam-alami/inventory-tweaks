@@ -39,7 +39,7 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
         k(); // Gui.drawDefaultBackground
         a(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         
-        int y = obf.getHeight(this) / 6;
+        int y = obf.getHeight(this) / 6 - 2;
 
         drawShortcutLine("Move one stack", "LSHIFT or RSHIFT + Click", 0x00FFFF00, y);
         y += 12;
@@ -49,32 +49,35 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
         drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_DOWN, obf.getKeyBindingBackKeyCode(), "(Back)") 
         		+ " + Click", 0x00FFFF00, y);
         y += 12;
-        
-        drawShortcutLine("Move one item only",
+        drawShortcutLine("Move one item",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + Click",
                 0x00FFFF00, y);
         y += 12;
         drawShortcutLine("Move all items of same type",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS) + " + Click",
                 0x00FFFF00, y);
-        y += 25;
-
+        y += 12;
+        drawShortcutLine("Move everything",
+                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_EVERYTHING) + " + Click",
+                0x00FFFF00, y);
+        y += 19;
         
         drawShortcutLine("Move to hotbar", "0-9 + Click", 0x0000FF33, y);
         y += 12;
         drawShortcutLine("Move to empty slot", "(Any shortcut) + Right instead of left click", 0x0000FF33, y);
-        y += 25;
-        
+        y += 12;
         drawShortcutLine("Drop",
                 config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DROP) + " + Click",
-                0x00FF8800, y);
+                0x0000FF33, y);
+        y += 19;
+        
+        drawShortcutLine("Craft all to inventory", "LSHIFT, RSHIFT + Click", 0x00FF8800, y);
         y += 12;
-        drawShortcutLine("Craft all", "LSHIFT, RSHIFT + Click", 0x00FF8800, y);
-        y += 12;
+        drawShortcutLine("Craft to inventory", config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + Click", 0x00FF8800, y);
+        y += 19;
         
         String sortKeyName = getKeyName(obf.getKeyCode(InvTweaksConst.SORT_KEY_BINDING), "(Sort Key)");
-        drawShortcutLine("Select sorting configuration", "0-9 + " +sortKeyName, 0x00FF8800, y);
-        y += 20;
+        drawShortcutLine("Select sorting configuration", "0-9 + " +sortKeyName, 0x0088FFFF, y);
         
         super.a(i, j, f); // drawScreen
     }

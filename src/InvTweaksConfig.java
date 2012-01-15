@@ -41,6 +41,7 @@ public class InvTweaksConfig {
     public static final String PROP_SHORTCUT_ONE_ITEM = "shortcutKeyOneItem";
     public static final String PROP_OBSOLETE_SHORTCUT_ONE_STACK = "shortcutKeyOneStack";
     public static final String PROP_SHORTCUT_ALL_ITEMS = "shortcutKeyAllItems";
+    public static final String PROP_SHORTCUT_EVERYTHING = "shortcutKeyEverything";
     public static final String PROP_SHORTCUT_DROP = "shortcutKeyDrop";
     public static final String PROP_SHORTCUT_UP = "shortcutKeyToUpperSection";
     public static final String PROP_SHORTCUT_DOWN = "shortcutKeyToLowerSection";
@@ -451,6 +452,7 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_AUTO_EQUIP_ARMOR, VALUE_FALSE);
         
         properties.put(PROP_SHORTCUT_ALL_ITEMS, "LCONTROL+LSHIFT, RCONTROL+RSHIFT");
+        properties.put(PROP_SHORTCUT_EVERYTHING, "SPACE");
         properties.put(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");
         properties.put(PROP_SHORTCUT_UP, "UP");
         properties.put(PROP_SHORTCUT_DOWN, "DOWN");

@@ -124,6 +124,11 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, LABEL_CHEST_BUTTONS);
             break;
 
+        // Toggle auto-refill
+        case ID_AUTO_REFILL:
+            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_AUTO_REFILL, LABEL_AUTO_REFILL);
+            break;
+                
         // Toggle shortcuts
         case ID_SHORTCUTS:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SHORTCUTS, LABEL_SHORTCUTS);

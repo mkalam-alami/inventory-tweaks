@@ -56,12 +56,12 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
 
         
         drawShortcutLine("Send to upper section*",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_UP) + " + Click",
-                0x0000FF33, y);
+        		buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_UP, obf.getKeyBindingForwardKeyCode(), "(Forward)")
+        		+ " + Click", 0x0000FF33, y);
         y += 12;
-        drawShortcutLine("Send to lower section",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DOWN) + " + Click",
-                0x0000FF33, y);
+        drawShortcutLine("Send to lower section", 
+        		buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_DOWN, obf.getKeyBindingBackKeyCode(), "(Back)") 
+        		+ " + Click", 0x0000FF33, y);
         y += 12;
         drawShortcutLine("Send to hotbar", "0-9 + Click", 0x0000FF33, y);
         y += 12;
@@ -75,27 +75,13 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
         drawShortcutLine("Craft all", "LSHIFT, RSHIFT + Click", 0x00FF8800, y);
         y += 12;
         
-        String sortKeyName;
-        try {
-        	sortKeyName = Keyboard.getKeyName(obf.getKeyCode(InvTweaksConst.SORT_KEY_BINDING));
-        }
-        catch (Exception e) {
-        	sortKeyName = "(Sort key)";
-        }
+        String sortKeyName = getKeyName(obf.getKeyCode(InvTweaksConst.SORT_KEY_BINDING), "(Sort Key)");
         drawShortcutLine("Select sorting configuration", "0-9 + " +sortKeyName, 0x00FF8800, y);
         y += 20;
         
         b(obf.getFontRenderer(), "*Useful on brewing stands, crafting tables, etc.", 30, y, 0x00666666); // drawString
         
         super.a(i, j, f); // drawScreen
-    }
-    
-    private void drawShortcutLine(String label, String value, int color, int y) {
-        b(obf.getFontRenderer(), label, 30, y, -1); // drawString
-        if (value != null) {
-	        b(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value.replaceAll(", ", " or "), 
-	                obf.getWidth(this) / 2 - 30, y, color); // drawString
-        }
     }
 
     protected void a(zr guibutton) { /* actionPerformed */
@@ -108,5 +94,34 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
         
         }
     }
+
+    private String buildUpOrDownLabel(String shortcutProp, int keyCode, String defaultKeyName) {
+    	String shortcutLabel = config.getProperty(shortcutProp);
+    	String keyLabel = getKeyName(keyCode, defaultKeyName);
+    	if (keyLabel.equals(shortcutLabel)) {
+    		return keyLabel;
+    	}
+    	else {
+    		return keyLabel + "/" + shortcutLabel;
+    	}
+    }
+    
+    protected String getKeyName(int keyCode, String defaultValue) {
+        try {
+        	return Keyboard.getKeyName(keyCode);
+        }
+        catch (Exception e) {
+        	return defaultValue;
+        }
+    }
+    
+    private void drawShortcutLine(String label, String value, int color, int y) {
+        b(obf.getFontRenderer(), label, 30, y, -1); // drawString
+        if (value != null) {
+	        b(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value.replaceAll(", ", " or "), 
+	                obf.getWidth(this) / 2 - 30, y, color); // drawString
+        }
+    }
+    
     
 }

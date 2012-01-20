@@ -72,10 +72,7 @@ public class mod_InvTweaks extends BaseMod {
 	 * Called by ModLoader when an item has been picked up.
 	 */
 	public void OnItemPickup(xb entityplayer, yq stack) {
-		// It's useless to give stack as a parameter since the
-		// given object doesn't contain enough information to know
-		// which stack in the inventory has been updated. We have to
-		// do it ourselves.
+	    // ModLoader doesn't give the item amount in 'stack', so it's no use for us
 		instance.onItemPickup();
 	}
 

@@ -3,6 +3,14 @@
 | Changelog                                                    |
 |==============================================================|
 
+[01.20.2012] 1.37 (1.1)
+ * Added Space + click shortcut to move everything
+ * Fixed Ctrl + click to craft one item directly to the inventory
+ * Fixed Up + Click for brewing stands not working with potions
+ * Removed all custom Shift + Click behavior (it now acts as default Minecraft does)
+ * Added sorting support for Red Power 2 and IC² containers
+ * Rewrote sorting on pickup feature (...still not SMP compatible)
+ 
 [01.14.2012] 1.36 (1.1)
  * Updated the mod to Minecraft 1.1
  * Improved the settings screen and added a few options

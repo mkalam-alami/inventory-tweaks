@@ -301,6 +301,9 @@ public class InvTweaksObfuscation {
     public static ug getCurrentScreenStatic(Minecraft mc) {
         return new InvTweaksObfuscation(mc).getCurrentScreen();
     }
+    public static String getCurrentLanguage() {
+        return "en_US"; // TODO implement
+    }
     
 	// Classes
     
@@ -384,4 +387,5 @@ public class InvTweaksObfuscation {
     protected boolean isSlot(Object o) { // Slot
         return o != null && o instanceof wz;
     }
+
 }

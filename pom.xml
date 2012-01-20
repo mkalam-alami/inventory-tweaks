@@ -24,6 +24,7 @@
                 <directory>src</directory>
                 <includes>
                     <include>doc/*</include>
+                    <include>lang/*</include>
                     <include>*.dat</include>
                 </includes>
                 <excludes>

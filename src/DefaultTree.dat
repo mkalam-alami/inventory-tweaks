@@ -252,8 +252,8 @@
 			</pistons>
 			<lever id="69"/>
 			<pressurePlates>
-				<pressurePlateWood id="70"/>
-				<pressurePlateStone id="72"/>
+				<pressurePlateWood id="72"/>
+				<pressurePlateStone id="70"/>
 			</pressurePlates>
 			<stoneButton id="77"/>
 			<doors>

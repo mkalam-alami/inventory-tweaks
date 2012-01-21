@@ -1,4 +1,5 @@
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 
 import net.minecraft.client.Minecraft;
@@ -9,6 +10,8 @@ import net.minecraft.client.Minecraft;
  *
  */
 public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
+
+    private static final Logger log = Logger.getLogger("InvTweaks");
     
     public InvTweaksGuiSettingsButton(InvTweaksConfigManager cfgManager,
             int id, int x, int y, int w, int h,
@@ -57,11 +60,11 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
                             }
                         }
                     } catch (TimeoutException e) {
-                        InvTweaks.logInGameErrorStatic("Failed to put item down", e);
+                        InvTweaks.logInGameErrorStatic("invtweaks.sort.releaseitem.error", e);
                     }
                 }
             } catch (Exception e) {
-                InvTweaks.logInGameErrorStatic("Failed to set up settings button", e);
+            	log.severe(e.getMessage());
             }
             
             // Refresh config

@@ -402,7 +402,7 @@ public class InvTweaksConfig {
             // Failed to find Convenient Inventory class, not a problem
         }
         catch (Exception e) {
-            InvTweaks.logInGameErrorStatic("Failed to manage Convenient Inventory compatibility", e);
+            InvTweaks.logInGameErrorStatic("invtweaks.modcompat.ci.error", e);
         }
         
         //// Shortcuts

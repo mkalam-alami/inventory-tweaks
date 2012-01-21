@@ -192,7 +192,7 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
 	                            }
 	                        }
 	                    } catch (TimeoutException e) {
-	                        logInGameError("Failed to move picked up stack", e);
+	                        logInGameError("invtweaks.pickup.error", e);
 	                    }
 	                }
 	            }
@@ -210,7 +210,7 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
             }
             
         } catch (Exception e) {
-            logInGameError("Failed to move picked up stack", e);
+            logInGameError("invtweaks.pickup.error", e);
         }
     }
 
@@ -247,13 +247,17 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
     }
 
     public void logInGame(String message) {
-        String formattedMsg = buildlogString(Level.INFO, message);
+    	logInGame(message, false);
+    }
+
+    public void logInGame(String message, boolean alreadyTranslated) {
+        String formattedMsg = buildlogString(Level.INFO, (alreadyTranslated) ? message : InvTweaksLocalization.get(message));
         addChatMessage(formattedMsg);
         log.info(formattedMsg);
     }
-
+    
     public void logInGameError(String message, Exception e) {
-        String formattedMsg = buildlogString(Level.SEVERE, message, e);
+        String formattedMsg = buildlogString(Level.SEVERE, InvTweaksLocalization.get(message), e);
         addChatMessage(formattedMsg);
         log.severe(formattedMsg);
     }
@@ -332,7 +336,7 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                 }
                 
                 if (newRuleset != null) {
-                    logInGame("'" + newRuleset + "' enabled");
+                    logInGame(String.format(InvTweaksLocalization.get("invtweaks.loadconfig.enabled"), newRuleset), true);
                     // Hack to prevent 2nd way to switch configs from being enabled
                     sortingKeyPressedDate = Integer.MAX_VALUE; 
                 }
@@ -350,7 +354,7 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                 String newRuleset = config.switchConfig();
                 // Log only if there is more than 1 ruleset
                 if (newRuleset != null && !previousRuleset.equals(newRuleset)) {
-                    logInGame("'" + newRuleset + "' enabled");
+                    logInGame(String.format(InvTweaksLocalization.get("invtweaks.loadconfig.enabled"), newRuleset), true);
                     handleSorting(currentScreen);
                 }
                 sortingKeyPressedDate = currentTime;
@@ -376,7 +380,7 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                     InvTweaksHandlerSorting.ALGORITHM_INVENTORY,
                     InvTweaksConst.INVENTORY_ROW_SIZE).sort();
         } catch (Exception e) {
-            logInGame("Failed to sort inventory: " + e.getMessage());
+            logInGameError("invtweaks.sort.inventory.error", e);
             e.printStackTrace();
         }
 
@@ -410,7 +414,7 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                     try {
                         cfgManager.getAutoRefillHandler().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
                     } catch (Exception e) {
-                        logInGameError("Failed to trigger auto-refill", e);
+                        logInGameError("invtweaks.sort.autorefill.error", e);
                     }
                 }
             }
@@ -476,7 +480,7 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                                         chestAlgorithm,
                                         getContainerRowSize(guiContainer)).sort();
                             } catch (Exception e) {
-                                logInGameError("Failed to sort container", e);
+                                logInGameError("invtweaks.sort.chest.error", e);
                                 e.printStackTrace();
                             }
                             chestAlgorithm = (chestAlgorithm + 1) % 3;
@@ -524,7 +528,8 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                     controlList.add(new InvTweaksGuiSettingsButton(
                             cfgManager, InvTweaksConst.JIMEOWAN_ID,
                             getWidth(guiScreen) / 2 + 73, getHeight(guiScreen) / 2 - 78,
-                            w, h, "...", "Inventory settings"));
+                            w, h, "...",
+                            InvTweaksLocalization.get("invtweaks.button.settings.tooltip")));
                 }
 
                 // Chest buttons
@@ -541,7 +546,8 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                     // Settings button
                     controlList.add(new InvTweaksGuiSettingsButton(
                             cfgManager, id++, 
-                            x - 1, y, w, h, "...", "Inventory settings"));
+                            x - 1, y, w, h, "...", 
+                            InvTweaksLocalization.get("invtweaks.button.settings.tooltip")));
 
                     // Sorting buttons
                     if (!config.getProperty(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS).equals("false")) {
@@ -550,21 +556,21 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                         
                         InvTweaksObfuscationGuiButton button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
-                                x - 13, y, w, h, "h", "Sort in rows",
+                                x - 13, y, w, h, "h", InvTweaksLocalization.get("invtweaks.button.chest3.tooltip"),
                                 InvTweaksHandlerSorting.ALGORITHM_HORIZONTAL,
                                 rowSize);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
-                                x - 25, y, w, h, "v", "Sort in columns",
+                                x - 25, y, w, h, "v", InvTweaksLocalization.get("invtweaks.button.chest2.tooltip"),
                                 InvTweaksHandlerSorting.ALGORITHM_VERTICAL,
                                 rowSize);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
-                                x - 37, y, w, h, "s", "Default sorting",
+                                x - 37, y, w, h, "s", InvTweaksLocalization.get("invtweaks.button.chest1.tooltip"),
                                 InvTweaksHandlerSorting.ALGORITHM_DEFAULT,
                                 rowSize);
                         controlList.add(button);
@@ -645,13 +651,13 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                     Keyboard.create();
                 } catch (LWJGLException e) {
                     if (firstTry) {
-                        logInGameError("I'm having troubles with the keyboard: ", e);
+                        logInGameError("invtweaks.keyboardfix.error", e);
                         firstTry = false;
                     }
                 }
             }
             if (!firstTry) {
-                logInGame("Ok it's repaired, sorry about that.");
+                logInGame("invtweaks.keyboardfix.recover");
             }
         }
         mouseWasInWindow = mouseInWindow;

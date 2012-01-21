@@ -286,7 +286,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 }
     
             } catch (Exception e) {
-               InvTweaks.logInGameErrorStatic("Failed to trigger shortcut", e);
+               InvTweaks.logInGameErrorStatic("invtweaks.sort.chest.error", e);
             }
         }
             

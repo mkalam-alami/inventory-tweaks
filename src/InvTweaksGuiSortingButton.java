@@ -54,7 +54,7 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
                         minecraft, cfgManager.getConfig(),
                         section, algorithm, rowSize).sort();
             } catch (Exception e) {
-                InvTweaks.logInGameErrorStatic("Failed to sort container", e);
+                InvTweaks.logInGameErrorStatic("invtweaks.sort.chest.error", e);
                 e.printStackTrace();
             }
             return true;

@@ -51,7 +51,7 @@ public class InvTweaksConfigManager {
                 InvTweaks.logInGameStatic("Mod properties loaded");
             }
         } catch (IOException e) {
-            InvTweaks.logInGameErrorStatic("Failed to refresh properties from file", e);
+            InvTweaks.logInGameErrorStatic("invtweaks.loadconfig.refresh.error", e);
         }
     
         // Load rules + tree files

@@ -302,7 +302,7 @@ public class InvTweaksObfuscation {
         return new InvTweaksObfuscation(mc).getCurrentScreen();
     }
     public static String getCurrentLanguage() {
-        return "en_US"; // TODO implement
+        return abn.a().c(); // StringTranslate.getInstance().getCurrentLanguage()
     }
     
 	// Classes

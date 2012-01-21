@@ -89,8 +89,8 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 		super.a(i, j, f);
         Point p = new Point();
         moveToButtonCoords(1, p);
-        b(obf.getFontRenderer(), "Note: On PvP servers, the auto-refill & auto-equip armor", p.getX(), 100, 0x999999); // Gui.drawCenteredString
-        b(obf.getFontRenderer(), "options are often considered cheating!", p.getX(), 110, 0x999999);
+        b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt1"), p.getX(), 100, 0x999999); // Gui.drawCenteredString
+        b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt2"), p.getX(), 110, 0x999999);
     }
     
     protected void a(zr guibutton) { /* actionPerformed */
@@ -117,7 +117,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
             try {
                 Desktop.getDesktop().open(new File(InvTweaksConst.CONFIG_PROPS_FILE));
             } catch (Exception e) {
-                InvTweaks.logInGameErrorStatic("Failed to open mappings file", e);
+                InvTweaks.logInGameErrorStatic("invtweaks.settings.mappingsfile.error", e);
             }
             break;
             

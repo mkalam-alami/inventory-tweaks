@@ -1,6 +1,4 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -16,36 +14,43 @@ public class InvTweaksLocalization {
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
     private static final String DEFAULT_LANGUAGE = "en_US";
+    private static Properties defaultMappings = new Properties();
     private static Properties mappings = new Properties();
     private static String loadedLanguage = null;
     
     public synchronized static String get(String key) {
-
+    	
         String currentLanguage = InvTweaksObfuscation.getCurrentLanguage();
         if (!currentLanguage.equals(loadedLanguage)) {
             loadedLanguage = load(currentLanguage);
         }
         
-        return mappings.getProperty(key, "???");
+        return mappings.getProperty(key, 
+        		defaultMappings.getProperty(key, "???"));
         
     }
     
     private static String load(String currentLanguage) {
         
+    	defaultMappings.clear();
         mappings.clear();
 
         try {
-            URL langFileUrl = InvTweaksLocalization.class.getResource("lang/" + currentLanguage + ".properties");
-            if (langFileUrl == null) {
-                System.out.println("lang/" + DEFAULT_LANGUAGE + ".properties");
-                langFileUrl = InvTweaksLocalization.class.getResource("lang/" + DEFAULT_LANGUAGE + ".properties");
+            InputStream langStream = InvTweaksLocalization.class.getResourceAsStream("lang/" + currentLanguage + ".properties");
+            InputStream defaultLangStream = InvTweaksLocalization.class.getResourceAsStream("lang/" + DEFAULT_LANGUAGE + ".properties");
+            
+            mappings.load((langStream == null) ? defaultLangStream : langStream);
+            defaultMappings.load(defaultLangStream);
+
+            if (langStream != null) {
+            	langStream.close();
             }
-            mappings.load(new FileInputStream(new File(langFileUrl.toURI())));
+            defaultLangStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        return loadedLanguage;
+
+        return currentLanguage;
     }
 
 }

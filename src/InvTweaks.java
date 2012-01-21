@@ -158,51 +158,55 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                 Thread.yield();
             }
             
-            // Find preffered slots
-            List<Integer> prefferedPositions = new LinkedList<Integer>();
-            InvTweaksItemTree tree = config.getTree();
-            yq stack = containerMgr.getItemStack(pickupSlot);
-            List<InvTweaksItemTreeItem> items = tree.getItems(getItemID(stack),
-                    getItemDamage(stack));
-            for (InvTweaksConfigSortingRule rule : config.getRules()) {
-                if (tree.matches(items, rule.getKeyword())) {
-                    for (int slot : rule.getPreferredSlots()) {
-                        prefferedPositions.add(slot);
-                    }
-                }
-            }
-
-            // Find best slot for stack
-            boolean hasToBeMoved = true;
-            if (prefferedPositions != null) {
-                for (int newSlot : prefferedPositions) {
-                    try {
-                        // Already in the best slot!
-                        if (newSlot == pickupSlot) {
-                            hasToBeMoved = false;
-                            break;
-                        }
-                        // Is the slot available?
-                        else if (containerMgr.getItemStack(newSlot) == null) {
-                            // TODO: Check rule level before to move
-                            if (containerMgr.move(pickupSlot, newSlot)) {
-                                break;
-                            }
-                        }
-                    } catch (TimeoutException e) {
-                        logInGameError("Failed to move picked up stack", e);
-                    }
-                }
-            }
-            // Else, put the slot anywhere
-            if (hasToBeMoved) {
-                for (int i = 0; i < containerMgr.getSize(); i++) {
-                    if (containerMgr.getItemStack(i) == null) {
-                        if (containerMgr.move(pickupSlot, i)) {
-                            break;
-                        }
-                    }
-                }
+            if (pickupSlot != -1) {
+            
+	            // Find preffered slots
+	            List<Integer> prefferedPositions = new LinkedList<Integer>();
+	            InvTweaksItemTree tree = config.getTree();
+	            yq stack = containerMgr.getItemStack(pickupSlot);
+	            List<InvTweaksItemTreeItem> items = tree.getItems(getItemID(stack),
+	                    getItemDamage(stack));
+	            for (InvTweaksConfigSortingRule rule : config.getRules()) {
+	                if (tree.matches(items, rule.getKeyword())) {
+	                    for (int slot : rule.getPreferredSlots()) {
+	                        prefferedPositions.add(slot);
+	                    }
+	                }
+	            }
+	
+	            // Find best slot for stack
+	            boolean hasToBeMoved = true;
+	            if (prefferedPositions != null) {
+	                for (int newSlot : prefferedPositions) {
+	                    try {
+	                        // Already in the best slot!
+	                        if (newSlot == pickupSlot) {
+	                            hasToBeMoved = false;
+	                            break;
+	                        }
+	                        // Is the slot available?
+	                        else if (containerMgr.getItemStack(newSlot) == null) {
+	                            // TODO: Check rule level before to move
+	                            if (containerMgr.move(pickupSlot, newSlot)) {
+	                                break;
+	                            }
+	                        }
+	                    } catch (TimeoutException e) {
+	                        logInGameError("Failed to move picked up stack", e);
+	                    }
+	                }
+	            }
+	            // Else, put the slot anywhere
+	            if (hasToBeMoved) {
+	                for (int i = 0; i < containerMgr.getSize(); i++) {
+	                    if (containerMgr.getItemStack(i) == null) {
+	                        if (containerMgr.move(pickupSlot, i)) {
+	                            break;
+	                        }
+	                    }
+	                }
+	            }
+	            
             }
             
         } catch (Exception e) {

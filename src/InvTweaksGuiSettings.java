@@ -57,21 +57,21 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new zr(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, "Open the sorting rules file..."));
-        controlList.add(new zr(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, "Open the item tree file..."));
-        controlList.add(new zr(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, "Open help in browser..."));
+        controlList.add(new zr(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
+        controlList.add(new zr(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
+        controlList.add(new zr(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
 
         // Create settings buttons
 
         String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton middleClickBtn = new InvTweaksGuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, labelMiddleClick), "Allows to sort using\nthe middle click");
+                InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, labelMiddleClick), InvTweaksLocalization.get("invtweaks.settings.middleclick.tooltip"));
         controlList.add(middleClickBtn);
         if (middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: middle click not available
             obf.setEnabled(middleClickBtn, false);
-            middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(In conflict with Convenient Inventory)");
+            middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(" + InvTweaksLocalization.get("invtweaks.settings.disableci.tooltip"));
         }
 
         moveToButtonCoords(i++, p);
@@ -79,26 +79,26 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                 p.getX() + 130, p.getY(), 20, 20, "?", "Shortcuts help"));
         String shortcuts = config.getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
         InvTweaksGuiTooltipButton shortcutsBtn = new InvTweaksGuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130, 20, computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_SHORTCUTS, labelShortcuts), "Enables various shortcuts\nto move items around");
+                InvTweaksConfig.PROP_ENABLE_SHORTCUTS, labelShortcuts), InvTweaksLocalization.get("invtweaks.settings.shortcuts.tooltip"));
         controlList.add(shortcutsBtn);
         if (shortcuts.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: shortcuts not available
             obf.setEnabled(shortcutsBtn, false);
-            shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(In conflict with Convenient Inventory)");
+            shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(" + InvTweaksLocalization.get("invtweaks.settings.disableci.tooltip") + ")");
         }
 
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton autoRefillBtn = new InvTweaksGuiTooltipButton(ID_AUTO_REFILL, p.getX(), p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_AUTO_REFILL, labelAutoRefill), "Replaces broken tools & emptied stacks\nwith others from your inventory");
+                InvTweaksConfig.PROP_ENABLE_AUTO_REFILL, labelAutoRefill), InvTweaksLocalization.get("invtweaks.settings.autorefill.tooltip"));
         controlList.add(autoRefillBtn);
         
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons), "Adds three buttons\non chests to sort them"));
+                InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons), InvTweaksLocalization.get("invtweaks.settings.chestbuttons.tooltip")));
 
         moveToButtonCoords(i++, p);
         moveToButtonCoords(i++, p);
-        controlList.add(new InvTweaksGuiTooltipButton(ID_MORE_OPTIONS, p.getX(), p.getY(), labelMoreOptions, "Even more cool stuff"));
+        controlList.add(new InvTweaksGuiTooltipButton(ID_MORE_OPTIONS, p.getX(), p.getY(), labelMoreOptions, InvTweaksLocalization.get("invtweaks.settings.moreoptions.tooltip")));
     
         
         // Check if links to files are supported, if not disable the buttons
@@ -174,7 +174,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             try {
                 Desktop.getDesktop().browse(new URL(InvTweaksConst.HELP_URL).toURI());
             } catch (Exception e) {
-                InvTweaks.logInGameErrorStatic("invtweaks.settings.help.error", e);
+                InvTweaks.logInGameErrorStatic("invtweaks.settings.onlinehelp.error", e);
             }
             break;
             

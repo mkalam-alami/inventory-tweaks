@@ -16,22 +16,26 @@ public abstract class InvTweaksGuiSettingsAbstract extends ug /* GuiScreen */ {
 
 	protected static final Logger log = Logger.getLogger("InvTweaks");
     
-    protected final static String ON = ": ON";
-    protected final static String OFF = ": OFF";
-    protected final static String DISABLE_CI = ": Disable CI";
+    protected static String ON;
+    protected static String OFF;
+    protected static String DISABLE_CI;
     
     protected Minecraft mc;
     protected InvTweaksObfuscation obf;
     protected ug parentScreen;
     protected InvTweaksConfig config;
 
-    protected final static String SCREEN_TITLE = "Inventory and chests settings";
-
-    protected final static String LABEL_DONE = "Done";
+    protected static String LABEL_DONE;
     protected final static int ID_DONE = 200;
 
     public InvTweaksGuiSettingsAbstract(Minecraft mc, ug parentScreen,
             InvTweaksConfig config) {
+    	
+    	LABEL_DONE = InvTweaksLocalization.get("invtweaks.settings.exit");
+    	ON = ": " + InvTweaksLocalization.get("invtweaks.settings.on");
+    	OFF = ": " + InvTweaksLocalization.get("invtweaks.settings.off");
+    	DISABLE_CI = ": " + InvTweaksLocalization.get("invtweaks.settings.disableci");
+    	
         this.mc = mc;
         this.obf = new InvTweaksObfuscation(mc);
         this.parentScreen = parentScreen;
@@ -52,7 +56,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends ug /* GuiScreen */ {
     
     public void a(int i, int j, float f) { /* drawScreen */
         k(); // Gui.drawDefaultBackground
-        a(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
+        a(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.title"), obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         super.a(i, j, f); // drawScreen
     }
 

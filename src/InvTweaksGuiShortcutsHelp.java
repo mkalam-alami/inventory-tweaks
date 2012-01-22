@@ -7,8 +7,6 @@ import org.lwjgl.input.Keyboard;
 
 
 public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
-
-    private final static String SCREEN_TITLE = "Shortcuts help";
     
     private final static int ID_DONE = 0;
 
@@ -37,47 +35,48 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
         // Note: 0x0000EEFF = blue color (currently unused)
         
         k(); // Gui.drawDefaultBackground
-        a(obf.getFontRenderer(), SCREEN_TITLE, obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
+        a(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.help.shortcuts.title"), obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
+        String clickLabel =  InvTweaksLocalization.get("invtweaks.help.shortcuts.click");
         
         int y = obf.getHeight(this) / 6 - 2;
 
-        drawShortcutLine("Move one stack", "LSHIFT or RSHIFT + Click", 0x00FFFF00, y);
+        drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.onestack"), "LSHIFT " + InvTweaksLocalization.get("invtweaks.help.shortcuts.or") + " RSHIFT + " + clickLabel, 0x00FFFF00, y);
         y += 12;
-        drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_UP, obf.getKeyBindingForwardKeyCode(), "(Forward)")
-        		+ " + Click", 0x00FFFF00, y);
+        drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_UP, obf.getKeyBindingForwardKeyCode(), InvTweaksLocalization.get("invtweaks.help.shortcuts.forward"))
+        		+ " + " + clickLabel, 0x00FFFF00, y);
         y += 12;
-        drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_DOWN, obf.getKeyBindingBackKeyCode(), "(Back)") 
-        		+ " + Click", 0x00FFFF00, y);
+        drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_DOWN, obf.getKeyBindingBackKeyCode(), InvTweaksLocalization.get("invtweaks.help.shortcuts.backwards")) 
+        		+ " + " + clickLabel, 0x00FFFF00, y);
         y += 12;
-        drawShortcutLine("Move one item",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + Click",
+        drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.oneitem"),
+                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + " + clickLabel,
                 0x00FFFF00, y);
         y += 12;
-        drawShortcutLine("Move all items of same type",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS) + " + Click",
+        drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.allitems"),
+                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS) + " + " + clickLabel,
                 0x00FFFF00, y);
         y += 12;
-        drawShortcutLine("Move everything",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_EVERYTHING) + " + Click",
+        drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.everything"),
+                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_EVERYTHING) + " + " + clickLabel,
                 0x00FFFF00, y);
         y += 19;
         
-        drawShortcutLine("Move to hotbar", "0-9 + Click", 0x0000FF33, y);
+        drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.hotbar"), "0-9 + " + clickLabel, 0x0000FF33, y);
         y += 12;
-        drawShortcutLine("Move to empty slot", "(Any shortcut) + Right instead of left click", 0x0000FF33, y);
+        drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.emptyslot"), InvTweaksLocalization.get("invtweaks.help.shortcuts.rightclick"), 0x0000FF33, y);
         y += 12;
-        drawShortcutLine("Drop",
-                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DROP) + " + Click",
+        drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.drop"),
+                config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DROP) + " + " + clickLabel,
                 0x0000FF33, y);
         y += 19;
         
-        drawShortcutLine("Craft all to inventory", "LSHIFT, RSHIFT + Click", 0x00FF8800, y);
+        drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.craftall"), "LSHIFT, RSHIFT + " + clickLabel, 0x00FF8800, y);
         y += 12;
-        drawShortcutLine("Craft to inventory", config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + Click", 0x00FF8800, y);
+        drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.craftone"), config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + " + clickLabel, 0x00FF8800, y);
         y += 19;
         
         String sortKeyName = getKeyName(obf.getKeyCode(InvTweaksConst.SORT_KEY_BINDING), "(Sort Key)");
-        drawShortcutLine("Select sorting configuration", "0-9 + " +sortKeyName, 0x0088FFFF, y);
+        drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.selectconfig"), "0-9 + " +sortKeyName, 0x0088FFFF, y);
         
         super.a(i, j, f); // drawScreen
     }
@@ -116,7 +115,7 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
     private void drawShortcutLine(String label, String value, int color, int y) {
         b(obf.getFontRenderer(), label, 30, y, -1); // drawString
         if (value != null) {
-	        b(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value.replaceAll(", ", " or "), 
+	        b(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value.replaceAll(", ", " " + InvTweaksLocalization.get("invtweaks.help.shortcuts.or") + " "), 
 	                obf.getWidth(this) / 2 - 30, y, color); // drawString
         }
     }

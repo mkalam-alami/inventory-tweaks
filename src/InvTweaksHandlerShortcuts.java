@@ -257,7 +257,11 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     }
                 }
                 
-                if (shortcutType != null || isActive(ShortcutType.DROP) != null) {
+                if (isActive(ShortcutType.DROP) != null) {
+                	shortcutType = ShortcutType.MOVE_ONE_STACK;
+                }
+                
+                if (shortcutType != null) {
                     
                     initAction(getSlotNumber(slot), shortcutType, destSection);
                     

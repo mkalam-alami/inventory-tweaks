@@ -26,7 +26,7 @@ public class InvTweaksLocalization {
         }
         
         return mappings.getProperty(key, 
-        		defaultMappings.getProperty(key, "???"));
+        		defaultMappings.getProperty(key, key));
         
     }
     

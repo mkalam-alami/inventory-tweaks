@@ -15,8 +15,7 @@ public class InvTweaksModCompatibility {
      */
     public boolean isSpecialChest(ug guiScreen) {
         return is(guiScreen, "GuiAlchest") // Equivalent Exchange
-        		|| is(guiScreen, "GuiDiamondChest") // Iron chests (IC2)
-                || is(guiScreen, "GuiGoldChest") 
+        		|| is(guiScreen, "GUIChest") // Iron chests (formerly IC2)
                 || is(guiScreen, "GuiMultiPageChest") // Multi Page chest
                 || is(guiScreen, "GuiGoldSafe") // More Storage
                 || is(guiScreen, "GuiLocker")
@@ -31,7 +30,7 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiDeploy")
                 || is(guiScreen, "GuiSorter")
                 || is(guiScreen, "GuiFilter")
-                || is(guiScreen, "GuiNuclearReactor") // IC²
+                || is(guiScreen, "GuiNuclearReactor") // ICï¿½
           ;
     }
 
@@ -45,10 +44,12 @@ public class InvTweaksModCompatibility {
     public int getSpecialChestRowSize(ft guiContainer, int defaultValue) {
     	if (is(guiContainer, "GuiAlchest")) { // Equivalent Exchange
             return 13;
-        } else if (is(guiContainer, "GuiDiamondChest")) { // Iron chests (IC2)
-          return 12;
-        } else if (is(guiContainer, "GuiGoldChest")) {
-          return 9;
+        } else if (is(guiContainer, "GUIChest")) { // Iron chests (formerly IC2)
+        try {
+          return (Integer)guiContainer.getClass().getMethod("getRowLength").invoke(guiContainer);
+        } catch (Exception e) {
+        	// Skip it
+        }
 	    } else if (is(guiContainer, "GuiMultiPageChest")) { // Multi Page chest
 	      return 13;
 	    } else if (is(guiContainer, "GuiLocker") // More Storage
@@ -65,7 +66,7 @@ public class InvTweaksModCompatibility {
 	    		|| is(guiContainer, "GuiDeploy")
 	    		|| is(guiContainer, "GuiFilter")) {
 	      return 3;
-	    } else if (is(guiContainer, "GuiNuclearReactor")) { // IC²
+	    } else if (is(guiContainer, "GuiNuclearReactor")) { // ICï¿½
 	    	return (obf.getSlots(obf.getContainer(guiContainer)).size() - 36) / 6;
 	    }
         return defaultValue;

@@ -527,7 +527,7 @@
           </harmingPotion>
         </negativePotion>
       </drinkablePotion>
-      <spashPotion>
+      <splashPotion>
         <splashMundanePotion id="373" damage="16384" />
         <positiveSplashPotion>
           <regenerationSplashPotion>
@@ -578,7 +578,7 @@
             <splashPotionHarmingII id="373" damage="16428" />
           </harmingSplashPotion>
         </negativeSplashPotion>
-      </spashPotion>
+      </splashPotion>
     </potion>
     <glassBottle id="374" />
     <potionIngredient>

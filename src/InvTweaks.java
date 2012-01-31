@@ -301,6 +301,17 @@ public class InvTweaks extends InvTweaksObfuscation {
         if (currentScreen == null || isGuiInventory(currentScreen)) {
             cloneHotbar();
         }
+        
+        handleConfigSwitch();
+        
+        return true;
+        
+    }
+    
+    private void handleConfigSwitch() {
+        
+        InvTweaksConfig config = cfgManager.getConfig();
+        ug currentScreen = getCurrentScreen();
 
         // Switch between configurations (shorcut)
         Vector<Integer> downKeys = cfgManager.getShortcutsHandler().getDownShortcutKeys();
@@ -345,7 +356,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 String previousRuleset = config.getCurrentRulesetName();
                 String newRuleset = config.switchConfig();
                 // Log only if there is more than 1 ruleset
-                if (newRuleset != null && !previousRuleset.equals(newRuleset)) {
+                if (previousRuleset != null && newRuleset != null && !previousRuleset.equals(newRuleset)) {
                     logInGame(String.format(InvTweaksLocalization.get("invtweaks.loadconfig.enabled"), newRuleset), true);
                     handleSorting(currentScreen);
                 }
@@ -354,10 +365,6 @@ public class InvTweaks extends InvTweaksObfuscation {
         } else {
             sortingKeyPressedDate = 0;
         }
-        
-        
-
-        return true;
 
     }
 

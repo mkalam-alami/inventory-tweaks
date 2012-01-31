@@ -3,6 +3,13 @@
 | Changelog                                                    |
 |==============================================================|
 
+[01.31.2012] 1.37c (1.1)
+ * Fixed sort on pickup freezing the game
+ * Fixed crash on switching configurations
+ * Some sorting fixes and improvements
+ * Added potions to the item tree
+ * Added French translation
+ 
 [01.20.2012] 1.37 (1.1)
  * Added Space + click shortcut to move everything
  * Fixed Ctrl + click to craft one item directly to the inventory

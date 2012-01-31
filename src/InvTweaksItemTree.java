@@ -167,7 +167,6 @@ public class InvTweaksItemTree {
         
         // Filter items of same ID, but different damage value
         if (items != null && !items.isEmpty()) {
-            filteredItems.addAll(items);
             for (InvTweaksItemTreeItem item : items) {
                 if (item.getDamage() != -1 && item.getDamage() != damage) {
                     filteredItems.remove(item);

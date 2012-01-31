@@ -370,22 +370,24 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 
                 boolean canBeSwappedOrMerged = false;
                 
-                // Can be swapped?
-                if (lockPriorities[j] <= priority) {
-                    if (rulePriority[j] < priority) {
-                        canBeSwappedOrMerged = true;
-                    } else if (rulePriority[j] == priority) {
-                        if (isOrderedBefore(i, j)) {
+                // Safety check (relevant when using TooManyItems for instance)
+                if (getStackSize(from) <= getMaxStackSize(from) && getStackSize(to) <= getMaxStackSize(to)) { 
+                    // Can be swapped?
+                    if (lockPriorities[j] <= priority) {
+                        if (rulePriority[j] < priority) {
                             canBeSwappedOrMerged = true;
+                        } else if (rulePriority[j] == priority) {
+                            if (isOrderedBefore(i, j)) {
+                                canBeSwappedOrMerged = true;
+                            }
                         }
                     }
-                }
-                
-                // Can be merged?
-                if (!canBeSwappedOrMerged
-                       && areItemsEqual(from, to)
-                       && getStackSize(to) < getMaxStackSize(to)) {
-                    canBeSwappedOrMerged = true;
+                    
+                    // Can be merged?
+                    if (!canBeSwappedOrMerged && areItemsEqual(from, to)
+                            && getStackSize(to) < getMaxStackSize(to)) {
+                        canBeSwappedOrMerged = true;
+                    }
                 }
                 
                 if (canBeSwappedOrMerged) {

@@ -78,7 +78,10 @@ public class InvTweaksModCompatibility {
      * @return
      */
     public boolean isSpecialInventory(ug guiScreen) {
-        return is(guiScreen, "GuiInventoryMoreSlots"); // Aether mod
+        return is(guiScreen, "GuiInventoryMoreSlots") // Aether mod
+                || is(guiScreen, "GuiBlueFurnace") // RedPower 2
+                || is(guiScreen, "GuiAdvBench")
+                || is(guiScreen, "GuiBatteryBox");
     }
     
     private static final boolean is(ug guiScreen, String className) {

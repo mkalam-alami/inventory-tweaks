@@ -57,11 +57,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             slotRefs.put(InvTweaksContainerSection.ARMOR, slots.subList(5, 9));
         }
         
-        else if (isContainerWorkbench(container)) {
-            slotRefs.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(0, 1));
-            slotRefs.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(1, 10));
-        }
-        
         // Chest/Dispenser
         else if (isContainerChest(container)
                 || isContainerDispenser(container)) {

@@ -6,11 +6,11 @@ import org.lwjgl.input.Keyboard;
 public class InvTweaksConst {
 
     // Mod version
-    public static final String MOD_VERSION = "1.37b (1.1)";
+    public static final String MOD_VERSION = "1.37c (1.1)";
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs
-    public static final String TREE_VERSION = "1.0.0";
+    public static final String TREE_VERSION = "1.1.0";
 
     
     

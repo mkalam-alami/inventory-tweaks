@@ -369,7 +369,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             else if (to != null) {
                 
                 boolean canBeSwappedOrMerged = false;
-                
+
                 // Can be swapped?
                 if (lockPriorities[j] <= priority) {
                     if (rulePriority[j] < priority) {
@@ -380,12 +380,16 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                         }
                     }
                 }
-                
-                // Can be merged?
-                if (!canBeSwappedOrMerged
-                       && areItemsEqual(from, to)
-                       && getStackSize(to) < getMaxStackSize(to)) {
-                    canBeSwappedOrMerged = true;
+
+                if (areItemsEqual(from, to)) {
+                    // Can be merged?
+                    if (getStackSize(to) < getMaxStackSize(to)) {
+                        canBeSwappedOrMerged = true;
+                    }
+                    // Safety check (for TooManyItems)
+                    else if (getStackSize(from) > getMaxStackSize(from)) {
+                        canBeSwappedOrMerged = false;
+                    }
                 }
                 
                 if (canBeSwappedOrMerged) {

@@ -24,7 +24,7 @@ import org.lwjgl.input.Mouse;
  * License: MIT
  * 
  */
-public class InvTweaks extends InvTweaksObfuscation implements Runnable {
+public class InvTweaks extends InvTweaksObfuscation {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
 
@@ -87,134 +87,6 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
     }
 
     /**
-     * To be called every time the sorting key is pressed.
-     * Sorts the inventory.
-     */
-    public final void onSortingKeyPressed() {
-        synchronized (this) {
-            
-            // Check config loading success
-            if (!cfgManager.makeSureConfigurationIsLoaded()) {
-                return;
-            }
-            
-            // Check current GUI
-            ug guiScreen = getCurrentScreen();
-            if (guiScreen == null || (isValidChest(guiScreen) || isValidInventory(guiScreen))) {
-                // Sorting!
-                handleSorting(guiScreen);
-            }
-        }
-    }
-
-    /**
-     * To be called everytime a stack has been picked up.
-     * Moves the picked up item in another slot that matches best the current configuration.
-     */
-    public void onItemPickup() {
-        
-        if (!cfgManager.makeSureConfigurationIsLoaded()) {
-            return;
-        }
-
-        // Handle option to disable this feature
-        if (!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP).equals("false")) {
-            // Run sorting on pickup
-            new Thread(this).start();
-        }
-
-    }    
-    
-    /**
-     * On Item Pickup handler
-     */
-    @Override
-    public void run() {
-
-        InvTweaksConfig config = cfgManager.getConfig();
-        
-        try {
-            
-            InvTweaksContainerSectionManager containerMgr = new InvTweaksContainerSectionManager(mc, InvTweaksContainerSection.INVENTORY);
-
-            // Find where the item has been picked up
-            int pickupSlot = -1;
-            long tStart = System.currentTimeMillis();
-            while (pickupSlot == -1 && System.currentTimeMillis() - tStart < InvTweaksConst.SORTING_TIMEOUT) {
-                for (int i = 0; i < 9; i++) {
-                    yq stackToCompare = containerMgr.getItemStack(27 + i);
-                    if (stackToCompare != null) {
-                        if (hotbarClone[i] == null) {
-                            pickupSlot = 27 + i;
-                            break;
-                        }
-                        else if (!areItemStacksEqual(stackToCompare, hotbarClone[i])) {
-                            // We're looking for a brand new stack in the hotbar,
-                            // not an existing stack whose amount has been increased
-                            return;
-                        }
-                    }
-                }
-                Thread.yield();
-            }
-            
-            if (pickupSlot != -1) {
-            
-	            // Find preffered slots
-	            List<Integer> prefferedPositions = new LinkedList<Integer>();
-	            InvTweaksItemTree tree = config.getTree();
-	            yq stack = containerMgr.getItemStack(pickupSlot);
-	            List<InvTweaksItemTreeItem> items = tree.getItems(getItemID(stack),
-	                    getItemDamage(stack));
-	            for (InvTweaksConfigSortingRule rule : config.getRules()) {
-	                if (tree.matches(items, rule.getKeyword())) {
-	                    for (int slot : rule.getPreferredSlots()) {
-	                        prefferedPositions.add(slot);
-	                    }
-	                }
-	            }
-	
-	            // Find best slot for stack
-	            boolean hasToBeMoved = true;
-	            if (prefferedPositions != null) {
-	                for (int newSlot : prefferedPositions) {
-	                    try {
-	                        // Already in the best slot!
-	                        if (newSlot == pickupSlot) {
-	                            hasToBeMoved = false;
-	                            break;
-	                        }
-	                        // Is the slot available?
-	                        else if (containerMgr.getItemStack(newSlot) == null) {
-	                            // TODO: Check rule level before to move
-	                            if (containerMgr.move(pickupSlot, newSlot)) {
-	                                break;
-	                            }
-	                        }
-	                    } catch (TimeoutException e) {
-	                        logInGameError("invtweaks.pickup.error", e);
-	                    }
-	                }
-	            }
-	            // Else, put the slot anywhere
-	            if (hasToBeMoved) {
-	                for (int i = 0; i < containerMgr.getSize(); i++) {
-	                    if (containerMgr.getItemStack(i) == null) {
-	                        if (containerMgr.move(pickupSlot, i)) {
-	                            break;
-	                        }
-	                    }
-	                }
-	            }
-	            
-            }
-            
-        } catch (Exception e) {
-            logInGameError("invtweaks.pickup.error", e);
-        }
-    }
-
-    /**
      * To be called on each tick during the game (except when in a menu).
      * Handles the auto-refill.
      */
@@ -243,6 +115,126 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
             }
             handleGUILayout(guiScreen);
             handleShortcuts(guiScreen);
+        }
+    }
+
+    /**
+     * To be called every time the sorting key is pressed.
+     * Sorts the inventory.
+     */
+    public final void onSortingKeyPressed() {
+        synchronized (this) {
+            
+            // Check config loading success
+            if (!cfgManager.makeSureConfigurationIsLoaded()) {
+                return;
+            }
+            
+            // Check current GUI
+            ug guiScreen = getCurrentScreen();
+            if (guiScreen == null || (isValidChest(guiScreen) || isValidInventory(guiScreen))) {
+                // Sorting!
+                handleSorting(guiScreen);
+            }
+        }
+    }
+
+    /**
+     * To be called everytime a stack has been picked up.
+     * Moves the picked up item in another slot that matches best the current configuration.
+     */
+    public void onItemPickup() {
+    
+        if (!cfgManager.makeSureConfigurationIsLoaded()) {
+            return;
+        }
+        InvTweaksConfig config = cfgManager.getConfig();
+        // Handle option to disable this feature
+        if (cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP).equals("false")) {
+            return;
+        }
+    
+        try {
+            InvTweaksContainerSectionManager containerMgr = new InvTweaksContainerSectionManager(mc, InvTweaksContainerSection.INVENTORY);
+    
+            // Find stack slot (look in hotbar only).
+            // We're looking for a brand new stack in the hotbar
+            // (not an existing stack whose amount has been increased)
+            int currentSlot = -1;
+            do {
+                // In SMP, we have to wait first for the inventory update
+                if (isMultiplayerWorld() && currentSlot == -1) {
+                    try {
+                        Thread.sleep(InvTweaksConst.POLLING_DELAY);
+                    } catch (InterruptedException e) {
+                        // Do nothing (sleep interrupted)
+                    }
+                }
+                for (int i = 0; i < InvTweaksConst.INVENTORY_HOTBAR_SIZE; i++) {
+                    yq currentHotbarStack = containerMgr.getItemStack(i + 27);
+                    // Don't move already started stacks
+                    if (currentHotbarStack != null && getAnimationsToGo(currentHotbarStack) == 5 && hotbarClone[i] == null) {
+                        currentSlot = i + 27;
+                    }
+                }
+    
+                // The loop is only relevant in SMP (polling)
+            } while (isMultiplayerWorld() && currentSlot == -1);
+    
+            if (currentSlot != -1) {
+    
+                // Find preffered slots
+                List<Integer> prefferedPositions = new LinkedList<Integer>();
+                InvTweaksItemTree tree = config.getTree();
+                yq stack = containerMgr.getItemStack(currentSlot);
+                List<InvTweaksItemTreeItem> items = tree.getItems(getItemID(stack),
+                        getItemDamage(stack));
+                for (InvTweaksConfigSortingRule rule : config.getRules()) {
+                    if (tree.matches(items, rule.getKeyword())) {
+                        for (int slot : rule.getPreferredSlots()) {
+                            prefferedPositions.add(slot);
+                        }
+                    }
+                }
+    
+                // Find best slot for stack
+                boolean hasToBeMoved = true;
+                if (prefferedPositions != null) {
+                    for (int newSlot : prefferedPositions) {
+                        try {
+                            // Already in the best slot!
+                            if (newSlot == currentSlot) {
+                                hasToBeMoved = false;
+                                break;
+                            }
+                            // Is the slot available?
+                            else if (containerMgr.getItemStack(newSlot) == null) {
+                                // TODO: Check rule level before to move
+                                if (containerMgr.move(currentSlot, newSlot)) {
+                                    break;
+                                }
+                            }
+                        } catch (TimeoutException e) {
+                            logInGameError("Failed to move picked up stack", e);
+                        }
+                    }
+                }
+    
+                // Else, put the slot anywhere
+                if (hasToBeMoved) {
+                    for (int i = 0; i < containerMgr.getSize(); i++) {
+                        if (containerMgr.getItemStack(i) == null) {
+                            if (containerMgr.move(currentSlot, i)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+    
+            }
+            
+        } catch (Exception e) {
+            logInGameError("Failed to move picked up stack", e);
         }
     }
 
@@ -309,6 +301,17 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
         if (currentScreen == null || isGuiInventory(currentScreen)) {
             cloneHotbar();
         }
+        
+        handleConfigSwitch();
+        
+        return true;
+        
+    }
+    
+    private void handleConfigSwitch() {
+        
+        InvTweaksConfig config = cfgManager.getConfig();
+        ug currentScreen = getCurrentScreen();
 
         // Switch between configurations (shorcut)
         Vector<Integer> downKeys = cfgManager.getShortcutsHandler().getDownShortcutKeys();
@@ -353,7 +356,7 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                 String previousRuleset = config.getCurrentRulesetName();
                 String newRuleset = config.switchConfig();
                 // Log only if there is more than 1 ruleset
-                if (newRuleset != null && !previousRuleset.equals(newRuleset)) {
+                if (previousRuleset != null && newRuleset != null && !previousRuleset.equals(newRuleset)) {
                     logInGame(String.format(InvTweaksLocalization.get("invtweaks.loadconfig.enabled"), newRuleset), true);
                     handleSorting(currentScreen);
                 }
@@ -362,10 +365,6 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
         } else {
             sortingKeyPressedDate = 0;
         }
-        
-        
-
-        return true;
 
     }
 

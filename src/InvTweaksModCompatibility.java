@@ -31,7 +31,7 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiDeploy")
                 || is(guiScreen, "GuiSorter")
                 || is(guiScreen, "GuiFilter")
-                || is(guiScreen, "GuiNuclearReactor") // IC²
+                || is(guiScreen, "GuiNuclearReactor") // IC2
           ;
     }
 
@@ -45,10 +45,12 @@ public class InvTweaksModCompatibility {
     public int getSpecialChestRowSize(ft guiContainer, int defaultValue) {
     	if (is(guiContainer, "GuiAlchChest")) { // Equivalent Exchange
             return 13;
-        } else if (is(guiContainer, "GuiDiamondChest")) { // Iron chests (IC2)
-          return 12;
-        } else if (is(guiContainer, "GuiGoldChest")) {
-          return 9;
+        } else if (is(guiContainer, "GUIChest")) { // Iron chests (formerly IC2)
+	        try {
+	          return (Integer)guiContainer.getClass().getMethod("getRowLength").invoke(guiContainer);
+	        } catch (Exception e) {
+	        	// Skip it
+	        }
 	    } else if (is(guiContainer, "GuiMultiPageChest")) { // Multi Page chest
 	      return 13;
 	    } else if (is(guiContainer, "GuiLocker") // More Storage
@@ -65,7 +67,7 @@ public class InvTweaksModCompatibility {
 	    		|| is(guiContainer, "GuiDeploy")
 	    		|| is(guiContainer, "GuiFilter")) {
 	      return 3;
-	    } else if (is(guiContainer, "GuiNuclearReactor")) { // IC²
+	    } else if (is(guiContainer, "GuiNuclearReactor")) { // IC2
 	    	return (obf.getSlots(obf.getContainer(guiContainer)).size() - 36) / 6;
 	    }
         return defaultValue;
@@ -82,7 +84,10 @@ public class InvTweaksModCompatibility {
      * @return
      */
     public boolean isSpecialInventory(ug guiScreen) {
-        return is(guiScreen, "GuiInventoryMoreSlots"); // Aether mod
+        return is(guiScreen, "GuiInventoryMoreSlots") // Aether mod
+                || is(guiScreen, "GuiBlueFurnace") // RedPower 2
+                || is(guiScreen, "GuiAdvBench")
+                || is(guiScreen, "GuiBatteryBox");
     }
     
     private static final boolean is(ug guiScreen, String className) {

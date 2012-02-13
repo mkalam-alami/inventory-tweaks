@@ -89,17 +89,24 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         
         // Unknown = chest
         else {
-            if (size >= INVENTORY_SIZE) {
-                // Assuming the container ends with the inventory, just like all vanilla containers.
-                slotRefs.put(InvTweaksContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
-            }
-            else {
-                guiWithInventory = false;
-                slotRefs.put(InvTweaksContainerSection.CHEST, slots.subList(0, size));
-            }
+        	
+        	// Load mod's slots
+        	slotRefs = mods.getSpecialContainerSlots(currentScreen, container);
+        	
+        	// Else, guess slots
+        	if (slotRefs.isEmpty()) {
+	            if (size >= INVENTORY_SIZE) {
+	                // Assuming the container ends with the inventory, just like all vanilla containers.
+	                slotRefs.put(InvTweaksContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
+	            }
+	            else {
+	                guiWithInventory = false;
+	                slotRefs.put(InvTweaksContainerSection.CHEST, slots.subList(0, size));
+	            }
+        	}
         }
 
-        if (guiWithInventory) {
+        if (guiWithInventory && !slotRefs.containsKey(InvTweaksContainerSection.INVENTORY)) {
             slotRefs.put(InvTweaksContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
             slotRefs.put(InvTweaksContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
             slotRefs.put(InvTweaksContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));

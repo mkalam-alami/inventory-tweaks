@@ -3,6 +3,11 @@
 | Changelog                                                    |
 |==============================================================|
 
+[02.14.2012] 1.38 (1.1)
+ * Updated support for Equivalent Exchange & Iron chests
+ * Better support for Multi-Page Chest
+ * Big containers now have chest icons on the side
+ 
 [01.31.2012] 1.37c (1.1)
  * Fixed sort on pickup freezing the game
  * Fixed crash on switching configurations

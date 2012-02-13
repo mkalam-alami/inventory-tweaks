@@ -1,3 +1,7 @@
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public class InvTweaksModCompatibility {
 	
@@ -15,8 +19,8 @@ public class InvTweaksModCompatibility {
      */
     public boolean isSpecialChest(ug guiScreen) {
         return is(guiScreen, "GuiAlchChest") // Equivalent Exchange
-        		|| is(guiScreen, "GuiDiamondChest") // Iron chests (IC2)
-                || is(guiScreen, "GuiGoldChest") 
+        		|| is(guiScreen, "GuiCondenser")
+        		|| is(guiScreen, "GUIChest") // Iron chests (formerly IC2)
                 || is(guiScreen, "GuiMultiPageChest") // Multi Page chest
                 || is(guiScreen, "GuiGoldSafe") // More Storage
                 || is(guiScreen, "GuiLocker")
@@ -43,7 +47,8 @@ public class InvTweaksModCompatibility {
      * @return
      */
     public int getSpecialChestRowSize(ft guiContainer, int defaultValue) {
-    	if (is(guiContainer, "GuiAlchChest")) { // Equivalent Exchange
+    	if (is(guiContainer, "GuiAlchChest")
+    			|| is(guiContainer, "GuiCondenser")) { // Equivalent Exchange
             return 13;
         } else if (is(guiContainer, "GUIChest")) { // Iron chests (formerly IC2)
 	        try {
@@ -89,8 +94,25 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiAdvBench")
                 || is(guiScreen, "GuiBatteryBox");
     }
-    
-    private static final boolean is(ug guiScreen, String className) {
+
+	@SuppressWarnings("unchecked")
+    public Map<InvTweaksContainerSection, List<wz>> getSpecialContainerSlots(ug guiScreen, cx container) {
+    	
+    	Map<InvTweaksContainerSection, List<wz>> result = new HashMap<InvTweaksContainerSection, List<wz>>();
+		List<wz> slots = (List<wz>) obf.getSlots(container);
+    	
+    	if (is(guiScreen, "GuiCondenser")) { // EE
+    		result.put(InvTweaksContainerSection.CHEST, slots.subList(1, slots.size() - 36));
+    	}
+    	/*else if (is(guiScreen, "GuiMultiPageChest")) { // MultiPage Chest
+    		result.put(InvTweaksContainerSection.CHEST, slots.subList(0, 13 * 9));
+    	}*/
+    	
+		return result;
+		
+	}
+
+	private static final boolean is(ug guiScreen, String className) {
         return guiScreen.getClass().getSimpleName().contains(className);
     }
 

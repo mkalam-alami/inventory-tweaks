@@ -14,7 +14,7 @@ public class InvTweaksModCompatibility {
      * @return
      */
     public boolean isSpecialChest(ug guiScreen) {
-        return is(guiScreen, "GuiAlchest") // Equivalent Exchange
+        return is(guiScreen, "GuiAlchChest") // Equivalent Exchange
         		|| is(guiScreen, "GuiDiamondChest") // Iron chests (IC2)
                 || is(guiScreen, "GuiGoldChest") 
                 || is(guiScreen, "GuiMultiPageChest") // Multi Page chest
@@ -43,7 +43,7 @@ public class InvTweaksModCompatibility {
      * @return
      */
     public int getSpecialChestRowSize(ft guiContainer, int defaultValue) {
-    	if (is(guiContainer, "GuiAlchest")) { // Equivalent Exchange
+    	if (is(guiContainer, "GuiAlchChest")) { // Equivalent Exchange
             return 13;
         } else if (is(guiContainer, "GuiDiamondChest")) { // Iron chests (IC2)
           return 12;
@@ -69,6 +69,11 @@ public class InvTweaksModCompatibility {
 	    	return (obf.getSlots(obf.getContainer(guiContainer)).size() - 36) / 6;
 	    }
         return defaultValue;
+    }
+
+    public boolean isChestWayTooBig(ug guiScreen) {
+        return is(guiScreen, "GuiAlchChest")
+        		|| is(guiScreen, "GuiMultiPageChest");
     }
     
     /**

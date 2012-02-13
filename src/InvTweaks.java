@@ -542,11 +542,14 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                     int id = InvTweaksConst.JIMEOWAN_ID,
                         x = getXSize(guiContainer) / 2 + getWidth(guiContainer) / 2 - 17,
                         y = (getHeight(guiContainer) - getYSize(guiContainer)) / 2 + 5;
+                    boolean isChestWayTooBig = mods.isChestWayTooBig(guiScreen);
 
                     // Settings button
                     controlList.add(new InvTweaksGuiSettingsButton(
                             cfgManager, id++, 
-                            x - 1, y, w, h, "...", 
+                            (isChestWayTooBig) ? x + 22 : x - 1,
+                            (isChestWayTooBig) ? y - 3 : y,
+                            w, h, "...", 
                             InvTweaksLocalization.get("invtweaks.button.settings.tooltip")));
 
                     // Sorting buttons
@@ -556,21 +559,27 @@ public class InvTweaks extends InvTweaksObfuscation implements Runnable {
                         
                         InvTweaksObfuscationGuiButton button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
-                                x - 13, y, w, h, "h", InvTweaksLocalization.get("invtweaks.button.chest3.tooltip"),
+                                (isChestWayTooBig) ? x + 22 : x - 13,
+                                (isChestWayTooBig) ? y + 12 : y,
+                                w, h, "h", InvTweaksLocalization.get("invtweaks.button.chest3.tooltip"),
                                 InvTweaksHandlerSorting.ALGORITHM_HORIZONTAL,
                                 rowSize);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
-                                x - 25, y, w, h, "v", InvTweaksLocalization.get("invtweaks.button.chest2.tooltip"),
+                                (isChestWayTooBig) ? x + 22 : x - 25,
+                                (isChestWayTooBig) ? y + 25 : y,
+                                w, h, "v", InvTweaksLocalization.get("invtweaks.button.chest2.tooltip"),
                                 InvTweaksHandlerSorting.ALGORITHM_VERTICAL,
                                 rowSize);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
-                                x - 37, y, w, h, "s", InvTweaksLocalization.get("invtweaks.button.chest1.tooltip"),
+                                (isChestWayTooBig) ? x + 22 : x - 37,
+                                (isChestWayTooBig) ? y + 38 : y,
+                                w, h, "s", InvTweaksLocalization.get("invtweaks.button.chest1.tooltip"),
                                 InvTweaksHandlerSorting.ALGORITHM_DEFAULT,
                                 rowSize);
                         controlList.add(button);

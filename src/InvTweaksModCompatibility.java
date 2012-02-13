@@ -30,7 +30,7 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiDeploy")
                 || is(guiScreen, "GuiSorter")
                 || is(guiScreen, "GuiFilter")
-                || is(guiScreen, "GuiNuclearReactor") // IC�
+                || is(guiScreen, "GuiNuclearReactor") // IC2
           ;
     }
 
@@ -42,14 +42,14 @@ public class InvTweaksModCompatibility {
      * @return
      */
     public int getSpecialChestRowSize(ft guiContainer, int defaultValue) {
-    	if (is(guiContainer, "GuiAlchest")) { // Equivalent Exchange
+    	if (is(guiContainer, "GuiAlchChest")) { // Equivalent Exchange
             return 13;
         } else if (is(guiContainer, "GUIChest")) { // Iron chests (formerly IC2)
-        try {
-          return (Integer)guiContainer.getClass().getMethod("getRowLength").invoke(guiContainer);
-        } catch (Exception e) {
-        	// Skip it
-        }
+	        try {
+	          return (Integer)guiContainer.getClass().getMethod("getRowLength").invoke(guiContainer);
+	        } catch (Exception e) {
+	        	// Skip it
+	        }
 	    } else if (is(guiContainer, "GuiMultiPageChest")) { // Multi Page chest
 	      return 13;
 	    } else if (is(guiContainer, "GuiLocker") // More Storage
@@ -66,10 +66,15 @@ public class InvTweaksModCompatibility {
 	    		|| is(guiContainer, "GuiDeploy")
 	    		|| is(guiContainer, "GuiFilter")) {
 	      return 3;
-	    } else if (is(guiContainer, "GuiNuclearReactor")) { // IC�
+	    } else if (is(guiContainer, "GuiNuclearReactor")) { // IC2
 	    	return (obf.getSlots(obf.getContainer(guiContainer)).size() - 36) / 6;
 	    }
         return defaultValue;
+    }
+
+    public boolean isChestWayTooBig(ug guiScreen) {
+        return is(guiScreen, "GuiAlchChest")
+        		|| is(guiScreen, "GuiMultiPageChest");
     }
     
     /**

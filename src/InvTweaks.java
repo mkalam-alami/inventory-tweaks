@@ -503,7 +503,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         InvTweaksConfig config = cfgManager.getConfig();
         boolean isValidChest = isValidChest(guiScreen);
 
-        if (isValidChest || isGuiInventory(guiScreen) || isGuiWorkbench(guiScreen)) {
+        if (isValidChest || (isStandardInventory(guiScreen) && !isGuiEnchantmentTable(guiScreen))) {
 
             int w = 10, h = 10;
 
@@ -593,7 +593,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void handleShortcuts(ug guiScreen) {
         
         // Check open GUI
-        if (!(isValidChest(guiScreen) || isValidInventory(guiScreen))) {
+        if (!(isValidChest(guiScreen) || isStandardInventory(guiScreen))) {
             return;
         }
         

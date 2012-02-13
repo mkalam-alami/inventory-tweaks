@@ -313,12 +313,15 @@ public class InvTweaksObfuscation {
         		|| mods.isSpecialChest(guiScreen));
     }
 	protected boolean isValidInventory(ug guiScreen) {
-        return guiScreen != null && (isGuiInventory(guiScreen)
+        return isStandardInventory(guiScreen)
+        		|| mods.isSpecialInventory(guiScreen);
+    }
+	protected boolean isStandardInventory(ug guiScreen) {
+        return isGuiInventory(guiScreen)
         		|| isGuiWorkbench(guiScreen)
         		|| isGuiFurnace(guiScreen)
                 || isGuiBrewingStand(guiScreen)
-                || isGuiEnchantmentTable(guiScreen)
-        		|| mods.isSpecialInventory(guiScreen));
+                || isGuiEnchantmentTable(guiScreen);
     }
 	
     protected boolean isGuiContainer(Object o) { // GuiContainer (abstract class)

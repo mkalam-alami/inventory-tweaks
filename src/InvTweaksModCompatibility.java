@@ -89,10 +89,15 @@ public class InvTweaksModCompatibility {
      * @return
      */
     public boolean isSpecialInventory(ug guiScreen) {
-        return is(guiScreen, "GuiInventoryMoreSlots") // Aether mod
+    	try {
+			return obf.getSlots(obf.getContainer((ft) guiScreen)).size() > InvTweaksConst.INVENTORY_SIZE;
+		} catch (Exception e) {
+			return false;
+		}
+    	/*return is(guiScreen, "GuiInventoryMoreSlots") // Aether mod
                 || is(guiScreen, "GuiBlueFurnace") // RedPower 2
                 || is(guiScreen, "GuiAdvBench")
-                || is(guiScreen, "GuiBatteryBox");
+                || is(guiScreen, "GuiBatteryBox");*/
     }
 
 	@SuppressWarnings("unchecked")

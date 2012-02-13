@@ -35,6 +35,7 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiDeploy")
                 || is(guiScreen, "GuiSorter")
                 || is(guiScreen, "GuiFilter")
+                || is(guiScreen, "GuiAdvBench")
                 || is(guiScreen, "GuiNuclearReactor") // IC2
           ;
     }
@@ -109,9 +110,11 @@ public class InvTweaksModCompatibility {
     	if (is(guiScreen, "GuiCondenser")) { // EE
     		result.put(InvTweaksContainerSection.CHEST, slots.subList(1, slots.size() - 36));
     	}
-    	/*else if (is(guiScreen, "GuiMultiPageChest")) { // MultiPage Chest
-    		result.put(InvTweaksContainerSection.CHEST, slots.subList(0, 13 * 9));
-    	}*/
+    	else if (is(guiScreen, "GuiAdvBench")) { // MultiPage Chest
+    		result.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(0, 9));
+    		result.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(9, 10));
+    		result.put(InvTweaksContainerSection.CHEST, slots.subList(10, 28));
+    	}
     	
 		return result;
 		

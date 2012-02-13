@@ -219,26 +219,29 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 }
                 
                 if (destinationModifier == 0) {
-                        switch (srcSection) {
-                        case CHEST:
-                            destSection = InvTweaksContainerSection.INVENTORY; break;
-                        case INVENTORY_HOTBAR:
-							if (availableSections.contains(InvTweaksContainerSection.CHEST)) {
-								destSection = InvTweaksContainerSection.CHEST;
-							} else {
-								destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR;
-							}
-							break;
-                        case CRAFTING_IN:
-                        case FURNACE_IN:
-                            destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;
-                        default:
-                            if (availableSections.contains(InvTweaksContainerSection.CHEST)) {
-                              destSection = InvTweaksContainerSection.CHEST;
-                            } else {
-                              destSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
-                            }
+            		if (srcSection == null) {
+            			srcSection = InvTweaksContainerSection.INVENTORY;
+            		}
+                    switch (srcSection) {
+                    case CHEST:
+                        destSection = InvTweaksContainerSection.INVENTORY; break;
+                    case INVENTORY_HOTBAR:
+						if (availableSections.contains(InvTweaksContainerSection.CHEST)) {
+							destSection = InvTweaksContainerSection.CHEST;
+						} else {
+							destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR;
+						}
+						break;
+                    case CRAFTING_IN:
+                    case FURNACE_IN:
+                        destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;
+                    default:
+                        if (availableSections.contains(InvTweaksContainerSection.CHEST)) {
+                          destSection = InvTweaksContainerSection.CHEST;
+                        } else {
+                          destSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
                         }
+                    }
                 }
                 
                 else {

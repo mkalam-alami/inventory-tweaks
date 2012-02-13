@@ -4,7 +4,7 @@
 |==============================================================|
 
 [02.14.2012] 1.38 (1.1)
- * Updated support for Equivalent Exchange & Iron chests
+ * Updated support for Equivalent Exchange, Iron chests & Red Power 2
  * Better support for Multi-Page Chest
  * Big containers now have chest icons on the side
  

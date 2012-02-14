@@ -1,11 +1,12 @@
 package invtweaks;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -24,53 +25,74 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     private final static String ATTR_DAMAGE = "damage";
     private final static String ATTR_TREE_VERSION = "treeVersion";
 
-    private InvTweaksItemTree tree;
+    private static InvTweaksItemTree tree;
 
-    private String treeVersion = null;
-    private int itemOrder = 0;
-    private LinkedList<String> categoryStack = new LinkedList<String>();
+    private static String treeVersion;
+    private static int itemOrder;
+    private static LinkedList<String> categoryStack;
 
-    public InvTweaksItemTreeLoader() {
-        tree = new InvTweaksItemTree();
-    }
+    private static Boolean treeLoaded;
+    private static List<InvTweaksItemTreeListener> onLoadListeners = new ArrayList<InvTweaksItemTreeListener>();
 
-    public boolean isValidVersion(String filePath) throws Exception {
-        synchronized (this) {
-            treeVersion = null;
-            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-            SAXParser parser = parserFactory.newSAXParser();
-            parser.parse(new File(filePath), this);
-        }
-        return InvTweaksConst.TREE_VERSION.equals(treeVersion);
-    }
+    public synchronized static InvTweaksItemTree load(String filePath) throws Exception {
+    	treeLoaded = false;
+    	treeVersion = null;
+    	tree = new InvTweaksItemTree();
+    	itemOrder = 0;
+    	categoryStack = new LinkedList<String>();
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        SAXParser parser = parserFactory.newSAXParser();
+        parser.parse(new File(filePath), new InvTweaksItemTreeLoader());
+       /* if (!categoryStack.isEmpty()) {
+            InvTweaks.logInGameStatic("Warning: The tree file seems to be broken "
+                    + "(is '" + categoryStack.getLast() + "' closed correctly?)");
+        }*/
     
-    public InvTweaksItemTree load(String filePath) throws Exception {
-        synchronized (this) {
-            categoryStack.clear();
-            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-            SAXParser parser = parserFactory.newSAXParser();
-            parser.parse(new File(filePath), this);
-           /* if (!categoryStack.isEmpty()) {
-                InvTweaks.logInGameStatic("Warning: The tree file seems to be broken "
-                        + "(is '" + categoryStack.getLast() + "' closed correctly?)");
-            }*/
-        }
+        // Tree loaded event
+        synchronized (onLoadListeners) {
+	        treeLoaded = true;
+	        for (InvTweaksItemTreeListener onLoadListener : onLoadListeners) {
+	        	onLoadListener.onTreeLoaded(tree);
+	        }
+		}
+        
         return tree;
     }
+    
+    public synchronized static void addOnLoadListener(InvTweaksItemTreeListener listener) {
+    	onLoadListeners.add(listener);
+    	if (treeLoaded) {
+    		// Late event triggering
+    		listener.onTreeLoaded(tree);
+    	}
+    }
+    
+    public synchronized static boolean removeOnLoadListener(InvTweaksItemTreeListener listener) {
+    		return onLoadListeners.remove(listener);
+    }
 
-    @Override
-    public void startElement(String uri, String localName,
+
+    public synchronized static boolean isValidVersion(String filePath) throws Exception {
+        treeVersion = null;
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        SAXParser parser = parserFactory.newSAXParser();
+        parser.parse(new File(filePath), new InvTweaksItemTreeLoader());
+	    return InvTweaksConst.TREE_VERSION.equals(treeVersion);
+	}
+
+	@Override
+    public synchronized void startElement(String uri, String localName,
             String name, Attributes attributes) throws SAXException {
 
         String rangeMinAttr = attributes.getValue(ATTR_RANGE_MIN);
-        String treeVersion = attributes.getValue(ATTR_TREE_VERSION);
+        String newTreeVersion = attributes.getValue(ATTR_TREE_VERSION);
         
         // Category
-        if (attributes.getLength() == 0 || rangeMinAttr != null  || treeVersion != null) {
+        if (attributes.getLength() == 0 || rangeMinAttr != null  || treeVersion == null) {
 
             // Tree version
-            if (treeVersion != null) {
-                this.treeVersion = treeVersion;
+            if (treeVersion == null) {
+                treeVersion = newTreeVersion;
             }
             
             if (categoryStack.isEmpty()) {
@@ -94,7 +116,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         }
 
         // Item
-        else {
+        else if (attributes.getValue(ATTR_ID) != null) {
             int id = Integer.parseInt(attributes.getValue(ATTR_ID));
             int damage = -1;
             if (attributes.getValue(ATTR_DAMAGE) != null) {
@@ -106,8 +128,8 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     }
 
     @Override
-    public void endElement(String uri, String localName, String name) throws SAXException {
-        if (name.equals(categoryStack.getLast())) {
+    public synchronized void endElement(String uri, String localName, String name) throws SAXException {
+        if (!categoryStack.isEmpty() && name.equals(categoryStack.getLast())) {
             categoryStack.removeLast();
         }
     }

@@ -104,11 +104,11 @@ public class InvTweaksConfigManager {
 
         // Compatibility: Tree version check
         try {
-            if (!(new InvTweaksItemTreeLoader().isValidVersion(InvTweaksConst.CONFIG_TREE_FILE))) {
+            if (!(InvTweaksItemTreeLoader.isValidVersion(InvTweaksConst.CONFIG_TREE_FILE))) {
                 backupFile(new File(InvTweaksConst.CONFIG_TREE_FILE), InvTweaksConst.CONFIG_TREE_FILE);
             }
         } catch (Exception e) {
-            log.warning("Failed to check item tree version");
+            log.warning("Failed to check item tree version: " + e.getMessage());
         }
 
         // Compatibility: File names check

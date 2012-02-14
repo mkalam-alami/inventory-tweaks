@@ -101,7 +101,7 @@ public class InvTweaksConfig {
             saveProperties(); // Needed to append non-saved properties to the file
 
             // Load tree
-            tree = new InvTweaksItemTreeLoader().load(treeFile);
+            tree = InvTweaksItemTreeLoader.load(treeFile);
 
             // Read file
             File f = new File(rulesFile);

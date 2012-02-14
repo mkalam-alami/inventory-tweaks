@@ -383,7 +383,12 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private void handleSorting(ug guiScreen) {
     	
-        yq selectedItem = getMainInventory()[getFocusedSlot()];
+        yq selectedItem = null;
+        int focusedSlot = getFocusedSlot();
+        yq[] mainInventory = getMainInventory();
+        if (focusedSlot < mainInventory.length && focusedSlot >= 0) {
+            selectedItem = mainInventory[focusedSlot];
+        }
 
         // Sorting
         try {
@@ -400,7 +405,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         // This needs to be remembered so that the
         // auto-refill feature doesn't trigger
-        if (selectedItem != null && getMainInventory()[getFocusedSlot()] == null) {
+        if (selectedItem != null && mainInventory[focusedSlot] == null) {
             storedStackId = 0;
         }
 

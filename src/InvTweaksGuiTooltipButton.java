@@ -1,3 +1,4 @@
+import invtweaks.InvTweaksConst;
 import net.minecraft.client.Minecraft;
 
 /**

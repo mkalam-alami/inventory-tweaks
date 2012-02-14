@@ -1,4 +1,3 @@
-import java.io.File;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -280,21 +279,6 @@ public class InvTweaksObfuscation {
 
     // Static access
 
-    /**
-     * Returns the Minecraft folder ensuring: - It is an absolute path - It ends
-     * with a folder separator
-     */
-    public static String getMinecraftDir() {
-        String absolutePath = Minecraft.b().getAbsolutePath();
-        if (absolutePath.endsWith(".")) {
-            return absolutePath.substring(0, absolutePath.length() - 1);
-        }
-        if (absolutePath.endsWith(File.separator)) {
-            return absolutePath;
-        } else {
-            return absolutePath + File.separatorChar;
-        }
-    }
     public static yq getHoldStackStatic(Minecraft mc) {
         return new InvTweaksObfuscation(mc).getHoldStack();
     }

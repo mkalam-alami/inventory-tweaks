@@ -1,3 +1,4 @@
+import invtweaks.InvTweaksConst;
 import invtweaks.InvTweaksItemTree;
 import invtweaks.InvTweaksItemTreeItem;
 

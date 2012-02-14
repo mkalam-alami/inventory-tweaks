@@ -1,3 +1,5 @@
+import invtweaks.InvTweaksConst;
+
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
@@ -26,7 +28,7 @@ public class mod_InvTweaks extends BaseMod {
 		Minecraft mc = ModLoader.getMinecraftInstance();
 
 		// Register key (listen only for key down events)
-		ModLoader.RegisterKey(this, InvTweaksConst.SORT_KEY_BINDING, false);
+		ModLoader.RegisterKey(this, InvTweaks.SORT_KEY_BINDING, false);
 
 		// Register in game hooks
 		ModLoader.SetInGameHook(this, true, true);

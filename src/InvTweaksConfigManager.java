@@ -1,6 +1,9 @@
 
 
 
+import invtweaks.InvTweaksConst;
+import invtweaks.InvTweaksItemTreeLoader;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;

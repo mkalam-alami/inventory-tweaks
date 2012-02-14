@@ -75,7 +75,7 @@ public class InvTweaksGuiShortcutsHelp extends ug /* GuiScreen */ {
         drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.craftone"), config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + " + clickLabel, 0x00FF8800, y);
         y += 19;
         
-        String sortKeyName = getKeyName(obf.getKeyCode(InvTweaksConst.SORT_KEY_BINDING), "(Sort Key)");
+        String sortKeyName = getKeyName(obf.getKeyCode(InvTweaks.SORT_KEY_BINDING), "(Sort Key)");
         drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.selectconfig"), "0-9 + " +sortKeyName, 0x0088FFFF, y);
         
         super.a(i, j, f); // drawScreen

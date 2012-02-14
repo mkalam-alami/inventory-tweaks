@@ -1,3 +1,4 @@
+import invtweaks.InvTweaksConst;
 import invtweaks.InvTweaksItemTree;
 import invtweaks.InvTweaksItemTreeItem;
 
@@ -31,6 +32,15 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
 
+    /**
+     * Key binding to trigger sorting. 
+     * Maintained by Minecraft so that its keycode is actually
+     * what has been configured by the player (not always the R key).
+     */
+    public static final ads SORT_KEY_BINDING = 
+        new ads("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
+    
+    
     private static InvTweaks instance;
 
     /**
@@ -632,7 +642,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private boolean isSortingShortcutDown() {
-    	int keyCode = getKeyCode(InvTweaksConst.SORT_KEY_BINDING);
+    	int keyCode = getKeyCode(SORT_KEY_BINDING);
     	if (keyCode > 0) {
     		return Keyboard.isKeyDown(keyCode);
     	}

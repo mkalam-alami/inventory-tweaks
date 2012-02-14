@@ -521,8 +521,7 @@ public class InvTweaksConfig {
             try {
                 configPropsFile.createNewFile();
             } catch (IOException e) {
-                InvTweaks.logInGameStatic("Failed to create the config file "
-                        + InvTweaksConst.CONFIG_PROPS_FILE);
+                InvTweaks.logInGameStatic("invtweaks.propsfile.errors");
                 return null;
             }
         }

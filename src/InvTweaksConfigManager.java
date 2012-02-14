@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.IllegalFormatException;
 import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -51,7 +52,7 @@ public class InvTweaksConfigManager {
         try {
             if (config != null && config.refreshProperties()) {
                 shortcutsHandler = new InvTweaksHandlerShortcuts(mc, config);
-                InvTweaks.logInGameStatic("Mod properties loaded");
+                InvTweaks.logInGameStatic("invtweaks.propsfile.loaded");
             }
         } catch (IOException e) {
             InvTweaks.logInGameErrorStatic("invtweaks.loadconfig.refresh.error", e);
@@ -129,11 +130,11 @@ public class InvTweaksConfigManager {
 
         if (!new File(InvTweaksConst.CONFIG_RULES_FILE).exists() && 
                 extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE, InvTweaksConst.CONFIG_RULES_FILE)) {
-            InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_RULES_FILE + " missing, creating default one.");
+            InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_RULES_FILE + " " + InvTweaksLocalization.get("invtweaks.loadconfig.invalidkeywords"));
         }
         if (!new File(InvTweaksConst.CONFIG_TREE_FILE).exists() && 
                 extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE, InvTweaksConst.CONFIG_TREE_FILE)) {
-            InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_TREE_FILE + " missing, creating default one.");
+            InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_TREE_FILE + " " + InvTweaksLocalization.get("invtweaks.loadconfig.invalidkeywords"));
         }
 
         storedConfigLastModified = computeConfigLastModified();
@@ -156,7 +157,7 @@ public class InvTweaksConfigManager {
             shortcutsHandler.reset();
             
             log.setLevel(config.getLogLevel());
-            InvTweaks.logInGameStatic("Configuration loaded");
+            InvTweaks.logInGameStatic("invtweaks.loadconfig.done");
             showConfigErrors(config);
         } catch (FileNotFoundException e) {
             error = "Config file not found";
@@ -239,12 +240,22 @@ public class InvTweaksConfigManager {
                 f.close();
                 return true;
             } catch (IOException e) {
-                InvTweaks.logInGameStatic("The mod won't work, because " + destination + " creation failed!");
+            	try {
+            		InvTweaks.logInGameStatic(String.format(InvTweaksLocalization.get("invtweaks.extract.create.error"), destination));
+            	}
+            	catch (IllegalFormatException e2) {
+            		InvTweaks.logInGameStatic("[16] The mod won't work, because " + destination + " creation failed!");
+            	}
                 log.severe("Cannot create " + destination + " file: " + e.getMessage());
                 return false;
             }
         } else {
-            InvTweaks.logInGameStatic("The mod won't work, because " + resource + " could not be found!");
+        	try {
+        		InvTweaks.logInGameStatic(String.format(InvTweaksLocalization.get("invtweaks.extract.find.error"), resource));
+        	}
+        	catch (IllegalFormatException e2) {
+        		InvTweaks.logInGameStatic("[15] The mod won't work, because " + resource + " creation failed!");
+        	}
             log.severe("Cannot create " + destination + " file: " + resource + " not found");
             return false;
         }
@@ -253,7 +264,7 @@ public class InvTweaksConfigManager {
     private void showConfigErrors(InvTweaksConfig config) {
         Vector<String> invalid = config.getInvalidKeywords();
         if (invalid.size() > 0) {
-            String error = "Invalid keywords found: ";
+            String error = InvTweaksLocalization.get("invtweaks.loadconfig.invalidkeywords") + ": ";
             for (String keyword : config.getInvalidKeywords()) {
                 error += keyword + " ";
             }

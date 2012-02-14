@@ -1,3 +1,6 @@
+import invtweaks.InvTweaksItemTree;
+import invtweaks.InvTweaksItemTreeItem;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

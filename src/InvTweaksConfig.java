@@ -1,3 +1,6 @@
+import invtweaks.InvTweaksItemTree;
+import invtweaks.InvTweaksItemTreeItem;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

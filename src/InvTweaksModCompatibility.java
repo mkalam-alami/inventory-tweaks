@@ -91,7 +91,8 @@ public class InvTweaksModCompatibility {
      */
     public boolean isSpecialInventory(ug guiScreen) {
     	try {
-			return obf.getSlots(obf.getContainer((ft) guiScreen)).size() > InvTweaksConst.INVENTORY_SIZE;
+			return obf.getSlots(obf.getContainer((ft) guiScreen)).size() > InvTweaksConst.INVENTORY_SIZE
+					&& !obf.isGuiContainerCreative(guiScreen);
 		} catch (Exception e) {
 			return false;
 		}

@@ -1,6 +1,10 @@
 
 
 
+import invtweaks.InvTweaksItemTree;
+import invtweaks.InvTweaksItemTreeCategory;
+import invtweaks.InvTweaksItemTreeItem;
+
 import java.io.File;
 import java.util.LinkedList;
 

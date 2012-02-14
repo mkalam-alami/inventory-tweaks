@@ -82,8 +82,9 @@ public class InvTweaksModCompatibility {
     }
 
     public boolean isChestWayTooBig(ug guiScreen) {
-        return is(guiScreen, "GuiAlchChest")
-        		|| is(guiScreen, "GuiMultiPageChest");
+        return is(guiScreen, "GuiAlchChest") // Equivalent Exchange
+        		|| is(guiScreen, "GuiMultiPageChest") // MultiPage Chest
+        		|| is(guiScreen, "GUIChest"); // IronChests
     }
     
     /**
@@ -98,10 +99,6 @@ public class InvTweaksModCompatibility {
 		} catch (Exception e) {
 			return false;
 		}
-    	/*return is(guiScreen, "GuiInventoryMoreSlots") // Aether mod
-                || is(guiScreen, "GuiBlueFurnace") // RedPower 2
-                || is(guiScreen, "GuiAdvBench")
-                || is(guiScreen, "GuiBatteryBox");*/
     }
 
 	@SuppressWarnings("unchecked")
@@ -113,7 +110,7 @@ public class InvTweaksModCompatibility {
     	if (is(guiScreen, "GuiCondenser")) { // EE
     		result.put(InvTweaksContainerSection.CHEST, slots.subList(1, slots.size() - 36));
     	}
-    	else if (is(guiScreen, "GuiAdvBench")) { // MultiPage Chest
+    	else if (is(guiScreen, "GuiAdvBench")) { // RedPower 2
     		result.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(0, 9));
     		result.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(9, 10));
     		result.put(InvTweaksContainerSection.CHEST, slots.subList(10, 28));

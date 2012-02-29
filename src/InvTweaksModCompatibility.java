@@ -39,6 +39,7 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiFilter")
                 || is(guiScreen, "GuiAdvBench")
                 || is(guiScreen, "GuiNuclearReactor") // IC2
+                || is(guiScreen, "GuiEnderChest") // EnderChest
           ;
     }
 

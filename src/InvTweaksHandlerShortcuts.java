@@ -384,9 +384,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         for (wz slot : container.getSlots(fromSection)) {
             if (hasStack(slot) && (stackToMatch == null || areSameItemType(stackToMatch, getStack(slot)))) {
                 int fromIndex = container.getSlotIndex(getSlotNumber(slot));
-                boolean canStillMove = true;
-                while (hasStack(slot) && toIndex != -1 && !(fromSection == toSection && fromIndex == toIndex) && canStillMove) {
-                    canStillMove = container.move(fromSection, fromIndex, toSection, toIndex);
+                while (hasStack(slot) && toIndex != -1 && !(fromSection == toSection && fromIndex == toIndex)) {
+                    container.move(fromSection, fromIndex, toSection, toIndex);
                     toIndex = getNextIndex(separateStacks, drop);
                 }
             }

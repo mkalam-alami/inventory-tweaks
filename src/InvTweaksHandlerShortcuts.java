@@ -105,6 +105,10 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             registerShortcutMapping(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT, new InvTweaksShortcutMapping(i));
         }
         
+        // Register (L/R)SHIFT to allow to filter them
+        shortcutKeysStatus.put(Keyboard.KEY_LSHIFT, false);
+        shortcutKeysStatus.put(Keyboard.KEY_RSHIFT, false);
+        
     }
     
     private void registerShortcutMapping(ShortcutType type, InvTweaksShortcutMapping mapping) {

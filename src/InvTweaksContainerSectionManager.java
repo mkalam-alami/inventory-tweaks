@@ -40,6 +40,10 @@ public class InvTweaksContainerSectionManager {
         return containerMgr.dropSome(section, srcIndex, amount);
     }
     
+    public boolean putHoldItemDown(int destIndex) throws TimeoutException {
+        return containerMgr.putHoldItemDown(section, destIndex);
+    }
+    
     public void leftClick(int index) throws TimeoutException {
         containerMgr.leftClick(section, index);
     }

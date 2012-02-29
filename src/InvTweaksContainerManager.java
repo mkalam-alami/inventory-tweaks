@@ -130,7 +130,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @throws TimeoutException 
      */
 	public boolean move(InvTweaksContainerSection srcSection, int srcIndex,
-            InvTweaksContainerSection destSection, int destIndex) throws TimeoutException {
+            InvTweaksContainerSection destSection, int destIndex) {
 	    
 	    yq srcStack = getItemStack(srcSection, srcIndex);
 	    yq destStack = getItemStack(destSection, destIndex);
@@ -207,7 +207,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 	 */
 	public boolean moveSome(InvTweaksContainerSection srcSection, int srcIndex,
 	        InvTweaksContainerSection destSection, int destIndex,
-	        int amount) throws TimeoutException {
+	        int amount) {
 
 	    yq source = getItemStack(srcSection, srcIndex);
 	    if (source == null || srcSection == destSection && srcIndex == destIndex) {
@@ -236,80 +236,51 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 	    
 	}
 
-    public boolean drop(InvTweaksContainerSection srcSection, int srcIndex) throws TimeoutException {
+    public boolean drop(InvTweaksContainerSection srcSection, int srcIndex) {
         return move(srcSection, srcIndex, null, DROP_SLOT);
     }
     
-    public boolean dropSome(InvTweaksContainerSection srcSection, int srcIndex, int amount) throws TimeoutException {
+    public boolean dropSome(InvTweaksContainerSection srcSection, int srcIndex, int amount) {
         return moveSome(srcSection, srcIndex, null, DROP_SLOT, amount);
     }
+    
+    /**
+     * If an item is in hand (= attached to the cursor), puts it down.
+     * 
+     * @return true unless the item could not be put down
+     * @throws Exception
+     */
+    public boolean putHoldItemDown(InvTweaksContainerSection destSection, int destIndex) {
+        yq holdStack = getHoldStack();
+        if (holdStack != null) {
+        	if (getItemStack(destSection, destIndex) == null) {
+        		click(destSection, destIndex, false);
+                return true;
+        	}
+        	return false;
+        }
+        return true;
+    }
             
-	public void leftClick(InvTweaksContainerSection section, int index) throws TimeoutException {
+	public void leftClick(InvTweaksContainerSection section, int index) {
         click(section, index, false);
     }
 
-    public void rightClick(InvTweaksContainerSection section, int index) throws TimeoutException {
+    public void rightClick(InvTweaksContainerSection section, int index) {
         click(section, index, true);
     }
 
-    public void click(InvTweaksContainerSection section, int index, boolean rightClick) throws TimeoutException {
-        
+    
+    public void click(InvTweaksContainerSection section, int index, boolean rightClick) {
+        // Click! (we finally call the Minecraft code)
         int slot = indexToSlot(section, index);
-       // int timeSpentWaiting = 0;
-        
         if (slot != -1) {
-            
-            /* boolean uselessClick = false;
-            ItemStack stackInSlot = null;
-            if (isMultiplayerWorld()) {
-                // After clicking, we'll need to wait for server answer before continuing.
-                // We'll do this by listening to any change in the slot, but this implies we
-                // check first if the click will indeed produce a change.
-                stackInSlot = (getItemStack(section, index) != null)
-                        ? copy(getItemStack(section, index)) : null;
-                ItemStack stackInHand = getHoldStack();
-            
-                // Useless if empty stacks
-                if (stackInHand == null && stackInSlot == null)
-                    uselessClick = true;
-                // Useless if destination stack is full
-                else if (stackInHand != null && stackInSlot != null
-                        && stackInHand.isItemEqual(stackInSlot)
-                        && getStackSize(stackInSlot) == getMaxStackSize(stackInSlot)) {
-                    uselessClick = true;
-                }
-            }*/
-        
-            // Click!
             clickInventory(getPlayerController(),
                     getWindowId(container), // Select container
                     slot, // Targeted slot
                     (rightClick) ? 1 : 0, // Click #
                     false, // Shift not held
                     getThePlayer());
-        
-            // Wait for inventory update
-            /*if (isMultiplayerWorld()) {
-                if (!uselessClick) {
-                    int pollingTime = 0;
-                    // Note: Polling doesn't work for crafting output, if the same recipe
-                    // can still be used.
-                    while (areItemStacksEqual(getItemStack(section, index), stackInSlot)
-                            && pollingTime < ACTION_TIMEOUT
-                            && section != ContainerSection.CRAFTING_OUT) { 
-                        try {
-                            Thread.sleep(POLLING_DELAY);
-                        } catch (InterruptedException e) {
-                            // Do nothing
-                        }
-                        pollingTime += POLLING_DELAY;
-                    }
-                    if (pollingTime >= ACTION_TIMEOUT) {
-                        log.warning("Click timeout");
-                    }
-                    timeSpentWaiting += pollingTime;
-                }
-            }*/
         }
     }
 

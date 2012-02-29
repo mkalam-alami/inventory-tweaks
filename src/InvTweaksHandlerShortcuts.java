@@ -147,158 +147,170 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         int ex = Mouse.getEventX(), ey = Mouse.getEventY();
         int x = (ex * getWidth(guiContainer)) / getDisplayWidth();
         int y = getHeight(guiContainer) - (ey * getHeight(guiContainer)) / getDisplayHeight() - 1;
+        InvTweaksContainerManager container = new InvTweaksContainerManager(mc);
         
-        // Check that the slot is not empty
         wz slot = getSlotAtPosition(guiContainer, x, y);
+        if (slot != null) {
+        	
+            // Put the stack in hand down
+            InvTweaksContainerSection srcSection = null;
+            srcSection  = container.getSlotSection(getSlotNumber(slot));
+            container.putHoldItemDown(srcSection, container.getSlotIndex(getSlotNumber(slot)));
         
-        if (slot != null && hasStack(slot)) {
-
-            InvTweaksContainerManager container = new InvTweaksContainerManager(mc);
-           
-            // Filter shortcuts to let Minecraft ones run
-            if (container.getSlotSection(getSlotNumber(slot)) 
-                    == InvTweaksContainerSection.CRAFTING_OUT
-                   && (shortcutKeysStatus.get(Keyboard.KEY_LSHIFT)
-                   || shortcutKeysStatus.get(Keyboard.KEY_RSHIFT))) {
-                return;
-            }
-            
-            // Choose shortcut type
-            ShortcutType shortcutType = null;
-            if (isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != null) {
-                shortcutType = ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT;
-            } else if (isActive(ShortcutType.MOVE_ALL_ITEMS) != null) {
-                shortcutType = ShortcutType.MOVE_ALL_ITEMS;
-            } else if (isActive(ShortcutType.MOVE_EVERYTHING) != null) {
-                shortcutType = ShortcutType.MOVE_EVERYTHING;
-            } else if (isActive(ShortcutType.MOVE_ONE_ITEM) != null) {
-            	if (fromSection == InvTweaksContainerSection.CRAFTING_OUT) {
-            		shortcutType = ShortcutType.MOVE_ONE_STACK;
-            	}
-            	else {
-            		shortcutType = ShortcutType.MOVE_ONE_ITEM;
-            	}
-            }
-            
-            // Choose target section
-            try {
-                InvTweaksContainerSection srcSection = container.getSlotSection(getSlotNumber(slot));
-                InvTweaksContainerSection destSection = null;
-                
-                // Set up available sections
-                Vector<InvTweaksContainerSection> availableSections = new Vector<InvTweaksContainerSection>();
-                if (container.hasSection(InvTweaksContainerSection.CHEST)) {
-                    availableSections.add(InvTweaksContainerSection.CHEST);
-                }
-                else if (container.hasSection(InvTweaksContainerSection.CRAFTING_IN)) {
-                    availableSections.add(InvTweaksContainerSection.CRAFTING_IN);
-                }
-                else if (container.hasSection(InvTweaksContainerSection.FURNACE_IN)) {
-                    availableSections.add(InvTweaksContainerSection.FURNACE_IN);
-                }
-                else if (container.hasSection(InvTweaksContainerSection.BREWING_INGREDIENT)) {
-                	yq stack = container.getStack(slot);
-                	if (stack != null) {
-                		if (getItemID(stack) == 373 /* Water Bottle/Potions */) {
-                			availableSections.add(InvTweaksContainerSection.BREWING_BOTTLES);
-                		}
-                		else {
-                			availableSections.add(InvTweaksContainerSection.BREWING_INGREDIENT);
-                		}
-                	}
-                }
-                else if (container.hasSection(InvTweaksContainerSection.ENCHANTMENT)) {
-                    availableSections.add(InvTweaksContainerSection.ENCHANTMENT);
-                }
-                availableSections.add(InvTweaksContainerSection.INVENTORY_NOT_HOTBAR);
-                availableSections.add(InvTweaksContainerSection.INVENTORY_HOTBAR);
-                
-                // Check for destination modifiers
-                int destinationModifier = 0; 
-                if (isActive(ShortcutType.MOVE_UP) != null) {
-                    destinationModifier = -1;
-                }
-                else if (isActive(ShortcutType.MOVE_DOWN) != null) {
-                    destinationModifier = 1;
-                }
-                
-                if (destinationModifier == 0) {
-            		if (srcSection == null) {
-            			srcSection = InvTweaksContainerSection.INVENTORY;
-            		}
-                    switch (srcSection) {
-                    case CHEST:
-                        destSection = InvTweaksContainerSection.INVENTORY; break;
-                    case INVENTORY_HOTBAR:
-						if (availableSections.contains(InvTweaksContainerSection.CHEST)) {
-							destSection = InvTweaksContainerSection.CHEST;
-						} else {
-							destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR;
-						}
-						break;
-                    case CRAFTING_IN:
-                    case FURNACE_IN:
-                        destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;
-                    default:
-                        if (availableSections.contains(InvTweaksContainerSection.CHEST)) {
-                          destSection = InvTweaksContainerSection.CHEST;
-                        } else {
-                          destSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
-                        }
-                    }
-                }
-                
-                else {
-                    // Specific destination
-                    int srcSectionIndex = availableSections.indexOf(srcSection);
-                    if (srcSectionIndex != -1) {
-                        destSection = availableSections.get(
-                                (availableSections.size() + srcSectionIndex + 
-                                        destinationModifier) % availableSections.size());
-                    }
-                    else {
-                        destSection = InvTweaksContainerSection.INVENTORY;
-                    }
-                    if (shortcutType == null) {
-                    	shortcutType = ShortcutType.MOVE_ONE_STACK;
-                    }
-                }
-                
-                if (isActive(ShortcutType.DROP) != null) {
-                	shortcutType = ShortcutType.MOVE_ONE_STACK;
-                }
-                
-                if (shortcutType != null) {
-                    
-                    initAction(getSlotNumber(slot), shortcutType, destSection);
-                    
-                    if (shortcutType == ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
-                        // Move to specific hotbar slot
-                    	InvTweaksShortcutMapping hotbarShortcut = isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
-                    	if (hotbarShortcut != null && !hotbarShortcut.getKeyCodes().isEmpty()) {
-                    		 String keyName = Keyboard.getKeyName(hotbarShortcut.getKeyCodes().get(0));
-                             int destIndex = -1+Integer.parseInt(keyName.replace("NUMPAD", ""));
-                             container.move(fromSection, fromIndex,
-                                     InvTweaksContainerSection.INVENTORY_HOTBAR, destIndex);
-                    	}
-                        
-                    } else {
-                        // Drop or move
-                        move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != null);
-                    }
-                    
-                    // Reset mouse status to prevent default action.
-                    Mouse.destroy();
-                    Mouse.create();
-                    
-                    // Fixes a tiny glitch (Steve looks for a short moment
-                    // at [0, 0] because of the mouse reset).
-                    Mouse.setCursorPosition(ex, ey);
-                }
-    
-            } catch (Exception e) {
-               InvTweaks.logInGameErrorStatic("invtweaks.sort.chest.error", e);
-            }
+	        // Check that the target slot is not empty
+	        if (hasStack(slot)) {
+	           
+	            // Filter shortcuts to let Minecraft ones run
+	            if (container.getSlotSection(getSlotNumber(slot)) 
+	                    == InvTweaksContainerSection.CRAFTING_OUT
+	                   && (shortcutKeysStatus.get(Keyboard.KEY_LSHIFT)
+	                   || shortcutKeysStatus.get(Keyboard.KEY_RSHIFT))) {
+	                return;
+	            }
+	            
+	            // Choose shortcut type
+	            ShortcutType shortcutType = null;
+	            if (isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != null) {
+	                shortcutType = ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT;
+	            } else if (isActive(ShortcutType.MOVE_ALL_ITEMS) != null) {
+	                shortcutType = ShortcutType.MOVE_ALL_ITEMS;
+	            } else if (isActive(ShortcutType.MOVE_EVERYTHING) != null) {
+	                shortcutType = ShortcutType.MOVE_EVERYTHING;
+	            } else if (isActive(ShortcutType.MOVE_ONE_ITEM) != null) {
+	            	if (fromSection == InvTweaksContainerSection.CRAFTING_OUT) {
+	            		shortcutType = ShortcutType.MOVE_ONE_STACK;
+	            	}
+	            	else {
+	            		shortcutType = ShortcutType.MOVE_ONE_ITEM;
+	            	}
+	            }
+	            
+	            // Choose target section
+	            try {
+	                InvTweaksContainerSection destSection = null;
+	                
+	                // Set up available sections
+	                Vector<InvTweaksContainerSection> availableSections = new Vector<InvTweaksContainerSection>();
+	                if (container.hasSection(InvTweaksContainerSection.CHEST)) {
+	                    availableSections.add(InvTweaksContainerSection.CHEST);
+	                }
+	                else if (container.hasSection(InvTweaksContainerSection.CRAFTING_IN)) {
+	                    availableSections.add(InvTweaksContainerSection.CRAFTING_IN);
+	                }
+	                else if (container.hasSection(InvTweaksContainerSection.FURNACE_IN)) {
+	                    availableSections.add(InvTweaksContainerSection.FURNACE_IN);
+	                }
+	                else if (container.hasSection(InvTweaksContainerSection.BREWING_INGREDIENT)) {
+	                	yq stack = container.getStack(slot);
+	                	if (stack != null) {
+	                		if (getItemID(stack) == 373 /* Water Bottle/Potions */) {
+	                			availableSections.add(InvTweaksContainerSection.BREWING_BOTTLES);
+	                		}
+	                		else {
+	                			availableSections.add(InvTweaksContainerSection.BREWING_INGREDIENT);
+	                		}
+	                	}
+	                }
+	                else if (container.hasSection(InvTweaksContainerSection.ENCHANTMENT)) {
+	                    availableSections.add(InvTweaksContainerSection.ENCHANTMENT);
+	                }
+	                availableSections.add(InvTweaksContainerSection.INVENTORY_NOT_HOTBAR);
+	                availableSections.add(InvTweaksContainerSection.INVENTORY_HOTBAR);
+	                
+	                // Check for destination modifiers
+	                int destinationModifier = 0; 
+	                if (isActive(ShortcutType.MOVE_UP) != null) {
+	                    destinationModifier = -1;
+	                }
+	                else if (isActive(ShortcutType.MOVE_DOWN) != null) {
+	                    destinationModifier = 1;
+	                }
+	                
+	                if (destinationModifier == 0) {
+	            		if (srcSection == null) {
+	            			srcSection = InvTweaksContainerSection.INVENTORY;
+	            		}
+	                    switch (srcSection) {
+	                    case CHEST:
+	                        destSection = InvTweaksContainerSection.INVENTORY; break;
+	                    case INVENTORY_HOTBAR:
+							if (availableSections.contains(InvTweaksContainerSection.CHEST)) {
+								destSection = InvTweaksContainerSection.CHEST;
+							} else {
+								destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR;
+							}
+							break;
+	                    case CRAFTING_IN:
+	                    case FURNACE_IN:
+	                        destSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;
+	                    default:
+	                        if (availableSections.contains(InvTweaksContainerSection.CHEST)) {
+	                          destSection = InvTweaksContainerSection.CHEST;
+	                        } else {
+	                          destSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
+	                        }
+	                    }
+	                }
+	                
+	                else {
+	                    // Specific destination
+	                    int srcSectionIndex = availableSections.indexOf(srcSection);
+	                    if (srcSectionIndex != -1) {
+	                        destSection = availableSections.get(
+	                                (availableSections.size() + srcSectionIndex + 
+	                                        destinationModifier) % availableSections.size());
+	                    }
+	                    else {
+	                        destSection = InvTweaksContainerSection.INVENTORY;
+	                    }
+	                    if (shortcutType == null) {
+	                    	shortcutType = ShortcutType.MOVE_ONE_STACK;
+	                    }
+	                }
+	                
+	                if (isActive(ShortcutType.DROP) != null) {
+	                	shortcutType = ShortcutType.MOVE_ONE_STACK;
+	                }
+	                
+	                if (shortcutType != null) {
+	
+	                	// Check that the player's hand is empty (if not, we still cancel the action)
+	                	if (getHoldStack() == null) {
+	                		
+		                    initAction(getSlotNumber(slot), shortcutType, destSection);
+		                    
+		                    if (shortcutType == ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
+		                        // Move to specific hotbar slot
+		                    	InvTweaksShortcutMapping hotbarShortcut = isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
+		                    	if (hotbarShortcut != null && !hotbarShortcut.getKeyCodes().isEmpty()) {
+		                    		 String keyName = Keyboard.getKeyName(hotbarShortcut.getKeyCodes().get(0));
+		                             int destIndex = -1+Integer.parseInt(keyName.replace("NUMPAD", ""));
+		                             container.move(fromSection, fromIndex,
+		                                     InvTweaksContainerSection.INVENTORY_HOTBAR, destIndex);
+		                    	}
+		                        
+		                    } else {
+		                        // Drop or move
+		                        move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != null);
+		                    }
+		                    
+	                	}
+	                	
+	                    // Reset mouse status to prevent default action.
+	                    Mouse.destroy();
+	    				Mouse.create();
+	
+	                    // Fixes a tiny glitch (Steve looks for a short moment
+	                    // at [0, 0] because of the mouse reset).
+	                    Mouse.setCursorPosition(ex, ey);
+	
+	                }
+	    
+	            } catch (Exception e) {
+	               InvTweaks.logInGameErrorStatic("invtweaks.shortcut.error", e);
+	            }
+	            
+	        }
         }
             
     }

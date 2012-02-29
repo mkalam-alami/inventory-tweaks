@@ -280,20 +280,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 	                		
 		                    initAction(getSlotNumber(slot), shortcutType, destSection);
 		                    
-		                    if (shortcutType == ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
-		                        // Move to specific hotbar slot
-		                    	InvTweaksShortcutMapping hotbarShortcut = isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
-		                    	if (hotbarShortcut != null && !hotbarShortcut.getKeyCodes().isEmpty()) {
-		                    		 String keyName = Keyboard.getKeyName(hotbarShortcut.getKeyCodes().get(0));
-		                             int destIndex = -1+Integer.parseInt(keyName.replace("NUMPAD", ""));
-		                             container.move(fromSection, fromIndex,
-		                                     InvTweaksContainerSection.INVENTORY_HOTBAR, destIndex);
-		                    	}
-		                        
-		                    } else {
-		                        // Drop or move
-		                        move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != null);
-		                    }
+	                        // Drop or move
+	                        move(Mouse.isButtonDown(1), isActive(ShortcutType.DROP) != null);
 		                    
 	                	}
 	                	
@@ -321,60 +309,74 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         int toIndex = -1;
         
         synchronized(this) {
-    
-            toIndex = getNextIndex(separateStacks, drop);
-            if (toIndex != -1) {
-                switch (shortcutType) {
+
+            if (shortcutType == ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
+                // Move to specific hotbar slot
+            	InvTweaksShortcutMapping hotbarShortcut = isActive(ShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
+            	if (hotbarShortcut != null && !hotbarShortcut.getKeyCodes().isEmpty()) {
+            		 String keyName = Keyboard.getKeyName(hotbarShortcut.getKeyCodes().get(0));
+                     int destIndex = -1 + Integer.parseInt(keyName.replace("NUMPAD", ""));
+                     container.move(fromSection, fromIndex,
+                             InvTweaksContainerSection.INVENTORY_HOTBAR, destIndex);
+            	}
                 
-                case MOVE_ONE_STACK:
-                {
-                    wz slot = container.getSlot(fromSection, fromIndex);
-                    if (fromSection != InvTweaksContainerSection.CRAFTING_OUT
-                    		&& toSection != InvTweaksContainerSection.ENCHANTMENT) {
-                        boolean canStillMove = true;
-                        while (hasStack(slot) && toIndex != -1 && canStillMove) {
-                            canStillMove = container.move(fromSection, fromIndex, toSection, toIndex);
-                            toIndex = getNextIndex(separateStacks, drop);
-                        }
-                    }
-                    else {
-                        // Move only once, since the crafting output might be refilled
-                        container.move(fromSection, fromIndex, toSection, toIndex);
-                    }
-                    break;
-    
-                }
-                
-                case MOVE_ONE_ITEM:
-                {
-                    container.moveSome(fromSection, fromIndex, toSection, toIndex, 1);
-                    break;
-                }
-                    
-                case MOVE_ALL_ITEMS:
-                {
-                    yq stackToMatch = copy(fromStack);
-                    moveAll(fromSection, toSection, separateStacks, drop, stackToMatch);
-                    if (fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
-                            && toSection == InvTweaksContainerSection.CHEST) {
-                        moveAll(InvTweaksContainerSection.INVENTORY_HOTBAR, toSection, separateStacks, drop, stackToMatch);
-                    }
-                    break;
-                }
-                
-		        case MOVE_EVERYTHING:
-		        {
-		        	moveAll(fromSection, toSection, separateStacks, drop, null);
-                    if (fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
-                            && toSection == InvTweaksContainerSection.CHEST) {
-                        moveAll(InvTweaksContainerSection.INVENTORY_HOTBAR, toSection, separateStacks, drop, null);
-                    }
-                    break;
-		        }
-                    
-                }
             }
             
+            else {
+            	
+	            toIndex = getNextIndex(separateStacks, drop);
+	            if (toIndex != -1) {
+	                switch (shortcutType) {
+	                
+	                case MOVE_ONE_STACK:
+	                {
+	                    wz slot = container.getSlot(fromSection, fromIndex);
+	                    if (fromSection != InvTweaksContainerSection.CRAFTING_OUT
+	                    		&& toSection != InvTweaksContainerSection.ENCHANTMENT) {
+	                        while (hasStack(slot) && toIndex != -1) {
+	                            container.move(fromSection, fromIndex, toSection, toIndex);
+	                            toIndex = getNextIndex(separateStacks, drop);
+	                        }
+	                    }
+	                    else {
+	                        // Move only once, since the crafting output might be refilled
+	                        container.move(fromSection, fromIndex, toSection, toIndex);
+	                    }
+	                    break;
+	    
+	                }
+	                
+	                case MOVE_ONE_ITEM:
+	                {
+	                    container.moveSome(fromSection, fromIndex, toSection, toIndex, 1);
+	                    break;
+	                }
+	                    
+	                case MOVE_ALL_ITEMS:
+	                {
+	                    yq stackToMatch = copy(fromStack);
+	                    moveAll(fromSection, toSection, separateStacks, drop, stackToMatch);
+	                    if (fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
+	                            && toSection == InvTweaksContainerSection.CHEST) {
+	                        moveAll(InvTweaksContainerSection.INVENTORY_HOTBAR, toSection, separateStacks, drop, stackToMatch);
+	                    }
+	                    break;
+	                }
+	                
+			        case MOVE_EVERYTHING:
+			        {
+			        	moveAll(fromSection, toSection, separateStacks, drop, null);
+	                    if (fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
+	                            && toSection == InvTweaksContainerSection.CHEST) {
+	                        moveAll(InvTweaksContainerSection.INVENTORY_HOTBAR, toSection, separateStacks, drop, null);
+	                    }
+	                    break;
+			        }
+	                    
+	                }
+	            }
+            
+            }
         }
     }
     

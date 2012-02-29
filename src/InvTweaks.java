@@ -622,7 +622,6 @@ public class InvTweaks extends InvTweaksObfuscation {
     
     /**
      * Hacky parsing of the NEI configuration file to see if the mod is enabled or not.
-     * @return
      */
     private boolean isNotEnoughItemsEnabled() {
     	BufferedReader neiCfgFile;

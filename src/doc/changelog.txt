@@ -3,6 +3,28 @@
 | Changelog                                                    |
 |==============================================================|
 
+[02.29.2012] 1.40 (1.1)
+ * Fixed crash on crafting
+ * Fixed Move all shortcut
+ * Some other changes to shortcuts behaviour
+ * Added support for Ender Chest
+ * Fixed chest buttons position with Not Enough Items
+   (but no dupe bug fix as it's an NEI feature)
+ * Added 10 translations, thanks to:
+ 	Ryo567 & Aledrobt (Spanish)
+ 	0l1vR (German)
+ 	TH3steven (Dutch)
+ 	Ezspecial & Ricalou (Portuguese)
+ 	Hugsim, Doyle3694 & Brott (Swedish)
+ 	JonathanHertz (Danish)
+ 	Fishy (Polish)
+	Necrontoend & VADemon (Russian)
+	Ricalou & NTWalker (Japanese)
+	IvyMichael & NTWalker (Chinese)
+	And a few more small contributors!
+ 
+|== 1.3X ======================================================|
+
 [02.14.2012] 1.38 (1.1)
  * Updated support for Equivalent Exchange, Iron chests & Red Power 2
  * Better support for Multi-Page Chest

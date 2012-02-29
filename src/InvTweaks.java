@@ -2,6 +2,10 @@ import invtweaks.InvTweaksConst;
 import invtweaks.InvTweaksItemTree;
 import invtweaks.InvTweaksItemTreeItem;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -557,10 +561,18 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                     ft guiContainer = (ft) guiScreen;
                     int id = InvTweaksConst.JIMEOWAN_ID,
-                        x = getXSize(guiContainer) / 2 + getWidth(guiContainer) / 2 - 17,
+                        x = getWidth(guiContainer) / 2 + getXSize(guiContainer) / 2 - 17,
                         y = (getHeight(guiContainer) - getYSize(guiContainer)) / 2 + 5;
                     boolean isChestWayTooBig = mods.isChestWayTooBig(guiScreen);
 
+                    // NotEnoughItems compatibility
+                    if (isChestWayTooBig && classExists("mod_NotEnoughItems")) {
+                    	if (isNotEnoughItemsEnabled()) {
+                        	x = getWidth(guiContainer) / 2 - getXSize(guiContainer) / 2 - 35;
+                        	y += 50;
+                    	}
+                    }
+                    
                     // Settings button
                     controlList.add(new InvTweaksGuiSettingsButton(
                             cfgManager, id++, 
@@ -608,7 +620,35 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     }
     
-    private void handleShortcuts(ug guiScreen) {
+    /**
+     * Hacky parsing of the NEI configuration file to see if the mod is enabled or not.
+     * @return
+     */
+    private boolean isNotEnoughItemsEnabled() {
+    	BufferedReader neiCfgFile;
+		try {
+			neiCfgFile = new BufferedReader(new FileReader(new File(InvTweaksConst.MINECRAFT_CONFIG_DIR + "NEI.cfg")));
+	    	String line;
+	    	while ((line = neiCfgFile.readLine()) != null) {
+	    		if (line.contains("enable=true")) {
+	    			return true;
+	    		}
+	    	}
+	    	return false;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+
+	public static boolean classExists(String className) {
+    	try {
+			return Class.forName(className) != null;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
+
+	private void handleShortcuts(ug guiScreen) {
         
         // Check open GUI
         if (!(isValidChest(guiScreen) || isStandardInventory(guiScreen))) {

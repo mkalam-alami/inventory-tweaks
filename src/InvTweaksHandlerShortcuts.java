@@ -152,10 +152,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         wz slot = getSlotAtPosition(guiContainer, x, y);
         if (slot != null) {
         	
-            // Put the stack in hand down
             InvTweaksContainerSection srcSection = null;
-            srcSection  = container.getSlotSection(getSlotNumber(slot));
-            container.putHoldItemDown(srcSection, container.getSlotIndex(getSlotNumber(slot)));
+            srcSection = container.getSlotSection(getSlotNumber(slot));
         
 	        // Check that the target slot is not empty
 	        if (hasStack(slot)) {
@@ -274,6 +272,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 	                
 	                if (shortcutType != null) {
 	
+	                    // Put the stack in hand down
+	                    container.putHoldItemDown(srcSection, container.getSlotIndex(getSlotNumber(slot)));
+	                	
 	                	// Check that the player's hand is empty (if not, we still cancel the action)
 	                	if (getHoldStack() == null) {
 	                		

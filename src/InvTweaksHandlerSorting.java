@@ -37,6 +37,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     public static final int ALGORITHM_VERTICAL = 1;
     public static final int ALGORITHM_HORIZONTAL = 2;
     public static final int ALGORITHM_INVENTORY = 3;
+    public static final int ALGORITHM_EVEN_STACKS = 4;
 
     private InvTweaksContainerSectionManager containerMgr;
     private int algorithm;

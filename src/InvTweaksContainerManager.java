@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
+import org.lwjgl.input.Mouse;
+
 import net.minecraft.client.Minecraft;
 
 /**
@@ -22,7 +24,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     public static final int HOTBAR_SIZE = 9;
     public static final int ACTION_TIMEOUT = 500;
     public static final int POLLING_DELAY = 3;
-    
+
+    private ft guiContainer;
     private cx container;
     private Map<InvTweaksContainerSection, List<wz>> slotRefs 
             = new HashMap<InvTweaksContainerSection, List<wz>>();
@@ -40,7 +43,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         
         ug currentScreen = getCurrentScreen();
         if (isGuiContainer(currentScreen)) {
-            this.container = getContainer((ft) currentScreen);
+        	this.guiContainer = (ft) currentScreen;
+            this.container = getContainer(this.guiContainer);
         }
         else {
             this.container = getPlayerContainer();
@@ -284,7 +288,52 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
     }
 
-    public boolean hasSection(InvTweaksContainerSection section) {
+    public wz getSlotAtMousePosition() {
+	    // Copied from GuiContainer
+    	if (guiContainer != null) {
+	        int x = getMouseX();
+	        int y = getMouseY();
+		    for (int k = 0; k < getSlots(getContainer(guiContainer)).size(); k++) {
+		        wz localsx = (wz) getSlots(getContainer(guiContainer)).get(k);
+		        if (getIsMouseOverSlot(localsx, x, y)) {
+		            return localsx;
+		        }
+		    }
+		    return null;
+    	}
+    	else {
+    		return null;
+    	}
+	}
+    
+	public boolean getIsMouseOverSlot(wz slot) {
+		return getIsMouseOverSlot(slot, getMouseX(), getMouseY());
+	}
+	
+	private boolean getIsMouseOverSlot(wz slot, int x, int y) {
+        // Copied from GuiContainer
+		if (guiContainer != null) {
+	        int i = (getWidth(guiContainer) - getXSize(guiContainer)) / 2;
+	        int j = (getHeight(guiContainer) - getYSize(guiContainer)) / 2;
+	        x -= i;
+	        y -= j;
+	        return x >= getXDisplayPosition(slot) - 1 && x < getXDisplayPosition(slot) + 16 + 1 && y >= getYDisplayPosition(slot) - 1 && y < getYDisplayPosition(slot) + 16 + 1;
+	    }
+		else {
+			return false;
+		}
+	}
+	
+    private int getMouseX() {
+        return (Mouse.getEventX() * getWidth(guiContainer)) / getDisplayWidth();
+    }
+    
+    private int getMouseY() {
+        return getHeight(guiContainer) - (Mouse.getEventY() * getHeight(guiContainer)) / getDisplayHeight() - 1;
+    }
+
+
+	public boolean hasSection(InvTweaksContainerSection section) {
         return slotRefs.containsKey(section);
     }
 
@@ -422,7 +471,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     public cx getContainer() {
         return container;
     }
-
+    
     private int getFirstEmptyUsableSlotNumber() {
         for (InvTweaksContainerSection section : slotRefs.keySet()) {
             for (wz slot : slotRefs.get(section)) {

@@ -290,20 +290,16 @@ public class InvTweaks extends InvTweaksObfuscation {
     public static Minecraft getMinecraftInstance() {
         return instance.mc;
     }
-    
-    // Used by ShortcutsHandler only, but put here for convenience and 
-    // performance, since the xSize/ySize attributes are protected
-    public static boolean getIsMouseOverSlot(ft guiContainer, wz slot, int i, int j) { // Copied from GuiContainer
-        // Copied from GuiContainer
-        InvTweaks obf = getInstance();
-        int k = (obf.getWidth(guiContainer) - obf.getXSize(guiContainer)) / 2;
-        int l = (obf.getHeight(guiContainer) - obf.getYSize(guiContainer)) / 2;
-        i -= k;
-        j -= l;
-        return i >= obf.getXDisplayPosition(slot) - 1 && i < obf.getXDisplayPosition(slot) + 16 + 1 && j >= obf.getYDisplayPosition(slot) - 1 && j < obf.getYDisplayPosition(slot) + 16 + 1;
-    }
 
-    private boolean onTick() {
+    public static boolean classExists(String className) {
+		try {
+			return Class.forName(className) != null;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
+
+	private boolean onTick() {
 
         tickNumber++;
         
@@ -461,31 +457,21 @@ public class InvTweaks extends InvTweaksObfuscation {
     
                 if (!chestAlgorithmButtonDown) {
                     chestAlgorithmButtonDown = true;
+
+                    InvTweaksContainerManager containerMgr = new InvTweaksContainerManager(mc);
+                    wz slotAtMousePosition = containerMgr.getSlotAtMousePosition();
+                    InvTweaksContainerSection target = null;
+                    if (slotAtMousePosition != null) {
+                    	target = containerMgr.getSlotSection(getSlotNumber(slotAtMousePosition));
+                    }
     
                     if (isValidChest(guiScreen)) {
     
                         // Check if the middle click target the chest or the inventory
                         // (copied GuiContainer.getSlotAtPosition algorithm)
                         ft guiContainer = (ft) guiScreen;
-                        cx container = getContainer((ft) guiScreen);
-                        int slotCount = getSlots(container).size();
-                        int mouseX = (Mouse.getEventX() * getWidth(guiContainer)) / getDisplayWidth();
-                        int mouseY = getHeight(guiContainer) - (Mouse.getEventY() * getHeight(guiContainer)) / getDisplayHeight() - 1;
-                        int target = 0; // 0 = nothing, 1 = chest, 2 = inventory
-                        for (int i = 0; i < slotCount; i++) {
-                            wz slot = getSlot(container, i);
-                            int k = (getWidth(guiContainer) - getXSize(guiContainer)) / 2;
-                            int l = (getHeight(guiContainer) - getYSize(guiContainer)) / 2;
-                            if (mouseX - k >= getXDisplayPosition(slot) - 1 &&
-                                    mouseX - k < getXDisplayPosition(slot) + 16 + 1 &&
-                                    mouseY - l >= getYDisplayPosition(slot) - 1 &&
-                                    mouseY - l < getYDisplayPosition(slot) + 16 + 1) {
-                                target = (i < slotCount - InvTweaksConst.INVENTORY_SIZE) ? 1 : 2;
-                                break;
-                            }
-                        }
-    
-                        if (target == 1) {
+                        
+                        if (InvTweaksContainerSection.CHEST.equals(target)) {
     
                             // Play click
                             playClick();
@@ -506,12 +492,28 @@ public class InvTweaks extends InvTweaksObfuscation {
                             }
                             chestAlgorithm = (chestAlgorithm + 1) % 3;
                             chestAlgorithmClickTimestamp = timestamp;
-                        } else if (target == 2) {
+
+                        } else if (InvTweaksContainerSection.INVENTORY_HOTBAR.equals(target)
+                        		|| (InvTweaksContainerSection.INVENTORY_NOT_HOTBAR.equals(target))) {
                             handleSorting(guiScreen);
                         }
     
                     } else if (isValidInventory(guiScreen)) {
-                        handleSorting(guiScreen);
+                    	
+                       /* if (InvTweaksContainerSection.CRAFTING_IN.equals(target)) {
+                            try {
+								new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
+								        InvTweaksContainerSection.CRAFTING_IN,
+								        InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
+								        (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
+							} catch (Exception e) {
+                                logInGameError("invtweaks.sort.crafting.error", e);
+                                e.printStackTrace();
+							}
+                        }
+                        else {*/
+                        	handleSorting(guiScreen);
+                       // }
                     }
                 }
             }
@@ -635,14 +637,6 @@ public class InvTweaks extends InvTweaksObfuscation {
 	    	}
 	    	return false;
 		} catch (IOException e) {
-			return false;
-		}
-	}
-
-	public static boolean classExists(String className) {
-    	try {
-			return Class.forName(className) != null;
-		} catch (ClassNotFoundException e) {
 			return false;
 		}
 	}

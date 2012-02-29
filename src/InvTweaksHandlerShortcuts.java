@@ -145,11 +145,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         
         // Initialization
         int ex = Mouse.getEventX(), ey = Mouse.getEventY();
-        int x = (ex * getWidth(guiContainer)) / getDisplayWidth();
-        int y = getHeight(guiContainer) - (ey * getHeight(guiContainer)) / getDisplayHeight() - 1;
         InvTweaksContainerManager container = new InvTweaksContainerManager(mc);
         
-        wz slot = getSlotAtPosition(guiContainer, x, y);
+        wz slot = container.getSlotAtMousePosition();
         if (slot != null) {
         	
             InvTweaksContainerSection srcSection = null;
@@ -509,17 +507,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         }
     }
     
-    private wz getSlotAtPosition(ft guiContainer, int i, int j) { 
-        // Copied from class 'mg' (GuiContainer)
-        for (int k = 0; k < getSlots(getContainer(guiContainer)).size(); k++) {
-            wz localsx = (wz) getSlots(getContainer(guiContainer)).get(k);
-            if (InvTweaks.getIsMouseOverSlot(guiContainer, localsx, i, j)) {
-                return localsx;
-            }
-        }
-        return null;
-    }
-
     private ShortcutType propNameToShortcutType(String property) {
         if (property.equals(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS)) {
             return ShortcutType.MOVE_ALL_ITEMS;

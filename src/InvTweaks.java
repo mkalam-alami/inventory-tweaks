@@ -499,8 +499,10 @@ public class InvTweaks extends InvTweaksObfuscation {
                         }
     
                     } else if (isValidInventory(guiScreen)) {
-                    	
-                       /* if (InvTweaksContainerSection.CRAFTING_IN.equals(target)) {
+
+                    	/*
+                    	 // Crafting stacks evening (hook ready, TODO implement algorithm)
+                    	 if (InvTweaksContainerSection.CRAFTING_IN.equals(target)) {
                             try {
 								new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
 								        InvTweaksContainerSection.CRAFTING_IN,
@@ -510,10 +512,10 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 logInGameError("invtweaks.sort.crafting.error", e);
                                 e.printStackTrace();
 							}
-                        }
-                        else {*/
-                        	handleSorting(guiScreen);
-                       // }
+                        }*/
+                    	
+                    	handleSorting(guiScreen);
+                    	
                     }
                 }
             }

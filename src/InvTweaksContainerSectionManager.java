@@ -16,9 +16,12 @@ public class InvTweaksContainerSectionManager {
     private InvTweaksContainerSection section;
     
     public InvTweaksContainerSectionManager(Minecraft mc, InvTweaksContainerSection section) throws Exception {
-        this.containerMgr = new InvTweaksContainerManager(mc);
+        this(new InvTweaksContainerManager(mc), section);
+    }
+    
+    public InvTweaksContainerSectionManager(InvTweaksContainerManager manager, InvTweaksContainerSection section) throws Exception {
+        this.containerMgr = manager;
         this.section = section;
-        
         if (!containerMgr.hasSection(section)) {
             throw new Exception("Section not available");
         }

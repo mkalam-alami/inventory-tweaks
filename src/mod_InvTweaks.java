@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
  * License: MIT
  * 
  */
-public class mod_InvTweaks extends BaseMod {
+public class mod_InvTweaks extends BaseMod_InvTweaks {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
@@ -25,14 +25,14 @@ public class mod_InvTweaks extends BaseMod {
 	@Override
 	public void load() {
 		
-		Minecraft mc = ModLoader.getMinecraftInstance();
+		Minecraft mc = ModLoader_InvTweaks.getMinecraftInstance();
 
 		// Register key (listen only for key down events)
-		ModLoader.RegisterKey(this, InvTweaks.SORT_KEY_BINDING, false);
+		ModLoader_InvTweaks.RegisterKey(this, InvTweaks.SORT_KEY_BINDING, false);
 
 		// Register in game hooks
-		ModLoader.SetInGameHook(this, true, true);
-		ModLoader.SetInGUIHook(this, true, false);
+		ModLoader_InvTweaks.SetInGameHook(this, true, true);
+		ModLoader_InvTweaks.SetInGUIHook(this, true, false);
 
 		// Instantiate mod core
 		instance = new InvTweaks(mc);
@@ -47,7 +47,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Called by ModLoader each time the sorting key is pressed.
 	 */
-	public void KeyboardEvent(ads keyBinding) {
+	public void KeyboardEvent(afp keyBinding) {
 		instance.onSortingKeyPressed();
 	}
 
@@ -73,7 +73,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Called by ModLoader when an item has been picked up.
 	 */
-	public void OnItemPickup(xb entityplayer, yq stack) {
+	public void OnItemPickup(yr entityplayer, aai stack) {
 	    // ModLoader doesn't give the item amount in 'stack', so it's no use for us
 		instance.onItemPickup();
 	}

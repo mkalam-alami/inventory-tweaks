@@ -32,7 +32,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
     private static String SP_ONLY;
     
-    public InvTweaksGuiSettingsAdvanced(Minecraft mc, ug parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiSettingsAdvanced(Minecraft mc, vl parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
         
         LABEL_SORT_ON_PICKUP = InvTweaksLocalization.get("invtweaks.settings.advanced.sortonpickup");
@@ -51,7 +51,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new zr(ID_EDITSHORTCUTS, p.getX() + 55, obf.getHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.advanced.mappingsfile")));
+        controlList.add(new abk(ID_EDITSHORTCUTS, p.getX() + 55, obf.getHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.advanced.mappingsfile")));
 
         // Create settings buttons
         
@@ -82,10 +82,12 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
-            	zr button = (zr) o;
-                if (obf.getId(button) == ID_EDITSHORTCUTS) {
-                    obf.setEnabled(button, false);
-                }
+            	if (obf.isGuiButton(o)) {
+	            	abk button = (abk) o;
+	                if (obf.getId(button) == ID_EDITSHORTCUTS) {
+	                    obf.setEnabled(button, false);
+	                }
+            	}
             }
         }
 
@@ -102,7 +104,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt2"), p.getX(), 110, 0x999999);
     }
     
-    protected void a(zr guibutton) { /* actionPerformed */
+    protected void a(abk guibutton) { /* actionPerformed */
     	
         switch (obf.getId(guibutton)) {
 

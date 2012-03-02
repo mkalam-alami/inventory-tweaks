@@ -34,7 +34,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private InvTweaksContainerManager container;
     private InvTweaksContainerSection fromSection;
     private int fromIndex;
-    private yq fromStack;
+    private aai fromStack;
     private InvTweaksContainerSection toSection;
     private ShortcutType shortcutType;
 
@@ -138,7 +138,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         return downShortcutKeys;
     }
     
-    public void handleShortcut(ft guiContainer) {
+    public void handleShortcut(fy guiContainer) {
         // IMPORTANT: This method is called before the default action is executed.
         
         updateKeyStatuses();
@@ -147,7 +147,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         int ex = Mouse.getEventX(), ey = Mouse.getEventY();
         InvTweaksContainerManager container = new InvTweaksContainerManager(mc);
         
-        wz slot = container.getSlotAtMousePosition();
+        yp slot = container.getSlotAtMousePosition();
         if (slot != null) {
         	
             InvTweaksContainerSection srcSection = null;
@@ -197,7 +197,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 	                    availableSections.add(InvTweaksContainerSection.FURNACE_IN);
 	                }
 	                else if (container.hasSection(InvTweaksContainerSection.BREWING_INGREDIENT)) {
-	                	yq stack = container.getStack(slot);
+	                	aai stack = container.getStack(slot);
 	                	if (stack != null) {
 	                		if (getItemID(stack) == 373 /* Water Bottle/Potions */) {
 	                			availableSections.add(InvTweaksContainerSection.BREWING_BOTTLES);
@@ -328,7 +328,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 	                
 	                case MOVE_ONE_STACK:
 	                {
-	                    wz slot = container.getSlot(fromSection, fromIndex);
+	                    yp slot = container.getSlot(fromSection, fromIndex);
 	                    if (fromSection != InvTweaksContainerSection.CRAFTING_OUT
 	                    		&& toSection != InvTweaksContainerSection.ENCHANTMENT) {
 	                        while (hasStack(slot) && toIndex != -1) {
@@ -352,7 +352,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 	                    
 	                case MOVE_ALL_ITEMS:
 	                {
-	                    yq stackToMatch = copy(fromStack);
+	                    aai stackToMatch = copy(fromStack);
 	                    moveAll(fromSection, toSection, separateStacks, drop, stackToMatch);
 	                    if (fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
 	                            && toSection == InvTweaksContainerSection.CHEST) {
@@ -379,9 +379,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     }
     
     private void moveAll(InvTweaksContainerSection fromSection, InvTweaksContainerSection toSection, 
-            boolean separateStacks, boolean drop, yq stackToMatch) throws TimeoutException {
+            boolean separateStacks, boolean drop, aai stackToMatch) throws TimeoutException {
         int toIndex = getNextIndex(separateStacks, drop);
-        for (wz slot : container.getSlots(fromSection)) {
+        for (yp slot : container.getSlots(fromSection)) {
             if (hasStack(slot) && (stackToMatch == null || areSameItemType(stackToMatch, getStack(slot)))) {
                 int fromIndex = container.getSlotIndex(getSlotNumber(slot));
                 while (hasStack(slot) && toIndex != -1 && !(fromSection == toSection && fromIndex == toIndex)) {
@@ -430,9 +430,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         // Try to merge with existing slot
         if (!emptySlotOnly) {
             int i = 0;
-            for (wz slot : container.getSlots(toSection)) {
+            for (yp slot : container.getSlots(toSection)) {
                 if (hasStack(slot)) {
-                    yq stack = getStack(slot);
+                    aai stack = getStack(slot);
                     if (areItemsEqual(stack, fromStack)
                             && getStackSize(stack) < getMaxStackSize(stack)) {
                         result = i;

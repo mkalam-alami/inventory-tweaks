@@ -38,7 +38,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private static String labelAutoRefill;
     private static String labelMoreOptions;
     
-    public InvTweaksGuiSettings(Minecraft mc, ug parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiSettings(Minecraft mc, vl parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
         
         labelMiddleClick = InvTweaksLocalization.get("invtweaks.settings.middleclick");
@@ -59,9 +59,9 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new zr(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
-        controlList.add(new zr(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
-        controlList.add(new zr(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
+        controlList.add(new abk(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
+        controlList.add(new abk(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
+        controlList.add(new abk(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
 
         // Create settings buttons
 
@@ -106,10 +106,12 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
-            	zr button = (zr) o;
-                if (obf.getId(button) >= ID_EDITRULES && obf.getId(button) <= ID_HELP) {
-                    obf.setEnabled(button, false);
-                }
+            	if (obf.isGuiButton(o)) {
+	            	abk button = (abk) o;
+	                if (obf.getId(button) >= ID_EDITRULES && obf.getId(button) <= ID_HELP) {
+	                    obf.setEnabled(button, false);
+	                }
+            	}
             }
         }
 
@@ -118,7 +120,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
     }
 
-    protected void a(zr guibutton) { /* actionPerformed */
+    protected void a(abk guibutton) { /* actionPerformed */
     	super.a(guibutton);
     
         switch (obf.getId(guibutton)) {

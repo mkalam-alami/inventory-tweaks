@@ -19,7 +19,7 @@ public class InvTweaksModCompatibility {
      * @param guiContainer
      * @return
      */
-    public boolean isSpecialChest(ug guiScreen) {
+    public boolean isSpecialChest(vl guiScreen) {
         return is(guiScreen, "GuiAlchChest") // Equivalent Exchange
         		|| is(guiScreen, "GuiCondenser")
         		|| is(guiScreen, "GUIChest") // Iron chests (formerly IC2)
@@ -50,7 +50,7 @@ public class InvTweaksModCompatibility {
      * @param defaultValue
      * @return
      */
-    public int getSpecialChestRowSize(ft guiContainer, int defaultValue) {
+    public int getSpecialChestRowSize(fy guiContainer, int defaultValue) {
     	if (is(guiContainer, "GuiAlchChest")
     			|| is(guiContainer, "GuiCondenser")) { // Equivalent Exchange
             return 13;
@@ -82,7 +82,7 @@ public class InvTweaksModCompatibility {
         return defaultValue;
     }
 
-    public boolean isChestWayTooBig(ug guiScreen) {
+    public boolean isChestWayTooBig(vl guiScreen) {
         return is(guiScreen, "GuiAlchChest") // Equivalent Exchange
         		|| is(guiScreen, "GuiMultiPageChest") // MultiPage Chest
         		|| is(guiScreen, "GUIChest"); // IronChests
@@ -93,9 +93,9 @@ public class InvTweaksModCompatibility {
      * @param guiScreen
      * @return
      */
-    public boolean isSpecialInventory(ug guiScreen) {
+    public boolean isSpecialInventory(vl guiScreen) {
     	try {
-			return obf.getSlots(obf.getContainer((ft) guiScreen)).size() > InvTweaksConst.INVENTORY_SIZE
+			return obf.getSlots(obf.getContainer((fy) guiScreen)).size() > InvTweaksConst.INVENTORY_SIZE
 					&& !obf.isGuiContainerCreative(guiScreen);
 		} catch (Exception e) {
 			return false;
@@ -103,10 +103,10 @@ public class InvTweaksModCompatibility {
     }
 
 	@SuppressWarnings("unchecked")
-    public Map<InvTweaksContainerSection, List<wz>> getSpecialContainerSlots(ug guiScreen, cx container) {
+    public Map<InvTweaksContainerSection, List<yp>> getSpecialContainerSlots(vl guiScreen, db container) {
     	
-    	Map<InvTweaksContainerSection, List<wz>> result = new HashMap<InvTweaksContainerSection, List<wz>>();
-		List<wz> slots = (List<wz>) obf.getSlots(container);
+    	Map<InvTweaksContainerSection, List<yp>> result = new HashMap<InvTweaksContainerSection, List<yp>>();
+		List<yp> slots = (List<yp>) obf.getSlots(container);
     	
     	if (is(guiScreen, "GuiCondenser")) { // EE
     		result.put(InvTweaksContainerSection.CHEST, slots.subList(1, slots.size() - 36));
@@ -121,7 +121,7 @@ public class InvTweaksModCompatibility {
 		
 	}
 
-	private static final boolean is(ug guiScreen, String className) {
+	private static final boolean is(vl guiScreen, String className) {
         return guiScreen.getClass().getSimpleName().contains(className);
     }
 

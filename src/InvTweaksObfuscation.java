@@ -374,8 +374,8 @@ public class InvTweaksObfuscation {
         return o != null && o instanceof qh;
     }
 
-    protected boolean isSlot(Object o) { // Slot
-        return o != null && o instanceof yp;
+    protected boolean isBasicSlot(Object o) { // Slot
+        return o != null && o.getClass().equals(yp.class);
     }
 
 }

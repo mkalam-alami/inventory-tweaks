@@ -114,11 +114,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         long timer = System.nanoTime();
         InvTweaksContainerManager globalContainer = new InvTweaksContainerManager(mc);
 
-        //// Empty hand (needed in SMP)
-        if (isMultiplayerWorld()) {
-            putHoldItemDown();
-        }
-        
         if (algorithm != ALGORITHM_DEFAULT) {
             
             if (algorithm == ALGORITHM_INVENTORY) {
@@ -302,32 +297,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             log.warning("Sorting takes too long, aborting.");
         }
         
-    }
-
-    /**
-     * If an item is in hand (= attached to the cursor), puts it down.
-     * 
-     * @return -1 if there is no room to put the item, or the hand is not holding anything.
-     * @throws Exception
-     */
-    private int putHoldItemDown() throws TimeoutException {
-        aai holdStack = getHoldStack();
-        if (holdStack != null) {
-            // Try to find an unlocked slot first, to avoid
-            // impacting too much the sorting
-            for (int step = 1; step <= 2; step++) {
-                for (int i = size - 1; i >= 0; i--) {
-                    if (containerMgr.getItemStack(i) == null
-                            && (lockPriorities[i] == 0 && !frozenSlots[i])
-                            || step == 2) {
-                        containerMgr.leftClick(i);
-                        return i;
-                    }
-                }
-            }
-            return -1;
-        }
-        return -1;
     }
 
     /**

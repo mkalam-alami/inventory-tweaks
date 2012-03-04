@@ -135,7 +135,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      */
 	public boolean move(InvTweaksContainerSection srcSection, int srcIndex,
             InvTweaksContainerSection destSection, int destIndex) {
-	    
+	    //System.out.println(srcSection + ":" + srcIndex + " to " + destSection + ":" + destIndex);
+		
 	    aai srcStack = getItemStack(srcSection, srcIndex);
 	    aai destStack = getItemStack(destSection, destIndex);
 	    
@@ -276,6 +277,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
     
     public void click(InvTweaksContainerSection section, int index, boolean rightClick) {
+    	//System.out.println("Click " + section + ":" + index);
         // Click! (we finally call the Minecraft code)
         int slot = indexToSlot(section, index);
         if (slot != -1) {
@@ -477,7 +479,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             for (yp slot : slotRefs.get(section)) {
                 // Use only standard slot (to make sure
                 // we can freely put and remove items there)
-                if (isSlot(slot) && !hasStack(slot)) {
+                if (isBasicSlot(slot) && !hasStack(slot)) {
                     return getSlotNumber(slot);
                 }
             }

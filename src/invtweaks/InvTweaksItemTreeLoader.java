@@ -34,19 +34,20 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     private static Boolean treeLoaded;
     private static List<InvTweaksItemTreeListener> onLoadListeners = new ArrayList<InvTweaksItemTreeListener>();
 
-    public synchronized static InvTweaksItemTree load(String filePath) throws Exception {
+    private static void init() {
     	treeLoaded = false;
     	treeVersion = null;
     	tree = new InvTweaksItemTree();
     	itemOrder = 0;
     	categoryStack = new LinkedList<String>();
+    }
+    
+    public synchronized static InvTweaksItemTree load(String filePath) throws Exception {
+    	init();
+    	
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         SAXParser parser = parserFactory.newSAXParser();
         parser.parse(new File(filePath), new InvTweaksItemTreeLoader());
-       /* if (!categoryStack.isEmpty()) {
-            InvTweaks.logInGameStatic("Warning: The tree file seems to be broken "
-                    + "(is '" + categoryStack.getLast() + "' closed correctly?)");
-        }*/
     
         // Tree loaded event
         synchronized (onLoadListeners) {
@@ -59,7 +60,23 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         return tree;
     }
     
-    public synchronized static void addOnLoadListener(InvTweaksItemTreeListener listener) {
+    public synchronized static boolean isValidVersion(String filePath) throws Exception {
+		init();
+		
+		File file = new File(filePath);
+		if (file.exists()) {
+	        treeVersion = null;
+	        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+	        SAXParser parser = parserFactory.newSAXParser();
+	        parser.parse(file, new InvTweaksItemTreeLoader());
+		    return InvTweaksConst.TREE_VERSION.equals(treeVersion);
+		}
+		else {
+			return false;
+		}
+	}
+
+	public synchronized static void addOnLoadListener(InvTweaksItemTreeListener listener) {
     	onLoadListeners.add(listener);
     	if (treeLoaded) {
     		// Late event triggering
@@ -72,15 +89,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     }
 
 
-    public synchronized static boolean isValidVersion(String filePath) throws Exception {
-        treeVersion = null;
-        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        SAXParser parser = parserFactory.newSAXParser();
-        parser.parse(new File(filePath), new InvTweaksItemTreeLoader());
-	    return InvTweaksConst.TREE_VERSION.equals(treeVersion);
-	}
-
-	@Override
+    @Override
     public synchronized void startElement(String uri, String localName,
             String name, Attributes attributes) throws SAXException {
 

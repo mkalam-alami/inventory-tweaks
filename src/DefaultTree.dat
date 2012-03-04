@@ -195,6 +195,7 @@
             <normalStoneBrick id="98" damage="0" />
             <mossyStoneBrick id="98" damage="1" />
             <crackedStoneBrick id="98" damage="2" />
+            <circleStoneBrick id="98" damage="3" />
           </stoneBricks>
           <netherBrick id="112" />
         </bricks>
@@ -246,6 +247,13 @@
         <poweredRails id="27" />
         <detectorRails id="28" />
       </rails>
+      <lighting>
+      	<torch id="50" />
+      	<lamp id="123" />
+      	<redstoneLamp id="123" />
+      	<lamp id="124" />
+      	<redstoneLamp id="124" />
+      </lighting>
       <pistons>
         <piston id="33" />
         <stickyPiston id="29" />
@@ -339,10 +347,8 @@
   </resources>
   <item>
     <utility>
-      <light>
-        <torch id="50" />
-        <flintAndSteel id="259" />
-      </light>
+      <torch id="50" />
+      <flintAndSteel id="259" />
       <craftingTable id="58" />
       <furnace id="61" />
       <furnaceBurning id="62" />
@@ -579,6 +585,8 @@
           </harmingSplashPotion>
         </negativeSplashPotion>
       </splashPotion>
+      <bottleOEnchanting id="384" />
+      <bottleEnchanting id="384" />
     </potion>
     <glassBottle id="374" />
     <potionIngredient>

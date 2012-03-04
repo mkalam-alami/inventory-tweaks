@@ -28,11 +28,11 @@ public class mod_InvTweaks extends BaseMod {
 		Minecraft mc = ModLoader.getMinecraftInstance();
 
 		// Register key (listen only for key down events)
-		ModLoader.RegisterKey(this, InvTweaks.SORT_KEY_BINDING, false);
+		ModLoader.registerKey(this, InvTweaks.SORT_KEY_BINDING, false);
 
 		// Register in game hooks
-		ModLoader.SetInGameHook(this, true, true);
-		ModLoader.SetInGUIHook(this, true, false);
+		ModLoader.setInGameHook(this, true, true);
+		ModLoader.setInGUIHook(this, true, false);
 
 		// Instantiate mod core
 		instance = new InvTweaks(mc);

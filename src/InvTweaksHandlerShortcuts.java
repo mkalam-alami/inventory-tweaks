@@ -364,9 +364,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 			        case MOVE_EVERYTHING:
 			        {
 			        	moveAll(fromSection, toSection, separateStacks, drop, null);
-	                    if (fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
+	                    if (fromSection == InvTweaksContainerSection.INVENTORY_HOTBAR
 	                            && toSection == InvTweaksContainerSection.CHEST) {
-	                        moveAll(InvTweaksContainerSection.INVENTORY_HOTBAR, toSection, separateStacks, drop, null);
+	                        moveAll(InvTweaksContainerSection.INVENTORY_NOT_HOTBAR, toSection, separateStacks, drop, null);
 	                    }
 	                    break;
 			        }

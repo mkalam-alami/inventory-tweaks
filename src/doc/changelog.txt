@@ -3,6 +3,12 @@
 | Changelog                                                    |
 |==============================================================|
 
+[03.04.2012] 1.40 (1.2.3)
+ * Updated mod & item tree to Minecraft 1.2.3
+ * Added Traditional Chinese translation
+   (thanks to GazCore)
+ * Tweaked Move all shortcut behavior
+ 
 [02.29.2012] 1.40 (1.1)
  * Fixed crash on crafting
  * Fixed Move all shortcut

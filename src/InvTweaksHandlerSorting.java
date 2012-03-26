@@ -158,8 +158,19 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 	                                 if (globalContainer.hasSection(InvTweaksContainerSection.ARMOR)) {
 	                                     List<yu> armorSlots = globalContainer.getSlots(InvTweaksContainerSection.ARMOR);
 	                                     for (yu slot : armorSlots) {
-	                                        if (isItemValid(slot, from)
-	                                                && (!hasStack(slot) || getArmorLevel(fromItemArmor) > getArmorLevel(((ql) getItem(getStack(slot)))))) {
+	                                    	boolean move = false;
+	                                    	if (!hasStack(slot)) {
+	                                    		move = true;
+	                                    	}
+	                                    	else {
+	                                    		int armorLevel = getArmorLevel((ql) getItem(getStack(slot)));
+	                                    		if (armorLevel < getArmorLevel(fromItemArmor)
+	                                    				|| (armorLevel == getArmorLevel(fromItemArmor)
+	                                    						&& getItemDamage(getStack(slot)) < getItemDamage(from))) {
+	                                    			move = true;
+	                                    		}
+	                                    	}
+	                                        if (isItemValid(slot, from) && move) {
 	                                            globalContainer.move(InvTweaksContainerSection.INVENTORY, i, InvTweaksContainerSection.ARMOR,
 	                                                    globalContainer.getSlotIndex(getSlotNumber(slot)));
 	                                        }

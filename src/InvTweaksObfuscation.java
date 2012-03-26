@@ -187,7 +187,7 @@ public class InvTweaksObfuscation {
         return item.i();
     }
     protected int getArmorLevel(ql itemArmor) { // ItemArmor
-        return itemArmor.a;
+        return itemArmor.b;
     }
 	
 	// PlayerController members

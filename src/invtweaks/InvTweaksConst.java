@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 public class InvTweaksConst {
 
     // Mod version
-    public static final String MOD_VERSION = "1.40 (1.2.3)";
+    public static final String MOD_VERSION = "1.40 (1.2.4)";
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs
@@ -36,7 +36,7 @@ public class InvTweaksConst {
     public static final String OLDER_CONFIG_TREE_FILE = MINECRAFT_DIR + "InvTweaksTree.txt";
     public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.dat";
     public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.dat";
-    public static final String HELP_URL = "http://wan.ka.free.fr/?invtweaks";
+    public static final String HELP_URL = "http://modding.kalam-alami.net/invtweaks";
     
     // Global mod constants
     public static final String INGAME_LOG_PREFIX = "InvTweaks: ";

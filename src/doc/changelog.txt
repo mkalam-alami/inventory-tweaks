@@ -3,6 +3,9 @@
 | Changelog                                                    |
 |==============================================================|
 
+[03.04.2012] 1.40b (1.2.3)
+ * Fixed a sorting bug
+ 
 [03.04.2012] 1.40 (1.2.3)
  * Updated mod & item tree to Minecraft 1.2.3
  * Added Traditional Chinese translation

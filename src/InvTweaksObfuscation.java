@@ -327,10 +327,10 @@ public class InvTweaksObfuscation {
         return o != null && o.getClass().equals(ain.class);
     }
     protected boolean isGuiEditSign(Object o) { // GuiEditSign
-        return o != null && o.getClass().equals(aen.class); 
+        return o != null && o.getClass().equals(alu.class); 
     }
     protected boolean isGuiWorkbench(Object o) { // GuiWorkbench
-        return o != null && o.getClass().equals(alu.class);
+        return o != null && o.getClass().equals(aen.class);
     }
     protected boolean isGuiBrewingStand(Object o) { // GuiBrewingStand
         return o != null && o.getClass().equals(hg.class);

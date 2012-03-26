@@ -118,7 +118,11 @@
       <wood id="17" />
       <sands>
         <sand id="12" />
-        <sandStone id="24" />
+        <sandstone>
+        	<classicSandstone id="24" damage="0" />
+        	<creeperSandstone id="24" damage="1" />
+        	<smoothSandstone id="24" damage="2" />
+        </sandstone>
       </sands>
       <gravel id="13" />
       <clayBlock id="82" />

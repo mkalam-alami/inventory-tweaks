@@ -3,6 +3,12 @@
 | Changelog                                                    |
 |==============================================================|
 
+[03.27.2012] 1.41 (1.2.4)
+ * Updated mod & item tree to Minecraft 1.2.4
+ * Improved armor auto-equipment
+ * Fixed a crash when changing some controls to mouse buttons
+ * Fixed a possible rare freeze when using shortcuts
+ 
 [03.04.2012] 1.40b (1.2.3)
  * Fixed a sorting bug
  

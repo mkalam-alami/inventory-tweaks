@@ -410,7 +410,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         if (haveControlsChanged())
             reset();
         for (int keyCode : shortcutKeysStatus.keySet()) {
-            if (Keyboard.isKeyDown(keyCode)) {
+            if (keyCode > 0 && Keyboard.isKeyDown(keyCode)) {
                 if (!shortcutKeysStatus.get(keyCode)) {
                     shortcutKeysStatus.put(keyCode, true);
                 }

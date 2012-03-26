@@ -5,7 +5,7 @@
     </description>
 
 	<!-- Mod version -->
-	<property name="version" value="1.40-1.2.4" />
+	<property name="version" value="1.40b-1.2.4" />
 
 	<!-- OS-specific properties -->
 	<condition property="modsDir" value="${user.home}/AppData/Roaming/.minecraft/mods">

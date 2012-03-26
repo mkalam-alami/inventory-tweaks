@@ -304,7 +304,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
     private void move(boolean separateStacks, boolean drop) throws Exception {
         
-        int toIndex = -1;
+        int toIndex = -1, newIndex;
         
         synchronized(this) {
 
@@ -333,7 +333,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 	                    		&& toSection != InvTweaksContainerSection.ENCHANTMENT) {
 	                        while (hasStack(slot) && toIndex != -1) {
 	                            container.move(fromSection, fromIndex, toSection, toIndex);
-	                            toIndex = getNextIndex(separateStacks, drop);
+	                            newIndex = getNextIndex(separateStacks, drop);
+	                            toIndex = (newIndex != toIndex) ? newIndex : -1; // Happens when we can't put items in the target slot
 	                        }
 	                    }
 	                    else {
@@ -380,13 +381,14 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     
     private void moveAll(InvTweaksContainerSection fromSection, InvTweaksContainerSection toSection, 
             boolean separateStacks, boolean drop, aan stackToMatch) throws TimeoutException {
-        int toIndex = getNextIndex(separateStacks, drop);
+        int toIndex = getNextIndex(separateStacks, drop), newIndex;
         for (yu slot : container.getSlots(fromSection)) {
             if (hasStack(slot) && (stackToMatch == null || areSameItemType(stackToMatch, getStack(slot)))) {
                 int fromIndex = container.getSlotIndex(getSlotNumber(slot));
                 while (hasStack(slot) && toIndex != -1 && !(fromSection == toSection && fromIndex == toIndex)) {
                     container.move(fromSection, fromIndex, toSection, toIndex);
-                    toIndex = getNextIndex(separateStacks, drop);
+                    newIndex = getNextIndex(separateStacks, drop);
+                    toIndex = (newIndex != toIndex) ? newIndex : -1; // Happens when we can't put items in the target slot
                 }
             }
             if (toIndex == -1) {

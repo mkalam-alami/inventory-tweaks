@@ -264,7 +264,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 	                    }
 	                }
 	                
-	                if (isActive(ShortcutType.DROP) != null) {
+	                if (isActive(ShortcutType.DROP) != null && shortcutType == null) {
 	                	shortcutType = ShortcutType.MOVE_ONE_STACK;
 	                }
 	                
@@ -335,7 +335,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 	                        while (hasStack(slot) && toIndex != -1) {
 	                        	success = container.move(fromSection, fromIndex, toSection, toIndex);
 	                            newIndex = getNextIndex(separateStacks, drop);
-	                            toIndex = (success || newIndex != toIndex) ? newIndex : -1; // Needed when we can't put items in the target slot
+	                            toIndex = (success || drop || newIndex != toIndex) ? newIndex : -1; // Needed when we can't put items in the target slot
 	                        }
 	                    }
 	                    else {
@@ -390,7 +390,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 while (hasStack(slot) && toIndex != -1 && !(fromSection == toSection && fromIndex == toIndex)) {
                 	success = container.move(fromSection, fromIndex, toSection, toIndex);
                     newIndex = getNextIndex(separateStacks, drop);
-                    toIndex = (success || newIndex != toIndex) ? newIndex : -1; // Needed when we can't put items in the target slot
+                    toIndex = (success || drop || newIndex != toIndex) ? newIndex : -1; // Needed when we can't put items in the target slot
                 }
             }
             if (toIndex == -1) {

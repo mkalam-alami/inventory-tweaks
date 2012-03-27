@@ -47,7 +47,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Called by ModLoader each time the sorting key is pressed.
 	 */
-	public void keyboardEvent(afp keyBinding) {
+	public void keyboardEvent(afu keyBinding) {
 		instance.onSortingKeyPressed();
 	}
 
@@ -73,8 +73,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Called by ModLoader when an item has been picked up.
 	 */
-	public void onItemPickup(yr entityplayer, aai stack) {
-	    // ModLoader doesn't give the item amount in 'stack', so it's no use for us
+	public void onItemPickup(yw player, aan item) {
 		instance.onItemPickup();
 	}
 

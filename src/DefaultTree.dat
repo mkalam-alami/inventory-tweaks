@@ -198,8 +198,8 @@
       <constructionBlock>
         <woodenPlank>
           <oakPlank id="5" damage="0" />
-          <birchPlank id="5" damage="1" />
-          <pinePlank id="5" damage="2" />
+          <pinePlank id="5" damage="1" />
+          <birchPlank id="5" damage="2" />
           <junglePlank id="5" damage="3" />
         </woodenPlank>
         <bricks>
@@ -457,15 +457,16 @@
         <mushroomRed id="40" />
       </mushroom>
       <sapling>
-        <usualSapling id="6" damage="0" />
-        <spruceSapling id="6" damage="1" />
+        <oakSapling id="6" damage="0" />
+        <pineSapling id="6" damage="1" />
         <birchSapling id="6" damage="2" />
         <jungleSapling id="6" damage="3" />
       </sapling>
       <leaves id="18">
-        <usualLeaves id="18" damage="0" />
-        <spruceLeaves id="18" damage="1" />
+        <oakLeaves id="18" damage="0" />
+        <pineLeaves id="18" damage="1" />
         <birchLeaves id="18" damage="2" />
+        <jungleLeaves id="18" damage="3" />
       </leaves>
       <seed>
         <wheatSeed id="295" />

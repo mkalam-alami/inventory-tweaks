@@ -460,6 +460,7 @@
         <usualSapling id="6" damage="0" />
         <spruceSapling id="6" damage="1" />
         <birchSapling id="6" damage="2" />
+        <jungleSapling id="6" damage="3" />
       </sapling>
       <leaves id="18">
         <usualLeaves id="18" damage="0" />

@@ -115,7 +115,12 @@
         <diamondOreBlock id="56" />
       </oreBlock>
       <dirt id="3" />
-      <wood id="17" />
+      <wood>
+        <oakWood id="17" damage="0" />
+        <birchWood id="17" damage="1" />
+        <pineWood id="17" damage="2" />
+        <jungleWood id="17" damage="3" />
+      </wood>
       <sands>
         <sand id="12" />
         <sandstone>
@@ -191,7 +196,12 @@
       <sign id="63" />
       <jackOLantern id="91" />
       <constructionBlock>
-        <woodenPlank id="5" />
+        <woodenPlank>
+          <oakPlank id="5" damage="0" />
+          <birchPlank id="5" damage="1" />
+          <pinePlank id="5" damage="2" />
+          <junglePlank id="5" damage="3" />
+        </woodenPlank>
         <bricks>
           <brick id="45" />
           <brickBlock id="45" />

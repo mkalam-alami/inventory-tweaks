@@ -139,7 +139,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 	    aan srcStack = getItemStack(srcSection, srcIndex);
 	    aan destStack = getItemStack(destSection, destIndex);
 	    
-        if (srcStack == null) {
+        if (srcStack == null && destIndex != DROP_SLOT) {
             return false;
         }
         else if (srcSection == destSection && srcIndex == destIndex) {
@@ -407,6 +407,11 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
     }
 
+    /**
+     * 
+     * @param slotNumber
+     * @return -1 if not found
+     */
     public int getSlotIndex(int slotNumber) {
         return getSlotIndex(slotNumber, false);
     }

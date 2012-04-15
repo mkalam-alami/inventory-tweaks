@@ -154,7 +154,7 @@ public class InvTweaksConfigManager {
             
             // Configuration loading
             config.load();
-            shortcutsHandler.reset();
+            shortcutsHandler.loadShortcuts();
             
             log.setLevel(config.getLogLevel());
             InvTweaks.logInGameStatic("invtweaks.loadconfig.done");

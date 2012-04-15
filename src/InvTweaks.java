@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -326,36 +325,33 @@ public class InvTweaks extends InvTweaksObfuscation {
         InvTweaksConfig config = cfgManager.getConfig();
         vp currentScreen = getCurrentScreen();
 
-        // Switch between configurations (shorcut)
-        Vector<Integer> downKeys = cfgManager.getShortcutsHandler().getDownShortcutKeys();
+        // Switch between configurations (shortcut)
+        InvTweaksShortcutMapping switchMapping = cfgManager.getShortcutsHandler()
+                .isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
         if (isSortingShortcutDown()) {
-            for (int downKey : downKeys) {
-                String newRuleset = null;
-                if (downKey >= Keyboard.KEY_1 && downKey <= Keyboard.KEY_9) {
-                    newRuleset = config.switchConfig(downKey - Keyboard.KEY_1);
+            String newRuleset = null;
+            int pressedKey = switchMapping.getKeyCodes().get(0);
+            if (pressedKey >= Keyboard.KEY_1 && pressedKey <= Keyboard.KEY_9) {
+                newRuleset = config.switchConfig(pressedKey - Keyboard.KEY_1);
+            }
+            else {
+                switch (pressedKey) {
+                case Keyboard.KEY_NUMPAD1: newRuleset = config.switchConfig(0); break;
+                case Keyboard.KEY_NUMPAD2: newRuleset = config.switchConfig(1); break;
+                case Keyboard.KEY_NUMPAD3: newRuleset = config.switchConfig(2); break;
+                case Keyboard.KEY_NUMPAD4: newRuleset = config.switchConfig(3); break;
+                case Keyboard.KEY_NUMPAD5: newRuleset = config.switchConfig(4); break;
+                case Keyboard.KEY_NUMPAD6: newRuleset = config.switchConfig(5); break;
+                case Keyboard.KEY_NUMPAD7: newRuleset = config.switchConfig(6); break;
+                case Keyboard.KEY_NUMPAD8: newRuleset = config.switchConfig(7); break;
+                case Keyboard.KEY_NUMPAD9: newRuleset = config.switchConfig(8); break;
                 }
-                else {
-                    switch (downKey) {
-                    case Keyboard.KEY_NUMPAD1: newRuleset = config.switchConfig(0); break;
-                    case Keyboard.KEY_NUMPAD2: newRuleset = config.switchConfig(1); break;
-                    case Keyboard.KEY_NUMPAD3: newRuleset = config.switchConfig(2); break;
-                    case Keyboard.KEY_NUMPAD4: newRuleset = config.switchConfig(3); break;
-                    case Keyboard.KEY_NUMPAD5: newRuleset = config.switchConfig(4); break;
-                    case Keyboard.KEY_NUMPAD6: newRuleset = config.switchConfig(5); break;
-                    case Keyboard.KEY_NUMPAD7: newRuleset = config.switchConfig(6); break;
-                    case Keyboard.KEY_NUMPAD8: newRuleset = config.switchConfig(7); break;
-                    case Keyboard.KEY_NUMPAD9: newRuleset = config.switchConfig(8); break;
-                    }
-                }
-                if (downKey >= Keyboard.KEY_NUMPAD1 && downKey <= Keyboard.KEY_NUMPAD9) {
-                    newRuleset = config.switchConfig(downKey - Keyboard.KEY_NUMPAD1 + 1);
-                }
-                
-                if (newRuleset != null) {
-                    logInGame(String.format(InvTweaksLocalization.get("invtweaks.loadconfig.enabled"), newRuleset), true);
-                    // Hack to prevent 2nd way to switch configs from being enabled
-                    sortingKeyPressedDate = Integer.MAX_VALUE; 
-                }
+            }
+            
+            if (newRuleset != null) {
+                logInGame(String.format(InvTweaksLocalization.get("invtweaks.loadconfig.enabled"), newRuleset), true);
+                // Hack to prevent 2nd way to switch configs from being enabled
+                sortingKeyPressedDate = Integer.MAX_VALUE; 
             }
         }
 

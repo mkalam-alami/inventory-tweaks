@@ -22,7 +22,7 @@ public class InvTweaksShortcutMapping {
     	keysToHold.add(keyCode);
     }
 
-    public InvTweaksShortcutMapping(int[] keyCodes) {
+    public InvTweaksShortcutMapping(int... keyCodes) {
     	for (int keyCode : keyCodes) {
     		keysToHold.add(keyCode);
     	}
@@ -31,7 +31,7 @@ public class InvTweaksShortcutMapping {
     	this(new String[]{ keyName });
     }
     
-    public InvTweaksShortcutMapping(String[] keyNames) {
+    public InvTweaksShortcutMapping(String... keyNames) {
     	for (String keyName : keyNames) {
             // - Accept both KEY_### and ###, in case someone
             //   takes the LWJGL Javadoc at face value
@@ -41,15 +41,15 @@ public class InvTweaksShortcutMapping {
     	}
     }
     
-    public boolean isTriggered(Map<Integer, Boolean> holdKeys) {
+    public boolean isTriggered(Map<Integer, Boolean> pressedKeys) {
     	for (Integer keyToHold : keysToHold) {
     		if (keyToHold != Keyboard.KEY_LCONTROL) {
-    			if (!holdKeys.get(keyToHold)) {
+    			if (!pressedKeys.get(keyToHold)) {
     				return false;
     			}
     		}
 			// AltGr also activates LCtrl, make sure the real LCtrl has been pressed
-    		else if (!holdKeys.get(keyToHold) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)) {
+    		else if (!pressedKeys.get(keyToHold) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)) {
     			return false;
     		}
     	}

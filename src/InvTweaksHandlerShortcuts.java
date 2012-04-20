@@ -437,7 +437,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             for (yu slot : container.getSlots(toSection)) {
                 if (hasStack(slot)) {
                     aan stack = getStack(slot);
-                    if (areItemsEqual(stack, fromStack)
+                    if (!hasDataTags(stack) && areItemsEqual(stack, fromStack)
                             && getStackSize(stack) < getMaxStackSize(stack)) {
                         result = i;
                         break;

@@ -366,7 +366,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     }
                 }
 
-                if (areItemsEqual(from, to)) {
+                if (!hasDataTags(from) && !hasDataTags(to) && areItemsEqual(from, to)) {
                     // Can be merged?
                     if (getStackSize(to) < getMaxStackSize(to)) {
                         canBeSwappedOrMerged = true;

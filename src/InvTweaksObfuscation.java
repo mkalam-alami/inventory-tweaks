@@ -151,6 +151,9 @@ public class InvTweaksObfuscation {
 	protected int getMaxStackSize(aan itemStack) {
 		return itemStack.c();
 	}
+	protected boolean hasDataTags(aan itemStack) {
+	  return itemStack.n();
+	}
 	protected int getStackSize(aan itemStack) {
 		return itemStack.a;
 	}

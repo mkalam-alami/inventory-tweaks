@@ -160,7 +160,9 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         // Use intermediate slot if we have to swap tools, maps, etc.
         if (destStack != null
                 && getItemID(srcStack) == getItemID(destStack)
-                && getMaxStackSize(srcStack) == 1) {
+                && (getMaxStackSize(srcStack) == 1 ||
+                    hasDataTags(srcStack) || hasDataTags(destStack)
+                )) {
             int intermediateSlot = getFirstEmptyUsableSlotNumber();
             InvTweaksContainerSection intermediateSection = getSlotSection(intermediateSlot);
             int intermediateIndex = getSlotIndex(intermediateSlot);

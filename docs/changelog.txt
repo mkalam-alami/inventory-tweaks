@@ -1,0 +1,275 @@
+Latest changes
+==============
+
+`[03.27.2012] 1.41 (1.2.4) <http://adf.ly/6idxE>`_
+ * Updated mod & item tree to Minecraft 1.2.4
+ * Improved armor auto-equipment
+ * Fixed a crash when changing some controls to mouse buttons
+ * Fixed a possible rare freeze when using shortcuts
+ 
+`[03.04.2012] 1.40b (1.2.3) <http://adf.ly/6gwD5>`_
+ * Fixed a sorting bug
+ 
+`[03.04.2012] 1.40 (1.2.3) <http://modding.kalam-alami.net/download/1.40-1.1>`_
+ * Updated mod & item tree to Minecraft 1.2.3
+ * Added Traditional Chinese translation
+   (thanks to GazCore)
+ * Tweaked Move all shortcut behavior
+ 
+ 
+**[02.29.2012] 1.40 (1.1)**
+ * Fixed crash on crafting
+ * Fixed Move all shortcut
+ * Some other changes to shortcuts behaviour
+ * Added support for Ender Chest
+ * Fixed chest buttons position with Not Enough Items
+   (but no dupe bug fix as it's an NEI feature)
+ * Added 10 translations, thanks to:
+     * Ryo567 & Aledrobt (Spanish)
+     * 0l1vR (German)
+     * TH3steven (Dutch)
+     * Ezspecial & Ricalou (Portuguese)
+     * Hugsim, Doyle3694 & Brott (Swedish)
+     * JonathanHertz (Danish)
+     * Fishy (Polish)
+    * Necrontoend & VADemon (Russian)
+    * Ricalou & NTWalker (Japanese)
+    * IvyMichael & NTWalker (Chinese)
+    * And a few more small contributors!
+ 
+1.3X
+----
+
+**[02.14.2012] 1.38 (1.1)**
+ * Updated support for Equivalent Exchange, Iron chests & Red Power 2
+ * Better support for Multi-Page Chest
+ * Big containers now have chest icons on the side
+ 
+**[01.31.2012] 1.37c (1.1)**
+ * Fixed sort on pickup freezing the game
+ * Fixed crash on switching configurations
+ * Some sorting fixes and improvements
+ * Added potions to the item tree
+ * Added French translation
+ 
+**[01.20.2012] 1.37 (1.1)**
+ * Added Space + click shortcut to move everything
+ * Fixed Ctrl + click to craft one item directly to the inventory
+ * Fixed Up + Click for brewing stands not working with potions
+ * Removed all custom Shift + Click behavior (it now acts as default Minecraft does)
+ * Added sorting support for Red Power 2 and IC² containers
+ * Rewrote sorting on pickup feature (...still not SMP compatible)
+ 
+**[01.14.2012] 1.36 (1.1)**
+ * Updated the mod to Minecraft 1.1
+ * Improved the settings screen and added a few options
+ * Fixed a rare crash when opening the shortcuts help
+ * Fixed a crash when removing properties from the .cfg file
+ 
+**[12.24.2011] 1.35 (1.0.0)**
+ * Fixed a sorting error 
+ * Fixed the brick IDs in the item tree
+ * Shift+click on hotbar now moves the stacks to the chest
+ * Fixed sorting being impossible while in a furnace
+ * Removed spamming error message when switching configs
+ * Fixed support for the Multi-Page Chest mod
+ * Added support for the More Storage mod
+
+**[12.12.2011] 1.34 (1.0.0)**
+ * Shortcuts:
+    * Enabled shortcuts with keys combinations
+    * Shift + click now moves one stack (like in vanilla)
+    * Changed 'move all' default shortcut to Ctrl + Shift + Click
+    * Some shortcuts improvements and fixes
+    * Support for brewing stands & enchantment tables
+ * Reworked mod support:
+    * Support for the IronChests mod
+    * Support for the Multi Page Chest mod
+    * Improved support for Equivalent Exchange
+    * Made it possible to create rules for unknown mod items
+    * No more crashes with unsupported mods
+ * Sorting can now be assigned to any mouse button
+ * Fixed possible crashes on external errors
+ * Unnecessary spaces/tabs are now tolerated in configs
+
+**[11.21.2011] 1.33 (1.0.0)**
+ * Updated source code and item tree to Minecraft 1.0.0
+ * Partial support for Equivalent Exchange containers
+ * The item tree file is now updated automatically (backups and replaces the old one)
+ * Switched back packaging to a zip
+
+**[10.02.2011] 1.32 (B1.8.1)**
+ * Fixed crafting shortcut
+ * Fixed shortcuts help screen
+ * Fixed creative mode compatibility issues
+ * Fixed 'move all' shortcut
+ * Fixed auto refill with mod items
+ * Shortcuts now moves items from and to the chests
+ * Updated item tree to 1.9 pre2
+ * Made the item tree replace the existing one if newer (makes a backup)
+ 
+**[09.16.2011] 1.31 Beta (B1.8.1)**
+ * (Quickly) updated source code to Minecraft 1.8.1
+
+**[09.13.2011] 1.31 (B1.7.3)**
+ * Added shortcuts to switch between sorting configurations (0-9 + Sort)
+ * Up/Down shortcuts now work with the Forward/Backward keys
+ * Shortcuts now choose the destination the same way that Minecraft does
+ * Fixed the 'move all' and 'drop' shortcuts not working
+ * Fixed compatibility issues with mods (especially Millenaire)
+ * Fixed the 'craft all' shortcut using the remains to craft something else
+ * Fixed a freeze when using a shortcut while holding an item
+ * Fixed a freeze when sorting maps
+
+**[08.16.2011] 1.30 (B1.7.3)**
+ * Added various shortcuts to move/drop/craft items
+ * The mod has been tested and tweaked for the Aether mod
+ * Tools are now also sorted by damage in SMP
+ * Sorting now moves all items from the crafting table to the inventory
+ * Sorting now equips the best armor available in the inventory
+ * The "stuff" rule now also matches unknown mod items
+ * Changed back the item tree extension to .txt
+ * Better reloading behavior with multiple configurations
+ * Rectangle rules can now use the 'r' modifier
+ * Huge refactoring of the mod's code, to release a library for modders someday
+ 
+1.2X
+----
+ 
+**[08.01.2011] 1.22 (B1.7.3)**
+ * Really fixed the bug making a lot of keywords not work
+ * Middle click is now automatically disabled when Convenient Inventory's is on
+ * Fixed a performance issue introduced in 1.21
+ 
+**[07.30.2011] 1.21 (B1.7.3)**
+ * Fixed the bug making a lot of keywords not work
+ * Added support for multiple configurations
+ 
+**[07.27.2011] 1.20 (B1.7.3)**
+ * Fixed the columns rule being reversed
+ * Moved the configuration files to the "config" folder
+ * The tree file is now in XML for easier editing
+ * Autoreplace and sorting now trigger a sound
+ * Made picked up items go directly in the slot defined for sorting
+ * Added a special settings menu to inventories
+    * Added an option to hide chest buttons
+    * Added an option instead of the "DISABLEMIDDLECLICK" rule
+    * Added an option to disable sorting of picked up items
+    * Added a link to edit both configuration files
+    * Added a link to the mod's documentation
+ * Set up InvTweaks.cfg to store all previous properties
+ * Soud can also be disabled in InvTweaks.cfg
+ * Added a new special rule "FROZEN"
+ * Fixed a bug regarding autoreplace customization
+ * Better error handling
+
+1.1X
+----
+
+**[07.21.2011] 1.11 (B1.7.3)**
+ * Middle click now works on chests (doesn't crash anymore)
+ * Middle clicking several times swaps between the sorting methods
+ * Fixed a crash when sorting an empty chest
+ * Added a timeout in SMP, to avoid game freezes while sorting
+ * Tweaked a bit the intelligent chest sorting
+
+**[07.20.2011] 1.10b (B1.7.3)**
+ * Fixed a crash when sorting the inventory with an open chest on SMP
+ 
+**[07.20.2011] 1.10 (B1.7.3)**
+ * Added three buttons on chests and dispensers to sort them
+ * Added some missing items to item tree
+ * Fixed a bug involving rectangle rules
+ * Eaten mushroom soups now always leave the hotbar on autoreplace
+ * Added German and French readmes
+ 
+1.0X 
+----
+ 
+**[07.02.2011] 1.07 (B1.7.2)**
+ * Holding the sort key is no more needed to hot-reload
+ * Fixed eating mushroom soups not triggering autoreplace
+ * Fixed least damaged tools being selected first again
+ * Rule priorities adjustment
+
+**[07.02.2011] 1.06 (B1.7.2)**
+ * Updated to 1.7.2
+
+**[06.19.2011] 1.06 (B1.6.6)**
+ * Fixed a few things broken by the 1.05 update
+ * Fixed autoreplace not working with signs
+ * Fixed bugs where items end in wrong slots or swap on each sorting
+ * Minor item tree update
+
+**[06.13.2011] 1.05 (B1.6.6)**
+ * Enhanced keyword tree possibilities
+    * Categories defined by ID ranges
+    * Items defined by both ID and "damage value"
+ * Improved guessing for wrong keywords
+ * Fixed sorting triggered while chatting or creating signs
+ * Fixed sorting sometimes leaving an item under the cursor in SMP
+ * Fixed shift + click on the hotbar triggering autoreplace
+ * Fixed autoreplace ignoring wool colors, sapling types, etc.
+ * Fixed the item tree not handling correctly duplicate items
+ * Fixed rules priorities problem
+
+**[06.04.2011] 1.04b (B1.6.6)**
+ * Adjusted rules priorities
+ * Minor item tree fix
+
+**[06.04.2011] 1.04 (B1.6.6)**
+ * The mod can now be installed through the mods folder
+    * Now really compatible with MyCraft
+ * Autoreplace now selects the smallest stack first
+ * Fixed freeze when sorting several tools of same ID in SMP
+ * Added DEBUG rule to enable verbose logging
+ 
+**[06.02.2011] 1.03 (B1.6.6)**
+ * Made the mod compatible with MyCraft Mod Manager
+ * Added rectangle rules
+ * The middle click will sort your inventory (can be disabled)
+ * Fixed occasional ghost items caused by autoreplace in SMP
+ * Fixed sorting not working while chests/crafting tables are open in SMP
+ * Added map, trapdoors and dead shrubs to the item tree
+ * Various minor changes/fixes to the item tree
+
+**[05.30.2011] 1.02 (B1.6.6)**
+ * Most damaged tools are now selected first
+ * Fixed item duplication bug
+ * Fixed bug concerning upper case item names
+ 
+**[05.30.2011] 1.01b (B1.6.5)**
+ * Default configuration was missing in the zip
+
+**[05.29.2011] 1.01 (B1.6.5)**
+ * The sort button can now be configured again
+ * Autoreplace now works most of the time in SMP
+
+**[05.28.2011] 1.0 (B1.6.4)**
+ * Updated to 1.6.4
+ * Changed default key from E to R
+
+**[05.27.2011] 1.0 (B1.5_01)**
+ * Multiplayer support
+ * Added autoreplace configuration
+ * Added short delay before autoreplace
+ * Fixed sorting sometimes not being perfect in one stroke
+ * Fixed wool of different colors (and others) merging together
+ * Minor item tree changes
+ 
+**[05.16.2011] 1.0 Beta2 (B1.5_01)**
+ * Various bug fixes
+ * Item tree fixes
+ * Various improvements
+
+**[05.15.2011] 1.0 Beta (B1.5_01)**
+ * Configurable sorting shortcut
+ * Automatic item replacement
+ * Customizable sorting rules
+    * By column
+    * By row
+    * By tile
+    * Reversed rules
+    * Exclusion rules
+ * Customizable item tree
+ * Hot configuration reload

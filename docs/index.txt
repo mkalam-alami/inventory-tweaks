@@ -6,35 +6,53 @@ Inventory Tweaks official page
 What is Inventory Tweaks?
 -------------------------
 
-This client mod for Minecraft allows you to easily manage your inventory. It works out of the box, and will make you gain a massive amount of time, both in single and multiplayer!
+.. image:: _static/img/demo.jpg
+	:align: right
+
+This client mod for Minecraft allows you to **easily manage your items**. It works out of the box, and will make you gain a massive amount of time, both in **single and multiplayer**!
 
 * Tools and items are automatically replaced
 * Sort your inventory and your chests in a single click/keystroke
 * Customize entirely the way your inventory is sorted, thanks to configuration files
 
-Donwload
+Download
 -------------------------
+
+This mod needs `ModLoader <http://www.minecraftforum.net/topic/75440->`_ to work.
 
 .. image:: _static/img/dl.png
   :align: left
 
-Latest version: `Inventory Tweaks 1.41b (Minecraft 1.2.4/1.2.5) <http://modding.kalam-alami.net/download/1.41b-1.2.4>`_
+**Minecraft 1.2.4/1.2.5** : `Inventory Tweaks 1.41b-1.2.5 <http://adf.ly/6idxE>`_
+
+.. image:: _static/img/dl.png
+  :align: left
+
+**Minecraft 1.2.3** : `Inventory Tweaks 1.40b-1.2.3 <http://adf.ly/6gwD5>`_
+
+.. image:: _static/img/dl.png
+  :align: left
+  
+**Minecraft 1.1** : `Inventory Tweaks 1.40-1.1 <http://modding.kalam-alami.net/download/1.40-1.1>`_
+
+.. toctree::
+   :maxdepth: 1
+   
+   changelog.txt
 
 Documentation
 -------------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    
    basics.txt
    rules.txt
    itemtree.txt
 
 
-Special pages
+Contact
 -------------------------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+* `Get support on Minecraft Forums <www.minecraftforum.net/topic/323444-166spsmp-inventory-tweaks-106-june-19/>`_
+* `Join the project on Github <https://github.com/mkalam-alami/inventory-tweaks/wiki>`_ (yep, the mod's Open Source!)

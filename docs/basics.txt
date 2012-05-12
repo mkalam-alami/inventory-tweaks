@@ -1,4 +1,25 @@
 Getting started
 ===============
 
-TODO
+Setup
+-----
+
+This mod works with `ModLoader <http://www.minecraftforum.net/topic/75440->`_, and is installed just by moving the mod ZIP to the **mods** folder of Minecraft. For complete information, setup instructions are packaged within the archive.
+
+Basic use
+---------
+
+Inventory sorting
+~~~~~~~
+
+You can trigger the inventory sorting by using the **middle click**, or by pressing **R** (by default), at any time. If you want to change this shortcut, check the *Controls* menu in your options. The default configuration will sort all the items that are not in your hotbar, starting with the top-left corner of your inventory.
+
+Chests sorting
+~~~~~~~
+
+When you open a chest, a double chest or a dispenser, you will see four buttons on the higher part. The first three sort the items in different ways (try them!), while the last one leads to a settings screen. Note: the middle click also works on chests (click several times to change the sorting method).
+
+Auto-refill
+~~~~~~~
+
+If you eat an item, break a tool or empty a stack by placing blocks, the mod will automatically fetch if possible a similar item from your inventory.

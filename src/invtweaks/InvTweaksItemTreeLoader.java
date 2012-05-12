@@ -19,10 +19,12 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class InvTweaksItemTreeLoader extends DefaultHandler {
 
-    private final static String ATTR_RANGE_MIN = "min";
-    private final static String ATTR_RANGE_MAX = "max";
     private final static String ATTR_ID = "id";
     private final static String ATTR_DAMAGE = "damage";
+    private final static String ATTR_RANGE_MIN = "min"; // Item ranges
+    private final static String ATTR_RANGE_MAX = "max";
+    private final static String ATTR_RANGE_DMIN = "dmin"; // Damage ranges
+    private final static String ATTR_RANGE_DMAX = "dmax";
     private final static String ATTR_TREE_VERSION = "treeVersion";
 
     private static InvTweaksItemTree tree;
@@ -94,10 +96,12 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
             String name, Attributes attributes) throws SAXException {
 
         String rangeMinAttr = attributes.getValue(ATTR_RANGE_MIN);
+        String rangeDMinAttr = attributes.getValue(ATTR_RANGE_DMIN);
         String newTreeVersion = attributes.getValue(ATTR_TREE_VERSION);
         
         // Category
-        if (attributes.getLength() == 0 || rangeMinAttr != null  || treeVersion == null) {
+        if (attributes.getLength() == 0 || treeVersion == null
+        		|| rangeMinAttr != null	|| rangeDMinAttr != null) {
 
             // Tree version
             if (treeVersion == null) {
@@ -116,11 +120,22 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
             if (rangeMinAttr != null) {
                 int rangeMin = Integer.parseInt(rangeMinAttr);
                 int rangeMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_MAX));
-                for (int i = rangeMin; i <= rangeMax; i++) {
-                    tree.addItem(name, new InvTweaksItemTreeItem((name + i).toLowerCase(),
-                            i, -1, itemOrder++));
+                for (int id = rangeMin; id <= rangeMax; id++) {
+                    tree.addItem(name, new InvTweaksItemTreeItem((name + id).toLowerCase(),
+                            id, -1, itemOrder++));
                 }
             }
+            else if (rangeDMinAttr != null) {
+            	int id = Integer.parseInt(attributes.getValue(ATTR_ID));
+                int rangeDMin = Integer.parseInt(rangeDMinAttr);
+                int rangeDMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_DMAX));
+                    for (int damage = rangeDMin; damage <= rangeDMax; damage++) {
+	                    tree.addItem(name, new InvTweaksItemTreeItem(
+	                    		(name + id + "-" + damage).toLowerCase(),
+	                            id, damage, itemOrder++));
+                    }
+            }
+            
             categoryStack.add(name);
         }
 

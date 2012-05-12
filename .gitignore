@@ -6,6 +6,7 @@ isom/
 InvTweaks-*/
 files/
 launcher/
+docs/_build
 *.zip
 *.jar
 minecraft/net/minecraft/src/*.java

@@ -1,0 +1,40 @@
+Inventory Tweaks official page
+============================================
+
+.. image:: _static/img/invtweaks.png
+
+What is Inventory Tweaks?
+-------------------------
+
+This client mod for Minecraft allows you to easily manage your inventory. It works out of the box, and will make you gain a massive amount of time, both in single and multiplayer!
+
+* Tools and items are automatically replaced
+* Sort your inventory and your chests in a single click/keystroke
+* Customize entirely the way your inventory is sorted, thanks to configuration files
+
+Donwload
+-------------------------
+
+.. image:: _static/img/dl.png
+  :align: left
+
+Latest version: `Inventory Tweaks 1.41b (Minecraft 1.2.4/1.2.5) <http://modding.kalam-alami.net/download/1.41b-1.2.4>`_
+
+Documentation
+-------------------------
+
+.. toctree::
+   :maxdepth: 2
+   
+   basics.txt
+   rules.txt
+   itemtree.txt
+
+
+Special pages
+-------------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

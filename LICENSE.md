@@ -1,4 +1,4 @@
-## Inventory Tweaks Mod license
+## Inventory Tweaks Mod license (MIT)
 
 Copyright (c) 2011-2012 Marwane Kalam-Alami
 

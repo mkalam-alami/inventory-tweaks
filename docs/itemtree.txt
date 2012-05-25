@@ -1,3 +1,5 @@
+.. _itemtree:
+
 Tweaking the item tree
 ===================
 

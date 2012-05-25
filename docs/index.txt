@@ -1,3 +1,5 @@
+.. _index:
+
 Inventory Tweaks official page
 ============================================
 

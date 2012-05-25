@@ -31,4 +31,4 @@ If you eat an item, break a tool or empty a stack by placing blocks, the mod wil
    * Click on the "..." button from your inventory to explore the features of the mod. For instance there are a lot of shortcuts that you can use to move items around.
    * You don't even have to be in your inventory to use the **R** shortcut.
 
-**Next entry: :ref:`rules`**
+**Next entry:** :ref:`rules`

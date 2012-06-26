@@ -38,6 +38,7 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiSorter")
                 || is(guiScreen, "GuiFilter")
                 || is(guiScreen, "GuiAdvBench")
+                || is(guiScreen, "GuiEject")
                 || is(guiScreen, "GuiNuclearReactor") // IC2
                 || is(guiScreen, "GuiEnderChest") // EnderChest
           ;
@@ -74,7 +75,8 @@ public class InvTweaksModCompatibility {
 	    		|| is(guiContainer, "GuiItemDetect")
 	    		|| is(guiContainer, "GuiAlloyFurnace")
 	    		|| is(guiContainer, "GuiDeploy")
-	    		|| is(guiContainer, "GuiFilter")) {
+	    		|| is(guiContainer, "GuiFilter")
+	    		|| is(guiContainer, "GuiEject")) {
 	      return 3;
 	    } else if (is(guiContainer, "GuiNuclearReactor")) { // IC2
 	    	return (obf.getSlots(obf.getContainer(guiContainer)).size() - 36) / 6;

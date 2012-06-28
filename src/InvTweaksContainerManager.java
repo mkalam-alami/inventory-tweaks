@@ -126,7 +126,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      *   in the destination, and the eventual remains go back to the source.
      * - If the items cannot be merged, they are swapped.
      * @param srcSection The source section
-     * @param srcIndex The destination slot
+     * @param srcIndex The source slot
      * @param destSection The destination section
      * @param destIndex The destination slot
      * @return false if the source slot is empty or the player is

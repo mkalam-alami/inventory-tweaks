@@ -201,7 +201,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 	/**
      * Moves some items from source to destination.
 	 * @param srcSection The source section
-	 * @param srcIndex The destination slot
+	 * @param srcIndex The source slot
      * @param destSection The destination section
      * @param destIndex The destination slot
 	 * @param amount The amount of items to move. If <= 0, does nothing.

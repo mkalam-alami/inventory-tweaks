@@ -69,31 +69,31 @@
     </tool>
     <armor>
       <helmet>
-        <goldHelmet id="314" />
         <diamondHelmet id="310" />
         <chainHelmet id="302" />
         <ironHelmet id="306" />
+        <goldHelmet id="314" />
         <leatherHelmet id="298" />
       </helmet>
       <chestplate>
-        <goldChestplate id="315" />
         <diamondChestplate id="311" />
         <chainChestplate id="303" />
         <ironChestplate id="307" />
+        <goldChestplate id="315" />
         <leatherChestplate id="299" />
       </chestplate>
       <leggings>
-        <goldLeggings id="316" />
         <diamondLeggings id="312" />
         <chainLeggings id="304" />
         <ironLeggings id="308" />
+        <goldLeggings id="316" />
         <leatherLeggings id="300" />
       </leggings>
       <boots>
-        <goldBoots id="317" />
-        <diamonBoots id="313" />
+        <diamondBoots id="313" />
         <chainBoots id="305" />
         <ironBoots id="309" />
+        <goldBoots id="317" />
         <leatherBoots id="301" />
       </boots>
     </armor>

@@ -42,6 +42,8 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiPersonalChest")
                 || is(guiScreen, "GuiNuclearReactor") // IC2
                 || is(guiScreen, "GuiEnderChest") // EnderChest
+                || is(guiScreen, "GuiColorBox")
+                || is(guiScreen, "GuiLinkedColorBox") // ColorBox
           ;
     }
 

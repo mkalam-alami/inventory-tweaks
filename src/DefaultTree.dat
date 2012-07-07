@@ -160,8 +160,10 @@
       <air id="0" />
       <fire id="51" />
       <obsidian id="49" />
-      <hugeBrownMushroom id="99" />
-      <hugeRedMushroom id="100" />
+      <mushroomBlock>
+        <hugeBrownMushroom id="99" />
+        <hugeRedMushroom id="100" />
+      </mushroomBlock>
       <dragonEgg id="122" />
       <hiddenSilverfish id="97" />
     </naturalBlock>

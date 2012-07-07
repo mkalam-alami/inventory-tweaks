@@ -124,14 +124,13 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     		if (shortcutToTrigger != null) {
     	        int ex = Mouse.getEventX(), ey = Mouse.getEventY();
     	        
-                    // GO!
-                    runShortcut(shortcutToTrigger);
-    
-                    // Reset mouse status to prevent default action.
-                    // TODO Rather, 'anticipate' default action?
-                    Mouse.destroy();
-                    Mouse.create();
-                
+                // GO!
+                runShortcut(shortcutToTrigger);
+
+                // Reset mouse status to prevent default action.
+                // TODO Find a better solution, like 'anticipate' default action?
+                Mouse.destroy();
+                Mouse.create();
     
                 // Fixes a tiny glitch (Steve looks for a short moment
                 // at [0, 0] because of the mouse reset).
@@ -383,7 +382,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             if (hasStack(slot) && (stackToMatch == null || areSameItemType(stackToMatch, getStack(slot)))) {
                 int fromIndex = container.getSlotIndex(getSlotNumber(slot));
                 while (hasStack(slot) && toIndex != -1 && !(shortcut.fromSection == shortcut.toSection && fromIndex == toIndex)) {
-                    success = container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection, toIndex);
+                    success = container.move(shortcut.fromSection, fromIndex, shortcut.toSection, toIndex);
                     newIndex = getNextTargetIndex(shortcut);
                     toIndex = (success || shortcut.drop || newIndex != toIndex) ? newIndex : -1; // Needed when we can't put items in the target slot
                 }

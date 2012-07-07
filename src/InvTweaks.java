@@ -328,7 +328,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         // Switch between configurations (shortcut)
         InvTweaksShortcutMapping switchMapping = cfgManager.getShortcutsHandler()
                 .isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
-        if (isSortingShortcutDown()) {
+        if (isSortingShortcutDown() && switchMapping != null) {
             String newRuleset = null;
             int pressedKey = switchMapping.getKeyCodes().get(0);
             if (pressedKey >= Keyboard.KEY_1 && pressedKey <= Keyboard.KEY_9) {

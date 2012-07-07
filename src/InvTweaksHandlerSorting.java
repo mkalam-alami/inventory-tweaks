@@ -114,6 +114,17 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         long timer = System.nanoTime();
         InvTweaksContainerManager globalContainer = new InvTweaksContainerManager(mc);
 
+        // Put hold item down
+        if (getHoldStack() != null) {
+            int emptySlot = globalContainer.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
+            if (emptySlot != -1) {
+                globalContainer.putHoldItemDown(InvTweaksContainerSection.INVENTORY, emptySlot);
+            }
+            else {
+                return; // Not enough room to work, abort
+            }
+        }
+        
         if (algorithm != ALGORITHM_DEFAULT) {
             
             if (algorithm == ALGORITHM_INVENTORY) {
@@ -219,7 +230,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 for (int i = 0; i < size; i++) {
                     aan from = containerMgr.getItemStack(i);
 
-                    // If the rule is strong enough to move the item and it matches the item
+                    // If the rule is strong enough to move the item and it matches the item, move it
                     if (hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
                         List<InvTweaksItemTreeItem> fromItems = tree.getItems(
                                 getItemID(from), getItemDamage(from));

@@ -13,13 +13,13 @@
 # A: Just delete this file, the default tree will be reloaded next time you sort something!
 
 # FULL DOCUMENTATION
-# http://modding.kalam-alami.net/?invtweaks
+# http://modding.kalam-alami.net/invtweaks
 
 # CREDITS
 # Thanks to Larandar & Lunaqua for their contributions.
 -->
 <!-- Note: 'stuff' matches everything, even items that don't appear here -->
-<stuff treeVersion="1.1.0">
+<stuff treeVersion="1.3.0">
   <equipment>
     <weapon>
       <sword>
@@ -109,16 +109,16 @@
       </stones>
       <oreBlock>
         <coalOreBlock id="16" />
-        <redstoneOreBlock id="73" />
-        <redstoneOreBlock id="74" />
+        <redstoneOreBlock min="73" max="74" />
         <lapisLazuliOreBlock id="21" />
         <diamondOreBlock id="56" />
+        <emeraldOreBlock id="129" />
       </oreBlock>
       <dirt id="3" />
       <wood>
         <oakWood id="17" damage="0" />
         <birchWood id="17" damage="1" />
-        <pineWood id="17" damage="2" />
+        <spruceWood id="17" damage="2" />
         <jungleWood id="17" damage="3" />
       </wood>
       <sands>
@@ -198,7 +198,7 @@
       <constructionBlock>
         <woodenPlank>
           <oakPlank id="5" damage="0" />
-          <pinePlank id="5" damage="1" />
+          <sprucePlank id="5" damage="1" />
           <birchPlank id="5" damage="2" />
           <junglePlank id="5" damage="3" />
         </woodenPlank>
@@ -210,6 +210,7 @@
             <mossyStoneBrick id="98" damage="1" />
             <crackedStoneBrick id="98" damage="2" />
             <circleStoneBrick id="98" damage="3" />
+            <chiseledStoneBrick id="98" damage="3" />
           </stoneBricks>
           <netherBrick id="112" />
         </bricks>
@@ -219,34 +220,53 @@
         </glass>
         <ironBars id="101" />
         <stairs>
-          <woodenStairs id="53" />
+          <woodenStairs>
+	        <oakWoodStairs id="53" />
+	        <spruceWoodStairs id="134"" />
+	        <birchWoodStairs id="135" />
+	        <jungleWoodStairs id="136" />
+          </woodenStars>
           <cobblestoneStairs id="67" />
           <stoneStairs id="109" />
           <brickStairs id="108" />
           <netherStairs id="114" />
           <netherBrickStairs id="114" />
+          <sandstoneStairs id="128" />
         </stairs>
         <slabs>
+          <woodenSlabs>
+          	<woodenStoneSlab id="44" damage="2" />
+          	<oakWoodSlab id="126" damage="0" />
+          	<spruceWoodSlab id="126" damage="1" />
+          	<birchWoodSlab id="126" damage="2" />
+          	<jungleWoodSlab id="126" damage="3" />
+          </woodenSlabs>
           <stoneSlab id="44" damage="0" />
           <sandstoneSlab id="44" damage="1" />
-          <woodenSlab id="44" damage="2" />
           <cobblestoneSlab id="44" damage="3" />
           <stonebrickSlab id="44" damage="4" />
           <brickSlab id="44" damage="5" />
+          <doubleSlab>
+            <woodenDoubleSlabs>
+            	<woodenStoneDoubleSlab id="43" damage="2" />
+            	<oakWoodDoubleSlab id="125" damage="0" />
+            	<spruceWoodDoubleSlab id="125" damage="1" />
+            	<birchWoodDoubleSlab id="125" damage="2" />
+            	<jungleWoodDoubleSlab id="125" damage="3" />
+            </woodenDoubleSlabs>
+            <stoneDoubleSlab id="43" damage="0" />
+            <sandstoneDoubleSlab id="43" damage="1" />
+            <cobblestoneDoubleSlab id="43" damage="3" />
+            <stonebrickDoubleSlab id="43" damage="4" />
+            <brickDoubleSlab id="43" damage="5" />
+          </doubleSlab>
         </slabs>
-        <doubleSlab>
-          <stoneDoubleSlab id="43" damage="0" />
-          <sandstoneDoubleSlab id="43" damage="1" />
-          <woodenDoubleSlab id="43" damage="2" />
-          <cobblestoneDoubleSlab id="43" damage="3" />
-          <stonebrickDoubleSlab id="43" damage="4" />
-          <brickDoubleSlab id="43" damage="5" />
-        </doubleSlab>
         <oreBlock>
           <ironBlock id="42" />
           <goldBlock id="41" />
           <lapisLazuliBlock id="22" />
           <diamondBlock id="57" />
+          <emeraldBlock id="133" />
         </oreBlock>
         <stick id="280" />
       </constructionBlock>
@@ -307,6 +327,7 @@
       <gold id="266" />
       <iron id="265" />
       <diamond id="264" />
+      <emerald id="388" />
       <redstone id="331" />
       <glowstoneDust id="348" />
       <clayBrick id="336" />
@@ -366,10 +387,18 @@
       <craftingTable id="58" />
       <furnace id="61" />
       <furnaceBurning id="62" />
-      <chest id="54" />
+      <chests>
+	      <chest id="54" />
+	      <enderChest id="130" />
+      </chests>
       <bed id="26" />
       <jukebox id="84" />
+      <readableBooks>
+        <bookAndQuill id="386" />
+        <writtenBook id="387" />
+      </readableBooks>
       <tnt id="46" />
+      <tripwireHook id="131" />
       <bowl id="281" />
       <cauldron id="380" />
       <brewingStand id="379" />
@@ -377,6 +406,7 @@
       <eyeOfEnder id="381" />
       <enderEye id="381" />
       <spawnerEgg id="383" />
+      <tripwire id="132" />
     </utility>
     <bucket>
       <emptyBucket id="325" />
@@ -458,13 +488,13 @@
       </mushroom>
       <sapling>
         <oakSapling id="6" damage="0" />
-        <pineSapling id="6" damage="1" />
+        <spruceSapling id="6" damage="1" />
         <birchSapling id="6" damage="2" />
         <jungleSapling id="6" damage="3" />
       </sapling>
       <leaves id="18">
         <oakLeaves id="18" damage="0" />
-        <pineLeaves id="18" damage="1" />
+        <spruceLeaves id="18" damage="1" />
         <birchLeaves id="18" damage="2" />
         <jungleLeaves id="18" damage="3" />
       </leaves>
@@ -482,6 +512,7 @@
       <reed id="83" />
       <melon id="103" />
       <pumpkin id="86" />
+      <cocoaPlant id="127" />
       <tallGrass id="31" />
       <deadShrub id="32" />
       <deadBush id="32" />

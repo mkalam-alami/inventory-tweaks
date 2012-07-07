@@ -223,11 +223,11 @@
         <ironBars id="101" />
         <stairs>
           <woodenStairs>
-	        <oakWoodStairs id="53" />
-	        <spruceWoodStairs id="134"" />
-	        <birchWoodStairs id="135" />
-	        <jungleWoodStairs id="136" />
-          </woodenStars>
+  	        <oakWoodStairs id="53" />
+  	        <spruceWoodStairs id="134" />
+  	        <birchWoodStairs id="135" />
+  	        <jungleWoodStairs id="136" />
+          </woodenStairs>
           <cobblestoneStairs id="67" />
           <stoneStairs id="109" />
           <brickStairs id="108" />

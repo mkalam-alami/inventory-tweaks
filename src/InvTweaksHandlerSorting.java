@@ -282,7 +282,14 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             timer = System.nanoTime()-timer;
             log.info("Sorting done in " + timer + "ns");
         }
-        
+
+        //// Put hold item down, just in case
+        if (getHoldStack() != null) {
+            int emptySlot = globalContainer.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
+            if (emptySlot != -1) {
+                globalContainer.putHoldItemDown(InvTweaksContainerSection.INVENTORY, emptySlot);
+            }
+        }
     }
 
     private void defaultSorting() throws TimeoutException {
@@ -315,7 +322,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             remaining.clear();
             remaining.addAll(nextRemaining);
         }
-        if (iterations == 50) {
+        if (iterations == 100) {
             log.warning("Sorting takes too long, aborting.");
         }
         
@@ -454,13 +461,15 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 // Items of same keyword orders can have different IDs,
                 // in the case of categories defined by a range of IDs
                 if (getItemID(iStack) == getItemID(jStack)) {
-                    if (getStackSize(iStack) == getStackSize(jStack)) {
-                        // Highest damage first for tools, else lowest damage.
-                        // No tool ordering for same ID (cannot swap directly)
-                        int damageDiff = getItemDamage(iStack) - getItemDamage(jStack);
-                        return (damageDiff < 0 && !isItemStackDamageable(iStack)
-                                || damageDiff > 0 && isItemStackDamageable(iStack));
-                    } else {
+                    if (getItemDamage(iStack) != getItemDamage(jStack)) {
+                        if (isItemStackDamageable(iStack)) { // Highest damage value first for tools
+                            return getItemDamage(iStack) < getItemDamage(jStack);
+                        }
+                        else {
+                            return getItemDamage(iStack) > getItemDamage(jStack);
+                        }
+                    }
+                    else {
                         return getStackSize(iStack) > getStackSize(jStack);
                     }
                 } else {

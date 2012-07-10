@@ -3,4 +3,52 @@
 Tweaking the item tree
 ===================
 
-TODO
+First steps
+--------------
+
+This file is where are stored the keywords you can use to create rules. It also specifies the item order in the categories. It can be modified as you want, giving you the opportunity to make custom keywords for your rules::
+
+   <myCategory>
+     <dirt id="3" />
+     <cake id="354" />
+   </myCategory>
+
+Now, if you create a rule using the "*myCategory*" keyword, it will match only dirt and cake.
+
+.. note::
+
+  * Here, you don't need to remove "dirt" and "cake" from their default categories.
+  * It's recommended to add any custom category to the top of the item tree, just below the ``<stuff>`` tag.
+  * Within a category, the order of the items determines which item is preffered. For instance, if you make a ``D1 sword`` rules, iron swords will be picked first, since it appears first in the item tree. Feel free to tweak that!
+
+Items defined by IDs and damage
+-------------------------------
+
+Some items are not only defined by IDs, but also by specific "damage values"::
+
+	 <sexyWools>
+     <magentaWool id="35" damage="2" />
+     <pinkWool id="35" damage="6" />
+     <purpleWool id="35" damage="10" />
+   </sexyWools>
+
+Categories defined by id ranges
+--------------------------
+
+You can also define categories by entering a range of IDs. Useful for mods::
+
+	 <camelOre>
+     <camelOreBlocks min="96" max="158" />
+     <camelOreItems min="358" max="443" />
+   </camelOre>
+		  
+Categories defined by id and damage ranges
+-------------------------------------
+
+Not sure why you'd need that, but it has been requested!
+
+::    
+
+     <fiveFirstWools id="35" dmin="0" dmax="4" />
+     
+

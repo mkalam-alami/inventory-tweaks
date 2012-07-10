@@ -51,6 +51,7 @@ Documentation
    basics.txt
    rules.txt
    itemtree.txt
+   faq.txt
 
 
 Contact

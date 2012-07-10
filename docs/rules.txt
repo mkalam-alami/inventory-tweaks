@@ -3,4 +3,69 @@
 Working with rules
 ==================
 
-TODO
+One of the most powerful features of this mod is its ability to customize the sorting feature. For instance, you can make sure that each time you sort your inventory, the best pickaxe available is put in your hotbar, but there is really a lot that can be done.
+
+First steps
+-----------
+
+Everything is done by editing a configuration file, which is in your Minecraft folder, at *config/InvTweaksRules.txt*. You can also open it by opening your inventory in-game, clicking the *"..."* button, then choosing "*Open the sorting rules file...*".
+
+In this file, each line you type is a new constraint you add for sorting items. Basically each rule you will add (such as ``D LOCKED`` which is here by default) is a new line with the format: ``XX YYYYYY`` where ``XX`` is the *target*, and ``YYYYYYY`` is the *keyword*. For instance, if you add a new line that says ``D5 pickaxe``, then go back to Minecraft and sort your inventory, it will put the best pickaxe available in the ``D`` row (your hotbar), ``5th`` column. Awesome, right?
+
+.. note::
+
+  * There's no need to restart Minecraft when you edit your configuration. Just save, switch to Minecraft, sort!
+  * If you didn't guess it, ``A`` is the top row of your inventory, while ``D`` is the bottom (i.e. hotbar). ``1`` and ``9`` are respectively the left and right columns.
+
+Available targets
+-----------------
+
+* **A particular slot**: ``D1 sword``
+* **A whole row**, to sort from left to right: ``D sword``
+* **A whole column**, to sort from bottom to top: ``1 sword``
+* **A rectangle**, defined by two slots: ``A5-C9 stuff``
+
+.. note::
+
+   Regarding rectangle targets, "A1-C3", "C3-A1", "A3-C1" and "C1-A3" don't behave exactly the same, choose the one that best suits your needs.
+
+Target modifiers
+~~~~~~~~~~~~~~~~
+
+Add them at the end of the targets (example: ``Ar``) to apply their effect.
+
+* **Reverse modifier**, to sort from right to left or top to bottom: ``r``
+* **Vertical sorting**, for rectangle rules: ``v``
+
+Available keywords
+-----------------
+
+All item names are supported, and even a whole lot of category keywords, such as ``edibleFood``, ``blocks``, ``items``, ``equipment``... The whole list is stored in the file *config/InvTweaksTree.txt* ; an online version is `available here <https://raw.github.com/mkalam-alami/inventory-tweaks/master/src/DefaultTree.dat>`_. Also, don't worry about syntax, for instance ``woodenSword`` works as well as ``WOODSWORD`` or ``Wooden Sword``.
+
+Here are the special keywords you can use:
+
+* **Locked slots**: ``LOCKED``. This make items from your selection not move during sorting (e.g. ``D LOCKED``). However, the LOCKED keyword is overriden by rules with finer targets (``D LOCKED`` is overriden by ``D1 torch`` or ``1 swords``).
+* **Frozen slots**: ``FROZEN``. Items in frozen slots never move during sorting or auto-refill (e.g. ``D8 FROZEN``).
+* **Items by IDs**: If an item doesn't have a keyword (such as mod items), but you know its ID, you can still select it thanks to ID rules (e.g. ``D1 489``, or ``D1 489-5`` for a specific damage value).
+
+Multiple configurations
+-----------------------
+
+It is possible to have several set of rules you can swap between. Start a new configuration block by adding a rule in a single word ending with a colon::
+
+   Mining:
+   D1 pickaxe
+   
+   Fighting:
+   D1 sword
+ 
+
+You can then swap between those configurations by either:
+
+* Holding **R** for 1 second
+* Pressing **1-9 + R**
+
+Here, **1 + R** would load the Mining config, **2 + R** the Fighting config, etc.
+
+
+**Next entry:** :ref:`itemtree`

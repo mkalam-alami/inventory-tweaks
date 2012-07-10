@@ -3,15 +3,6 @@
 Latest changes
 ==============
 
-**[07.??.2012] 1.42 (1.2.4)**
- * Update item tree to 1.3 snapshots
- * Make the item tree support damage ranges (dmin/dmax)
- * Mods compatibility:
-    * Add RedPower2's Ejector & Relay
-    * Add ColorBox chests
- * Fix freeze when sorting full inventory
-
-
 `[03.27.2012] 1.41 (1.2.4) <http://adf.ly/6idxE>`_
  * Updated mod & item tree to Minecraft 1.2.4
  * Improved armor auto-equipment

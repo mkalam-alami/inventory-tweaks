@@ -9,3 +9,7 @@ This folder stores the contents of the official website. Each commit made here w
 * Set your current directory to `docs/`
 * Run: **`sphinx-build . _build`**
 * Open `docs/_build/index.html`
+
+## Website update
+
+* Read the docs listens to the `master` branch, so changes from `develop` won't be visible until a release is made.

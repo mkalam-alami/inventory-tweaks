@@ -25,37 +25,220 @@ This mod needs `ModLoader <http://www.minecraftforum.net/topic/75440->`_ to work
 .. image:: _static/img/dl.png
   :align: left
 
-**Minecraft 1.2.4/1.2.5** : `Inventory Tweaks 1.41b-1.2.5 <http://adf.ly/6idxE>`_
+`Inventory Tweaks 1.41b <http://adf.ly/6idxE>`_ for **Minecraft 1.2.4/1.2.5** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.41b-1.2.4.zip>`_)
 
 .. image:: _static/img/dl.png
   :align: left
 
-**Minecraft 1.2.3** : `Inventory Tweaks 1.40b-1.2.3 <http://adf.ly/6gwD5>`_
+`Inventory Tweaks 1.40b-1.2.3 <http://adf.ly/6gwD5>`_ for **Minecraft 1.2.3** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.40b-1.2.3.zip>`_)
 
 .. image:: _static/img/dl.png
   :align: left
   
-**Minecraft 1.1** : `Inventory Tweaks 1.40-1.1 <http://modding.kalam-alami.net/download/1.40-1.1>`_
+`Inventory Tweaks 1.40-1.1 <http://modding.kalam-alami.net/download/1.40-1.1>`_ for **Minecraft 1.2.1** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.40-1.1.zip>`_)
 
-.. toctree::
-   :maxdepth: 1
-   
-   changelog.txt
 
-Documentation
--------------------------
 
-.. toctree::
-   :maxdepth: 3
-   
-   basics.txt
-   rules.txt
-   itemtree.txt
-   faq.txt
-
+* `Older versions <http://modding.kalam-alami.net/dl/old>`_
+* `Latest changes <changelog.html>`_
 
 Contact
 -------------------------
 
 * `Get support on Minecraft Forums <www.minecraftforum.net/topic/323444-166spsmp-inventory-tweaks-106-june-19/>`_
-* `Join the project on Github <https://github.com/mkalam-alami/inventory-tweaks/wiki>`_ (yep, the mod's Open Source!)
+* `Join the project on Github <https://github.com/mkalam-alami/inventory-tweaks/wiki>`_ (yep, it's Open Source!)
+
+|
+|
+
+
+Getting started
+===============
+
+Setup
+-----
+
+Once you have `ModLoader <http://www.minecraftforum.net/topic/75440->`_, this mod is installed by simply moving the ZIP to the **mods** folder of Minecraft.
+
+Basic use
+---------
+
+Just start playing Minecraft, you can already use most features of the mod. Notice the "..." button that just appeared on the top-right corner of your inventory? This leads to the mod settings screen, if it's there it means that the mod is installed correctly.
+
+Inventory sorting
+~~~~~~~
+
+Trigger the sorting in your inventory by using the **middle click**, or by pressing **R** (by default), at any time. If you want to change the shortcut, check the *Controls* menu in your options. 
+
+Chests sorting
+~~~~~~~
+
+When you open a chest, you will see three additional buttons on the higher part of the screen. They allow to sort items in different ways ; but you can also use the middle click if you prefer (click several times to switch the sorting method).
+
+Auto-refill
+~~~~~~~
+
+If you eat an item, break a tool or empty a stack by placing blocks, the mod will automatically fetch if possible a similar item from your inventory.
+
+.. note::
+
+   * Click on the "..." button from your inventory to explore the features (yay, **inventory shortcuts**!) and customize the settings of the mod.
+   * You don't even have to be in your inventory to use the **R** shortcut.
+
+|
+|
+
+
+Working with rules
+==================
+
+One of the most powerful features of this mod is its ability to customize the sorting feature. For instance, you can make sure that each time you sort your inventory, the best pickaxe available is put in your hotbar, but there is really a lot that can be done.
+
+First steps
+-----------
+
+Everything is done by editing a configuration file, which is in your Minecraft folder, at *config/InvTweaksRules.txt*. You can also open it by opening your inventory in-game, clicking the *"..."* button, then choosing "*Open the sorting rules file...*".
+
+In this file, each line you type is a new constraint you add for sorting items. Basically each rule you will add (such as ``D LOCKED`` which is here by default) is a new line with the format: ``XX YYYYYY`` where ``XX`` is the *target*, and ``YYYYYYY`` is the *keyword*. For instance, if you add a new line that says ``D5 pickaxe``, then go back to Minecraft and sort your inventory, it will put the best pickaxe available in the ``D`` row (your hotbar), ``5th`` column. Awesome, right?
+
+.. note::
+
+  * There's no need to restart Minecraft when you edit your configuration. Just save, switch to Minecraft, sort!
+  * If you didn't guess it, ``A`` is the top row of your inventory, while ``D`` is the bottom (i.e. hotbar). ``1`` and ``9`` are respectively the left and right columns.
+
+Available targets
+-----------------
+
+* **A particular slot**: ``D1 sword``
+* **A whole row**, to sort from left to right: ``D sword``
+* **A whole column**, to sort from bottom to top: ``1 sword``
+* **A rectangle**, defined by two slots: ``A5-C9 stuff``
+
+.. note::
+
+   Regarding rectangle targets, "A1-C3", "C3-A1", "A3-C1" and "C1-A3" don't behave exactly the same, choose the one that best suits your needs.
+
+Target modifiers
+~~~~~~~~~~~~~~~~
+
+Add them at the end of the targets (example: ``Ar``) to apply their effect.
+
+* **Reverse modifier**, to sort from right to left or top to bottom: ``r``
+* **Vertical sorting**, for rectangle rules: ``v``
+
+Available keywords
+-----------------
+
+All item names are supported, and even a whole lot of category keywords, such as ``edibleFood``, ``blocks``, ``items``, ``equipment``... The whole list is stored in the file *config/InvTweaksTree.txt* ; an online version is `available here <https://raw.github.com/mkalam-alami/inventory-tweaks/master/src/DefaultTree.dat>`_. Also, don't worry about syntax, for instance ``woodenSword`` works as well as ``WOODSWORD`` or ``Wooden Sword``.
+
+Here are the special keywords you can use:
+
+* **Locked slots**: ``LOCKED``. This make items from your selection not move during sorting (e.g. ``D LOCKED``). However, the LOCKED keyword is overriden by rules with finer targets (``D LOCKED`` is overriden by ``D1 torch`` or ``1 swords``).
+* **Frozen slots**: ``FROZEN``. Items in frozen slots never move during sorting or auto-refill (e.g. ``D8 FROZEN``).
+* **Items by IDs**: If an item doesn't have a keyword (such as mod items), but you know its ID, you can still select it thanks to ID rules (e.g. ``D1 489``, or ``D1 489-5`` for a specific damage value).
+
+Multiple configurations
+-----------------------
+
+It is possible to have several set of rules you can swap between. Start a new configuration block by adding a rule in a single word ending with a colon::
+
+   Mining:
+   D1 pickaxe
+   
+   Fighting:
+   D1 sword
+ 
+
+You can then swap between those configurations by either:
+
+* Holding **R** for 1 second
+* Pressing **1-9 + R**
+
+Here, **1 + R** would load the Mining config, **2 + R** the Fighting config, etc.
+
+
+Example
+-----------------------
+
+Here is the config the mod author uses::
+
+	Default:
+
+	D1 pickaxe
+	D2 axe
+	D3 shovel
+	D4 sword
+	D5 edibleFood
+	D9 torch
+
+	A1-C5 stuff
+	A9-C6 blocks
+
+|
+|
+
+
+Tweaking the item tree
+===================
+
+First steps
+--------------
+
+This file is where are stored the keywords you can use to create rules. It also specifies the item order in the categories. It can be modified as you want, giving you the opportunity to make custom keywords for your rules::
+
+   <myCategory>
+     <dirt id="3" />
+     <cake id="354" />
+   </myCategory>
+
+Now, if you create a rule using the "*myCategory*" keyword, it will match only dirt and cake.
+
+.. note::
+
+  * Here, you don't need to remove "dirt" and "cake" from their default categories.
+  * It's recommended to add any custom category to the top of the item tree, just below the ``<stuff>`` tag.
+  * Within a category, the order of the items determines which item is preffered. For instance, if you make a ``D1 sword`` rules, iron swords will be picked first, since it appears first in the item tree. Feel free to tweak that!
+
+Items defined by IDs and damage
+-------------------------------
+
+Some items are not only defined by IDs, but also by specific "damage values"::
+
+	 <sexyWools>
+     <magentaWool id="35" damage="2" />
+     <pinkWool id="35" damage="6" />
+     <purpleWool id="35" damage="10" />
+   </sexyWools>
+
+Categories defined by id ranges
+--------------------------
+
+You can also define categories by entering a range of IDs. Useful for mods::
+
+	 <camelOre>
+     <camelOreBlocks min="96" max="158" />
+     <camelOreItems min="358" max="443" />
+   </camelOre>
+
+|
+|
+
+
+F.A.Q.
+======
+
+If you're having troubles making the mod work, or can't manage how to customize things as you want, tell your problem on the `Minecraft Forum topic <www.minecraftforum.net/topic/323444-15-01-inventory-tweaks-v10-beta-2>`_, other users and I will be glad to help!
+
+* **I can't sort items from my mods like I want!**
+
+Currently, you have two solutions, the first being to make rules according to the item ID (e.g. ``D1 489`` or ``D1 489-5`` for a specific damage value).
+
+Second solution, edit the *InvTweaksTree.txt* file from the config folder, to manually add the items you want to sort. Each item is defined by its ID, and the easiest way to find out which item is which ID is to use something like the `Too Many Items <http://www.minecraftforum.net/topic/140684->`_ mod. You can gain time by defining item categories by ID ranges, look for that in the advanced documentation.
+  
+* **The last update broke my InvTweaksTree.txt file!**
+
+Don't worry, you'll find a backup in your config folder. It's just that InvTweaks replaced the tree with a new version, up-to-date with the latest Minecraft items.
+  
+* **The config files don't appear!**
+
+You're probably running a platform that is not 100% supported by Java. In any case, what you can do is extract manually these files from the Zip: *DefaultConfig.dat* should go to **{MinecraftDir}/config/InvTweaksConfig.txt**, and *DefaultTree.dat* to **{MinecraftDir}/config/InvTweaksTree.txt**.

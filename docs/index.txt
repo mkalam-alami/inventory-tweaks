@@ -171,8 +171,8 @@ Here is the config the mod author uses::
 	D5 edibleFood
 	D9 torch
 
-	A1-C5 stuff
-	A9-C6 blocks
+	A1-C5v stuff
+	A9-C6v blocks
 
 |
 |

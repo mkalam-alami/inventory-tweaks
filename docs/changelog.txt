@@ -3,7 +3,7 @@
 Latest changes
 ==============
 
-**[07.??.2012] 1.42 (1.2.4)**
+**[07.??.2012] 1.42 (1.2.5)**
  * Update item tree to 1.3 snapshots
  * Make the item tree support damage ranges (dmin/dmax)
  * Mods compatibility:
@@ -67,7 +67,7 @@ Latest changes
  * Fixed Ctrl + click to craft one item directly to the inventory
  * Fixed Up + Click for brewing stands not working with potions
  * Removed all custom Shift + Click behavior (it now acts as default Minecraft does)
- * Added sorting support for Red Power 2 and IC² containers
+ * Added sorting support for Red Power 2 and ICï¿½ containers
  * Rewrote sorting on pickup feature (...still not SMP compatible)
  
 *[01.14.2012] 1.36 (1.1)*

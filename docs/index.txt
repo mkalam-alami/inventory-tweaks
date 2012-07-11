@@ -219,8 +219,16 @@ You can also define categories by entering a range of IDs. Useful for mods::
      <camelOreBlocks min="96" max="158" />
      <camelOreItems min="358" max="443" />
    </camelOre>
+   
+Categories defined by id and damage ranges
+--------------------------------------
 
-|
+Not sure why you'd need that, but it has been requested!
+
+::
+
+     <fiveFirstWools id="35" dmin="0" dmax="4" />
+
 |
 
 

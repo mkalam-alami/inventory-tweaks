@@ -63,7 +63,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Called by ModLoader for each tick while the player is in a menu.
 	 */
-	public boolean onTickInGUI(float clock, Minecraft minecraft, vp guiScreen) {
+	public boolean onTickInGUI(float clock, Minecraft minecraft, akm guiScreen) {
 		if (guiScreen != null) {
 			instance.onTickInGUI(guiScreen);
 		}

@@ -38,7 +38,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private static String labelAutoRefill;
     private static String labelMoreOptions;
     
-    public InvTweaksGuiSettings(Minecraft mc, vp parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiSettings(Minecraft mc, akm parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
         
         labelMiddleClick = InvTweaksLocalization.get("invtweaks.settings.middleclick");
@@ -59,9 +59,9 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new abp(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
-        controlList.add(new abp(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
-        controlList.add(new abp(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
+        controlList.add(new ye(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
+        controlList.add(new ye(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
+        controlList.add(new ye(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
 
         // Create settings buttons
 
@@ -107,9 +107,9 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
             	if (obf.isGuiButton(o)) {
-	            	abp button = (abp) o;
-	                if (obf.getId(button) >= ID_EDITRULES && obf.getId(button) <= ID_HELP) {
-	                    obf.setEnabled(button, false);
+            	    ye guiButton = (ye) o;
+	                if (obf.getId(guiButton) >= ID_EDITRULES && obf.getId(guiButton) <= ID_HELP) {
+	                    obf.setEnabled(guiButton, false);
 	                }
             	}
             }
@@ -120,7 +120,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
     }
 
-    protected void a(abp guibutton) { /* actionPerformed */
+    protected void a(ye guibutton) { /* actionPerformed */
     	super.a(guibutton);
     
         switch (obf.getId(guibutton)) {

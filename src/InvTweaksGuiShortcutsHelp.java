@@ -6,16 +6,16 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
 
-public class InvTweaksGuiShortcutsHelp extends vp /* GuiScreen */ {
+public class InvTweaksGuiShortcutsHelp extends akm /* GuiScreen */ {
     
     private final static int ID_DONE = 0;
 
     private InvTweaksObfuscation obf;
-    private vp parentScreen;
+    private akm parentScreen;
     private InvTweaksConfig config;
     
     public InvTweaksGuiShortcutsHelp(Minecraft mc, 
-    		vp parentScreen, InvTweaksConfig config) {
+            akm parentScreen, InvTweaksConfig config) {
         this.obf = new InvTweaksObfuscation(mc);
         this.parentScreen = parentScreen;
         this.config = config;
@@ -23,8 +23,8 @@ public class InvTweaksGuiShortcutsHelp extends vp /* GuiScreen */ {
 
     public void a() { /* initGui */
         // Create Done button
-        List<abp> controlList = new LinkedList<abp>(); /* GuiButton */
-        controlList.add(new abp(ID_DONE, 
+        List<ye> controlList = new LinkedList<ye>(); /* GuiButton */
+        controlList.add(new ye(ID_DONE, 
                 obf.getWidth(this) / 2 - 100, 
                 obf.getHeight(this) / 6 + 168, "Done"));
         obf.setControlList(this, controlList);
@@ -34,7 +34,7 @@ public class InvTweaksGuiShortcutsHelp extends vp /* GuiScreen */ {
         
         // Note: 0x0000EEFF = blue color (currently unused)
         
-        k(); // Gui.drawDefaultBackground
+        v_(); // Gui.drawDefaultBackground
         a(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.help.shortcuts.title"), obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         String clickLabel =  InvTweaksLocalization.get("invtweaks.help.shortcuts.click");
         
@@ -81,7 +81,7 @@ public class InvTweaksGuiShortcutsHelp extends vp /* GuiScreen */ {
         super.a(i, j, f); // drawScreen
     }
 
-    protected void a(abp guibutton) { /* actionPerformed */
+    protected void a(ye guibutton) { /* actionPerformed */
 
         switch (obf.getId(guibutton)) {
 

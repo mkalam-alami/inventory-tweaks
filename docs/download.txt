@@ -1,0 +1,15 @@
+.. image:: _static/img/dl.png
+  :align: left
+
+`Inventory Tweaks 1.41b <http://adf.ly/6idxE>`_ for **Minecraft 1.2.4/1.2.5** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.41b-1.2.4.zip>`_)
+
+.. image:: _static/img/dl.png
+  :align: left
+
+`Inventory Tweaks 1.40b-1.2.3 <http://adf.ly/6gwD5>`_ for **Minecraft 1.2.3** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.40b-1.2.3.zip>`_)
+
+.. image:: _static/img/dl.png
+  :align: left
+  
+`Inventory Tweaks 1.40-1.1 <http://modding.kalam-alami.net/download/1.40-1.1>`_ for **Minecraft 1.2.1** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.40-1.1.zip>`_)
+

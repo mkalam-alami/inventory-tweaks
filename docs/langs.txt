@@ -1,0 +1,13 @@
+.. raw:: html
+
+  <div style="padding-top: 10px; margin-bottom: -10px">
+    <a href="index.html">
+      <img src="_static/img/flag/us.png" />
+      English
+    </a>
+    &nbsp;
+    <a href="index_fr.html">
+      <img src="_static/img/flag/fr.png" />
+      Français
+    </a>
+  </div>

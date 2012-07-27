@@ -40,8 +40,8 @@ public class InvTweaks extends InvTweaksObfuscation {
      * Maintained by Minecraft so that its keycode is actually
      * what has been configured by the player (not always the R key).
      */
-    public static final net.minecraft.client.g SORT_KEY_BINDING = 
-        new net.minecraft.client.g("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
+    public static final net.minecraft.client.i SORT_KEY_BINDING = 
+        new net.minecraft.client.i("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
     
     
     private static InvTweaks instance;
@@ -65,7 +65,7 @@ public class InvTweaks extends InvTweaksObfuscation {
      * sorting on pick up...)
      */
     private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
-    private qr[] hotbarClone = new qr[InvTweaksConst.INVENTORY_HOTBAR_SIZE];
+    private qs[] hotbarClone = new qs[InvTweaksConst.INVENTORY_HOTBAR_SIZE];
     private boolean mouseWasInWindow = true, mouseWasDown = false;;
     
     /**
@@ -120,7 +120,7 @@ public class InvTweaks extends InvTweaksObfuscation {
      * Handles the GUI additions and the middle clicking.
      * @param guiScreen
      */
-    public void onTickInGUI(akm guiScreen) {
+    public void onTickInGUI(anm guiScreen) {
         synchronized (this) {
             handleMiddleClick(guiScreen); // Called before the rest to be able to trigger config reload 
             if (!onTick()) {
@@ -147,7 +147,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             }
             
             // Check current GUI
-            akm guiScreen = getCurrentScreen();
+            anm guiScreen = getCurrentScreen();
             if (guiScreen == null || (isValidChest(guiScreen) || isValidInventory(guiScreen))) {
                 // Sorting!
                 handleSorting(guiScreen);
@@ -187,7 +187,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     }
                 }
                 for (int i = 0; i < InvTweaksConst.INVENTORY_HOTBAR_SIZE; i++) {
-                    qr currentHotbarStack = containerMgr.getItemStack(i + 27);
+                    qs currentHotbarStack = containerMgr.getItemStack(i + 27);
                     // Don't move already started stacks
                     if (currentHotbarStack != null && getAnimationsToGo(currentHotbarStack) == 5 && hotbarClone[i] == null) {
                         currentSlot = i + 27;
@@ -202,7 +202,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 // Find preffered slots
                 List<Integer> prefferedPositions = new LinkedList<Integer>();
                 InvTweaksItemTree tree = config.getTree();
-                qr stack = containerMgr.getItemStack(currentSlot);
+                qs stack = containerMgr.getItemStack(currentSlot);
                 List<InvTweaksItemTreeItem> items = tree.getItems(getItemID(stack),
                         getItemDamage(stack));
                 for (InvTweaksConfigSortingRule rule : config.getRules()) {
@@ -309,7 +309,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
         
         // Clone the hotbar to be able to monitor changes on it
-        akm currentScreen = getCurrentScreen();
+        anm currentScreen = getCurrentScreen();
         if (currentScreen == null || isGuiInventory(currentScreen)) {
             cloneHotbar();
         }
@@ -323,7 +323,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void handleConfigSwitch() {
         
         InvTweaksConfig config = cfgManager.getConfig();
-        akm currentScreen = getCurrentScreen();
+        anm currentScreen = getCurrentScreen();
 
         // Switch between configurations (shortcut)
         InvTweaksShortcutMapping switchMapping = cfgManager.getShortcutsHandler()
@@ -377,11 +377,11 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     }
 
-    private void handleSorting(akm guiScreen) {
+    private void handleSorting(anm guiScreen) {
     	
-        qr selectedItem = null;
+        qs selectedItem = null;
         int focusedSlot = getFocusedSlot();
-        qr[] mainInventory = getMainInventory();
+        qs[] mainInventory = getMainInventory();
         if (focusedSlot < mainInventory.length && focusedSlot >= 0) {
             selectedItem = mainInventory[focusedSlot];
         }
@@ -409,7 +409,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private void handleAutoRefill() {
     
-        qr currentStack = getFocusedStack();
+        qs currentStack = getFocusedStack();
         int currentStackId = (currentStack == null) ? 0 : getItemID(currentStack);
         int currentStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
@@ -438,7 +438,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     
     }
 
-    private void handleMiddleClick(akm guiScreen) {
+    private void handleMiddleClick(anm guiScreen) {
     
         if (Mouse.isButtonDown(2)) {
     
@@ -455,7 +455,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     chestAlgorithmButtonDown = true;
 
                     InvTweaksContainerManager containerMgr = new InvTweaksContainerManager(mc);
-                    oz slotAtMousePosition = containerMgr.getSlotAtMousePosition();
+                    pa slotAtMousePosition = containerMgr.getSlotAtMousePosition();
                     InvTweaksContainerSection target = null;
                     if (slotAtMousePosition != null) {
                     	target = containerMgr.getSlotSection(getSlotNumber(slotAtMousePosition));
@@ -465,7 +465,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     
                         // Check if the middle click target the chest or the inventory
                         // (copied GuiContainer.getSlotAtPosition algorithm)
-                    	alg guiContainer = asGuiContainer(guiScreen);
+                    	aog guiContainer = asGuiContainer(guiScreen);
                         
                         if (InvTweaksContainerSection.CHEST.equals(target)) {
     
@@ -520,7 +520,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
     }
 
-    private void handleGUILayout(akm guiScreen) {
+    private void handleGUILayout(anm guiScreen) {
 
         InvTweaksConfig config = cfgManager.getConfig();
         boolean isValidChest = isValidChest(guiScreen);
@@ -534,7 +534,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             List<Object> controlList = getControlList(guiScreen);
             for (Object o : controlList) {
                 if (isGuiButton(o)) {
-                    ye button = asGuiButton(o);
+                    amg button = asGuiButton(o);
                     if (getId(button) == InvTweaksConst.JIMEOWAN_ID) {
                         customButtonsAdded = true;
                         break;
@@ -559,7 +559,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     // Reset sorting algorithm selector
                     chestAlgorithmClickTimestamp = 0;
 
-                    alg guiContainer = asGuiContainer(guiScreen);
+                    aog guiContainer = asGuiContainer(guiScreen);
                     int id = InvTweaksConst.JIMEOWAN_ID,
                         x = getWidth(guiContainer) / 2 + getXSize(guiContainer) / 2 - 17,
                         y = (getHeight(guiContainer) - getYSize(guiContainer)) / 2 + 5;
@@ -639,7 +639,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 		}
 	}
 
-	private void handleShortcuts(akm guiScreen) {
+	private void handleShortcuts(anm guiScreen) {
         
         // Check open GUI
         if (!(isValidChest(guiScreen) || isStandardInventory(guiScreen))) {
@@ -665,7 +665,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         
     }
 
-    private int getContainerRowSize(alg guiContainer) {
+    private int getContainerRowSize(aog guiContainer) {
         if (isGuiChest(guiContainer)) {
             return InvTweaksConst.CHEST_ROW_SIZE;
         }
@@ -725,7 +725,7 @@ public class InvTweaks extends InvTweaksObfuscation {
      * (especially needed by the "on pickup" features).
      */
     private void cloneHotbar() {
-        qr[] mainInventory = getMainInventory();
+        qs[] mainInventory = getMainInventory();
         for (int i = 0; i < 9; i++) {
             if (mainInventory[i] != null) {
                 hotbarClone[i] = copy(mainInventory[i]);

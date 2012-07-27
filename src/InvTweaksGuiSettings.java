@@ -38,7 +38,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private static String labelAutoRefill;
     private static String labelMoreOptions;
     
-    public InvTweaksGuiSettings(Minecraft mc, akm parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiSettings(Minecraft mc, anm parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
         
         labelMiddleClick = InvTweaksLocalization.get("invtweaks.settings.middleclick");
@@ -49,8 +49,8 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         
     }
 
-    public void c() { /* initGui */
-    	super.c();
+    public void w_() { /* initGui */
+    	super.w_();
 
         List<Object> controlList = obf.getControlList(this);
         Point p = new Point();
@@ -59,9 +59,9 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new ye(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
-        controlList.add(new ye(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
-        controlList.add(new ye(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
+        controlList.add(new amg(ID_EDITRULES, p.getX() + 55, obf.getHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
+        controlList.add(new amg(ID_EDITTREE, p.getX() + 55, obf.getHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
+        controlList.add(new amg(ID_HELP, p.getX() + 55, obf.getHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
 
         // Create settings buttons
 
@@ -107,7 +107,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
             	if (obf.isGuiButton(o)) {
-            	    ye guiButton = (ye) o;
+            	    amg guiButton = (amg) o;
 	                if (obf.getId(guiButton) >= ID_EDITRULES && obf.getId(guiButton) <= ID_HELP) {
 	                    obf.setEnabled(guiButton, false);
 	                }
@@ -120,7 +120,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
     }
 
-    protected void a(ye guibutton) { /* actionPerformed */
+    protected void a(amg guibutton) { /* actionPerformed */
     	super.a(guibutton);
     
         switch (obf.getId(guibutton)) {

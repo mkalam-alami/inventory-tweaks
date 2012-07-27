@@ -47,7 +47,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Called by ModLoader each time the sorting key is pressed.
 	 */
-	public void keyboardEvent(afu keyBinding) {
+	public void keyboardEvent(net.minecraft.client.i keyBinding) {
 		instance.onSortingKeyPressed();
 	}
 
@@ -63,7 +63,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Called by ModLoader for each tick while the player is in a menu.
 	 */
-	public boolean onTickInGUI(float clock, Minecraft minecraft, akm guiScreen) {
+	public boolean onTickInGUI(float clock, Minecraft minecraft, anm guiScreen) {
 		if (guiScreen != null) {
 			instance.onTickInGUI(guiScreen);
 		}
@@ -73,7 +73,7 @@ public class mod_InvTweaks extends BaseMod {
 	/**
 	 * Called by ModLoader when an item has been picked up.
 	 */
-	public void onItemPickup(yw player, aan item) {
+	public void onItemPickup(arf player, qs item) {
 		instance.onItemPickup();
 	}
 

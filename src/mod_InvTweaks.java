@@ -2,6 +2,8 @@ import invtweaks.InvTweaksConst;
 
 import java.util.logging.Logger;
 
+import org.lwjgl.input.Keyboard;
+
 import net.minecraft.client.Minecraft;
 
 /**
@@ -15,28 +17,29 @@ import net.minecraft.client.Minecraft;
  * License: MIT
  * 
  */
-public class mod_InvTweaks extends BaseMod {
+public class mod_InvTweaks extends BaseMod_InvTweaks {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
 
 	private InvTweaks instance;
+	
+    private InvTweaksObfuscation obf;
 
 	@Override
 	public void load() {
+		Minecraft mc = ModLoader_InvTweaks.getMinecraftInstance();
+		obf = new InvTweaksObfuscation(mc);
 		
-		Minecraft mc = ModLoader.getMinecraftInstance();
-
 		// Register key (listen only for key down events)
-		ModLoader.registerKey(this, InvTweaks.SORT_KEY_BINDING, false);
+		ModLoader_InvTweaks.registerKey(this, InvTweaks.SORT_KEY_BINDING, false);
 
 		// Register in game hooks
-		ModLoader.setInGameHook(this, true, true);
-		ModLoader.setInGUIHook(this, true, false);
+		ModLoader_InvTweaks.setInGameHook(this, true, true);
+		ModLoader_InvTweaks.setInGUIHook(this, true, false);
 
 		// Instantiate mod core
 		instance = new InvTweaks(mc);
-
 	}
 
 	@Override
@@ -45,17 +48,11 @@ public class mod_InvTweaks extends BaseMod {
 	}
 
 	/**
-	 * Called by ModLoader each time the sorting key is pressed.
-	 */
-	public void keyboardEvent(net.minecraft.client.i keyBinding) {
-		instance.onSortingKeyPressed();
-	}
-
-	/**
 	 * Called by ModLoader for each tick during the game (except when a menu is
 	 * open).
 	 */
 	public boolean onTickInGame(float clock, Minecraft minecraft) {
+	    onTick();
 		instance.onTickInGame();
 		return true;
 	}
@@ -64,16 +61,23 @@ public class mod_InvTweaks extends BaseMod {
 	 * Called by ModLoader for each tick while the player is in a menu.
 	 */
 	public boolean onTickInGUI(float clock, Minecraft minecraft, anm guiScreen) {
+        onTick();
 		if (guiScreen != null) {
 			instance.onTickInGUI(guiScreen);
 		}
 		return true;
 	}
 
-	/**
+	private void onTick() {
+        if (Keyboard.isKeyDown(obf.getKeyCode(InvTweaks.SORT_KEY_BINDING))) {
+            instance.onSortingKeyPressed();
+        }
+    }
+
+    /**
 	 * Called by ModLoader when an item has been picked up.
 	 */
-	public void onItemPickup(arf player, qs item) {
+	public void onItemPickup(np player, qs itemStack) {
 		instance.onItemPickup();
 	}
 

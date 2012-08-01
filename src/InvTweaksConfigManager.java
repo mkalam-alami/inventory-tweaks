@@ -142,6 +142,7 @@ public class InvTweaksConfigManager {
         // Load
 
         String error = null;
+        Exception errorException = null;
 
         try {
             
@@ -162,11 +163,12 @@ public class InvTweaksConfigManager {
         } catch (FileNotFoundException e) {
             error = "Config file not found";
         } catch (Exception e) {
-            error = "Error while loading config: " + e.getMessage();
+            error = "Error while loading config";
+            errorException = e;
         }
 
         if (error != null) {
-            InvTweaks.logInGameStatic(error);
+            InvTweaks.logInGameErrorStatic(error, errorException);
             log.severe(error);
             config = null;
             return false;

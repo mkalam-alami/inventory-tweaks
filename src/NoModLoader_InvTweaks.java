@@ -17,7 +17,7 @@ import net.minecraft.client.Minecraft;
  * License: MIT
  * 
  */
-public class mod_InvTweaks extends BaseMod_InvTweaks {
+public class NoModLoader_InvTweaks extends BaseMod_InvTweaks {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");

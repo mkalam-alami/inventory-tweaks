@@ -27,7 +27,7 @@ public abstract class ModLoader_InvTweaks {
             instance.t = new EntityRendererProxy_InvTweaks(instance);
             
             // Hard-coded mod loading
-            mod = new mod_InvTweaks();
+            mod = new NoModLoader_InvTweaks();
             mod.load();
         }
     }

@@ -59,7 +59,7 @@ public class InvTweaksContainerSectionManager {
         containerMgr.click(section, index, rightClick);
     }
 
-    public List<pa> getSlots() {
+    public List<pq> getSlots() {
         return containerMgr.getSlots(section);
     }
 
@@ -75,7 +75,7 @@ public class InvTweaksContainerSectionManager {
         return containerMgr.isSlotEmpty(section, slot);
     }
 
-    public pa getSlot(int index) {
+    public pq getSlot(int index) {
         return containerMgr.getSlot(section, index);
     }
     
@@ -92,11 +92,11 @@ public class InvTweaksContainerSectionManager {
         return containerMgr.getSlotSection(slotNumber) == section;
     }
     
-    public qs getItemStack(int index) throws NullPointerException, IndexOutOfBoundsException {
+    public ri getItemStack(int index) throws NullPointerException, IndexOutOfBoundsException {
         return containerMgr.getItemStack(section, index);
     }
 
-    public oe getContainer() {
+    public ou getContainer() {
         return containerMgr.getContainer();
     }
     

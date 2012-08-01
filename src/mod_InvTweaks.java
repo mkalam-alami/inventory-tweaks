@@ -60,7 +60,7 @@ public class mod_InvTweaks extends BaseMod_InvTweaks {
 	/**
 	 * Called by ModLoader for each tick while the player is in a menu.
 	 */
-	public boolean onTickInGUI(float clock, Minecraft minecraft, anm guiScreen) {
+	public boolean onTickInGUI(float clock, Minecraft minecraft, apm guiScreen) {
         onTick();
 		if (guiScreen != null) {
 			instance.onTickInGUI(guiScreen);
@@ -77,7 +77,7 @@ public class mod_InvTweaks extends BaseMod_InvTweaks {
     /**
 	 * Called by ModLoader when an item has been picked up.
 	 */
-	public void onItemPickup(np player, qs itemStack) {
+	public void onItemPickup(of player, ri itemStack) {
 		instance.onItemPickup();
 	}
 

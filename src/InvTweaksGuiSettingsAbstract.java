@@ -12,7 +12,7 @@ import org.lwjgl.util.Point;
  * @author Jimeo Wan
  * 
  */
-public abstract class InvTweaksGuiSettingsAbstract extends anm /* GuiScreen */ {
+public abstract class InvTweaksGuiSettingsAbstract extends apm /* GuiScreen */ {
 
 	protected static final Logger log = Logger.getLogger("InvTweaks");
     
@@ -23,12 +23,12 @@ public abstract class InvTweaksGuiSettingsAbstract extends anm /* GuiScreen */ {
     protected Minecraft mc;
     protected InvTweaksObfuscation obf;
     protected InvTweaksConfig config;
-    protected anm parentScreen;
+    protected apm parentScreen;
 
     protected static String LABEL_DONE;
     protected final static int ID_DONE = 200;
 
-    public InvTweaksGuiSettingsAbstract(Minecraft mc, anm parentScreen,
+    public InvTweaksGuiSettingsAbstract(Minecraft mc, apm parentScreen,
             InvTweaksConfig config) {
     	
     	LABEL_DONE = InvTweaksLocalization.get("invtweaks.settings.exit");
@@ -47,7 +47,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends anm /* GuiScreen */ {
         List<Object> controlList = obf.getControlList(this);
         Point p = new Point();
         moveToButtonCoords(1, p);
-        controlList.add(new amg(ID_DONE, p.getX() + 55, obf.getHeight(this) / 6 + 168, LABEL_DONE)); // GuiButton
+        controlList.add(new aog(ID_DONE, p.getX() + 55, obf.getHeight(this) / 6 + 168, LABEL_DONE)); // GuiButton
 
         // Save control list
         obf.setControlList(this, controlList);
@@ -60,7 +60,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends anm /* GuiScreen */ {
         super.a(i, j, f); // drawScreen
     }
 
-    protected void a(amg guibutton) { /* actionPerformed */
+    protected void a(aog guibutton) { /* actionPerformed */
         if (obf.getId(guibutton) == ID_DONE) {
             obf.displayGuiScreen(parentScreen);
         }
@@ -71,7 +71,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends anm /* GuiScreen */ {
         p.setY(obf.getHeight(this) / 6 + (buttonOrder / 2) * 24);
     }
 
-    protected void toggleBooleanButton(amg guibutton, String property, String label) {
+    protected void toggleBooleanButton(aog guibutton, String property, String label) {
         Boolean enabled = !new Boolean(config.getProperty(property));
         config.setProperty(property, enabled.toString());
         obf.setDisplayString(guibutton, computeBooleanButtonLabel(property, label));

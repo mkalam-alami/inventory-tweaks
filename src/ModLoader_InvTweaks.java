@@ -11,7 +11,7 @@ public abstract class ModLoader_InvTweaks {
 
     private static Minecraft instance;
 
-    private static final Map<net.minecraft.client.i, boolean[]> keyMap = new HashMap<net.minecraft.client.i, boolean[]>();
+    private static final Map<ane, boolean[]> keyMap = new HashMap<ane, boolean[]>();
 
     private static long clock = 0L;
 
@@ -20,7 +20,7 @@ public abstract class ModLoader_InvTweaks {
     /** Mod instanciation */
     private static BaseMod_InvTweaks mod;
 
-    public static void init() {
+    public static void init() throws Exception {
         if (instance == null) {
             instance = getMinecraftInstance();
             obf = new InvTweaksObfuscation(instance);
@@ -58,21 +58,21 @@ public abstract class ModLoader_InvTweaks {
         return instance;
     }
 
-    public static void registerKey(BaseMod_InvTweaks mod, net.minecraft.client.i sortKeyBinding, boolean repeat) {
+    public static void registerKey(BaseMod_InvTweaks mod, ane sortKeyBinding, boolean repeat) {
         keyMap.put(sortKeyBinding, new boolean[] { repeat, false });
         
         // Add binding to key settings
-        net.minecraft.client.i[] registeredBindings = obf.getRegisteredBindings();
+        ane[] registeredBindings = obf.getRegisteredBindings();
         boolean alreadyRegistered = false;
-        for (net.minecraft.client.i registeredBinding : registeredBindings) {
+        for (ane registeredBinding : registeredBindings) {
             if (registeredBinding == sortKeyBinding) {
                 alreadyRegistered = true;
             }
         }
         if (!alreadyRegistered) {
-            net.minecraft.client.i[] newBindings = new net.minecraft.client.i[registeredBindings.length + 1];
+            ane[] newBindings = new ane[registeredBindings.length + 1];
             int i = 0;
-            for (net.minecraft.client.i registeredBinding : registeredBindings) {
+            for (ane registeredBinding : registeredBindings) {
                 newBindings[i] = registeredBinding;
                 i++;
             }
@@ -114,10 +114,10 @@ public abstract class ModLoader_InvTweaks {
         }
     }
 
-    public static void onTick(float tick, Minecraft game) {
+    public static void onTick(float tick, Minecraft game) throws Exception {
 
         long newclock = 0L;
-
+        
         if (obf.getTheWorld() != null) {
             newclock = obf.getCurrentTime();
             if (clock != newclock) {
@@ -131,7 +131,7 @@ public abstract class ModLoader_InvTweaks {
         clock = newclock;
     }
 
-    public static void onItemPickup(np entityplayer, qs stack) {
+    public static void onItemPickup(of entityplayer, ri stack) {
         mod.onItemPickup(entityplayer, stack);
     }
 

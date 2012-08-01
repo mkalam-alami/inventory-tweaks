@@ -8,8 +8,8 @@ public abstract class BaseMod_InvTweaks {
 
     public abstract boolean onTickInGame(float clock, Minecraft minecraft);
 
-    public abstract boolean onTickInGUI(float clock, Minecraft minecraft, anm guiScreen);
+    public abstract boolean onTickInGUI(float clock, Minecraft minecraft, apm guiScreen);
 
-    public abstract void onItemPickup(np entityplayer, qs stack);
+    public abstract void onItemPickup(of entityplayer, ri stack);
 
 }

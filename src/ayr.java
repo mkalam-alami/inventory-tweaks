@@ -13,29 +13,33 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
-public class awr extends anm {
+public class ayr extends apm {
     private static final Random a = new Random();
 
     private float b = 0.0F;
     private String c;
-    private amg d;
+    private aog d;
     private int m = 0;
     private int n;
     private static final String[] o = { "/title/bg/panorama0.png", "/title/bg/panorama1.png",
-            "/title/bg/panorama2.png", "/title/bg/panorama3.png", "/title/bg/panorama4.png", "/title/bg/panorama5.png" };
+            "/title/bg/panorama2.png", "/title/bg/panorama3.png", "/title/bg/panorama4.png",
+            "/title/bg/panorama5.png" };
 
-    public awr() {
-
-        // InvTweaks init hook
-        ModLoader_InvTweaks.init();
-
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ayr() {
         this.c = "missingno";
 
+        // InvTweaks init hook
+        try {
+            ModLoader_InvTweaks.init();
+        } catch (Exception e) {
+            System.out.println("Failed to initialize fake ModLoader by InvTweaks" + e.getMessage());
+        }
         BufferedReader localBufferedReader = null;
         try {
-            ArrayList<String> localArrayList = new ArrayList<String>();
-            localBufferedReader = new BufferedReader(new InputStreamReader(awr.class
-                    .getResourceAsStream("/title/splashes.txt"), Charset.forName("UTF-8")));
+            ArrayList localArrayList = new ArrayList();
+            localBufferedReader = new BufferedReader(new InputStreamReader(
+                    ayr.class.getResourceAsStream("/title/splashes.txt"), Charset.forName("UTF-8")));
             String str;
             while ((str = localBufferedReader.readLine()) != null) {
                 str = str.trim();
@@ -46,7 +50,7 @@ public class awr extends anm {
             }
 
             do {
-                this.c = localArrayList.get(a.nextInt(localArrayList.size()));
+                this.c = ((String) localArrayList.get(a.nextInt(localArrayList.size())));
             } while (this.c.hashCode() == 125780783);
         } catch (IOException localIOException3) {
         } finally {
@@ -70,7 +74,7 @@ public class awr extends anm {
     protected void a(char paramChar, int paramInt) {
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     public void w_() {
         this.n = this.e.o.a(new BufferedImage(256, 256, 2));
 
@@ -96,78 +100,80 @@ public class awr extends anm {
         else {
             a(i, 24, localak);
         }
-        this.h.add(new amg(3, this.f / 2 - 100, i + 48, localak.b("menu.mods")));
+        this.h.add(new aog(3, this.f / 2 - 100, i + 48, localak.b("menu.mods")));
 
         if (this.e.m) {
-            this.h.add(new amg(0, this.f / 2 - 100, i + 72, localak.b("menu.options")));
+            this.h.add(new aog(0, this.f / 2 - 100, i + 72, localak.b("menu.options")));
         } else {
-            this.h.add(new amg(0, this.f / 2 - 100, i + 72 + 12, 98, 20, localak.b("menu.options")));
-            this.h.add(new amg(4, this.f / 2 + 2, i + 72 + 12, 98, 20, localak.b("menu.quit")));
+            this.h.add(new aog(0, this.f / 2 - 100, i + 72 + 12, 98, 20, localak.b("menu.options")));
+            this.h.add(new aog(4, this.f / 2 + 2, i + 72 + 12, 98, 20, localak.b("menu.quit")));
         }
-        this.h.add(new anc(5, this.f / 2 - 124, i + 72 + 12));
+        this.h.add(new apc(5, this.f / 2 - 124, i + 72 + 12));
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     private void a(int paramInt1, int paramInt2, ak paramak) {
-        this.h.add(new amg(1, this.f / 2 - 100, paramInt1, paramak.b("menu.singleplayer")));
-        this.h.add(new amg(2, this.f / 2 - 100, paramInt1 + paramInt2 * 1, paramak.b("menu.multiplayer")));
+        this.h.add(new aog(1, this.f / 2 - 100, paramInt1, paramak.b("menu.singleplayer")));
+        this.h.add(new aog(2, this.f / 2 - 100, paramInt1 + paramInt2 * 1, paramak
+                .b("menu.multiplayer")));
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     private void b(int paramInt1, int paramInt2, ak paramak) {
-        this.h.add(new amg(11, this.f / 2 - 100, paramInt1, paramak.b("menu.playdemo")));
-        this.h.add(this.d = new amg(12, this.f / 2 - 100, paramInt1 + paramInt2 * 1, paramak.b("menu.resetdemo")));
+        this.h.add(new aog(11, this.f / 2 - 100, paramInt1, paramak.b("menu.playdemo")));
+        this.h.add(this.d = new aog(12, this.f / 2 - 100, paramInt1 + paramInt2 * 1, paramak
+                .b("menu.resetdemo")));
 
-        adp localadp = this.e.d();
-        adm localadm = localadp.c("Demo_World");
-        if (localadm == null)
+        aef localaef = this.e.d();
+        aec localaec = localaef.c("Demo_World");
+        if (localaec == null)
             this.d.g = false;
     }
 
-    protected void a(amg paramamg) {
-        if (paramamg.f == 0) {
-            this.e.a(new anh(this, this.e.y));
+    protected void a(aog paramaog) {
+        if (paramaog.f == 0) {
+            this.e.a(new aph(this, this.e.y));
         }
-        if (paramamg.f == 5) {
-            this.e.a(new and(this, this.e.y));
+        if (paramaog.f == 5) {
+            this.e.a(new apd(this, this.e.y));
         }
-        if (paramamg.f == 1) {
-            this.e.a(new anp(this));
+        if (paramaog.f == 1) {
+            this.e.a(new app(this));
         }
-        if (paramamg.f == 2) {
-            this.e.a(new amz(this));
+        if (paramaog.f == 2) {
+            this.e.a(new aoz(this));
         }
-        if (paramamg.f == 3) {
-            this.e.a(new awk(this));
+        if (paramaog.f == 3) {
+            this.e.a(new ayk(this));
         }
-        if (paramamg.f == 4) {
+        if (paramaog.f == 4) {
             this.e.g();
         }
-        if (paramamg.f == 11) {
-            this.e.a("Demo_World", "Demo_World", fs.a);
+        if (paramaog.f == 11) {
+            this.e.a("Demo_World", "Demo_World", gi.a);
         }
-        if (paramamg.f == 12) {
-            adp localadp = this.e.d();
-            adm localadm = localadp.c("Demo_World");
-            if (localadm != null) {
-                aml localaml = anp.a(this, localadm.j(), 12);
-                this.e.a(localaml);
+        if (paramaog.f == 12) {
+            aef localaef = this.e.d();
+            aec localaec = localaef.c("Demo_World");
+            if (localaec != null) {
+                aol localaol = app.a(this, localaec.j(), 12);
+                this.e.a(localaol);
             }
         }
     }
 
     public void a(boolean paramBoolean, int paramInt) {
         if ((paramBoolean) && (paramInt == 12)) {
-            adp localadp = this.e.d();
-            localadp.d();
-            localadp.e("Demo_World");
+            aef localaef = this.e.d();
+            localaef.d();
+            localaef.e("Demo_World");
 
             this.e.a(this);
         }
     }
 
     private void b(int paramInt1, int paramInt2, float paramFloat) {
-        atd localatd = atd.a;
+        avd localavd = avd.a;
 
         GL11.glMatrixMode(5889);
         GL11.glPushMatrix();
@@ -194,7 +200,7 @@ public class awr extends anm {
             float f3 = 0.0F;
             GL11.glTranslatef(f1, f2, f3);
 
-            GL11.glRotatef(hq.a((this.m + paramFloat) / 400.0F) * 25.0F + 20.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(ig.a((this.m + paramFloat) / 400.0F) * 25.0F + 20.0F, 1.0F, 0.0F, 0.0F);
             GL11.glRotatef(-(this.m + paramFloat) * 0.1F, 0.0F, 1.0F, 0.0F);
 
             for (int k = 0; k < 6; k++) {
@@ -210,20 +216,20 @@ public class awr extends anm {
                 if (k == 5)
                     GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
                 GL11.glBindTexture(3553, this.e.o.b(o[k]));
-                localatd.b();
-                localatd.a(16777215, 255 / (j + 1));
+                localavd.b();
+                localavd.a(16777215, 255 / (j + 1));
                 float f4 = 0.0F;
-                localatd.a(-1.0D, -1.0D, 1.0D, 0.0F + f4, 0.0F + f4);
-                localatd.a(1.0D, -1.0D, 1.0D, 1.0F - f4, 0.0F + f4);
-                localatd.a(1.0D, 1.0D, 1.0D, 1.0F - f4, 1.0F - f4);
-                localatd.a(-1.0D, 1.0D, 1.0D, 0.0F + f4, 1.0F - f4);
-                localatd.a();
+                localavd.a(-1.0D, -1.0D, 1.0D, 0.0F + f4, 0.0F + f4);
+                localavd.a(1.0D, -1.0D, 1.0D, 1.0F - f4, 0.0F + f4);
+                localavd.a(1.0D, 1.0D, 1.0D, 1.0F - f4, 1.0F - f4);
+                localavd.a(-1.0D, 1.0D, 1.0D, 0.0F + f4, 1.0F - f4);
+                localavd.a();
                 GL11.glPopMatrix();
             }
             GL11.glPopMatrix();
             GL11.glColorMask(true, true, true, false);
         }
-        localatd.b(0.0D, 0.0D, 0.0D);
+        localavd.b(0.0D, 0.0D, 0.0D);
         GL11.glColorMask(true, true, true, true);
 
         GL11.glMatrixMode(5889);
@@ -244,21 +250,21 @@ public class awr extends anm {
         GL11.glEnable(3042);
         GL11.glBlendFunc(770, 771);
         GL11.glColorMask(true, true, true, false);
-        atd localatd = atd.a;
-        localatd.b();
+        avd localavd = avd.a;
+        localavd.b();
 
         int i = 3;
         for (int j = 0; j < i; j++) {
-            localatd.a(1.0F, 1.0F, 1.0F, 1.0F / (j + 1));
+            localavd.a(1.0F, 1.0F, 1.0F, 1.0F / (j + 1));
             int k = this.f;
             int i1 = this.g;
             float f = (j - i / 2) / 256.0F;
-            localatd.a(k, i1, this.i, 0.0F + f, 0.0D);
-            localatd.a(k, 0.0D, this.i, 1.0F + f, 0.0D);
-            localatd.a(0.0D, 0.0D, this.i, 1.0F + f, 1.0D);
-            localatd.a(0.0D, i1, this.i, 0.0F + f, 1.0D);
+            localavd.a(k, i1, this.i, 0.0F + f, 0.0D);
+            localavd.a(k, 0.0D, this.i, 1.0F + f, 0.0D);
+            localavd.a(0.0D, 0.0D, this.i, 1.0F + f, 1.0D);
+            localavd.a(0.0D, i1, this.i, 0.0F + f, 1.0D);
         }
-        localatd.a();
+        localavd.a();
         GL11.glColorMask(true, true, true, true);
     }
 
@@ -278,27 +284,27 @@ public class awr extends anm {
         a(paramFloat);
         GL11.glViewport(0, 0, this.e.c, this.e.d);
 
-        atd localatd = atd.a;
-        localatd.b();
+        avd localavd = avd.a;
+        localavd.b();
 
         float f1 = this.f > this.g ? 120.0F / this.f : 120.0F / this.g;
         float f2 = this.g * f1 / 256.0F;
         float f3 = this.f * f1 / 256.0F;
         GL11.glTexParameteri(3553, 10241, 9729);
         GL11.glTexParameteri(3553, 10240, 9729);
-        localatd.a(1.0F, 1.0F, 1.0F, 1.0F);
+        localavd.a(1.0F, 1.0F, 1.0F, 1.0F);
         int i = this.f;
         int j = this.g;
-        localatd.a(0.0D, j, this.i, 0.5F - f2, 0.5F + f3);
-        localatd.a(i, j, this.i, 0.5F - f2, 0.5F - f3);
-        localatd.a(i, 0.0D, this.i, 0.5F + f2, 0.5F - f3);
-        localatd.a(0.0D, 0.0D, this.i, 0.5F + f2, 0.5F + f3);
-        localatd.a();
+        localavd.a(0.0D, j, this.i, 0.5F - f2, 0.5F + f3);
+        localavd.a(i, j, this.i, 0.5F - f2, 0.5F - f3);
+        localavd.a(i, 0.0D, this.i, 0.5F + f2, 0.5F - f3);
+        localavd.a(0.0D, 0.0D, this.i, 0.5F + f2, 0.5F + f3);
+        localavd.a();
     }
 
     public void a(int paramInt1, int paramInt2, float paramFloat) {
         c(paramInt1, paramInt2, paramFloat);
-        atd localatd = atd.a;
+        avd localavd = avd.a;
 
         int i = 274;
         int j = this.f / 2 - i / 2;
@@ -321,19 +327,20 @@ public class awr extends anm {
             b(j + 155, k + 0, 0, 45, 155, 44);
         }
 
-        localatd.d(16777215);
+        localavd.d(16777215);
         GL11.glPushMatrix();
         GL11.glTranslatef(this.f / 2 + 90, 70.0F, 0.0F);
 
         GL11.glRotatef(-20.0F, 0.0F, 0.0F, 1.0F);
-        float f = 1.8F - hq.e(hq.a((float) (Minecraft.F() % 1000L) / 1000.0F * 3.141593F * 2.0F) * 0.1F);
+        float f = 1.8F - ig
+                .e(ig.a((float) (Minecraft.F() % 1000L) / 1000.0F * 3.141593F * 2.0F) * 0.1F);
 
         f = f * 100.0F / (this.k.a(this.c) + 32);
         GL11.glScalef(f, f, f);
         a(this.k, this.c, 0, -8, 16776960);
         GL11.glPopMatrix();
 
-        String str1 = "Minecraft 1.3";
+        String str1 = "Minecraft 1.3.1";
         if (this.e.q()) {
             str1 = str1 + " Demo";
         }

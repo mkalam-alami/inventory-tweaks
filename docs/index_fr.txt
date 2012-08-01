@@ -1,0 +1,42 @@
+.. include:: langs.txt
+
+Site officiel d'Inventory Tweaks
+=================================
+
+.. image:: _static/img/invtweaks.png
+
+Qu'est-ce qu'Inventory Tweaks?
+------------------------------
+
+.. image:: _static/img/demo.jpg
+	:align: right
+
+Ce mod pour Minecraft permet de **facilement gérer ses objets**. Il se met en place très facilement, et vous permettra rapidement de gagner un temps fou, que ce soit en **mode solo ou multijoueur** !
+
+* Tous les outils, blocs et autres sont automatiquement remplacés (plus besoin d'ouvrir l'inventaire à chaque fois)
+* Triez votre inventaire et vos coffres en un clic
+* Personnalisez entièrement la manière dont votre inventaire est trié, grâce à des fichiers de configuration
+
+Téléchargement
+--------------
+
+Ce mod nécessite `ModLoader <http://www.minecraftforum.net/topic/75440->`_ pour fonctionner.
+
+.. include:: download.txt
+
+
+* `Anciennes versions <http://modding.kalam-alami.net/dl/old>`_
+* `Derniers changements (en anglais) <changelog.html>`_
+
+Contact
+-------
+
+* `Obtenez de l'aide sur Minecraft Forums <www.minecraftforum.net/topic/323444-166spsmp-inventory-tweaks-106-june-19/>`_ (en anglais)
+* `Rejoignez le projet sur Github <https://github.com/mkalam-alami/inventory-tweaks/wiki>`_ (eh oui, c'est Open Source !)
+* Si besoin je parle français, donc au pire vous pouvez m'envoyer un mail à *jimeo.wan (at) gmail (point) com*.
+
+
+Documentation
+=============
+
+J'ai pas encore traduit la documentation, mais les menus du mod (accessibles via le bouton "..." depuis l'inventaire) sont déjà en français, donc vous devriez vous en sortir sans trop de soucis. Merci de voir la `page en anglais <index.html>`_ pour plus de détails.

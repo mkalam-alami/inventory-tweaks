@@ -1,7 +1,7 @@
-.. _index:
+.. include:: langs.txt
 
-Inventory Tweaks official page
-============================================
+Inventory Tweaks official website 
+=================================
 
 .. image:: _static/img/invtweaks.png
 
@@ -18,38 +18,22 @@ This client mod for Minecraft allows you to **easily manage your items**. It wor
 * Customize entirely the way your inventory is sorted, thanks to configuration files
 
 Download
--------------------------
+--------
 
 This mod needs `ModLoader <http://www.minecraftforum.net/topic/75440->`_ to work.
 
-.. image:: _static/img/dl.png
-  :align: left
-
-`Inventory Tweaks 1.41b <http://adf.ly/6idxE>`_ for **Minecraft 1.2.4/1.2.5** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.41b-1.2.4.zip>`_)
-
-.. image:: _static/img/dl.png
-  :align: left
-
-`Inventory Tweaks 1.40b-1.2.3 <http://adf.ly/6gwD5>`_ for **Minecraft 1.2.3** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.40b-1.2.3.zip>`_)
-
-.. image:: _static/img/dl.png
-  :align: left
-  
-`Inventory Tweaks 1.40-1.1 <http://modding.kalam-alami.net/download/1.40-1.1>`_ for **Minecraft 1.2.1** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.40-1.1.zip>`_)
-
+.. include:: download.txt
 
 
 * `Older versions <http://modding.kalam-alami.net/dl/old>`_
 * `Latest changes <changelog.html>`_
 
 Contact
--------------------------
+-------
 
 * `Get support on Minecraft Forums <www.minecraftforum.net/topic/323444-166spsmp-inventory-tweaks-106-june-19/>`_
 * `Join the project on Github <https://github.com/mkalam-alami/inventory-tweaks/wiki>`_ (yep, it's Open Source!)
 
-|
-|
 
 
 Getting started
@@ -60,23 +44,25 @@ Setup
 
 Once you have `ModLoader <http://www.minecraftforum.net/topic/75440->`_, this mod is installed by simply moving the ZIP to the **mods** folder of Minecraft.
 
+If you picked a no-ModLoader version of the mod, you'll have instead to open **minecraft.jar**, copy in there the contents of the Inventory Tweaks zip, and remove the META-INF folder. There's no guarranty that this no-ModLoader version works with any other mod, except **Too Many Items** (install TMI first, then InvTweaks).
+
 Basic use
 ---------
 
 Just start playing Minecraft, you can already use most features of the mod. Notice the "..." button that just appeared on the top-right corner of your inventory? This leads to the mod settings screen, if it's there it means that the mod is installed correctly.
 
 Inventory sorting
-~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 Trigger the sorting in your inventory by using the **middle click**, or by pressing **R** (by default), at any time. If you want to change the shortcut, check the *Controls* menu in your options. 
 
 Chests sorting
-~~~~~~~
+~~~~~~~~~~~~~~
 
 When you open a chest, you will see three additional buttons on the higher part of the screen. They allow to sort items in different ways ; but you can also use the middle click if you prefer (click several times to switch the sorting method).
 
 Auto-refill
-~~~~~~~
+~~~~~~~~~~~
 
 If you eat an item, break a tool or empty a stack by placing blocks, the mod will automatically fetch if possible a similar item from your inventory.
 
@@ -84,9 +70,6 @@ If you eat an item, break a tool or empty a stack by placing blocks, the mod wil
 
    * Click on the "..." button from your inventory to explore the features (yay, **inventory shortcuts**!) and customize the settings of the mod.
    * You don't even have to be in your inventory to use the **R** shortcut.
-
-|
-|
 
 
 Working with rules
@@ -127,7 +110,7 @@ Add them at the end of the targets (example: ``Ar``) to apply their effect.
 * **Vertical sorting**, for rectangle rules: ``v``
 
 Available keywords
------------------
+------------------
 
 All item names are supported, and even a whole lot of category keywords, such as ``edibleFood``, ``blocks``, ``items``, ``equipment``... The whole list is stored in the file *config/InvTweaksTree.txt* ; an online version is `available here <https://raw.github.com/mkalam-alami/inventory-tweaks/master/src/DefaultTree.dat>`_. Also, don't worry about syntax, for instance ``woodenSword`` works as well as ``WOODSWORD`` or ``Wooden Sword``.
 
@@ -158,7 +141,7 @@ Here, **1 + R** would load the Mining config, **2 + R** the Fighting config, etc
 
 
 Example
------------------------
+-------
 
 Here is the config the mod author uses::
 
@@ -174,15 +157,12 @@ Here is the config the mod author uses::
 	A1-C5v stuff
 	A9-C6v blocks
 
-|
-|
-
 
 Tweaking the item tree
-===================
+======================
 
 First steps
---------------
+-----------
 
 This file is where are stored the keywords you can use to create rules. It also specifies the item order in the categories. It can be modified as you want, giving you the opportunity to make custom keywords for your rules::
 
@@ -211,7 +191,7 @@ Some items are not only defined by IDs, but also by specific "damage values"::
    </sexyWools>
 
 Categories defined by id ranges
---------------------------
+-------------------------------
 
 You can also define categories by entering a range of IDs. Useful for mods::
 
@@ -219,17 +199,6 @@ You can also define categories by entering a range of IDs. Useful for mods::
      <camelOreBlocks min="96" max="158" />
      <camelOreItems min="358" max="443" />
    </camelOre>
-   
-Categories defined by id and damage ranges
---------------------------------------
-
-Not sure why you'd need that, but it has been requested!
-
-::
-
-     <fiveFirstWools id="35" dmin="0" dmax="4" />
-
-|
 
 
 F.A.Q.

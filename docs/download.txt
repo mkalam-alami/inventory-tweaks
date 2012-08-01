@@ -1,0 +1,10 @@
+.. image:: _static/img/dl.png
+  :align: left
+
+`Inventory Tweaks 1.42 Beta, No ModLoader <http://adf.ly/BRJJv>`_ for **Minecraft 1.3.1** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.42RC-1.3.1-NOMODLOADER.zip>`_)
+
+.. image:: _static/img/dl.png
+  :align: left
+  
+`Inventory Tweaks 1.41b <http://adf.ly/6idxE>`_ for **Minecraft 1.2.4/1.2.5** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.41b-1.2.4.zip>`_)
+

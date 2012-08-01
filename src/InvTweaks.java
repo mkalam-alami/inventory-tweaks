@@ -77,6 +77,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     * Stores when the sorting key was last pressed (allows to detect long key holding)
     */
     private long sortingKeyPressedDate = 0;
+    private long sortingKeyCodeCache = -1;
     
     /**
      * Creates an instance of the mod, and loads the configuration
@@ -316,6 +317,16 @@ public class InvTweaks extends InvTweaksObfuscation {
         apm currentScreen = getCurrentScreen();
         if (currentScreen == null || isGuiInventory(currentScreen)) {
             cloneHotbar();
+        }
+        
+        // Handle sort key changes
+        if (sortingKeyCodeCache != getKeyCode(SORT_KEY_BINDING)) {
+            if (sortingKeyCodeCache == -1) {
+                sortingKeyCodeCache = getKeyCode(SORT_KEY_BINDING);
+            }
+            else {
+                config.setProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY, Keyboard.getKeyName(getKeyCode(SORT_KEY_BINDING)));
+            }
         }
         
         handleConfigSwitch();

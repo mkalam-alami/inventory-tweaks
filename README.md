@@ -1,6 +1,6 @@
 <img src="http://modding.kalam-alami.net/site/img/invtweaks.png" />
 
-* Matching Minecraft version: **1.3**
+* Matching Minecraft version: **1.3.1**
 
 ## What's this project about
 

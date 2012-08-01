@@ -19,6 +19,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.lwjgl.input.Keyboard;
+
 
 /**
  * The global mod's configuration.
@@ -39,6 +41,7 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_SORTING_ON_PICKUP = "enableSortingOnPickup";
 	public static final String PROP_ENABLE_AUTO_EQUIP_ARMOR = "enableAutoEquipArmor";
 	public static final String PROP_ENABLE_AUTO_REFILL = "enableAutoRefill";
+    public static final String PROP_KEY_SORT_INVENTORY = "keySortInventory";
 
     // Shortcuts
     public static final String PROP_ENABLE_SHORTCUTS = "enableShortcuts";
@@ -99,6 +102,9 @@ public class InvTweaksConfig {
             // Load properties
             loadProperties();
             saveProperties(); // Needed to append non-saved properties to the file
+            
+            // Update sort key
+            InvTweaks.SORT_KEY_BINDING.d = Keyboard.getKeyIndex(getProperty(PROP_KEY_SORT_INVENTORY));
 
             // Load tree
             tree = InvTweaksItemTreeLoader.load(treeFile);
@@ -455,6 +461,7 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_SOUNDS, VALUE_TRUE);
         properties.put(PROP_ENABLE_SHORTCUTS, VALUE_TRUE);
         properties.put(PROP_ENABLE_AUTO_EQUIP_ARMOR, VALUE_FALSE);
+        properties.put(PROP_KEY_SORT_INVENTORY, "R");
         
         properties.put(PROP_SHORTCUT_ALL_ITEMS, "LCONTROL+LSHIFT, RCONTROL+RSHIFT");
         properties.put(PROP_SHORTCUT_EVERYTHING, "SPACE");

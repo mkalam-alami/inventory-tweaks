@@ -12,6 +12,8 @@ Latest changes
  * Fixed a freeze when sorting full inventory
  * Fixed a crash when using the middle click on the title screen
  * Fixed the inventory getting glitchy when having buffs
+ * Made the mod fix the 'stuck keys' problem for real
+ * Sorting on pickup now works in SMP
  
 `[03.27.2012] 1.41 (1.2.4) <http://adf.ly/6idxE>`_
  * Updated mod & item tree to Minecraft 1.2.4

@@ -6,5 +6,5 @@
 .. image:: _static/img/dl.png
   :align: left
   
-`Inventory Tweaks 1.41b <http://adf.ly/6idxE>`_ for **Minecraft 1.2.4/1.2.5** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.41b-1.2.4.zip>`_)
+`Inventory Tweaks 1.41b <http://adf.ly/6idxE>`_ for **Minecraft 1.2.4/1.2.5** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.41b-1.2.4.zip>`_) (requires `ModLoader <http://www.minecraftforum.net/topic/75440->`_)
 

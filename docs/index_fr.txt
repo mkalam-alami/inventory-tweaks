@@ -20,8 +20,6 @@ Ce mod pour Minecraft permet de **facilement gérer ses objets**. Il se met en p
 Téléchargement
 --------------
 
-Ce mod nécessite `ModLoader <http://www.minecraftforum.net/topic/75440->`_ pour fonctionner.
-
 .. include:: download.txt
 
 

@@ -108,16 +108,22 @@ public class InvTweaksObfuscation {
 	
     // GuiScreen members
 
-	protected int getWidth(apm guiScreen) {
+	protected int getWindowWidth(apm guiScreen) {
 	    return guiScreen.f;
 	}
-    protected int getHeight(apm guiScreen) {
+    protected int getWindowHeight(apm guiScreen) {
         return guiScreen.g;
     }
-    protected int getXSize(aqg guiContainer) { // GuiContainer
+    protected int getGuiX(aqg guiContainer) { // GuiContainer
+        return guiContainer.m;
+    }
+    protected int getGuiY(aqg guiContainer) {
+        return guiContainer.n;
+    }
+    protected int getGuiWidth(aqg guiContainer) { // GuiContainer
         return guiContainer.b;
     }
-    protected int getYSize(aqg guiContainer) {
+    protected int getGuiHeight(aqg guiContainer) {
         return guiContainer.c;
     }
     @SuppressWarnings("unchecked")

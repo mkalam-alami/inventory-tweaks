@@ -316,8 +316,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 	private boolean getIsMouseOverSlot(pq slot, int x, int y) {
         // Copied from GuiContainer
 		if (guiContainer != null) {
-	        int i = (getWidth(guiContainer) - getXSize(guiContainer)) / 2;
-	        int j = (getHeight(guiContainer) - getYSize(guiContainer)) / 2;
+	        int i = guiContainer.m; // TODO Deobfuscate
+	        int j = guiContainer.n;
 	        x -= i;
 	        y -= j;
 	        return x >= getXDisplayPosition(slot) - 1 && x < getXDisplayPosition(slot) + 16 + 1 && y >= getYDisplayPosition(slot) - 1 && y < getYDisplayPosition(slot) + 16 + 1;
@@ -328,11 +328,11 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 	}
 	
     private int getMouseX() {
-        return (Mouse.getEventX() * getWidth(guiContainer)) / getDisplayWidth();
+        return (Mouse.getEventX() * getWindowWidth(guiContainer)) / getDisplayWidth();
     }
     
     private int getMouseY() {
-        return getHeight(guiContainer) - (Mouse.getEventY() * getHeight(guiContainer)) / getDisplayHeight() - 1;
+        return getWindowHeight(guiContainer) - (Mouse.getEventY() * getWindowHeight(guiContainer)) / getDisplayHeight() - 1;
     }
 
 

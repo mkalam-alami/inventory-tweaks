@@ -47,7 +47,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends apm /* GuiScreen */ {
         List<Object> controlList = obf.getControlList(this);
         Point p = new Point();
         moveToButtonCoords(1, p);
-        controlList.add(new aog(ID_DONE, p.getX() + 55, obf.getHeight(this) / 6 + 168, LABEL_DONE)); // GuiButton
+        controlList.add(new aog(ID_DONE, p.getX() + 55, obf.getWindowHeight(this) / 6 + 168, LABEL_DONE)); // GuiButton
 
         // Save control list
         obf.setControlList(this, controlList);
@@ -56,7 +56,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends apm /* GuiScreen */ {
     
     public void a(int i, int j, float f) { /* drawScreen */
         v_(); // Gui.drawDefaultBackground
-        a(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.title"), obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
+        a(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.title"), obf.getWindowWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         super.a(i, j, f); // drawScreen
     }
 
@@ -67,8 +67,8 @@ public abstract class InvTweaksGuiSettingsAbstract extends apm /* GuiScreen */ {
     }
 
     protected void moveToButtonCoords(int buttonOrder, Point p) {
-        p.setX(obf.getWidth(this) / 2 - 155 + ((buttonOrder+1) % 2) * 160);
-        p.setY(obf.getHeight(this) / 6 + (buttonOrder / 2) * 24);
+        p.setX(obf.getWindowWidth(this) / 2 - 155 + ((buttonOrder+1) % 2) * 160);
+        p.setY(obf.getWindowHeight(this) / 6 + (buttonOrder / 2) * 24);
     }
 
     protected void toggleBooleanButton(aog guibutton, String property, String label) {

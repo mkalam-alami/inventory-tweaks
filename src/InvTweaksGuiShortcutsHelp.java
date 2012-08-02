@@ -25,8 +25,8 @@ public class InvTweaksGuiShortcutsHelp extends apm /* GuiScreen */ {
         // Create Done button
         List<Object> controlList = new LinkedList<Object>(); /* GuiButton */
         controlList.add(new aog(ID_DONE, 
-                obf.getWidth(this) / 2 - 100, 
-                obf.getHeight(this) / 6 + 168, "Done"));
+                obf.getWindowWidth(this) / 2 - 100, 
+                obf.getWindowHeight(this) / 6 + 168, "Done"));
         obf.setControlList(this, controlList);
     }
 
@@ -35,10 +35,10 @@ public class InvTweaksGuiShortcutsHelp extends apm /* GuiScreen */ {
         // Note: 0x0000EEFF = blue color (currently unused)
         
         v_(); // Gui.drawDefaultBackground
-        a(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.help.shortcuts.title"), obf.getWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
+        a(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.help.shortcuts.title"), obf.getWindowWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         String clickLabel =  InvTweaksLocalization.get("invtweaks.help.shortcuts.click");
         
-        int y = obf.getHeight(this) / 6 - 2;
+        int y = obf.getWindowHeight(this) / 6 - 2;
 
         drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.onestack"), "LSHIFT " + InvTweaksLocalization.get("invtweaks.help.shortcuts.or") + " RSHIFT + " + clickLabel, 0x00FFFF00, y);
         y += 12;
@@ -116,7 +116,7 @@ public class InvTweaksGuiShortcutsHelp extends apm /* GuiScreen */ {
         b(obf.getFontRenderer(), label, 30, y, -1); // drawString
         if (value != null) {
 	        b(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value.replaceAll(", ", " " + InvTweaksLocalization.get("invtweaks.help.shortcuts.or") + " "), 
-	                obf.getWidth(this) / 2 - 30, y, color); // drawString
+	                obf.getWindowWidth(this) / 2 - 30, y, color); // drawString
         }
     }
     

@@ -81,8 +81,8 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
                                 tooltipWidth);
                     }
                 }
-                if (x + tooltipWidth > obf.getWidth(obf.getCurrentScreen())) {
-                    x = obf.getWidth(obf.getCurrentScreen()) - tooltipWidth;
+                if (x + tooltipWidth > obf.getWindowWidth(obf.getCurrentScreen())) {
+                    x = obf.getWindowWidth(obf.getCurrentScreen()) - tooltipWidth;
                 }
                 
                 // Draw background

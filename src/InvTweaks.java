@@ -543,6 +543,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         if (isValidChest || (isStandardInventory(guiScreen) && !isGuiEnchantmentTable(guiScreen))) {
 
+            aqg guiContainer = asGuiContainer(guiScreen);
             int w = 10, h = 10;
 
             // Look for the mods buttons
@@ -559,32 +560,31 @@ public class InvTweaks extends InvTweaksObfuscation {
             }
 
             if (!customButtonsAdded) {
-
+                
                 // Inventory button
                 if (!isValidChest) {
                     controlList.add(new InvTweaksGuiSettingsButton(
                             cfgManager, InvTweaksConst.JIMEOWAN_ID,
-                            getWidth(guiScreen) / 2 + 73, getHeight(guiScreen) / 2 - 78,
+                            getGuiX(guiContainer) + getGuiWidth(guiContainer) - 14,
+                            getGuiY(guiContainer) + 4,
                             w, h, "...",
                             InvTweaksLocalization.get("invtweaks.button.settings.tooltip")));
                 }
 
                 // Chest buttons
                 else {
-                    
                     // Reset sorting algorithm selector
                     chestAlgorithmClickTimestamp = 0;
 
-                    aqg guiContainer = asGuiContainer(guiScreen);
                     int id = InvTweaksConst.JIMEOWAN_ID,
-                        x = getWidth(guiContainer) / 2 + getXSize(guiContainer) / 2 - 17,
-                        y = (getHeight(guiContainer) - getYSize(guiContainer)) / 2 + 5;
+                        x = getGuiX(guiContainer) + getGuiWidth(guiContainer) - 16,
+                        y = getGuiY(guiContainer) + 5;
                     boolean isChestWayTooBig = mods.isChestWayTooBig(guiScreen);
 
                     // NotEnoughItems compatibility
                     if (isChestWayTooBig && classExists("mod_NotEnoughItems")) {
                     	if (isNotEnoughItemsEnabled()) {
-                        	x = getWidth(guiContainer) / 2 - getXSize(guiContainer) / 2 - 35;
+                        	x = getGuiX(guiContainer) + getGuiWidth(guiContainer) - 35;
                         	y += 50;
                     	}
                     }

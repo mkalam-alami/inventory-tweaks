@@ -3,6 +3,16 @@
 Latest changes
 ==============
 
+`[08.02.2012] 1.42 (1.3.1) <http://adf.ly/BRJJv>`_
+ * Updated mod & item tree to Minecraft 1.3.1
+ * Make the item tree support damage ranges (dmin/dmax)
+ * Mods support:
+    * Added RedPower2's Ejector & Relay
+    * Added ColorBox chests
+ * Fixed a freeze when sorting full inventory
+ * Fixed a crash when using the middle click on the title screen
+ * Fixed the inventory getting glitchy when having buffs
+ 
 `[03.27.2012] 1.41 (1.2.4) <http://adf.ly/6idxE>`_
  * Updated mod & item tree to Minecraft 1.2.4
  * Improved armor auto-equipment
@@ -17,7 +27,6 @@ Latest changes
  * Added Traditional Chinese translation
    (thanks to GazCore)
  * Tweaked Move all shortcut behavior
- 
  
 *[02.29.2012] 1.40 (1.1)*
  * Fixed crash on crafting

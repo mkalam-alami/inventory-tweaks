@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 
 /**
@@ -66,7 +67,7 @@ public class InvTweaks extends InvTweaksObfuscation {
      */
     private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
     private ri[] hotbarClone = new ri[InvTweaksConst.INVENTORY_HOTBAR_SIZE];
-    private boolean mouseWasInWindow = true, mouseWasDown = false;;
+    private boolean hadFocus = true, mouseWasDown = false;;
     
     /**
      * Allows to trigger some logic only every Const.POLLING_DELAY.
@@ -714,8 +715,8 @@ public class InvTweaks extends InvTweaksObfuscation {
      * to avoid the "stuck keys" bug.
      */
     private void unlockKeysIfNecessary() {
-        boolean mouseInWindow = Mouse.isInsideWindow();
-        if (!mouseWasInWindow && mouseInWindow) {
+        boolean hasFocus = Display.isActive();
+        if (!hadFocus && hasFocus) {
             Keyboard.destroy();
             boolean firstTry = true;
             while (!Keyboard.isCreated()) {
@@ -732,7 +733,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 logInGame("invtweaks.keyboardfix.recover");
             }
         }
-        mouseWasInWindow = mouseInWindow;
+        hadFocus = hasFocus;
     }
 
     /**

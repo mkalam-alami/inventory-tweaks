@@ -711,8 +711,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     /**
-     * When the mouse gets inside the window, reset pressed keys
-     * to avoid the "stuck keys" bug.
+     * When Minecraft gains focus, reset all pressed keys to avoid the "stuck keys" bug.
      */
     private void unlockKeysIfNecessary() {
         boolean hasFocus = Display.isActive();

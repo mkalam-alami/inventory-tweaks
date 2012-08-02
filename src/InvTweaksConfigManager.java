@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.swing.plaf.metal.MetalIconFactory.FolderIcon16;
+
 
 import net.minecraft.client.Minecraft;
 
@@ -102,6 +104,12 @@ public class InvTweaksConfigManager {
      * @param config
      */
     private boolean loadConfig() {
+        
+        // Ensure the config folder exists
+        File configDir = new File(InvTweaksConst.MINECRAFT_CONFIG_DIR);
+        if (!configDir.exists()) {
+           configDir.mkdir();
+        }
 
         // Compatibility: Tree version check
         try {

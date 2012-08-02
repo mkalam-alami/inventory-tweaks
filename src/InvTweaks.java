@@ -181,7 +181,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             int currentSlot = -1;
             do {
                 // In SMP, we have to wait first for the inventory update
-                if (isMultiplayerWorld() && currentSlot == -1) {
+                if (currentSlot == -1) {
                     try {
                         Thread.sleep(InvTweaksConst.POLLING_DELAY);
                     } catch (InterruptedException e) {
@@ -197,7 +197,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 }
     
                 // The loop is only relevant in SMP (polling)
-            } while (isMultiplayerWorld() && currentSlot == -1);
+            } while (currentSlot == -1);
     
             if (currentSlot != -1) {
     
@@ -752,7 +752,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private void playClick() {
         if (!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS).equals(InvTweaksConfig.VALUE_FALSE)) {
-            playSoundAtEntity(getTheWorld(), getThePlayer(), "random.click", 0.2F, 1.8F);
+            playSound("random.click", 0.2F, 1.8F);
         }
     }
 

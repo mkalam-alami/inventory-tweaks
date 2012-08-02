@@ -30,15 +30,12 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     private static String LABEL_EQUIP_ARMOR;
     private static String LABEL_ENABLE_SOUNDS;
 
-    private static String SP_ONLY;
-    
     public InvTweaksGuiSettingsAdvanced(Minecraft mc, apm parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
         
         LABEL_SORT_ON_PICKUP = InvTweaksLocalization.get("invtweaks.settings.advanced.sortonpickup");
 		LABEL_EQUIP_ARMOR = InvTweaksLocalization.get("invtweaks.settings.advanced.autoequip");
 		LABEL_ENABLE_SOUNDS = InvTweaksLocalization.get("invtweaks.settings.advanced.sounds");
-		SP_ONLY = ": " + InvTweaksLocalization.get("invtweaks.settings.advanced.sortonpickup.soloonly");
     }
 
     public void w_() { /* initGui */
@@ -59,12 +56,6 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         InvTweaksGuiTooltipButton sortOnPickupBtn = new InvTweaksGuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, LABEL_SORT_ON_PICKUP), InvTweaksLocalization.get("invtweaks.settings.advanced.sortonpickup.tooltip"));
         controlList.add(sortOnPickupBtn);
-        if (obf.isMultiplayerWorld()) {
-            // Sorting on pickup unavailable in SMP
-            obf.setEnabled(sortOnPickupBtn, false);
-            obf.setDisplayString(sortOnPickupBtn, LABEL_SORT_ON_PICKUP + SP_ONLY);
-            sortOnPickupBtn.setTooltip(sortOnPickupBtn.getTooltip() + "\n(" + InvTweaksLocalization.get("invtweaks.settings.advanced.sortonpickup.tooltip.soloonly") + ")");
-        }
         
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(), p.getY(), computeBooleanButtonLabel(

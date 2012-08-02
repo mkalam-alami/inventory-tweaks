@@ -145,23 +145,18 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 				
 				public void run() {
 					
-					if (isMultiplayerWorld()) {
-						// Wait for the server to confirm that the
-						// slot is now empty
-						int pollingTime = 0;
-						setHasInventoryChanged(false);
-						while(!hasInventoryChanged()
-								&& pollingTime < InvTweaksConst.POLLING_TIMEOUT) {
-							trySleep(InvTweaksConst.POLLING_DELAY);
-						}
-						if (pollingTime < InvTweaksConst.AUTO_REFILL_DELAY)
-							trySleep(InvTweaksConst.AUTO_REFILL_DELAY - pollingTime);
-						if (pollingTime >= InvTweaksConst.POLLING_TIMEOUT)
-							log.warning("Autoreplace timout");
+					// Wait for the server to confirm that the
+					// slot is now empty
+					int pollingTime = 0;
+					setHasInventoryChanged(false);
+					while(!hasInventoryChanged()
+							&& pollingTime < InvTweaksConst.POLLING_TIMEOUT) {
+						trySleep(InvTweaksConst.POLLING_DELAY);
 					}
-					else {
-						trySleep(InvTweaksConst.AUTO_REFILL_DELAY);
-					}
+					if (pollingTime < InvTweaksConst.AUTO_REFILL_DELAY)
+						trySleep(InvTweaksConst.AUTO_REFILL_DELAY - pollingTime);
+					if (pollingTime >= InvTweaksConst.POLLING_TIMEOUT)
+						log.warning("Autoreplace timout");
 					
 					// In POLLING_DELAY ms, things might have changed
 					try {
@@ -169,8 +164,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (containerMgr.move(i, targetedSlot)) {
 								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS).equals(InvTweaksConfig.VALUE_FALSE)) {
-					    			playSoundAtEntity(getTheWorld(), getThePlayer(), 
-					    					"mob.chickenplop", 0.15F, 0.2F);
+								    playSound("mob.chickenplop", 1.3F, 0.5F);
 								}
 								// If item are swapped (like for mushroom soups),
 								// put the item back in the inventory if it is in the hotbar

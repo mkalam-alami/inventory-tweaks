@@ -16,9 +16,6 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.swing.plaf.metal.MetalIconFactory.FolderIcon16;
-
-
 import net.minecraft.client.Minecraft;
 
 /**

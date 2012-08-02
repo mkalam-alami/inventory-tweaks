@@ -26,6 +26,8 @@ public class NoModLoader_InvTweaks extends BaseMod_InvTweaks {
 	
     private InvTweaksObfuscation obf;
 
+    private boolean sortKeyWasDown = false;
+
 	@Override
 	public void load() {
 		Minecraft mc = ModLoader_InvTweaks.getMinecraftInstance();
@@ -70,7 +72,13 @@ public class NoModLoader_InvTweaks extends BaseMod_InvTweaks {
 
 	private void onTick() {
         if (Keyboard.isKeyDown(obf.getKeyCode(InvTweaks.SORT_KEY_BINDING))) {
-            instance.onSortingKeyPressed();
+            if (!sortKeyWasDown) {
+                sortKeyWasDown = true;
+                instance.onSortingKeyPressed();
+            }
+        }
+        else {
+            sortKeyWasDown = false;
         }
     }
 

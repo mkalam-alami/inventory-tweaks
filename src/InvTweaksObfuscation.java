@@ -22,13 +22,7 @@ public class InvTweaksObfuscation {
 	// Minecraft members
 
 	protected void addChatMessage(String message) {
-		if (mc.v != null) {
-			mc.v.a(message);
-		}
-	}
-	protected boolean isMultiplayerWorld() {
-	    return true; // FIXME?
-		//return mc.l();
+	    new aoh(mc).a(message);
 	}
     protected atf getThePlayer() { // EntityPlayer
         return mc.g;
@@ -280,8 +274,8 @@ public class InvTweaksObfuscation {
     
     // Other
 
-    protected void playSoundAtEntity(atc theWorld, atf thePlayer, String string, float f, float g) {
-        theWorld.a(thePlayer, string, f, g);
+    protected void playSound(String string, float f, float g) {
+        mc.A.a(string, f, g);
     }
     public long getCurrentTime() {
         return getTheWorld().D();

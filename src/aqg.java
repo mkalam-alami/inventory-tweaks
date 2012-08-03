@@ -377,8 +377,7 @@ public abstract class aqg extends apm {
         if (parampq != null)
             paramInt1 = parampq.d;
 
-        // Inventory Tweaks: filter default action if there's an InvTweaks
-        // shortcut to trigger
+        // Inventory Tweaks: filter default action if there's an InvTweaks shortcut to trigger
         if (InvTweaks.getConfigManager().getShortcutsHandler().computeShortcutToTrigger() == null) {
             this.e.b.a(this.d.c, paramInt1, paramInt2, paramBoolean, this.e.g);
         }

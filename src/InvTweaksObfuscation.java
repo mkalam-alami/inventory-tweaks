@@ -1,4 +1,7 @@
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
 
@@ -10,19 +13,36 @@ import net.minecraft.client.Minecraft;
  */
 public class InvTweaksObfuscation {
 
+    private static final Logger log = Logger.getLogger("InvTweaks");
+    
     protected Minecraft mc;
 
     protected InvTweaksModCompatibility mods;
+
+    private static Field creativeSlotField = null;
     
 	public InvTweaksObfuscation(Minecraft mc) {
 		this.mc = mc;
 		this.mods = new InvTweaksModCompatibility(this);
+
+		if (creativeSlotField == null) {
+            try {
+                creativeSlotField = aqo.class.getDeclaredField("b");
+                Field modifiersField = Field.class.getDeclaredField("modifiers");
+                modifiersField.setAccessible(true);
+                modifiersField.setInt(creativeSlotField, Modifier.PUBLIC);
+            }
+            catch (Exception e) {
+                creativeSlotField = null;
+                log.severe("Failed to make creative slot accessible: " +  e.getMessage());
+            }
+		}
 	}
 	
 	// Minecraft members
 
 	protected void addChatMessage(String message) {
-	    new aoh(mc).a(message);
+	    mc.v.b().a(message);
 	}
     protected atf getThePlayer() { // EntityPlayer
         return mc.g;
@@ -239,6 +259,17 @@ public class InvTweaksObfuscation {
         return slot.d();
     }
     protected int getSlotNumber(pq slot) {
+        try {
+            // Creative slots don't set the "d" property, serve as a proxy for true slots
+            if (slot instanceof aqo) {
+                pq underlyingSlot = (pq) creativeSlotField.get(slot);
+                if (underlyingSlot != null) {
+                    return underlyingSlot.d;
+                }
+            }
+        } catch (Exception e) {
+            log.warning("Failed to access creative slot number");
+        }
         return slot.d;
     }
     protected ri getStack(pq slot) {
@@ -329,7 +360,8 @@ public class InvTweaksObfuscation {
         		|| isGuiFurnace(guiScreen)
                 || isGuiBrewingStand(guiScreen)
                 || isGuiEnchantmentTable(guiScreen)
-                || isGuiTrading(guiScreen);
+                || isGuiTrading(guiScreen)
+                || (isGuiInventoryCreative(guiScreen) && getSlots(getContainer((aqg) guiScreen)).size() == 46);
     }
 	
     protected boolean isGuiContainer(Object o) { // GuiContainer (abstract class)
@@ -345,7 +377,10 @@ public class InvTweaksObfuscation {
         return o != null && o.getClass().equals(aqx.class);
     }
     protected boolean isGuiInventory(Object o) { // GuiInventory
-        return o != null && (o.getClass().equals(aqm.class) || o.getClass().equals(aqt.class));
+        return o != null && o.getClass().equals(aqt.class);
+    }
+    protected boolean isGuiInventoryCreative(Object o) { // GuiInventoryCreative
+        return o != null && o.getClass().equals(aqm.class);
     }
     protected boolean isGuiEditSign(Object o) { // GuiEditSign
         return o != null && o.getClass().equals(aqw.class);

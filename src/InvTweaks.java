@@ -563,10 +563,12 @@ public class InvTweaks extends InvTweaksObfuscation {
                 
                 // Inventory button
                 if (!isValidChest) {
+                    int offsetX = isGuiContainerCreative(guiContainer) ? 19 : 14,
+                        offsetY = isGuiContainerCreative(guiContainer) ? 5 : 4;
                     controlList.add(new InvTweaksGuiSettingsButton(
                             cfgManager, InvTweaksConst.JIMEOWAN_ID,
-                            getGuiX(guiContainer) + getGuiWidth(guiContainer) - 14,
-                            getGuiY(guiContainer) + 4,
+                            getGuiX(guiContainer) + getGuiWidth(guiContainer) - offsetX,
+                            getGuiY(guiContainer) + offsetY,
                             w, h, "...",
                             InvTweaksLocalization.get("invtweaks.button.settings.tooltip")));
                 }
@@ -659,6 +661,11 @@ public class InvTweaks extends InvTweaksObfuscation {
         
         // Check open GUI
         if (!(isValidChest(guiScreen) || isStandardInventory(guiScreen))) {
+            return;
+        }
+        
+        // FIXME Shortcuts are currently buggy within creative inventory
+        if (isGuiInventoryCreative(guiScreen)) {
             return;
         }
         

@@ -118,7 +118,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         try {
     		// Init shortcut
     		ShortcutConfig shortcutToTrigger = computeShortcutToTrigger();
-    		
     		if (shortcutToTrigger != null) {
     	        int ex = Mouse.getEventX(), ey = Mouse.getEventY();
     	        

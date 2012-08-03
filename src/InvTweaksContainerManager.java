@@ -61,6 +61,12 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             slotRefs.put(InvTweaksContainerSection.ARMOR, slots.subList(5, 9));
         }
         
+        // Creative mode inventory: 4 armor slots, then inventory
+        else if (isContainerCreative(container)) {
+            slotRefs.put(InvTweaksContainerSection.ARMOR, slots.subList(5, 9));
+            size--; // Last slot is something else than the inventory (maybe the trash)
+        }
+        
         // Chest/Dispenser
         else if (isContainerChest(container)
                 || isContainerDispenser(container)) {

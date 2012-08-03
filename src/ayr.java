@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
 
@@ -14,6 +15,9 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
 public class ayr extends apm {
+    
+    private static final Logger log = Logger.getLogger("InvTweaks");
+    
     private static final Random a = new Random();
 
     private float b = 0.0F;
@@ -33,8 +37,9 @@ public class ayr extends apm {
         try {
             ModLoader_InvTweaks.init();
         } catch (Exception e) {
-            System.out.println("Failed to initialize fake ModLoader by InvTweaks" + e.getMessage());
+            log.severe("Failed to initialize fake ModLoader by InvTweaks" + e.getMessage());
         }
+        
         BufferedReader localBufferedReader = null;
         try {
             ArrayList localArrayList = new ArrayList();

@@ -127,7 +127,12 @@ public class InvTweaksModCompatibility {
 	}
 
 	private static final boolean is(apm guiScreen, String className) {
-        return guiScreen.getClass().getSimpleName().contains(className);
+	    try {
+	        return guiScreen.getClass().getSimpleName().contains(className);
+	    }
+	    catch (Exception e) {
+	        return false;
+	    }
     }
 
 

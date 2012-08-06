@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 public class InvTweaksConst {
 
     // Mod version
-    public static final String MOD_VERSION = "1.42 Beta (1.3.1)";
+    public static final String MOD_VERSION = "1.42 (1.3.1)";
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs
@@ -20,10 +20,8 @@ public class InvTweaksConst {
     public static final int AUTO_REFILL_DELAY = 200;
     public static final int POLLING_DELAY = 3;
     public static final int POLLING_TIMEOUT = 1500;
-    public static final int SORTING_TIMEOUT = 2999; // > POLLING_TIMEOUT
     public static final int CHEST_ALGORITHM_SWAP_MAX_INTERVAL = 2000;
     public static final int TOOLTIP_DELAY = 800;
-    public static final long CRAFTING_DELAY = 100;
 
     // File constants
     public static final String MINECRAFT_DIR = getMinecraftDir();

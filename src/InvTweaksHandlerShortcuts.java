@@ -148,13 +148,13 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         ShortcutConfig shortcutConfig = new ShortcutConfig();
         
         // If a valid and not empty slot is clicked
-        if (slot != null && hasStack(slot)) {
+        if (slot != null && (hasStack(slot) || getHoldStack() != null)) {
             int slotNumber = getSlotNumber(slot);
             
             // Set shortcut origin
             shortcutConfig.fromSection = container.getSlotSection(slotNumber);                
             shortcutConfig.fromIndex = container.getSlotIndex(slotNumber);             
-            shortcutConfig.fromStack = copy(getStack(slot));
+            shortcutConfig.fromStack = (hasStack(slot)) ? copy(getStack(slot)) : copy(getHoldStack());
             
             // Compute shortcut type
             if (isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != null) {
@@ -305,6 +305,22 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     }
 
     private void runShortcut(ShortcutConfig shortcut) throws TimeoutException {
+        // Try to put held item down
+        if (getHoldStack() != null) {
+            pq slot = container.getSlotAtMousePosition();
+            if (slot != null) {
+                int slotNumber = getSlotNumber(slot);
+                System.out.println("go" + container.getSlotIndex(slotNumber));
+                container.putHoldItemDown(container.getSlotSection(slotNumber), container.getSlotIndex(slotNumber));
+                if (getHoldStack() != null) {
+                    return;
+                }
+            }
+            else {
+                return;
+            }
+        }
+        
         synchronized(this) {
             if (shortcut.type == InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
                 container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection, shortcut.toIndex);

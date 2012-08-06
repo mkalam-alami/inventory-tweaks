@@ -79,6 +79,8 @@ public class InvTweaks extends InvTweaksObfuscation {
     */
     private long sortingKeyPressedDate = 0;
     private long sortingKeyCodeCache = -1;
+
+    private boolean itemPickupPending = false;
     
     /**
      * Creates an instance of the mod, and loads the configuration
@@ -179,27 +181,16 @@ public class InvTweaks extends InvTweaksObfuscation {
             // We're looking for a brand new stack in the hotbar
             // (not an existing stack whose amount has been increased)
             int currentSlot = -1;
-            do {
-                // In SMP, we have to wait first for the inventory update
-                if (currentSlot == -1) {
-                    try {
-                        Thread.sleep(InvTweaksConst.POLLING_DELAY);
-                    } catch (InterruptedException e) {
-                        // Do nothing (sleep interrupted)
-                    }
+            for (int i = 0; i < InvTweaksConst.INVENTORY_HOTBAR_SIZE; i++) {
+                ri currentHotbarStack = containerMgr.getItemStack(i + 27);
+                // Don't move already started stacks
+                if (currentHotbarStack != null && getAnimationsToGo(currentHotbarStack) == 5 && hotbarClone[i] == null) {
+                    currentSlot = i + 27;
                 }
-                for (int i = 0; i < InvTweaksConst.INVENTORY_HOTBAR_SIZE; i++) {
-                    ri currentHotbarStack = containerMgr.getItemStack(i + 27);
-                    // Don't move already started stacks
-                    if (currentHotbarStack != null && getAnimationsToGo(currentHotbarStack) == 5 && hotbarClone[i] == null) {
-                        currentSlot = i + 27;
-                    }
-                }
-    
-                // The loop is only relevant in SMP (polling)
-            } while (currentSlot == -1);
-    
+            }
+            
             if (currentSlot != -1) {
+                itemPickupPending = false;
     
                 // Find preffered slots
                 List<Integer> prefferedPositions = new LinkedList<Integer>();
@@ -254,6 +245,10 @@ public class InvTweaks extends InvTweaksObfuscation {
         } catch (Exception e) {
             logInGameError("Failed to move picked up stack", e);
         }
+    }
+
+    public void setItemPickupPending(boolean itemPickupPending) {
+        this.itemPickupPending = itemPickupPending;
     }
 
     public void logInGame(String message) {
@@ -315,6 +310,9 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
         
         // Clone the hotbar to be able to monitor changes on it
+        if (itemPickupPending) {
+            onItemPickup();
+        }
         apm currentScreen = getCurrentScreen();
         if (currentScreen == null || isGuiInventory(currentScreen)) {
             cloneHotbar();

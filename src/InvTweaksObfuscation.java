@@ -42,7 +42,9 @@ public class InvTweaksObfuscation {
 	// Minecraft members
 
 	protected void addChatMessage(String message) {
-	    mc.v.b().a(message);
+	    if (mc.v != null) {
+	        mc.v.b().a(message);
+	    }
 	}
     protected atf getThePlayer() { // EntityPlayer
         return mc.g;

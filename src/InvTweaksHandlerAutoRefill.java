@@ -149,9 +149,12 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 					// slot is now empty
 					int pollingTime = 0;
 					setHasInventoryChanged(false);
-					while(!hasInventoryChanged()
+					while(getThePlayer() != null && !hasInventoryChanged()
 							&& pollingTime < InvTweaksConst.POLLING_TIMEOUT) {
 						trySleep(InvTweaksConst.POLLING_DELAY);
+					}
+					if (getThePlayer() == null) {
+					    return; // Game closed
 					}
 					if (pollingTime < InvTweaksConst.AUTO_REFILL_DELAY)
 						trySleep(InvTweaksConst.AUTO_REFILL_DELAY - pollingTime);

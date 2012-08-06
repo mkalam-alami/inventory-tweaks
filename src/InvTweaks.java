@@ -757,7 +757,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private void playClick() {
         if (!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS).equals(InvTweaksConfig.VALUE_FALSE)) {
-            playSound("random.click", 0.2F, 1.8F);
+            playSound("random.click", 0.6F, 1.8F);
         }
     }
 

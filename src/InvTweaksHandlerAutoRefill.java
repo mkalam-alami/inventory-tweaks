@@ -167,7 +167,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (containerMgr.move(i, targetedSlot)) {
 								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS).equals(InvTweaksConfig.VALUE_FALSE)) {
-								    playSound("mob.chickenplop", 1.3F, 0.5F);
+								    playSound("mob.chickenplop", 1.4F, 0.5F);
 								}
 								// If item are swapped (like for mushroom soups),
 								// put the item back in the inventory if it is in the hotbar

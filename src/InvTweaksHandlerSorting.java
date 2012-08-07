@@ -241,6 +241,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                             int stackToMove = i;
                             for (int j = 0; j < preferredSlots.length; j++) {
                                 int k = preferredSlots[j];
+                                
+                                // Move the stack!
                                 int moveResult = move(stackToMove, k, rulePriority);
                                 if (moveResult != -1) {
                                     if (moveResult == k) {

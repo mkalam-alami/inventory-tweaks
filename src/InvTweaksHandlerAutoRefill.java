@@ -62,7 +62,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
     					InvTweaksConst.INVENTORY_SIZE, InvTweaksConst.INVENTORY_ROW_SIZE));
     		}
     		for (InvTweaksConfigSortingRule rule : rules) {
-    			if (rule.getType() == InvTweaksConfigSortingRuleType.TILE 
+    			if (rule.getType() == InvTweaksConfigSortingRuleType.SLOT 
     			        || rule.getType() == InvTweaksConfigSortingRuleType.COLUMN) {
     				for (int preferredSlot : rule.getPreferredSlots()) {
     					if (slot == preferredSlot) {

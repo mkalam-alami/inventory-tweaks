@@ -86,7 +86,7 @@ public class InvTweaksConfigInventoryRuleset {
 								words[0], InvTweaksConst.INVENTORY_SIZE,
 								InvTweaksConst.INVENTORY_ROW_SIZE);
 					int lockPriority = InvTweaksConfigSortingRule.
-					        getRuleType(words[0],InvTweaksConst.INVENTORY_ROW_SIZE).getHighestPriority();
+					        getRuleType(words[0],InvTweaksConst.INVENTORY_ROW_SIZE).getLowestPriority() - 1;
 					for (int i : newLockedSlots) {
 						lockPriorities[i] = lockPriority;
 					}

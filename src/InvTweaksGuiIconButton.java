@@ -28,8 +28,8 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
         }
         
         // Draw background (use the 4 corners of the texture to fit best its small size)
-        GL11.glBindTexture(3553, getTexture(minecraft, "/gui/gui.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glBindTexture(3553, getTexture(minecraft, "/gui/gui.png"));
         int k = getHoverState(isMouseOverButton(i, j));
         drawTexturedModalRect(getXPosition(), getYPosition(), 1, 46 + k * 20 + 1, getWidth() / 2, getHeight() / 2);
         drawTexturedModalRect(getXPosition(), getYPosition() + getHeight() / 2, 1, 46 + k * 20 + 20 - getHeight() / 2 - 1, getWidth() / 2, getHeight() / 2);

@@ -561,12 +561,10 @@ public class InvTweaks extends InvTweaksObfuscation {
                 
                 // Inventory button
                 if (!isValidChest) {
-                    int offsetX = isGuiContainerCreative(guiContainer) ? 19 : 14,
-                        offsetY = isGuiContainerCreative(guiContainer) ? 5 : 4;
                     controlList.add(new InvTweaksGuiSettingsButton(
                             cfgManager, InvTweaksConst.JIMEOWAN_ID,
-                            getGuiX(guiContainer) + getGuiWidth(guiContainer) - offsetX,
-                            getGuiY(guiContainer) + offsetY,
+                            getGuiX(guiContainer) + getGuiWidth(guiContainer) - 15,
+                            getGuiY(guiContainer) + 5,
                             w, h, "...",
                             InvTweaksLocalization.get("invtweaks.button.settings.tooltip")));
                 }
@@ -631,6 +629,26 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                     }
                 }
+            }
+        }
+        
+        else {
+            // Remove "..." button from non-survival tabs of the creative screen
+            if (isGuiContainerCreative(guiScreen)) {
+                List<Object> controlList = getControlList(guiScreen);
+                aog buttonToRemove = null;
+                for (Object o : controlList) {
+                    if (isGuiButton(o)) {
+                        if (getId(asGuiButton(o)) == InvTweaksConst.JIMEOWAN_ID) {
+                            buttonToRemove = asGuiButton(o);
+                            break;
+                        }
+                    }
+                }
+                if (buttonToRemove != null) {
+                    controlList.remove(buttonToRemove);
+                }
+               
             }
         }
 

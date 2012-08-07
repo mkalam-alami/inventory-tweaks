@@ -115,7 +115,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         InvTweaksContainerManager globalContainer = new InvTweaksContainerManager(mc);
 
         // Put hold item down
-        if (getHoldStack() != null) {
+        if (getHeldStack() != null) {
             int emptySlot = globalContainer.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
             if (emptySlot != -1) {
                 globalContainer.putHoldItemDown(InvTweaksContainerSection.INVENTORY, emptySlot);
@@ -284,7 +284,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
 
         //// Put hold item down, just in case
-        if (getHoldStack() != null) {
+        if (getHeldStack() != null) {
             int emptySlot = globalContainer.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
             if (emptySlot != -1) {
                 globalContainer.putHoldItemDown(InvTweaksContainerSection.INVENTORY, emptySlot);
@@ -462,7 +462,12 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 // in the case of categories defined by a range of IDs
                 if (getItemID(iStack) == getItemID(jStack)) {
                     if (getItemDamage(iStack) != getItemDamage(jStack)) {
-                        return getItemDamage(iStack) > getItemDamage(jStack);
+                        if (isItemStackDamageable(iStack)) {
+                            return getItemDamage(iStack) > getItemDamage(jStack);
+                        }
+                        else {
+                            return getItemDamage(iStack) < getItemDamage(jStack);
+                        }
                     }
                     else {
                         return getStackSize(iStack) > getStackSize(jStack);

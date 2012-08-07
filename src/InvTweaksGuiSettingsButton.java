@@ -50,7 +50,7 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
             try {
                 containerMgr = new InvTweaksContainerSectionManager(
                         minecraft, InvTweaksContainerSection.INVENTORY);
-                if (obf.getHoldStack() != null) {
+                if (obf.getHeldStack() != null) {
                     try {
                         // Put hold item down
                         for (int k = containerMgr.getSize() - 1; k >= 0; k--) {

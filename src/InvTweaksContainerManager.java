@@ -153,7 +153,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
 
         // Put hold item down
-        if (getHoldStack() != null) {
+        if (getHeldStack() != null) {
             int firstEmptyIndex = getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
             if (firstEmptyIndex != -1) {
                 leftClick(InvTweaksContainerSection.INVENTORY, firstEmptyIndex);
@@ -192,7 +192,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         else {
             leftClick(srcSection, srcIndex);
             leftClick(destSection, destIndex);
-            if (getHoldStack() != null) {
+            if (getHeldStack() != null) {
                 // FIXME What if we can't put the item back in the source? (for example crafting/furnace output)
                 leftClick(srcSection, srcIndex);
                 return false;
@@ -263,8 +263,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @throws Exception
      */
     public boolean putHoldItemDown(InvTweaksContainerSection destSection, int destIndex) {
-        ri holdStack = getHoldStack();
-        if (holdStack != null) {
+        ri heldStack = getHeldStack();
+        if (heldStack != null) {
         	if (getItemStack(destSection, destIndex) == null) {
         		click(destSection, destIndex, false);
                 return true;

@@ -112,13 +112,13 @@ public class InvTweaksObfuscation {
 	protected void setHasInventoryChanged(boolean value) {
 		getInventoryPlayer().e = value;
 	}
-	protected void setHoldStack(ri stack) {
+	protected void setHeldStack(ri stack) {
 		getInventoryPlayer().b(stack); // setItemStack
 	}
 	protected boolean hasInventoryChanged() {
 		return getInventoryPlayer().e;
 	}
-	protected ri getHoldStack() {
+	protected ri getHeldStack() {
 		return getInventoryPlayer().o(); // getItemStack
 	}
 	protected ri getFocusedStack() {
@@ -339,7 +339,7 @@ public class InvTweaksObfuscation {
         return getLocalizationService().b(key);
     }
     public static ri getHoldStackStatic(Minecraft mc) {
-        return new InvTweaksObfuscation(mc).getHoldStack();
+        return new InvTweaksObfuscation(mc).getHeldStack();
     }
     public static apm getCurrentScreenStatic(Minecraft mc) {
         return new InvTweaksObfuscation(mc).getCurrentScreen();

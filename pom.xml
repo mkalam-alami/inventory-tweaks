@@ -99,18 +99,6 @@
             </properties>
         </profile>
         <profile>
-            <id>minecraft-path-mac</id>
-            <activation>
-                <os>
-                    <family>mac</family> <!-- Untested -->
-                </os>
-            </activation>
-            <properties>
-                <minecraft.path>${user.home}:Library:Application\ Support:minecraft</minecraft.path>
-                <minecraft.bin.path>${minecraft.path}:bin</minecraft.bin.path>
-            </properties>
-        </profile>
-        <profile>
             <id>minecraft-path-linux</id>
             <activation>
                 <os>
@@ -122,7 +110,20 @@
                 <minecraft.bin.path>${minecraft.path}bin/</minecraft.bin.path>
             </properties>
         </profile>
-    </profiles>
+		<profile>
+			<id>minecraft-path-mac</id>
+			<activation>
+				<os>
+					<family>unix</family>
+					<name>mac os x</name>
+				</os>
+			</activation>
+			<properties>
+				<minecraft.path>${user.home}/Library/Application Support/minecraft/</minecraft.path>
+				<minecraft.bin.path>${minecraft.path}bin/</minecraft.bin.path>
+			</properties>
+		</profile>
+	</profiles>
 
     <dependencies>
         <dependency>

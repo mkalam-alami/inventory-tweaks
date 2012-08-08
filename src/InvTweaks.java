@@ -559,6 +559,9 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             if (!customButtonsAdded) {
                 
+                // Check for custom button texture
+                boolean customTextureAvailable = hasTexture("/gui/button10px.png");
+                
                 // Inventory button
                 if (!isValidChest) {
                     controlList.add(new InvTweaksGuiSettingsButton(
@@ -566,7 +569,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                             getGuiX(guiContainer) + getGuiWidth(guiContainer) - 15,
                             getGuiY(guiContainer) + 5,
                             w, h, "...",
-                            InvTweaksLocalization.get("invtweaks.button.settings.tooltip")));
+                            InvTweaksLocalization.get("invtweaks.button.settings.tooltip"),
+                            customTextureAvailable));
                 }
 
                 // Chest buttons
@@ -593,7 +597,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                             (isChestWayTooBig) ? x + 22 : x - 1,
                             (isChestWayTooBig) ? y - 3 : y,
                             w, h, "...", 
-                            InvTweaksLocalization.get("invtweaks.button.settings.tooltip")));
+                            InvTweaksLocalization.get("invtweaks.button.settings.tooltip"),
+                            customTextureAvailable));
 
                     // Sorting buttons
                     if (!config.getProperty(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS).equals("false")) {
@@ -606,7 +611,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 (isChestWayTooBig) ? y + 12 : y,
                                 w, h, "h", InvTweaksLocalization.get("invtweaks.button.chest3.tooltip"),
                                 InvTweaksHandlerSorting.ALGORITHM_HORIZONTAL,
-                                rowSize);
+                                rowSize,
+                                customTextureAvailable);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(
@@ -615,7 +621,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 (isChestWayTooBig) ? y + 25 : y,
                                 w, h, "v", InvTweaksLocalization.get("invtweaks.button.chest2.tooltip"),
                                 InvTweaksHandlerSorting.ALGORITHM_VERTICAL,
-                                rowSize);
+                                rowSize,
+                                customTextureAvailable);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(
@@ -624,7 +631,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 (isChestWayTooBig) ? y + 38 : y,
                                 w, h, "s", InvTweaksLocalization.get("invtweaks.button.chest1.tooltip"),
                                 InvTweaksHandlerSorting.ALGORITHM_DEFAULT,
-                                rowSize);
+                                rowSize,
+                                customTextureAvailable);
                         controlList.add(button);
 
                     }

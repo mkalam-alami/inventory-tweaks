@@ -1,6 +1,8 @@
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
@@ -19,24 +21,18 @@ public class InvTweaksObfuscation {
 
     protected InvTweaksModCompatibility mods;
 
-    private static Field creativeSlotField = null;
+    private static Map<String, Field> fieldsMap = new HashMap<String, Field>();
+    
+    static {
+        // CreativeSlot.underlyingSlot
+        makeFieldPublic(aqo.class, "b");
+        // RenderEngine.texturePack
+        makeFieldPublic(ave.class, "k");
+    }
     
 	public InvTweaksObfuscation(Minecraft mc) {
 		this.mc = mc;
 		this.mods = new InvTweaksModCompatibility(this);
-
-		if (creativeSlotField == null) {
-            try {
-                creativeSlotField = aqo.class.getDeclaredField("b");
-                Field modifiersField = Field.class.getDeclaredField("modifiers");
-                modifiersField.setAccessible(true);
-                modifiersField.setInt(creativeSlotField, Modifier.PUBLIC);
-            }
-            catch (Exception e) {
-                creativeSlotField = null;
-                log.severe("Failed to make creative slot accessible: " +  e.getMessage());
-            }
-		}
 	}
 	
 	// Minecraft members
@@ -264,7 +260,7 @@ public class InvTweaksObfuscation {
         try {
             // Creative slots don't set the "d" property, serve as a proxy for true slots
             if (slot instanceof aqo) {
-                pq underlyingSlot = (pq) creativeSlotField.get(slot);
+                pq underlyingSlot = (pq) getThroughReflection(aqo.class, "b", slot);
                 if (underlyingSlot != null) {
                     return underlyingSlot.d;
                 }
@@ -316,15 +312,18 @@ public class InvTweaksObfuscation {
     protected void playSound(String string, float f, float g) {
         mc.A.a(string, f, g);
     }
-    public long getCurrentTime() {
+    protected long getCurrentTime() {
         return getTheWorld().D();
     }
-
     protected int getKeyCode(ane w) { // KeyBinding
         return w.d;
     }
     protected int getSpecialChestRowSize(aqg guiContainer, int defaultValue) {
     	return mods.getSpecialChestRowSize(guiContainer, defaultValue);
+    }
+    protected boolean hasTexture(String texture) {
+        ayi texturePack = (ayi) getThroughReflection(ave.class, "k", mc.o);
+        return texturePack.e().a(texture) != null;
     }
 
     // Static access
@@ -438,6 +437,35 @@ public class InvTweaksObfuscation {
 
     protected boolean isBasicSlot(Object o) { // Slot
         return o != null && o.getClass().equals(pq.class);
+    }
+    
+    // Reflection utils
+    
+    protected static void makeFieldPublic(Class<?> c, String field) {
+        try {
+            Field f = c.getDeclaredField(field);
+            f.setAccessible(true);
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(f, Modifier.PUBLIC);
+            fieldsMap.put(c.getName() + field, f);
+        }
+        catch (Exception e) {
+            log.severe("Failed to make " + c.getName() + "." + field + " accessible: " +  e.getMessage());
+        }
+    }
+   
+    /**
+     * Access value from any field, even private.
+     * Field must be made public through the makeFieldPublic() function first.
+     * @return
+     */
+    protected static Object getThroughReflection(Class<?> c, String field, Object instance) {
+        try {
+            return fieldsMap .get(c.getName() + field).get(instance);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

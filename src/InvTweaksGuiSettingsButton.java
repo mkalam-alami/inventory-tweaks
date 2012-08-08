@@ -12,11 +12,11 @@ import net.minecraft.client.Minecraft;
 public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
-    
+
     public InvTweaksGuiSettingsButton(InvTweaksConfigManager cfgManager,
             int id, int x, int y, int w, int h,
-            String displayString, String tooltip) {
-        super(cfgManager, id, x, y, w, h, displayString, tooltip);
+            String displayString, String tooltip, boolean useCustomTexture) {
+        super(cfgManager, id, x, y, w, h, displayString, tooltip, useCustomTexture);
     }
 
     public void a(Minecraft minecraft, int i, int j) {

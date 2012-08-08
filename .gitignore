@@ -16,3 +16,4 @@ minecraft/net/minecraft/src/*.java
 .classpath
 .project
 .settings
+.pydevproject

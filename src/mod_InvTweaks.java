@@ -25,7 +25,17 @@ public class mod_InvTweaks extends BaseMod {
 	private InvTweaks instance;
 	
     private InvTweaksObfuscation obf;
+    
+    @Override
+    public String getName() {
+        return "Inventory Tweaks";
+    }
 
+    @Override
+    public String getVersion() {
+        return InvTweaksConst.MOD_VERSION;
+    }
+    
 	@Override
 	public void load() {
 		Minecraft mc = ModLoader.getMinecraftInstance();
@@ -41,13 +51,8 @@ public class mod_InvTweaks extends BaseMod {
 		instance = new InvTweaks(mc);
 	}
 
-	@Override
-	public String getVersion() {
-		return InvTweaksConst.MOD_VERSION;
-	}
-	
     @Override
-    public void keyboardEvent(ane keybinding) {
+    public void keyboardEvent(anf keybinding) {
         instance.onSortingKeyPressed();
     }
     
@@ -55,9 +60,6 @@ public class mod_InvTweaks extends BaseMod {
 	 * Called by ModLoader for each tick during the game.
 	 */
 	public boolean onTickInGame(float clock, Minecraft minecraft) {
-	    if (Mouse.isButtonDown(0)) {
-	    System.out.println(obf.getHeldStack());
-	    }
 		if (obf.getCurrentScreen() != null) {
             instance.onTickInGUI(obf.getCurrentScreen());
 		}
@@ -70,7 +72,7 @@ public class mod_InvTweaks extends BaseMod {
     /**
 	 * Called by ModLoader when an item has been picked up.
 	 */
-	public void onItemPickup(of player, ri itemStack) {
+	public void onItemPickup(og player, rj itemStack) {
 		instance.setItemPickupPending(true);
 	}
 

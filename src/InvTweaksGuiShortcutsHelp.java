@@ -6,16 +6,16 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
 
-public class InvTweaksGuiShortcutsHelp extends apm /* GuiScreen */ {
+public class InvTweaksGuiShortcutsHelp extends apn /* GuiScreen */ {
     
     private final static int ID_DONE = 0;
 
     private InvTweaksObfuscation obf;
-    private apm parentScreen;
+    private apn parentScreen;
     private InvTweaksConfig config;
     
     public InvTweaksGuiShortcutsHelp(Minecraft mc, 
-            apm parentScreen, InvTweaksConfig config) {
+            apn parentScreen, InvTweaksConfig config) {
         this.obf = new InvTweaksObfuscation(mc);
         this.parentScreen = parentScreen;
         this.config = config;
@@ -24,7 +24,7 @@ public class InvTweaksGuiShortcutsHelp extends apm /* GuiScreen */ {
     public void w_() { /* initGui */
         // Create Done button
         List<Object> controlList = new LinkedList<Object>(); /* GuiButton */
-        controlList.add(new aog(ID_DONE, 
+        controlList.add(new aoh(ID_DONE, 
                 obf.getWindowWidth(this) / 2 - 100, 
                 obf.getWindowHeight(this) / 6 + 168, "Done"));
         obf.setControlList(this, controlList);
@@ -81,7 +81,7 @@ public class InvTweaksGuiShortcutsHelp extends apm /* GuiScreen */ {
         super.a(i, j, f); // drawScreen
     }
 
-    protected void a(aog guibutton) { /* actionPerformed */
+    protected void a(aoh guibutton) { /* actionPerformed */
 
         switch (obf.getId(guibutton)) {
 

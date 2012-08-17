@@ -39,7 +39,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
 		InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(
 		        mc, InvTweaksContainerSection.INVENTORY);
-		ri candidateStack, replacementStack = null;
+		rj candidateStack, replacementStack = null;
 		int replacementStackSlot = -1;
 		
 		List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<InvTweaksConfigSortingRule>();
@@ -163,7 +163,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 					
 					// In POLLING_DELAY ms, things might have changed
 					try {
-						ri stack = containerMgr.getItemStack(i);
+						rj stack = containerMgr.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (containerMgr.move(i, targetedSlot)) {
 								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS).equals(InvTweaksConfig.VALUE_FALSE)) {

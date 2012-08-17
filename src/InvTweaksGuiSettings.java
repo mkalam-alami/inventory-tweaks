@@ -43,7 +43,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private boolean sortMappingEdition = false;
     private int sortMappingId;
     
-    public InvTweaksGuiSettings(Minecraft mc, apm parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiSettings(Minecraft mc, apn parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
         
         labelMiddleClick = InvTweaksLocalization.get("invtweaks.settings.middleclick");
@@ -64,9 +64,9 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new aog(ID_EDITRULES, p.getX() + 55, obf.getWindowHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
-        controlList.add(new aog(ID_EDITTREE, p.getX() + 55, obf.getWindowHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
-        controlList.add(new aog(ID_HELP, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
+        controlList.add(new aoh(ID_EDITRULES, p.getX() + 55, obf.getWindowHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
+        controlList.add(new aoh(ID_EDITTREE, p.getX() + 55, obf.getWindowHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
+        controlList.add(new aoh(ID_HELP, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
 
         // Create settings buttons
 
@@ -116,7 +116,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
             	if (obf.isGuiButton(o)) {
-            	    aog guiButton = (aog) o;
+            	    aoh guiButton = (aoh) o;
 	                if (obf.getId(guiButton) >= ID_EDITRULES && obf.getId(guiButton) <= ID_HELP) {
 	                    obf.setEnabled(guiButton, false);
 	                }
@@ -129,7 +129,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
     }
     
-    protected void a(aog guibutton) { /* actionPerformed */
+    protected void a(aoh guibutton) { /* actionPerformed */
     	super.a(guibutton);
     
         switch (obf.getId(guibutton)) {
@@ -211,7 +211,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
     private int getSortMappingId() {
         int sortMappingId = 0;
-        for (ane mapping : obf.getRegisteredBindings()) {
+        for (anf mapping : obf.getRegisteredBindings()) {
             if (mapping == InvTweaks.SORT_KEY_BINDING) {
                 break;
             }

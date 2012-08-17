@@ -3,7 +3,7 @@
 Latest changes
 ==============
 
-`[08.17.2012] 1.43 (1.3.2) <???>`_
+`[08.17.2012] 1.43 (1.3.2) <http://adf.ly/ByCxb>`_
  * Updated mod to Minecraft 1.3.2
  * Added button to define the sort key in the "..." menu
  * Added ability for texture packs to have custom buttons for the mod

@@ -1,10 +1,15 @@
 .. image:: _static/img/dl.png
   :align: left
+  
+`Inventory Tweaks 1.43 <http://adf.ly/ByCxb>`_ for **Minecraft 1.3.2** (requires `ModLoader <http://www.minecraftforum.net/topic/75440->`_ or `Forge <http://www.minecraftforge.net/forum/index.php/board,3.0.html>`_) | `Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.43-1.3.2.zip>`_
 
-`Inventory Tweaks 1.42, No ModLoader <http://adf.ly/BRJJv>`_ for **Minecraft 1.3.1** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.42-1.3.1-NOMODLOADER.zip>`_)
+
+.. image:: _static/img/dl.png
+  :align: left
+
+`Inventory Tweaks 1.42 <http://adf.ly/Bb415>`_ for **Minecraft 1.3.1** (requires `ModLoader <http://www.minecraftforum.net/topic/75440->`_ or `Forge <http://www.minecraftforge.net/forum/index.php/board,3.0.html>`_) | `Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.42-1.3.2.zip>`_
 
 .. image:: _static/img/dl.png
   :align: left
   
-`Inventory Tweaks 1.41b <http://adf.ly/6idxE>`_ for **Minecraft 1.2.4/1.2.5** (`Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.41b-1.2.4.zip>`_) (requires `ModLoader <http://www.minecraftforum.net/topic/75440->`_)
-
+`Inventory Tweaks 1.41b <http://adf.ly/6idxE>`_ for **Minecraft 1.2.4/1.2.5** (requires `ModLoader <http://www.minecraftforum.net/topic/75440->`_ or `Forge <http://www.minecraftforge.net/forum/index.php/board,3.0.html>`_) | `Mirror <http://dl.dropbox.com/u/7592975/InvTweaks/InvTweaks-1.41b-1.2.4.zip>`_

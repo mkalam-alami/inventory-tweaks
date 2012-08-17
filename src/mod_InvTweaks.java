@@ -2,6 +2,8 @@ import invtweaks.InvTweaksConst;
 
 import java.util.logging.Logger;
 
+import org.lwjgl.input.Mouse;
+
 import net.minecraft.client.Minecraft;
 
 /**
@@ -53,6 +55,9 @@ public class mod_InvTweaks extends BaseMod {
 	 * Called by ModLoader for each tick during the game.
 	 */
 	public boolean onTickInGame(float clock, Minecraft minecraft) {
+	    if (Mouse.isButtonDown(0)) {
+	    System.out.println(obf.getHeldStack());
+	    }
 		if (obf.getCurrentScreen() != null) {
             instance.onTickInGUI(obf.getCurrentScreen());
 		}

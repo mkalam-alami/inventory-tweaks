@@ -3,6 +3,13 @@
 Latest changes
 ==============
 
+`[???] 1.43 (1.3.1) <???>`_
+ * Added button to define the sort key in the "..." menu
+ * Added ability for texture packs to have custom buttons for the mod
+ * Fixed sorting by damage
+ * Made rectangle rules priorities more intuitive
+ * Increased the sounds volume a bit
+    
 `[08.02.2012] 1.42 (1.3.1) <http://adf.ly/BRJJv>`_
  * Updated mod & item tree to Minecraft 1.3.1
  * Make the item tree support damage ranges (dmin/dmax)

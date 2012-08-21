@@ -2,8 +2,6 @@ import invtweaks.InvTweaksConst;
 
 import java.util.logging.Logger;
 
-import org.lwjgl.input.Mouse;
-
 import net.minecraft.client.Minecraft;
 
 /**

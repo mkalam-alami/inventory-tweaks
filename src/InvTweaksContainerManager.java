@@ -284,7 +284,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
     
     public void click(InvTweaksContainerSection section, int index, boolean rightClick) {
-    	//System.out.println("Click " + section + ":" + index);
+//    	System.out.println("Click " + section + ":" + index);
         // Click! (we finally call the Minecraft code)
         int slot = indexToSlot(section, index);
         if (slot != -1) {

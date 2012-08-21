@@ -403,7 +403,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     keywordOrder[j] = keywordOrder[i];
                     rulePriority[j] = priority;
                     rulePriority[i] = -1;
-                    rulePriority[i] = -1;
                     containerMgr.move(i, j);
 
                     rj remains = containerMgr.getItemStack(i);

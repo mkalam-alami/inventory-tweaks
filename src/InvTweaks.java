@@ -324,7 +324,10 @@ public class InvTweaks extends InvTweaksObfuscation {
                 sortingKeyCodeCache = getKeyCode(SORT_KEY_BINDING);
             }
             else {
-                config.setProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY, Keyboard.getKeyName(getKeyCode(SORT_KEY_BINDING)));
+                int keyCode = getKeyCode(SORT_KEY_BINDING);
+                if (keyCode > 0) {
+                    config.setProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY, Keyboard.getKeyName(keyCode));
+                }
             }
         }
         

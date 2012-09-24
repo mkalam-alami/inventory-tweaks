@@ -21,8 +21,8 @@ public class InvTweaksModCompatibility {
      */
     public boolean isSpecialChest(apn guiScreen) {
         return is(guiScreen, "GuiAlchChest") // Equivalent Exchange
-        		|| is(guiScreen, "GuiCondenser")
-        		|| is(guiScreen, "GUIChest") // Iron chests (formerly IC2)
+        	|| is(guiScreen, "GuiCondenser") // Equivalent Exchange
+        	|| is(guiScreen, "GUIChest") // Iron chests (formerly IC2)
                 || is(guiScreen, "GuiMultiPageChest") // Multi Page chest
                 || is(guiScreen, "GuiGoldSafe") // More Storage
                 || is(guiScreen, "GuiLocker")
@@ -31,19 +31,21 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiCabinet") 
                 || is(guiScreen, "GuiTower")
                 || is(guiScreen, "GuiBufferChest") // Red Power 2
-                || is(guiScreen, "GuiRetriever")
-                || is(guiScreen, "GuiItemDetect")
-                || is(guiScreen, "GuiAlloyFurnace")
-                || is(guiScreen, "GuiDeploy")
-                || is(guiScreen, "GuiSorter")
-                || is(guiScreen, "GuiFilter")
-                || is(guiScreen, "GuiAdvBench")
-                || is(guiScreen, "GuiEject")
+                || is(guiScreen, "GuiRetriever") // Red Power 2
+                || is(guiScreen, "GuiItemDetect") // Red Power 2
+                || is(guiScreen, "GuiAlloyFurnace") // Red Power 2
+                || is(guiScreen, "GuiDeploy") // Red Power 2
+                || is(guiScreen, "GuiSorter") // Red Power 2
+                || is(guiScreen, "GuiFilter") // Red Power 2
+                || is(guiScreen, "GuiAdvBench") // Red Power 2
+                || is(guiScreen, "GuiEject") // Red Power 2
                 || is(guiScreen, "GuiPersonalChest")
                 || is(guiScreen, "GuiNuclearReactor") // IC2
                 || is(guiScreen, "GuiEnderChest") // EnderChest
                 || is(guiScreen, "GuiColorBox")
                 || is(guiScreen, "GuiLinkedColorBox") // ColorBox
+                || is(guiScreen, "FC_GuiChest") // Metallurgy
+                || is(guiScreen, "FM_GuiMintStorage") // Metallurgy
           ;
     }
 
@@ -90,7 +92,9 @@ public class InvTweaksModCompatibility {
     public boolean isChestWayTooBig(apn guiScreen) {
         return is(guiScreen, "GuiAlchChest") // Equivalent Exchange
         		|| is(guiScreen, "GuiMultiPageChest") // MultiPage Chest
-        		|| is(guiScreen, "GUIChest"); // IronChests
+        		|| is(guiScreen, "GUIChest") // IronChests
+        		|| is(guiScreen, "FC_GuiChest") // Metallurgy
+        	;
     }
     
     /**

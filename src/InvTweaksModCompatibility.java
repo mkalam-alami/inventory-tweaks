@@ -46,6 +46,7 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiLinkedColorBox") // ColorBox
                 || is(guiScreen, "FC_GuiChest") // Metallurgy
                 || is(guiScreen, "FM_GuiMintStorage") // Metallurgy
+                || is(guiScreen, "GuiChestTFC") // TerraFirmaCraft
           ;
     }
 

@@ -197,10 +197,11 @@ public class InvTweaksConfigManager {
 
         // Extraction from minecraft.jar
         if (resourceUrl != null) {
+            InputStream content = null;
             try {
                 Object o = resourceUrl.getContent();
                 if (o instanceof InputStream) {
-                    InputStream content = (InputStream) o;
+                    content = (InputStream) o;
                     while (content.available() > 0) {
                         byte[] bytes = new byte[content.available()];
                         content.read(bytes);
@@ -209,6 +210,15 @@ public class InvTweaksConfigManager {
                 }
             } catch (IOException e) {
                 resourceUrl = null;
+            }
+            finally {
+                if (content != null) {
+                    try {
+                        content.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 

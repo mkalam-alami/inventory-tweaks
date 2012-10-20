@@ -112,8 +112,16 @@ public class InvTweaksConfig {
             // Read file
             File f = new File(rulesFile);
             char[] bytes = new char[(int) f.length()];
-            FileReader reader = new FileReader(f);
-            reader.read(bytes);
+            FileReader reader = null;
+            try {
+                reader = new FileReader(f);
+                reader.read(bytes);
+            }
+            finally {
+                if (reader != null) {
+                    reader.close();
+                }
+            }
 
             // Split lines into an array
             String[] configLines = String.valueOf(bytes)

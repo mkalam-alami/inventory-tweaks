@@ -669,7 +669,7 @@ public class InvTweaks extends InvTweaksObfuscation {
      * Hacky parsing of the NEI configuration file to see if the mod is enabled or not.
      */
     private boolean isNotEnoughItemsEnabled() {
-    	BufferedReader neiCfgFile;
+    	BufferedReader neiCfgFile = null;
 		try {
 			neiCfgFile = new BufferedReader(new FileReader(new File(InvTweaksConst.MINECRAFT_CONFIG_DIR + "NEI.cfg")));
 	    	String line;
@@ -681,6 +681,15 @@ public class InvTweaks extends InvTweaksObfuscation {
 	    	return false;
 		} catch (IOException e) {
 			return false;
+		}
+		finally {
+            if (neiCfgFile != null) {
+                try {
+                    neiCfgFile.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 		}
 	}
 

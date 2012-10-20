@@ -379,6 +379,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         }
                         break;
                     }
+                    
+                    default:
                         
                     }
                 }

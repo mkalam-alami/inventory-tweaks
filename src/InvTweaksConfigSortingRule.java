@@ -202,17 +202,33 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
     public static InvTweaksConfigSortingRuleType getRuleType(String constraint, int rowSize) {
 
-        InvTweaksConfigSortingRuleType result = InvTweaksConfigSortingRuleType.TILE;
+        InvTweaksConfigSortingRuleType result = InvTweaksConfigSortingRuleType.SLOT;
 
         if (constraint.length() == 1 || (constraint.length() == 2 && constraint.contains("r"))) {
             constraint = constraint.replace("r", "");
-            if (constraint.charAt(0)-'1' <= rowSize && constraint.charAt(0)>='1')
+            // Column rule
+            if (constraint.charAt(0)-'1' <= rowSize && constraint.charAt(0)>='1') {
                 result = InvTweaksConfigSortingRuleType.COLUMN;
+            }
+            // Row rule
             else {
                 result = InvTweaksConfigSortingRuleType.ROW;
             }
-        } else if (constraint.length() > 4) {
-            result = InvTweaksConfigSortingRuleType.RECTANGLE;
+        }
+        // Rectangle rule
+        else if (constraint.length() > 4) {
+            // Special case: rectangle rule on a single column
+            if (constraint.charAt(1) == constraint.charAt(4)) {
+                result = InvTweaksConfigSortingRuleType.COLUMN;
+            }
+            // Special case: rectangle rule on a single row
+            else if (constraint.charAt(0) == constraint.charAt(3)) {
+                result = InvTweaksConfigSortingRuleType.ROW;
+            }
+            // Usual case
+            else {
+                result = InvTweaksConfigSortingRuleType.RECTANGLE;
+            }
         }
 
         return result;

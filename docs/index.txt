@@ -217,3 +217,7 @@ Don't worry, you'll find a backup in your config folder. It's just that InvTweak
 * **The config files don't appear!**
 
 You're probably running a platform that is not 100% supported by Java. In any case, what you can do is extract manually these files from the Zip: *DefaultConfig.dat* should go to **{MinecraftDir}/config/InvTweaksConfig.txt**, and *DefaultTree.dat* to **{MinecraftDir}/config/InvTweaksTree.txt**.
+
+* **The "..." icon looks bad with my texture pack!**
+
+By default, the mod uses *gui/gui.png* to draw the small buttons for the inventory and chests. It looks good most of the time, but you can override this by adding a **gui/button10px.png** file to your pack. `Here is a template <_static/img/button10px.png>`_.

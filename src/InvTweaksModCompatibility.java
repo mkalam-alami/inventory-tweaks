@@ -19,10 +19,10 @@ public class InvTweaksModCompatibility {
      * @param guiContainer
      * @return
      */
-    public boolean isSpecialChest(apm guiScreen) {
+    public boolean isSpecialChest(apn guiScreen) {
         return is(guiScreen, "GuiAlchChest") // Equivalent Exchange
-        		|| is(guiScreen, "GuiCondenser")
-        		|| is(guiScreen, "GUIChest") // Iron chests (formerly IC2)
+        	|| is(guiScreen, "GuiCondenser") // Equivalent Exchange
+        	|| is(guiScreen, "GUIChest") // Iron chests (formerly IC2)
                 || is(guiScreen, "GuiMultiPageChest") // Multi Page chest
                 || is(guiScreen, "GuiGoldSafe") // More Storage
                 || is(guiScreen, "GuiLocker")
@@ -31,19 +31,22 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiCabinet") 
                 || is(guiScreen, "GuiTower")
                 || is(guiScreen, "GuiBufferChest") // Red Power 2
-                || is(guiScreen, "GuiRetriever")
-                || is(guiScreen, "GuiItemDetect")
-                || is(guiScreen, "GuiAlloyFurnace")
-                || is(guiScreen, "GuiDeploy")
-                || is(guiScreen, "GuiSorter")
-                || is(guiScreen, "GuiFilter")
-                || is(guiScreen, "GuiAdvBench")
-                || is(guiScreen, "GuiEject")
+                || is(guiScreen, "GuiRetriever") // Red Power 2
+                || is(guiScreen, "GuiItemDetect") // Red Power 2
+                || is(guiScreen, "GuiAlloyFurnace") // Red Power 2
+                || is(guiScreen, "GuiDeploy") // Red Power 2
+                || is(guiScreen, "GuiSorter") // Red Power 2
+                || is(guiScreen, "GuiFilter") // Red Power 2
+                || is(guiScreen, "GuiAdvBench") // Red Power 2
+                || is(guiScreen, "GuiEject") // Red Power 2
                 || is(guiScreen, "GuiPersonalChest")
                 || is(guiScreen, "GuiNuclearReactor") // IC2
                 || is(guiScreen, "GuiEnderChest") // EnderChest
                 || is(guiScreen, "GuiColorBox")
                 || is(guiScreen, "GuiLinkedColorBox") // ColorBox
+                || is(guiScreen, "FC_GuiChest") // Metallurgy
+                || is(guiScreen, "FM_GuiMintStorage") // Metallurgy
+                || is(guiScreen, "GuiChestTFC") // TerraFirmaCraft
           ;
     }
 
@@ -54,7 +57,7 @@ public class InvTweaksModCompatibility {
      * @param defaultValue
      * @return
      */
-    public int getSpecialChestRowSize(aqg guiContainer, int defaultValue) {
+    public int getSpecialChestRowSize(aqh guiContainer, int defaultValue) {
     	if (is(guiContainer, "GuiAlchChest")
     			|| is(guiContainer, "GuiCondenser")) { // Equivalent Exchange
             return 13;
@@ -87,10 +90,12 @@ public class InvTweaksModCompatibility {
         return defaultValue;
     }
 
-    public boolean isChestWayTooBig(apm guiScreen) {
+    public boolean isChestWayTooBig(apn guiScreen) {
         return is(guiScreen, "GuiAlchChest") // Equivalent Exchange
         		|| is(guiScreen, "GuiMultiPageChest") // MultiPage Chest
-        		|| is(guiScreen, "GUIChest"); // IronChests
+        		|| is(guiScreen, "GUIChest") // IronChests
+        		|| is(guiScreen, "FC_GuiChest") // Metallurgy
+        	;
     }
     
     /**
@@ -98,20 +103,20 @@ public class InvTweaksModCompatibility {
      * @param guiScreen
      * @return
      */
-    public boolean isSpecialInventory(apm guiScreen) {
+    public boolean isSpecialInventory(apn guiScreen) {
     	try {
-			return obf.getSlots(obf.getContainer((aqg) guiScreen)).size() > InvTweaksConst.INVENTORY_SIZE
-					&& !obf.isGuiContainerCreative(guiScreen);
+			return obf.getSlots(obf.getContainer((aqh) guiScreen)).size() > InvTweaksConst.INVENTORY_SIZE
+					&& !obf.isGuiInventoryCreative(guiScreen);
 		} catch (Exception e) {
 			return false;
 		}
     }
 
 	@SuppressWarnings("unchecked")
-    public Map<InvTweaksContainerSection, List<pq>> getSpecialContainerSlots(apm guiScreen, ou container) {
+    public Map<InvTweaksContainerSection, List<pr>> getSpecialContainerSlots(apn guiScreen, ov container) {
     	
-    	Map<InvTweaksContainerSection, List<pq>> result = new HashMap<InvTweaksContainerSection, List<pq>>();
-		List<pq> slots = (List<pq>) obf.getSlots(container);
+    	Map<InvTweaksContainerSection, List<pr>> result = new HashMap<InvTweaksContainerSection, List<pr>>();
+		List<pr> slots = (List<pr>) obf.getSlots(container);
     	
     	if (is(guiScreen, "GuiCondenser")) { // EE
     		result.put(InvTweaksContainerSection.CHEST, slots.subList(1, slots.size() - 36));
@@ -126,7 +131,7 @@ public class InvTweaksModCompatibility {
 		
 	}
 
-	private static final boolean is(apm guiScreen, String className) {
+	private static final boolean is(apn guiScreen, String className) {
 	    try {
 	        return guiScreen.getClass().getSimpleName().contains(className);
 	    }

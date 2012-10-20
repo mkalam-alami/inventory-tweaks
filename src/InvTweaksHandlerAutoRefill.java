@@ -39,7 +39,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
 		InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(
 		        mc, InvTweaksContainerSection.INVENTORY);
-		ri candidateStack, replacementStack = null;
+		rj candidateStack, replacementStack = null;
 		int replacementStackSlot = -1;
 		
 		List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<InvTweaksConfigSortingRule>();
@@ -62,7 +62,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
     					InvTweaksConst.INVENTORY_SIZE, InvTweaksConst.INVENTORY_ROW_SIZE));
     		}
     		for (InvTweaksConfigSortingRule rule : rules) {
-    			if (rule.getType() == InvTweaksConfigSortingRuleType.TILE 
+    			if (rule.getType() == InvTweaksConfigSortingRuleType.SLOT 
     			        || rule.getType() == InvTweaksConfigSortingRuleType.COLUMN) {
     				for (int preferredSlot : rule.getPreferredSlots()) {
     					if (slot == preferredSlot) {
@@ -163,11 +163,11 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 					
 					// In POLLING_DELAY ms, things might have changed
 					try {
-						ri stack = containerMgr.getItemStack(i);
+						rj stack = containerMgr.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId) {
 							if (containerMgr.move(i, targetedSlot)) {
 								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS).equals(InvTweaksConfig.VALUE_FALSE)) {
-								    playSound("mob.chickenplop", 1.3F, 0.5F);
+								    playSound("mob.chickenplop", 1.4F, 0.5F);
 								}
 								// If item are swapped (like for mushroom soups),
 								// put the item back in the inventory if it is in the hotbar

@@ -28,6 +28,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private final static int ID_SHORTCUTS_HELP = 4;
     private final static int ID_AUTO_REFILL = 5;
     private final static int ID_MORE_OPTIONS = 6;
+    private final static int ID_SORTING_KEY = 7;
     private final static int ID_EDITRULES = 100;
     private final static int ID_EDITTREE = 101;
     private final static int ID_HELP = 102;
@@ -37,8 +38,12 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private static String labelShortcuts;
     private static String labelAutoRefill;
     private static String labelMoreOptions;
+
+    private InvTweaksGuiTooltipButton sortMappingButton;
+    private boolean sortMappingEdition = false;
+    private int sortMappingId;
     
-    public InvTweaksGuiSettings(Minecraft mc, apm parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiSettings(Minecraft mc, apn parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
         
         labelMiddleClick = InvTweaksLocalization.get("invtweaks.settings.middleclick");
@@ -59,9 +64,9 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new aog(ID_EDITRULES, p.getX() + 55, obf.getWindowHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
-        controlList.add(new aog(ID_EDITTREE, p.getX() + 55, obf.getWindowHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
-        controlList.add(new aog(ID_HELP, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
+        controlList.add(new aoh(ID_EDITRULES, p.getX() + 55, obf.getWindowHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
+        controlList.add(new aoh(ID_EDITTREE, p.getX() + 55, obf.getWindowHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
+        controlList.add(new aoh(ID_HELP, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
 
         // Create settings buttons
 
@@ -76,6 +81,12 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(" + InvTweaksLocalization.get("invtweaks.settings.disableci.tooltip"));
         }
 
+        moveToButtonCoords(i++, p);
+        sortMappingId = getSortMappingId();
+        sortMappingButton = new InvTweaksGuiTooltipButton(ID_SORTING_KEY, p.getX(), p.getY(),
+                InvTweaksLocalization.get("invtweaks.settings.key") + " " + obf.getGameSettings().b(sortMappingId));
+        controlList.add(sortMappingButton);
+        
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_SHORTCUTS_HELP, 
                 p.getX() + 130, p.getY(), 20, 20, "?", "Shortcuts help"));
@@ -93,21 +104,19 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         InvTweaksGuiTooltipButton autoRefillBtn = new InvTweaksGuiTooltipButton(ID_AUTO_REFILL, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_AUTO_REFILL, labelAutoRefill), InvTweaksLocalization.get("invtweaks.settings.autorefill.tooltip"));
         controlList.add(autoRefillBtn);
-        
-        moveToButtonCoords(i++, p);
-        controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons), InvTweaksLocalization.get("invtweaks.settings.chestbuttons.tooltip")));
 
-        moveToButtonCoords(i++, p);
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_MORE_OPTIONS, p.getX(), p.getY(), labelMoreOptions, InvTweaksLocalization.get("invtweaks.settings.moreoptions.tooltip")));
     
+        moveToButtonCoords(i++, p);
+        controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(), computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons), InvTweaksLocalization.get("invtweaks.settings.chestbuttons.tooltip")));
         
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
             	if (obf.isGuiButton(o)) {
-            	    aog guiButton = (aog) o;
+            	    aoh guiButton = (aoh) o;
 	                if (obf.getId(guiButton) >= ID_EDITRULES && obf.getId(guiButton) <= ID_HELP) {
 	                    obf.setEnabled(guiButton, false);
 	                }
@@ -119,11 +128,17 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         obf.setControlList(this, controlList);
 
     }
-
-    protected void a(aog guibutton) { /* actionPerformed */
+    
+    protected void a(aoh guibutton) { /* actionPerformed */
     	super.a(guibutton);
     
         switch (obf.getId(guibutton)) {
+
+        // Switch sorting key
+        case ID_SORTING_KEY:
+            sortMappingButton.e = InvTweaksLocalization.get("invtweaks.settings.key") + " > ??? <";
+            sortMappingEdition = true;
+            break;
 
         // Toggle middle click shortcut
         case ID_MIDDLE_CLICK:
@@ -185,5 +200,25 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         }
 
     }
+
+    protected void a(char c, int keyCode) { /* keyPressed */
+        if (sortMappingEdition) {
+           obf.getGameSettings().a(sortMappingId, keyCode);
+           sortMappingButton.e = InvTweaksLocalization.get("invtweaks.settings.key") + " " + obf.getGameSettings().b(sortMappingId);
+        }
+        
+    }
+
+    private int getSortMappingId() {
+        int sortMappingId = 0;
+        for (anf mapping : obf.getRegisteredBindings()) {
+            if (mapping == InvTweaks.SORT_KEY_BINDING) {
+                break;
+            }
+            sortMappingId++;
+        }
+        return (sortMappingId == obf.getRegisteredBindings().length) ? -1 : sortMappingId;
+    }
+
 
 }

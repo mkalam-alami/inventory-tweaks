@@ -5,5 +5,5 @@
 
 Need help?
 
-* Official website: http://modding.kalam-alami.net
+* Official website: http://modding.kalam-alami.net/invtweaks
 * Minecraft Forum thread: http://www.minecraftforum.net/topic/323444-inventory-tweaks

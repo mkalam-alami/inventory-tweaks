@@ -6,8 +6,12 @@
 |==============================================================|
 
 # Q: WHAT IS THIS?
-# A: This file is used to store all the keywords you can use to create item rules, but also to define the item orders.
+# A: This file is used to store all the keywords you can use to create item rules, but also to define the items order.
 # You can move/change all that you want, but it's recommended not to delete any default item.
+
+# Q: MY CUSTOM FILE WAS REPLACED =(
+# A: Since a new major version of Minecraft appeared, I silently updated the tree... BUT!
+# I kept a backup of your version in the same directory. Sorry for the trouble, feel free to import your changes in the new file.
 
 # Q: THE FILE IS BROKEN AND I DON'T KNOW WHAT TO DO =(
 # A: Just delete this file, the default tree will be reloaded next time you sort something!
@@ -19,7 +23,7 @@
 # Thanks to Larandar & Lunaqua for their contributions.
 -->
 <!-- Note: 'stuff' matches everything, even items that don't appear here -->
-<stuff treeVersion="1.3.0">
+<stuff treeVersion="1.4.0">
   <equipment>
     <weapon>
       <sword>
@@ -66,6 +70,7 @@
       </hoe>
       <shears id="359" />
       <fishingRod id="346" />
+      <carrotOnAStick id="398" />
     </tool>
     <armor>
       <helmet>
@@ -195,6 +200,10 @@
         <netherBrickFence id="113" />
         <fenceGate id="107" />
       </fence>
+      <stoneWall>
+        <cobblestoneWall id="139" damage="0" />
+        <mossyCobblestoneWall id="139" damage="1" />
+      </stoneWall>
       <sign id="63" />
       <jackOLantern id="91" />
       <constructionBlock>
@@ -300,7 +309,10 @@
         <pressurePlateWood id="72" />
         <pressurePlateStone id="70" />
       </pressurePlates>
-      <stoneButton id="77" />
+	  <buttons>
+		<stoneButton id="77" />
+		<woodenButton id="143" />
+	  <button>
       <doors>
         <doorWood id="324" />
         <woodenDoor id="324" />
@@ -348,6 +360,7 @@
       <blazeRod id="369" />
       <ghastTear id="370" />
       <goldNugget id="371" />
+      <netherStar id="399" />
     </huntingResources>
     <farmingResources>
       <milk id="335" />
@@ -393,8 +406,10 @@
 	      <chest id="54" />
 	      <enderChest id="130" />
       </chests>
-      <bed id="26" />
+      <beacon id="138" />
+      <anvil id="145" />
       <jukebox id="84" />
+      <bed id="26" />
       <readableBooks>
         <bookAndQuill id="386" />
         <writtenBook id="387" />
@@ -418,6 +433,7 @@
     <instrument>
       <clock id="347" />
       <compass id="345" />
+      <emptyMap id="395" />
       <map id="358" />
     </instrument>
     <vehicle>
@@ -438,7 +454,13 @@
       <painting id="321" />
       <sign id="323" />
       <bookShelf id="47" />
+      <flowerPot id="390" />
+      <itemFrame id="389" />
+      <frame id="389" />
+      <head id="397" />
       <musicDisc min="2256" max="2266" />
+      <flowerPotBlock id="140" />
+      <headBlock id="144" />
     </decoration>
     <food>
       <edibleFood>
@@ -448,24 +470,32 @@
           <cookedFish id="350" />
           <steak id="364" />
           <cookedChicken id="366" />
+		  <bakedPotato id="392" />
         </cookedFood>
         <bread id="297" />
+        <pumpkinPie id="400" />
         <melonSlice id="360" />
-        <rawFood>
-          <rawPorkchop id="319" />
-          <rawFish id="349" />
-          <rawBeef id="363" />
-          <rawChicken id="365" />
-        </rawFood>
+		<carrot>
+			<carrot id="391" />
+			<goldenCarrot id="396" />
+		</carrot>
         <apple>
           <appleRed id="260" />
           <appleGolden id="322" />
         </apple>
         <cookie id="357" />
+        <rawFood>
+          <rawPorkchop id="319" />
+          <rawFish id="349" />
+          <rawBeef id="363" />
+          <rawChicken id="365" />
+		  <potato id="392" />
+        </rawFood>
       </edibleFood>
       <poisonedFood>
         <rottenFlesh id="367" />
         <spiderEye id="375" />
+		<poisonedPotato id="392" />
       </poisonedFood>
       <unedibleFood>
         <cake id="354" />
@@ -514,6 +544,7 @@
       <reed id="83" />
       <melon id="103" />
       <pumpkin id="86" />
+      <cocoaPod id="127" />
       <cocoaPlant id="127" />
       <tallGrass id="31" />
       <deadShrub id="32" />
@@ -521,6 +552,9 @@
       <seedBlock id="59" />
       <pumpkinStem id="104" />
       <melonStem id="105" />
+      <carrotBlock id="141" />
+      <potatoBlock id="142" />
+      <potatoesBlock id="142" />
       <lilyPad id="111" />
     </plant>
     <potion>

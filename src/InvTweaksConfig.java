@@ -509,14 +509,6 @@ public class InvTweaksConfig {
                 properties.put(entry.getKey(), entry.getValue());
             }
             
-            // XXX 1.30 patch: rename wrong shortcuts
-            if (properties.contains(PROP_SHORTCUT_DROP) && ((String) properties.get(PROP_SHORTCUT_DROP)).contains("META")) {
-                properties.setProperty(PROP_SHORTCUT_DROP, "LALT, RALT");
-            }
-            if (properties.contains(PROP_SHORTCUT_DROP) && ((String) properties.get(PROP_SHORTCUT_ONE_ITEM)).contains("CTRL")) {
-                properties.setProperty(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");
-            }
-            
             // Retro-compatibility: rename autoreplace
             if (properties.contains("enableAutoreplaceSound")) {
                 properties.put(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND, 

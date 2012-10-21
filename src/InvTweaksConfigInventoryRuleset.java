@@ -250,18 +250,23 @@ public class InvTweaksConfigInventoryRuleset {
 	private Vector<String> getKeywordVariants(String keyword) {
 		Vector<String> variants = new Vector<String>();
 		
-		if (keyword.endsWith("es")) // ex: torches => torch
+		if (keyword.endsWith("es")) { // ex: torches => torch
 			variants.add(keyword.substring(0, keyword.length()-2));
-		if (keyword.endsWith("s")) // ex: wools => wool
+        }
+		if (keyword.endsWith("s")) { // ex: wools => wool
 			variants.add(keyword.substring(0, keyword.length()-1));
+        }
 		
-		if (keyword.contains("en")) // ex: wooden => wood
+		if (keyword.contains("en")) { // ex: wooden => wood
 			variants.add(keyword.replaceAll("en", ""));
+		}
 		else {
-			if (keyword.contains("wood"))
+			if (keyword.contains("wood")) {
 				variants.add(keyword.replaceAll("wood", "wooden"));
-			if (keyword.contains("gold"))
+			}
+			if (keyword.contains("gold")) {
 				variants.add(keyword.replaceAll("gold", "golden"));
+			}
 		}
 		
 		// Swap words

@@ -52,7 +52,7 @@ Just start playing Minecraft, you can already use most features of the mod. Noti
 Inventory sorting
 ~~~~~~~~~~~~~~~~~
 
-Trigger the sorting in your inventory by using the **middle click**, or by pressing **R** (by default), at any time. If you want to change the shortcut, check the *Controls* menu in your options. 
+Trigger the sorting in your inventory by using the **middle click**, or by pressing **R** (by default), at any time. If you want to change the shortcut, you can do that from the "..." menu in your inventory. 
 
 Chests sorting
 ~~~~~~~~~~~~~~
@@ -182,7 +182,7 @@ Items defined by IDs and damage
 
 Some items are not only defined by IDs, but also by specific "damage values"::
 
-	 <sexyWools>
+   <sexyWools>
      <magentaWool id="35" damage="2" />
      <pinkWool id="35" damage="6" />
      <purpleWool id="35" damage="10" />
@@ -193,7 +193,7 @@ Categories defined by id ranges
 
 You can also define categories by entering a range of IDs. Useful for mods::
 
-	 <camelOre>
+   <camelOre>
      <camelOreBlocks min="96" max="158" />
      <camelOreItems min="358" max="443" />
    </camelOre>

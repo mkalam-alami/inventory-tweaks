@@ -8,11 +8,11 @@ import net.minecraft.client.Minecraft;
 public class InvTweaksConst {
 
     // Mod version
-    public static final String MOD_VERSION = "1.43b (1.3.2)";
+    public static final String MOD_VERSION = "1.44 (1.4.0)";
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs
-    public static final String TREE_VERSION = "1.3.0";
+    public static final String TREE_VERSION = "1.4.0";
 
     
     // Timing constants

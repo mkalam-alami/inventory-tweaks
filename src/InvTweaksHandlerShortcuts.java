@@ -28,7 +28,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         public InvTweaksShortcutType type = null;
 	    public InvTweaksContainerSection fromSection = null;
         public int fromIndex = -1;
-        public rj fromStack = null;
+        public tu fromStack = null;
         public InvTweaksContainerSection toSection = null;
         public int toIndex = -1;
         public boolean drop = false;
@@ -144,7 +144,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     
         // Init
         container = new InvTweaksContainerManager(mc);
-        pr slot = container.getSlotAtMousePosition();
+        ry slot = container.getSlotAtMousePosition();
         ShortcutConfig shortcutConfig = new ShortcutConfig();
         
         // If a valid and not empty slot is clicked
@@ -205,7 +205,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         orderedSections.add(InvTweaksContainerSection.FURNACE_IN);
                     }
                     else if (container.hasSection(InvTweaksContainerSection.BREWING_INGREDIENT)) {
-                        rj stack = container.getStack(slot);
+                        tu stack = container.getStack(slot);
                         if (stack != null) {
                             if (getItemID(stack) == 373 /* Water Bottle/Potions */) {
                                 orderedSections.add(InvTweaksContainerSection.BREWING_BOTTLES);
@@ -307,7 +307,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private void runShortcut(ShortcutConfig shortcut) throws TimeoutException {
         // Try to put held item down
         if (getHeldStack() != null) {
-            pr slot = container.getSlotAtMousePosition();
+            ry slot = container.getSlotAtMousePosition();
             if (slot != null) {
                 int slotNumber = getSlotNumber(slot);
                 container.putHoldItemDown(container.getSlotSection(slotNumber), container.getSlotIndex(slotNumber));
@@ -335,7 +335,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     
                     case MOVE_ONE_STACK:
                     {
-                        pr slot = container.getSlot(shortcut.fromSection, shortcut.fromIndex);
+                        ry slot = container.getSlot(shortcut.fromSection, shortcut.fromIndex);
                         if (shortcut.fromSection != InvTweaksContainerSection.CRAFTING_OUT
                                 && shortcut.toSection != InvTweaksContainerSection.ENCHANTMENT) {
                             while (hasStack(slot) && toIndex != -1) {
@@ -390,10 +390,10 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         }
     }
 
-    private void moveAll(ShortcutConfig shortcut, rj stackToMatch) throws TimeoutException {
+    private void moveAll(ShortcutConfig shortcut, tu stackToMatch) throws TimeoutException {
         int toIndex = getNextTargetIndex(shortcut), newIndex;
         boolean success;
-        for (pr slot : container.getSlots(shortcut.fromSection)) {
+        for (ry slot : container.getSlots(shortcut.fromSection)) {
             if (hasStack(slot) && (stackToMatch == null || areSameItemType(stackToMatch, getStack(slot)))) {
                 int fromIndex = container.getSlotIndex(getSlotNumber(slot));
                 while (hasStack(slot) && toIndex != -1 && !(shortcut.fromSection == shortcut.toSection && fromIndex == toIndex)) {
@@ -418,9 +418,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         // Try to merge with existing slot
         if (!shortcut.forceEmptySlot) {
             int i = 0;
-            for (pr slot : container.getSlots(shortcut.toSection)) {
+            for (ry slot : container.getSlots(shortcut.toSection)) {
                 if (hasStack(slot)) {
-                    rj stack = getStack(slot);
+                    tu stack = getStack(slot);
                     if (!hasDataTags(stack) && areItemsEqual(stack, shortcut.fromStack)
                             && getStackSize(stack) < getMaxStackSize(stack)) {
                         result = i;

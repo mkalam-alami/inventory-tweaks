@@ -6,16 +6,16 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
 
-public class InvTweaksGuiShortcutsHelp extends apn /* GuiScreen */ {
+public class InvTweaksGuiShortcutsHelp extends asv /* GuiScreen */ {
     
     private final static int ID_DONE = 0;
 
     private InvTweaksObfuscation obf;
-    private apn parentScreen;
+    private asv parentScreen;
     private InvTweaksConfig config;
     
     public InvTweaksGuiShortcutsHelp(Minecraft mc, 
-            apn parentScreen, InvTweaksConfig config) {
+            asv parentScreen, InvTweaksConfig config) {
         this.obf = new InvTweaksObfuscation(mc);
         this.parentScreen = parentScreen;
         this.config = config;
@@ -24,7 +24,7 @@ public class InvTweaksGuiShortcutsHelp extends apn /* GuiScreen */ {
     public void w_() { /* initGui */
         // Create Done button
         List<Object> controlList = new LinkedList<Object>(); /* GuiButton */
-        controlList.add(new aoh(ID_DONE, 
+        controlList.add(new ark(ID_DONE, 
                 obf.getWindowWidth(this) / 2 - 100, 
                 obf.getWindowHeight(this) / 6 + 168, "Done"));
         obf.setControlList(this, controlList);
@@ -34,7 +34,7 @@ public class InvTweaksGuiShortcutsHelp extends apn /* GuiScreen */ {
         
         // Note: 0x0000EEFF = blue color (currently unused)
         
-        v_(); // Gui.drawDefaultBackground
+        z_(); // Gui.drawDefaultBackground
         a(obf.getFontRenderer(), "WARNING: Since 1.3.1, some shortcuts won't work as expected, it will be fixed as soon as possible!", obf.getWindowWidth(this) / 2, 5, 0xff0000);
         a(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.help.shortcuts.title"), obf.getWindowWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         String clickLabel =  InvTweaksLocalization.get("invtweaks.help.shortcuts.click");
@@ -82,7 +82,7 @@ public class InvTweaksGuiShortcutsHelp extends apn /* GuiScreen */ {
         super.a(i, j, f); // drawScreen
     }
 
-    protected void a(aoh guibutton) { /* actionPerformed */
+    protected void a(ark guibutton) { /* actionPerformed */
 
         switch (obf.getId(guibutton)) {
 

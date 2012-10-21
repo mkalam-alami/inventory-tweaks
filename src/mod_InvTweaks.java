@@ -50,7 +50,7 @@ public class mod_InvTweaks extends BaseMod {
 	}
 
     @Override
-    public void keyboardEvent(anf keybinding) {
+    public void keyboardEvent(aqh keybinding) {
         instance.onSortingKeyPressed();
     }
     

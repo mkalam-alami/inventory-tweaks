@@ -97,7 +97,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         this.keywordOrder = new int[size];
         for (int i = 0; i < size; i++) {
             this.rulePriority[i] = -1;
-            rj stack = containerMgr.getItemStack(i);
+            tu stack = containerMgr.getItemStack(i);
             if (stack != null) {
                 this.keywordOrder[i] = getItemOrder(stack);
             } else {
@@ -133,10 +133,10 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 //// Move items out of the crafting slots
                 log.info("Handling crafting slots.");
                 if (globalContainer.hasSection(InvTweaksContainerSection.CRAFTING_IN)) {
-                    List<pr> craftingSlots = globalContainer.getSlots(InvTweaksContainerSection.CRAFTING_IN);
+                    List<ry> craftingSlots = globalContainer.getSlots(InvTweaksContainerSection.CRAFTING_IN);
                     int emptyIndex = globalContainer.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
                     if (emptyIndex != -1) {
-                        for (pr craftingSlot : craftingSlots) {
+                        for (ry craftingSlot : craftingSlots) {
                             if (hasStack(craftingSlot)) {
                                 globalContainer.move(
                                         InvTweaksContainerSection.CRAFTING_IN,
@@ -158,18 +158,18 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 
                 log.info("Merging stacks.");
                 for (int i = size - 1; i >= 0; i--) {
-                    rj from = containerMgr.getItemStack(i);
+                    tu from = containerMgr.getItemStack(i);
                     if (from != null) {
 
                         // Move armor parts
-	                    rh fromItem = getItem(from);
+	                    ts fromItem = getItem(from);
 	                    if (isDamageable(fromItem)) {
 	                        if (sortArmorParts) {
 	                             if (isItemArmor(fromItem)) {
-	                            	 pt fromItemArmor = asItemArmor(fromItem);
+	                            	 sb fromItemArmor = asItemArmor(fromItem);
 	                                 if (globalContainer.hasSection(InvTweaksContainerSection.ARMOR)) {
-	                                     List<pr> armorSlots = globalContainer.getSlots(InvTweaksContainerSection.ARMOR);
-	                                     for (pr slot : armorSlots) {
+	                                     List<ry> armorSlots = globalContainer.getSlots(InvTweaksContainerSection.ARMOR);
+	                                     for (ry slot : armorSlots) {
 	                                    	boolean move = false;
 	                                    	if (!hasStack(slot)) {
 	                                    		move = true;
@@ -197,7 +197,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                             int j = 0;
                             for (Integer lockPriority : lockPriorities) {
                                 if (lockPriority > 0) {
-                                    rj to = containerMgr.getItemStack(j);
+                                    tu to = containerMgr.getItemStack(j);
                                     if (to != null && areItemsEqual(from, to)) {
                                         move(i, j, Integer.MAX_VALUE);
                                         markAsNotMoved(j);
@@ -229,7 +229,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     
                 // For every item in the inventory
                 for (int i = 0; i < size; i++) {
-                    rj from = containerMgr.getItemStack(i);
+                    tu from = containerMgr.getItemStack(i);
 
                     // If the rule is strong enough to move the item and it matches the item, move it
                     if (hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
@@ -345,8 +345,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
      */
     private int move(int i, int j, int priority) throws TimeoutException {
 
-        rj from = containerMgr.getItemStack(i);
-        rj to = containerMgr.getItemStack(j);
+        tu from = containerMgr.getItemStack(i), to = containerMgr.getItemStack(j);
         
         if (from == null || frozenSlots[j] || frozenSlots[i]) {
             return -1;
@@ -405,7 +404,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     rulePriority[i] = -1;
                     containerMgr.move(i, j);
 
-                    rj remains = containerMgr.getItemStack(i);
+                    tu remains = containerMgr.getItemStack(i);
 
                     if (remains != null) {
                         int dropSlot = i;
@@ -451,8 +450,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     private boolean isOrderedBefore(int i, int j) {
 
-        rj iStack = containerMgr.getItemStack(i),
-                jStack = containerMgr.getItemStack(j);
+        tu iStack = containerMgr.getItemStack(i), jStack = containerMgr.getItemStack(j);
         
         if (jStack == null) {
             return true;
@@ -483,9 +481,9 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    private int getItemOrder(rj item) {
+    private int getItemOrder(tu itemStack) {
         List<InvTweaksItemTreeItem> items = tree.getItems(
-                getItemID(item), getItemDamage(item));
+                getItemID(itemStack), getItemDamage(itemStack));
         return (items != null && items.size() > 0)
                 ? items.get(0).getOrder()
                 : Integer.MAX_VALUE;
@@ -644,7 +642,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         Map<Integer, InvTweaksItemTreeItem> itemSearch = new HashMap<Integer, InvTweaksItemTreeItem>();
  
         for (int i = 0; i < size; i++) {
-            rj stack = containerMgr.getItemStack(i);
+            tu stack = containerMgr.getItemStack(i);
             if (stack != null) {
                 int itemSearchKey = getItemID(stack)*100000 + 
                         ((getMaxStackSize(stack) != 1) ? getItemDamage(stack) : 0);

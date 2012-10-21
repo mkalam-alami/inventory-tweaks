@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.Point;
 
 
@@ -41,7 +42,6 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
     private InvTweaksGuiTooltipButton sortMappingButton;
     private boolean sortMappingEdition = false;
-    private int sortMappingId;
     
     public InvTweaksGuiSettings(Minecraft mc, asv parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
@@ -54,8 +54,8 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         
     }
 
-    public void w_() { /* initGui */
-    	super.w_();
+    public void A_() { /* initGui */
+    	super.A_();
 
         List<Object> controlList = obf.getControlList(this);
         Point p = new Point();
@@ -82,9 +82,8 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         }
 
         moveToButtonCoords(i++, p);
-        sortMappingId = getSortMappingId();
         sortMappingButton = new InvTweaksGuiTooltipButton(ID_SORTING_KEY, p.getX(), p.getY(),
-                InvTweaksLocalization.get("invtweaks.settings.key") + " " + obf.getGameSettings().b(sortMappingId));
+                InvTweaksLocalization.get("invtweaks.settings.key") + " " + config.getProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY));
         controlList.add(sortMappingButton);
         
         moveToButtonCoords(i++, p);
@@ -203,22 +202,11 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
     protected void a(char c, int keyCode) { /* keyPressed */
         if (sortMappingEdition) {
-           obf.getGameSettings().a(sortMappingId, keyCode);
-           sortMappingButton.e = InvTweaksLocalization.get("invtweaks.settings.key") + " " + obf.getGameSettings().b(sortMappingId);
+           String keyName = Keyboard.getKeyName(keyCode);
+           config.setProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY, keyName);
+           sortMappingButton.e = InvTweaksLocalization.get("invtweaks.settings.key") + " " + keyName;
         }
         
     }
-
-    private int getSortMappingId() {
-        int sortMappingId = 0;
-        for (aqh mapping : obf.getRegisteredBindings()) {
-            if (mapping == InvTweaks.SORT_KEY_BINDING) {
-                break;
-            }
-            sortMappingId++;
-        }
-        return (sortMappingId == obf.getRegisteredBindings().length) ? -1 : sortMappingId;
-    }
-
 
 }

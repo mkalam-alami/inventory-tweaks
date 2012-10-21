@@ -80,8 +80,10 @@ public class InvTweaksConfig {
     private int currentRuleset = 0;
     private String currentRulesetName = null;
     private Vector<String> invalidKeywords;
+    private int sortKeyCode;
 
     private long storedConfigLastModified;
+
 
     /**
      * Creates a new configuration holder. The configuration is not yet loaded.
@@ -102,9 +104,6 @@ public class InvTweaksConfig {
             // Load properties
             loadProperties();
             saveProperties(); // Needed to append non-saved properties to the file
-            
-            // Update sort key
-            InvTweaks.SORT_KEY_BINDING.d = Keyboard.getKeyIndex(getProperty(PROP_KEY_SORT_INVENTORY));
 
             // Load tree
             tree = InvTweaksItemTreeLoader.load(treeFile);
@@ -222,6 +221,9 @@ public class InvTweaksConfig {
                 InvTweaks.logInGameStatic("Failed to save config file " + 
                         InvTweaksConst.CONFIG_PROPS_FILE);
             }
+            
+            // Update sort key
+            sortKeyCode = Keyboard.getKeyIndex(getProperty(PROP_KEY_SORT_INVENTORY));
         }
     }
 
@@ -543,4 +545,8 @@ public class InvTweaksConfig {
         return configPropsFile;
     }
 
+    public int getSortKeyCode() {
+        return sortKeyCode;
+    }
+    
 }

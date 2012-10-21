@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
  * License: MIT
  * 
  */
-public class mod_InvTweaks extends BaseMod {
+public class not_mod_InvTweaks extends BaseMod_InvTweaks {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
@@ -36,23 +36,15 @@ public class mod_InvTweaks extends BaseMod {
     
 	@Override
 	public void load() {
-		Minecraft mc = ModLoader.getMinecraftInstance();
+		Minecraft mc = ModLoader_InvTweaks.getMinecraftInstance();
 		obf = new InvTweaksObfuscation(mc);
 		
-		// Register key (listen only for key down events)
-		ModLoader.registerKey(this, InvTweaks.SORT_KEY_BINDING, false);
-		
 		// Register onTick hook
-		ModLoader.setInGameHook(this, true, true);
+		ModLoader_InvTweaks.setInGameHook(this, true, true);
 
 		// Instantiate mod core
 		instance = new InvTweaks(mc);
 	}
-
-    @Override
-    public void keyboardEvent(aqh keybinding) {
-        instance.onSortingKeyPressed();
-    }
     
 	/**
 	 * Called by ModLoader for each tick during the game.
@@ -70,7 +62,7 @@ public class mod_InvTweaks extends BaseMod {
     /**
 	 * Called by ModLoader when an item has been picked up.
 	 */
-	public void onItemPickup(og player, rj itemStack) {
+	public void onItemPickup(qf player, tu itemStack) {
 		instance.setItemPickupPending(true);
 	}
 

@@ -42,7 +42,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends asv /* GuiScreen */ {
         this.config = config;
     }
 
-    public void w_() { /* initGui */
+    public void A_() { /* initGui */
 
         List<Object> controlList = obf.getControlList(this);
         Point p = new Point();

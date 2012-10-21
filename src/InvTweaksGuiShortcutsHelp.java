@@ -21,7 +21,7 @@ public class InvTweaksGuiShortcutsHelp extends asv /* GuiScreen */ {
         this.config = config;
     }
 
-    public void w_() { /* initGui */
+    public void A_() { /* initGui */
         // Create Done button
         List<Object> controlList = new LinkedList<Object>(); /* GuiButton */
         controlList.add(new ark(ID_DONE, 
@@ -35,7 +35,7 @@ public class InvTweaksGuiShortcutsHelp extends asv /* GuiScreen */ {
         // Note: 0x0000EEFF = blue color (currently unused)
         
         z_(); // Gui.drawDefaultBackground
-        a(obf.getFontRenderer(), "WARNING: Since 1.3.1, some shortcuts won't work as expected, it will be fixed as soon as possible!", obf.getWindowWidth(this) / 2, 5, 0xff0000);
+        a(obf.getFontRenderer(), "WARNING: Since 1.3.1, shortcuts won't work as expected. Looking for a workaround...", obf.getWindowWidth(this) / 2, 5, 0xff0000);
         a(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.help.shortcuts.title"), obf.getWindowWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         String clickLabel =  InvTweaksLocalization.get("invtweaks.help.shortcuts.click");
         
@@ -76,7 +76,7 @@ public class InvTweaksGuiShortcutsHelp extends asv /* GuiScreen */ {
         drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.craftone"), config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + " + clickLabel, 0x00FF8800, y);
         y += 19;
         
-        String sortKeyName = getKeyName(obf.getKeyCode(InvTweaks.SORT_KEY_BINDING), "(Sort Key)");
+        String sortKeyName = getKeyName(config.getSortKeyCode(), "(Sort Key)");
         drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.selectconfig"), "0-9 + " +sortKeyName, 0x0088FFFF, y);
         
         super.a(i, j, f); // drawScreen

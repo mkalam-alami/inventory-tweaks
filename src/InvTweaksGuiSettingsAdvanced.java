@@ -38,8 +38,8 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 		LABEL_ENABLE_SOUNDS = InvTweaksLocalization.get("invtweaks.settings.advanced.sounds");
     }
 
-    public void w_() { /* initGui */
-    	super.w_();
+    public void A_() { /* initGui */
+    	super.A_();
 
         List<Object> controlList = obf.getControlList(this);
         Point p = new Point();

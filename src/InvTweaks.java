@@ -36,15 +36,6 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
 
-    /**
-     * Key binding to trigger sorting. 
-     * Maintained by Minecraft so that its keycode is actually
-     * what has been configured by the player (not always the R key).
-     */
-    public static final aqh SORT_KEY_BINDING = 
-        new aqh("Sort inventory", Keyboard.KEY_R); /* KeyBinding */
-    
-    
     private static InvTweaks instance;
 
     /**
@@ -78,7 +69,6 @@ public class InvTweaks extends InvTweaksObfuscation {
     * Stores when the sorting key was last pressed (allows to detect long key holding)
     */
     private long sortingKeyPressedDate = 0;
-    private long sortingKeyCodeCache = -1;
 
     private boolean itemPickupPending = false;
     
@@ -318,19 +308,12 @@ public class InvTweaks extends InvTweaksObfuscation {
             cloneHotbar();
         }
         
-        // Handle sort key changes
-        if (sortingKeyCodeCache != getKeyCode(SORT_KEY_BINDING)) {
-            if (sortingKeyCodeCache == -1) {
-                sortingKeyCodeCache = getKeyCode(SORT_KEY_BINDING);
-            }
-            else {
-                int keyCode = getKeyCode(SORT_KEY_BINDING);
-                if (keyCode > 0) {
-                    config.setProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY, Keyboard.getKeyName(keyCode));
-                }
-            }
+        // Handle sort key
+        if (Keyboard.isKeyDown(config.getSortKeyCode())) {
+            onSortingKeyPressed();
         }
         
+        // Handle config switch
         handleConfigSwitch();
         
         return true;
@@ -737,7 +720,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private boolean isSortingShortcutDown() {
-    	int keyCode = getKeyCode(SORT_KEY_BINDING);
+    	int keyCode = cfgManager.getConfig().getSortKeyCode();
     	if (keyCode > 0) {
     		return Keyboard.isKeyDown(keyCode);
     	}

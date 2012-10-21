@@ -313,7 +313,7 @@ public class InvTweaksObfuscation {
         mc.A.a(string, f, g);
     }
     protected long getCurrentTime() {
-        return getTheWorld().D();
+        return getTheWorld().E();
     }
     protected int getKeyCode(aqh w) { // KeyBinding
         return w.d;

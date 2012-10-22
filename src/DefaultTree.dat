@@ -312,7 +312,7 @@
 	  <buttons>
 		<stoneButton id="77" />
 		<woodenButton id="143" />
-	  <button>
+	  <buttons>
       <doors>
         <doorWood id="324" />
         <woodenDoor id="324" />

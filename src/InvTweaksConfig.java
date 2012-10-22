@@ -41,6 +41,7 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_SORTING_ON_PICKUP = "enableSortingOnPickup";
 	public static final String PROP_ENABLE_AUTO_EQUIP_ARMOR = "enableAutoEquipArmor";
 	public static final String PROP_ENABLE_AUTO_REFILL = "enableAutoRefill";
+    public static final String PROP_AUTO_REFILL_BEFORE_BREAK = "autoRefillBeforeBreak";
     public static final String PROP_KEY_SORT_INVENTORY = "keySortInventory";
 
     // Shortcuts
@@ -468,6 +469,7 @@ public class InvTweaksConfig {
         properties.put(PROP_SHOW_CHEST_BUTTONS, VALUE_TRUE);
         properties.put(PROP_ENABLE_SORTING_ON_PICKUP, VALUE_FALSE);
         properties.put(PROP_ENABLE_AUTO_REFILL, VALUE_TRUE);
+        properties.put(PROP_AUTO_REFILL_BEFORE_BREAK, VALUE_FALSE);
         properties.put(PROP_ENABLE_SOUNDS, VALUE_TRUE);
         properties.put(PROP_ENABLE_SHORTCUTS, VALUE_TRUE);
         properties.put(PROP_ENABLE_AUTO_EQUIP_ARMOR, VALUE_FALSE);

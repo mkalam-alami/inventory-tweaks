@@ -214,6 +214,9 @@ public class InvTweaksObfuscation {
     protected boolean isDamageable(ts item) {
         return item.n();
     }
+    protected int getMaxDamage(ts item) {
+        return item.m();
+    }
     protected int getArmorLevel(sb itemArmor) { // ItemArmor
         return itemArmor.b;
     }

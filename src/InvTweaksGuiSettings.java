@@ -24,7 +24,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     private final static int ID_MIDDLE_CLICK = 1;
-    private final static int ID_CHESTS_BUTTONS = 2;
+    private final static int ID_BEFORE_BREAK = 2;
     private final static int ID_SHORTCUTS = 3;
     private final static int ID_SHORTCUTS_HELP = 4;
     private final static int ID_AUTO_REFILL = 5;
@@ -35,9 +35,9 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private final static int ID_HELP = 102;
     
     private static String labelMiddleClick;
-    private static String labelChestButtons;
     private static String labelShortcuts;
     private static String labelAutoRefill;
+    private static String labelAutoRefillBeforeBreak;
     private static String labelMoreOptions;
 
     private InvTweaksGuiTooltipButton sortMappingButton;
@@ -47,9 +47,9 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         super(mc, parentScreen, config);
         
         labelMiddleClick = InvTweaksLocalization.get("invtweaks.settings.middleclick");
-        labelChestButtons = InvTweaksLocalization.get("invtweaks.settings.chestbuttons");
         labelShortcuts = InvTweaksLocalization.get("invtweaks.settings.shortcuts");
         labelAutoRefill = InvTweaksLocalization.get("invtweaks.settings.autorefill");
+        labelAutoRefillBeforeBreak = InvTweaksLocalization.get("invtweaks.settings.beforebreak");
         labelMoreOptions = InvTweaksLocalization.get("invtweaks.settings.moreoptions");
         
     }
@@ -70,22 +70,6 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
         // Create settings buttons
 
-        String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
-        moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton middleClickBtn = new InvTweaksGuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, labelMiddleClick), InvTweaksLocalization.get("invtweaks.settings.middleclick.tooltip"));
-        controlList.add(middleClickBtn);
-        if (middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            // Convenient Inventory compatibility: middle click not available
-            obf.setEnabled(middleClickBtn, false);
-            middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(" + InvTweaksLocalization.get("invtweaks.settings.disableci.tooltip"));
-        }
-
-        moveToButtonCoords(i++, p);
-        sortMappingButton = new InvTweaksGuiTooltipButton(ID_SORTING_KEY, p.getX(), p.getY(),
-                InvTweaksLocalization.get("invtweaks.settings.key") + " " + config.getProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY));
-        controlList.add(sortMappingButton);
-        
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_SHORTCUTS_HELP, 
                 p.getX() + 130, p.getY(), 20, 20, "?", "Shortcuts help"));
@@ -98,6 +82,16 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             obf.setEnabled(shortcutsBtn, false);
             shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(" + InvTweaksLocalization.get("invtweaks.settings.disableci.tooltip") + ")");
         }
+        
+        moveToButtonCoords(i++, p);
+        sortMappingButton = new InvTweaksGuiTooltipButton(ID_SORTING_KEY, p.getX(), p.getY(),
+                InvTweaksLocalization.get("invtweaks.settings.key") + " " + config.getProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY));
+        controlList.add(sortMappingButton);
+
+        moveToButtonCoords(i++, p);
+        InvTweaksGuiTooltipButton beforeBreakBtn = new InvTweaksGuiTooltipButton(ID_BEFORE_BREAK, p.getX(), p.getY(), computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK, labelAutoRefillBeforeBreak),InvTweaksLocalization.get("invtweaks.settings.beforebreak.tooltip"));
+        controlList.add(beforeBreakBtn);
 
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton autoRefillBtn = new InvTweaksGuiTooltipButton(ID_AUTO_REFILL, p.getX(), p.getY(), computeBooleanButtonLabel(
@@ -107,10 +101,17 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_MORE_OPTIONS, p.getX(), p.getY(), labelMoreOptions, InvTweaksLocalization.get("invtweaks.settings.moreoptions.tooltip")));
     
+        String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
         moveToButtonCoords(i++, p);
-        controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons), InvTweaksLocalization.get("invtweaks.settings.chestbuttons.tooltip")));
-        
+        InvTweaksGuiTooltipButton middleClickBtn = new InvTweaksGuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(), computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, labelMiddleClick), InvTweaksLocalization.get("invtweaks.settings.middleclick.tooltip"));
+        controlList.add(middleClickBtn);
+        if (middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+            // Convenient Inventory compatibility: middle click not available
+            obf.setEnabled(middleClickBtn, false);
+            middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(" + InvTweaksLocalization.get("invtweaks.settings.disableci.tooltip"));
+        }
+
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
@@ -144,14 +145,14 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, labelMiddleClick);
             break;
 
-        // Toggle chest buttons
-        case ID_CHESTS_BUTTONS:
-            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons);
-            break;
-
         // Toggle auto-refill
         case ID_AUTO_REFILL:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_AUTO_REFILL, labelAutoRefill);
+            break;
+
+        // Toggle auto-refill before tool break
+        case ID_BEFORE_BREAK:
+            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK, labelAutoRefillBeforeBreak);
             break;
                 
         // Toggle shortcuts
@@ -164,7 +165,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             obf.displayGuiScreen(new InvTweaksGuiShortcutsHelp(mc, this, config));
             break;
             
-        // Toggle chest buttons&
+        // More options screen
         case ID_MORE_OPTIONS:
             obf.displayGuiScreen(new InvTweaksGuiSettingsAdvanced(mc, parentScreen, config));
             break;

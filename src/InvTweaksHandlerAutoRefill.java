@@ -84,20 +84,24 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
     							getItemID(candidateStack),
     							getItemDamage(candidateStack));
     					if (tree.matches(candidateItems, rule.getKeyword())) {
-    						// Choose stack of lowest size and (in case of tools) highest damage
-    						if (replacementStack == null || 
-    								getStackSize(replacementStack) > getStackSize(candidateStack) ||
-    								(getStackSize(replacementStack) == getStackSize(candidateStack) &&
-    										getMaxStackSize(replacementStack) == 1 &&
-    										getItemDamage(replacementStack) < getItemDamage(candidateStack))) {
-    							replacementStack = candidateStack;
-    							replacementStackSlot = i;
-    						}
+                            // Choose tool of highest damage value
+						    if (getMaxStackSize(candidateStack) == 1) {
+						        boolean filterAlmostBroken = config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
+						                .equals(InvTweaksConfig.VALUE_TRUE); 
+						        if ((replacementStack == null || getItemDamage(candidateStack) > getItemDamage(replacementStack)) &&
+						                (!filterAlmostBroken || getMaxDamage(getItem(candidateStack)) - getItemDamage(candidateStack)
+						                        > InvTweaksConst.AUTO_REFILL_DAMAGE_TRESHOLD)) {
+						            replacementStack = candidateStack;
+	                                replacementStackSlot = i;
+						        }
+						    }
+                            // Choose stack of lowest size
+						    else if (replacementStack == null || getStackSize(candidateStack) < getStackSize(replacementStack)) {
+						        replacementStack = candidateStack;
+                                replacementStackSlot = i;
+						    }
     					}
     				}
-    			}
-    			if (replacementStack != null) {
-    				break;
     			}
     		}
         }

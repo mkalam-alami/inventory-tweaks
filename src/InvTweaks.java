@@ -419,11 +419,27 @@ public class InvTweaks extends InvTweaksObfuscation {
     
             if (storedFocusedSlot != focusedSlot) { // Filter selection change
                 storedFocusedSlot = focusedSlot;
-            } else if ((currentStack == null || getItemID(currentStack) == 281 && storedStackId == 282)  // Handle eaten mushroom soup
+            }
+            else if ((currentStack == null || getItemID(currentStack) == 281 && storedStackId == 282)  // Handle eaten mushroom soup
                     && (getCurrentScreen() == null || // Filter open inventory or other window
                     isGuiEditSign(getCurrentScreen()))) {
     
                 if (config.isAutoRefillEnabled(storedStackId, storedStackId)) {
+                    try {
+                        cfgManager.getAutoRefillHandler().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
+                    } catch (Exception e) {
+                        logInGameError("invtweaks.sort.autorefill.error", e);
+                    }
+                }
+            }
+            else {
+                int itemMaxDamage = getMaxDamage(getItem(currentStack));
+                if (itemMaxDamage != 0
+                        && itemMaxDamage - currentStackDamage < InvTweaksConst.AUTO_REFILL_DAMAGE_TRESHOLD
+                        && itemMaxDamage - storedStackDamage >= InvTweaksConst.AUTO_REFILL_DAMAGE_TRESHOLD
+                        && config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK).equals(InvTweaksConfig.VALUE_TRUE)
+                        && config.isAutoRefillEnabled(storedStackId, storedStackId)) {
+                    // Trigger auto-refill before the tool breaks
                     try {
                         cfgManager.getAutoRefillHandler().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
                     } catch (Exception e) {

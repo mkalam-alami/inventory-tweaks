@@ -481,7 +481,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     
                         // Check if the middle click target the chest or the inventory
                         // (copied GuiContainer.getSlotAtPosition algorithm)
-                    	atp guiContainer = asGuiContainer(guiScreen);
+                    	atq guiContainer = asGuiContainer(guiScreen);
                         
                         if (InvTweaksContainerSection.CHEST.equals(target)) {
     
@@ -543,7 +543,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         if (isValidChest || (isStandardInventory(guiScreen) && !isGuiEnchantmentTable(guiScreen))) {
 
-            atp guiContainer = asGuiContainer(guiScreen);
+            atq guiContainer = asGuiContainer(guiScreen);
             int w = 10, h = 10;
 
             // Look for the mods buttons
@@ -723,7 +723,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         
     }
 
-    private int getContainerRowSize(atp guiContainer) {
+    private int getContainerRowSize(atq guiContainer) {
         if (isGuiChest(guiContainer)) {
             return InvTweaksConst.CHEST_ROW_SIZE;
         }

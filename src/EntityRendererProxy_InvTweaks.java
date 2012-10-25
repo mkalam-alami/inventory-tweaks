@@ -1,6 +1,6 @@
 import net.minecraft.client.Minecraft;
 
-public class EntityRendererProxy_InvTweaks extends ays {
+public class EntityRendererProxy_InvTweaks extends ayt {
     private Minecraft game;
 
     public EntityRendererProxy_InvTweaks(Minecraft minecraft) {

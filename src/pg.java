@@ -1,19 +1,19 @@
 /*     */ /*     */ 
-/*     */ public class pf extends la
+/*     */ public class pg extends lb
 /*     */ {
-/*     */   public tu a;
+/*     */   public tv a;
 /*  23 */   public int b = 0;
 /*     */   public int c;
 /*  26 */   private int e = 5;
 /*     */ 
 /*  28 */   public float d = (float)(Math.random() * 3.141592653589793D * 2.0D);
 /*     */ 
-/*     */   public pf(xd paramxd, double paramDouble1, double paramDouble2, double paramDouble3, tu paramtu) {
-/*  31 */     super(paramxd);
+/*     */   public pg(xe paramxe, double paramDouble1, double paramDouble2, double paramDouble3, tv paramtv) {
+/*  31 */     super(paramxe);
 /*  32 */     a(0.25F, 0.25F);
 /*  33 */     this.M = (this.O / 2.0F);
 /*  34 */     b(paramDouble1, paramDouble2, paramDouble3);
-/*  35 */     this.a = paramtu;
+/*  35 */     this.a = paramtv;
 /*     */ 
 /*  37 */     this.z = (float)(Math.random() * 360.0D);
 /*     */ 
@@ -27,8 +27,8 @@
 /*  46 */     return false;
 /*     */   }
 /*     */ 
-/*     */   public pf(xd paramxd) {
-/*  50 */     super(paramxd);
+/*     */   public pg(xe paramxe) {
+/*  50 */     super(paramxe);
 /*  51 */     a(0.25F, 0.25F);
 /*  52 */     this.M = (this.O / 2.0F);
 /*     */   }
@@ -52,7 +52,7 @@
 /*  71 */     int i = ((int)this.q != (int)this.t) || ((int)this.r != (int)this.u) || ((int)this.s != (int)this.v) ? 1 : 0;
 /*     */ 
 /*  73 */     if (i != 0) {
-/*  74 */       if (this.p.f(ju.c(this.t), ju.c(this.u), ju.c(this.v)) == aff.i) {
+/*  74 */       if (this.p.f(jv.c(this.t), jv.c(this.u), jv.c(this.v)) == afg.i) {
 /*  75 */         this.x = 0.2000000029802322D;
 /*  76 */         this.w = ((this.aa.nextFloat() - this.aa.nextFloat()) * 0.2F);
 /*  77 */         this.y = ((this.aa.nextFloat() - this.aa.nextFloat()) * 0.2F);
@@ -60,8 +60,8 @@
 /*     */       }
 /*     */ 
 /*  81 */       if (!this.p.J) {
-/*  82 */         for (Object localpf : this.p.a(pf.class, this.D.b(0.5D, 0.0D, 0.5D))) {
-/*  83 */           a((pf) localpf);
+/*  82 */         for (Object localpg : this.p.a(pg.class, this.D.b(0.5D, 0.0D, 0.5D))) {
+/*  83 */           a((pg) localpg);
 /*     */         }
 /*     */       }
 /*     */     }
@@ -69,9 +69,9 @@
 /*  88 */     float f = 0.98F;
 /*  89 */     if (this.E) {
 /*  90 */       f = 0.5880001F;
-/*  91 */       int j = this.p.a(ju.c(this.t), ju.c(this.D.b) - 1, ju.c(this.v));
+/*  91 */       int j = this.p.a(jv.c(this.t), jv.c(this.D.b) - 1, jv.c(this.v));
 /*  92 */       if (j > 0) {
-/*  93 */         f = ale.p[j].cC * 0.98F;
+/*  93 */         f = alf.p[j].cC * 0.98F;
 /*     */       }
 /*     */     }
 /*     */ 
@@ -88,19 +88,19 @@
 /* 107 */       x();
 /*     */   }
 /*     */ 
-/*     */   public boolean a(pf parampf)
+/*     */   public boolean a(pg parampg)
 /*     */   {
-/* 112 */     if (parampf == this) return false;
-/* 113 */     if ((!parampf.S()) || (!S())) return false;
-/* 114 */     if (parampf.a.b() != this.a.b()) return false;
-/* 115 */     if ((parampf.a.o()) || (this.a.o())) return false;
-/* 116 */     if ((parampf.a.b().l()) && (parampf.a.j() != this.a.j())) return false;
-/* 117 */     if (parampf.a.a < this.a.a) return parampf.a(this);
-/* 118 */     if (parampf.a.a + this.a.a > parampf.a.d()) return false;
+/* 112 */     if (parampg == this) return false;
+/* 113 */     if ((!parampg.S()) || (!S())) return false;
+/* 114 */     if (parampg.a.b() != this.a.b()) return false;
+/* 115 */     if ((parampg.a.o()) || (this.a.o())) return false;
+/* 116 */     if ((parampg.a.b().l()) && (parampg.a.j() != this.a.j())) return false;
+/* 117 */     if (parampg.a.a < this.a.a) return parampg.a(this);
+/* 118 */     if (parampg.a.a + this.a.a > parampg.a.d()) return false;
 /*     */ 
-/* 120 */     parampf.a.a += this.a.a;
-/* 121 */     parampf.c = Math.max(parampf.c, this.c);
-/* 122 */     parampf.b = Math.min(parampf.b, this.b);
+/* 120 */     parampg.a.a += this.a.a;
+/* 121 */     parampg.c = Math.max(parampg.c, this.c);
+/* 122 */     parampg.b = Math.min(parampg.b, this.b);
 /* 123 */     x();
 /*     */ 
 /* 125 */     return true;
@@ -113,15 +113,15 @@
 /*     */ 
 /*     */   public boolean I()
 /*     */   {
-/* 135 */     return this.p.a(this.D, aff.h, this);
+/* 135 */     return this.p.a(this.D, afg.h, this);
 /*     */   }
 /*     */ 
 /*     */   protected void d(int paramInt)
 /*     */   {
-/* 140 */     a(kr.a, paramInt);
+/* 140 */     a(ks.a, paramInt);
 /*     */   }
 /*     */ 
-/*     */   public boolean a(kr paramkr, int paramInt)
+/*     */   public boolean a(ks paramks, int paramInt)
 /*     */   {
 /* 145 */     K();
 /* 146 */     this.e -= paramInt;
@@ -131,45 +131,46 @@
 /* 150 */     return false;
 /*     */   }
 /*     */ 
-/*     */   public void b(bg parambg)
+/*     */   public void b(bh parambh)
 /*     */   {
-/* 155 */     parambg.a("Health", (short)(byte)this.e);
-/* 156 */     parambg.a("Age", (short)this.b);
-/* 157 */     if (this.a != null) parambg.a("Item", this.a.b(new bg()));
+/* 155 */     parambh.a("Health", (short)(byte)this.e);
+/* 156 */     parambh.a("Age", (short)this.b);
+/* 157 */     if (this.a != null) parambh.a("Item", this.a.b(new bh()));
 /*     */   }
 /*     */ 
-/*     */   public void a(bg parambg)
+/*     */   public void a(bh parambh)
 /*     */   {
-/* 162 */     this.e = (parambg.d("Health") & 0xFF);
-/* 163 */     this.b = parambg.d("Age");
-/* 164 */     bg localbg = parambg.l("Item");
-/* 165 */     this.a = tu.a(localbg);
+/* 162 */     this.e = (parambh.d("Health") & 0xFF);
+/* 163 */     this.b = parambh.d("Age");
+/* 164 */     bh localbh = parambh.l("Item");
+/* 165 */     this.a = tv.a(localbh);
 /* 166 */     if (this.a == null) x();
 /*     */   }
 /*     */ 
-/*     */   public void b_(qf paramqf)
+/*     */   public void b_(qg paramqg)
 /*     */   {
 /* 171 */     if (this.p.J) return;
 /*     */ 
 /* 173 */     int i = this.a.a;
-/* 174 */     if ((this.c == 0) && (paramqf.bJ.a(this.a))) {
-/* 175 */       if (this.a.c == ale.M.cm) paramqf.a(ix.g);
-/* 176 */       if (this.a.c == ts.aF.cf) paramqf.a(ix.t);
-/* 177 */       if (this.a.c == ts.n.cf) paramqf.a(ix.w);
-/* 178 */       if (this.a.c == ts.bo.cf) paramqf.a(ix.z);
+/* 174 */     if ((this.c == 0) && (paramqg.bK.a(this.a))) {
+/* 175 */       if (this.a.c == alf.M.cm) paramqg.a(iy.g);
+/* 176 */       if (this.a.c == tt.aF.cf) paramqg.a(iy.t);
+/* 177 */       if (this.a.c == tt.n.cf) paramqg.a(iy.w);
+/* 178 */       if (this.a.c == tt.bo.cf) paramqg.a(iy.z);
 
-                // InvTweaks on pickup hook
-                ModLoader_InvTweaks.onItemPickup(paramqf, this.a);
-                
+// InvTweaks on pickup hook
+ModLoader_InvTweaks.onItemPickup(paramqg, this.a);
+
+
 /* 179 */       this.p.a(this, "random.pop", 0.2F, ((this.aa.nextFloat() - this.aa.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-/* 180 */       paramqf.a(this, i);
+/* 180 */       paramqg.a(this, i);
 /* 181 */       if (this.a.a <= 0) x();
 /*     */     }
 /*     */   }
 /*     */ 
 /*     */   public String an()
 /*     */   {
-/* 187 */     return bc.a("item." + this.a.a());
+/* 187 */     return bd.a("item." + this.a.a());
 /*     */   }
 /*     */ 
 /*     */   public boolean aq()
@@ -177,8 +178,3 @@
 /* 192 */     return false;
 /*     */   }
 /*     */ }
-
-/* Location:           D:\Développement\Minecraft\sources\minecraft14RC.bin\minecraft.jar
- * Qualified Name:     pf
- * JD-Core Version:    0.6.0
- */

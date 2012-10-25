@@ -25,7 +25,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     public static final int ACTION_TIMEOUT = 500;
     public static final int POLLING_DELAY = 3;
 
-    private atp guiContainer;
+    private atq guiContainer;
     private qx container;
     private Map<InvTweaksContainerSection, List<ry>> slotRefs 
             = new HashMap<InvTweaksContainerSection, List<ry>>();
@@ -43,7 +43,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         
         asv currentScreen = getCurrentScreen();
         if (isGuiContainer(currentScreen)) {
-        	this.guiContainer = (atp) currentScreen;
+        	this.guiContainer = (atq) currentScreen;
             this.container = getContainer(this.guiContainer);
         }
         else {

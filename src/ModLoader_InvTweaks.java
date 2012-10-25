@@ -128,7 +128,7 @@ public abstract class ModLoader_InvTweaks {
         clock = newclock;
     }
 
-    public static void onItemPickup(qf entityplayer, tu stack) {
+    public static void onItemPickup(qg entityplayer, tv stack) {
       //  mod.onItemPickup(entityplayer, stack);
     }
 

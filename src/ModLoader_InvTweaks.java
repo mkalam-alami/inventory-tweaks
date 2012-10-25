@@ -11,7 +11,7 @@ public abstract class ModLoader_InvTweaks {
 
     private static Minecraft instance;
 
-    private static final Map<aqh, boolean[]> keyMap = new HashMap<aqh, boolean[]>();
+    private static final Map<aqi, boolean[]> keyMap = new HashMap<aqi, boolean[]>();
 
     private static long clock = 0L;
 
@@ -58,21 +58,21 @@ public abstract class ModLoader_InvTweaks {
         return instance;
     }
 
-    public static void registerKey(BaseMod_InvTweaks mod, aqh sortKeyBinding, boolean repeat) {
+    public static void registerKey(BaseMod_InvTweaks mod, aqi sortKeyBinding, boolean repeat) {
         keyMap.put(sortKeyBinding, new boolean[] { repeat, false });
         
         // Add binding to key settings
-        aqh[] registeredBindings = obf.getRegisteredBindings();
+        aqi[] registeredBindings = obf.getRegisteredBindings();
         boolean alreadyRegistered = false;
-        for (aqh registeredBinding : registeredBindings) {
+        for (aqi registeredBinding : registeredBindings) {
             if (registeredBinding == sortKeyBinding) {
                 alreadyRegistered = true;
             }
         }
         if (!alreadyRegistered) {
-            aqh[] newBindings = new aqh[registeredBindings.length + 1];
+            aqi[] newBindings = new aqi[registeredBindings.length + 1];
             int i = 0;
-            for (aqh registeredBinding : registeredBindings) {
+            for (aqi registeredBinding : registeredBindings) {
                 newBindings[i] = registeredBinding;
                 i++;
             }

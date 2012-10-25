@@ -309,10 +309,10 @@
         <pressurePlateWood id="72" />
         <pressurePlateStone id="70" />
       </pressurePlates>
-	  <buttons>
-		<stoneButton id="77" />
-		<woodenButton id="143" />
-	  <buttons>
+		  <buttons>
+				<stoneButton id="77" />
+				<woodenButton id="143" />
+		  </buttons>
       <doors>
         <doorWood id="324" />
         <woodenDoor id="324" />
@@ -330,6 +330,7 @@
       <redstoneRepeater id="94" />
       <dispenser id="23" />
       <noteBlock id="25" />
+      <commandBlock id="137" />
     </mechanism>
   </block>
   <resources>

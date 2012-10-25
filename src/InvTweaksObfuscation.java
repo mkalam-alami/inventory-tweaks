@@ -374,86 +374,86 @@ public class InvTweaksObfuscation {
 	// ================  TODO  ================
 	
     protected boolean isGuiContainer(Object o) { // GuiContainer (abstract class)
-        return o != null && o instanceof atq;
+        return o != null && o instanceof atr;
     }
     protected boolean isGuiBeacon(Object o) { // GuiBeacon
-        return o != null && o.getClass().equals(atq.class);
+        return o != null && o.getClass().equals(atr.class);
     }
     protected boolean isGuiBrewingStand(Object o) { // GuiBrewingStand
-        return o != null && o.getClass().equals(atx.class);
+        return o != null && o.getClass().equals(aty.class);
     }
     protected boolean isGuiChest(Object o) { // GuiChest
-        return o != null && o.getClass().equals(atz.class);
-    }
-    protected boolean isGuiWorkbench(Object o) { // GuiWorkbench
         return o != null && o.getClass().equals(aua.class);
     }
+    protected boolean isGuiWorkbench(Object o) { // GuiWorkbench
+        return o != null && o.getClass().equals(aub.class);
+    }
     protected boolean isGuiInventoryCreative(Object o) { // GuiInventoryCreative
-        return o != null && o.getClass().equals(auc.class);
+        return o != null && o.getClass().equals(aud.class);
     }
     protected boolean isGuiEnchantmentTable(Object o) { // GuiEnchantmentTable
-        return o != null && o.getClass().equals(auh.class);
-    }
-    protected boolean isGuiFurnace(Object o) { // GuiFurnace
         return o != null && o.getClass().equals(aui.class);
     }
-    protected boolean isGuiInventory(Object o) { // GuiInventory
+    protected boolean isGuiFurnace(Object o) { // GuiFurnace
         return o != null && o.getClass().equals(auj.class);
     }
-    protected boolean isGuiTrading(Object o) { // GuiTrading
+    protected boolean isGuiInventory(Object o) { // GuiInventory
         return o != null && o.getClass().equals(auk.class);
     }
+    protected boolean isGuiTrading(Object o) { // GuiTrading
+        return o != null && o.getClass().equals(aul.class);
+    }
     protected boolean isGuiAnvil(Object o) { // GuiAnvil
-        return o != null && o.getClass().equals(aum.class);
+        return o != null && o.getClass().equals(aun.class);
     }
     protected boolean isGuiDispenser(Object o) { // GuiDispenser
-        return o != null && o.getClass().equals(auo.class);
+        return o != null && o.getClass().equals(aup.class);
     }
     
     protected boolean isGuiButton(Object o) { // GuiButton
-        return o != null && o instanceof ark;
+        return o != null && o instanceof arl;
     }
     protected boolean isGuiEditSign(Object o) { // GuiEditSign
-        return o != null && o.getClass().equals(aun.class);
+        return o != null && o.getClass().equals(auo.class);
     }
 
     protected boolean isContainerBrewingStand(Object o) { // ContainerBrewingStand
-        return o != null && o.getClass().equals(ra.class);
+        return o != null && o.getClass().equals(rb.class);
     }
     protected boolean isContainerChest(Object o) { // ContainerChest
-        return o != null && o.getClass().equals(re.class);
+        return o != null && o.getClass().equals(rf.class);
     }
     protected boolean isContainerWorkbench(Object o) { // ContainerWorkbench
-        return o != null && o.getClass().equals(rg.class);
-    }
-    protected boolean isContainerEnchantmentTable(Object o) { // ContainerEnchantmentTable
         return o != null && o.getClass().equals(rh.class);
     }
+    protected boolean isContainerEnchantmentTable(Object o) { // ContainerEnchantmentTable
+        return o != null && o.getClass().equals(ri.class);
+    }
     protected boolean isContainerFurnace(Object o) { // ContainerFurnace 
-        return o != null && o.getClass().equals(rk.class);
+        return o != null && o.getClass().equals(rl.class);
     }
 	protected boolean isContainerPlayer(Object o) { // ContainerPlayer
-	    return o != null && o.getClass().equals(rm.class);
+	    return o != null && o.getClass().equals(rn.class);
 	}
     protected boolean isContainerTrading(Object o) { // ContainerTrading
-        return o != null && o.getClass().equals(rq.class);
+        return o != null && o.getClass().equals(rr.class);
     }
     protected boolean isContainerAnvil(Object o) { // ContainerAnvil
-        return o != null && o.getClass().equals(rt.class);
+        return o != null && o.getClass().equals(ru.class);
     }
     protected boolean isContainerDispenser(Object o) { // ContainerDispenser
-        return o != null && o.getClass().equals(rz.class);
+        return o != null && o.getClass().equals(sa.class);
     }
     protected boolean isContainerCreative(Object o) { // ContainerCreative
-        return o != null && o.getClass().equals(aud.class);
+        return o != null && o.getClass().equals(aue.class);
     }
 
     protected boolean isItemArmor(Object o) { // ItemArmor
-        return o != null && o instanceof sb; // OK
+        return o != null && o instanceof sc;
     }
 
     protected boolean isBasicSlot(Object o) { // Slot
-        return o != null && o.getClass().equals(ry.class); // OK
+        return o != null && o.getClass().equals(rz.class);
     }
     
     // Reflection utils

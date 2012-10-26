@@ -57,7 +57,7 @@ public class InvTweaksModCompatibility {
      * @param defaultValue
      * @return
      */
-    public int getSpecialChestRowSize(atr guiContainer, int defaultValue) {
+    public int getSpecialChestRowSize(atq guiContainer, int defaultValue) {
     	if (is(guiContainer, "GuiAlchChest")
     			|| is(guiContainer, "GuiCondenser")) { // Equivalent Exchange
             return 13;

@@ -69,8 +69,10 @@ public class InvTweaks extends InvTweaksObfuscation {
     * Stores when the sorting key was last pressed (allows to detect long key holding)
     */
     private long sortingKeyPressedDate = 0;
+    private boolean sortKeyDown = false;
 
     private boolean itemPickupPending = false;
+
     
     /**
      * Creates an instance of the mod, and loads the configuration
@@ -310,7 +312,13 @@ public class InvTweaks extends InvTweaksObfuscation {
         
         // Handle sort key
         if (Keyboard.isKeyDown(config.getSortKeyCode())) {
-            onSortingKeyPressed();
+            if (!sortKeyDown) {
+                sortKeyDown = true;
+                onSortingKeyPressed();
+            }
+        }
+        else {
+            sortKeyDown = false;
         }
         
         // Handle config switch
@@ -471,7 +479,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     chestAlgorithmButtonDown = true;
 
                     InvTweaksContainerManager containerMgr = new InvTweaksContainerManager(mc);
-                    ry slotAtMousePosition = containerMgr.getSlotAtMousePosition();
+                    rz slotAtMousePosition = containerMgr.getSlotAtMousePosition();
                     InvTweaksContainerSection target = null;
                     if (slotAtMousePosition != null) {
                     	target = containerMgr.getSlotSection(getSlotNumber(slotAtMousePosition));
@@ -481,7 +489,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     
                         // Check if the middle click target the chest or the inventory
                         // (copied GuiContainer.getSlotAtPosition algorithm)
-                    	atr guiContainer = asGuiContainer(guiScreen);
+                    	atq guiContainer = asGuiContainer(guiScreen);
                         
                         if (InvTweaksContainerSection.CHEST.equals(target)) {
     
@@ -543,7 +551,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         if (isValidChest || (isStandardInventory(guiScreen) && !isGuiEnchantmentTable(guiScreen))) {
 
-            atr guiContainer = asGuiContainer(guiScreen);
+            atq guiContainer = asGuiContainer(guiScreen);
             int w = 10, h = 10;
 
             // Look for the mods buttons
@@ -723,7 +731,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         
     }
 
-    private int getContainerRowSize(atr guiContainer) {
+    private int getContainerRowSize(atq guiContainer) {
         if (isGuiChest(guiContainer)) {
             return InvTweaksConst.CHEST_ROW_SIZE;
         }

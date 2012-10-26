@@ -25,7 +25,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     public static final int ACTION_TIMEOUT = 500;
     public static final int POLLING_DELAY = 3;
 
-    private atr guiContainer;
+    private atq guiContainer;
     private qy container;
     private Map<InvTweaksContainerSection, List<rz>> slotRefs 
             = new HashMap<InvTweaksContainerSection, List<rz>>();
@@ -43,7 +43,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         
         asw currentScreen = getCurrentScreen();
         if (isGuiContainer(currentScreen)) {
-        	this.guiContainer = (atr) currentScreen;
+        	this.guiContainer = asGuiContainer(currentScreen);
             this.container = getContainer(this.guiContainer);
         }
         else {
@@ -297,13 +297,13 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
     }
 
-    public ry getSlotAtMousePosition() {
+    public rz getSlotAtMousePosition() {
 	    // Copied from GuiContainer
     	if (guiContainer != null) {
 	        int x = getMouseX();
 	        int y = getMouseY();
 		    for (int k = 0; k < getSlots(getContainer(guiContainer)).size(); k++) {
-		        ry slot = (ry) getSlots(getContainer(guiContainer)).get(k);
+		        rz slot = (rz) getSlots(getContainer(guiContainer)).get(k);
 		        if (getIsMouseOverSlot(slot, x, y)) {
 		            return slot;
 		        }
@@ -319,7 +319,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 		return getIsMouseOverSlot(slot, getMouseX(), getMouseY());
 	}
 	
-	private boolean getIsMouseOverSlot(ry slot, int x, int y) {
+	private boolean getIsMouseOverSlot(rz slot, int x, int y) {
         // Copied from GuiContainer
 		if (guiContainer != null) {
 	        int i = guiContainer.m; // TODO Deobfuscate

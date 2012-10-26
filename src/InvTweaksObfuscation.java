@@ -132,16 +132,16 @@ public class InvTweaksObfuscation {
     protected int getWindowHeight(asw guiScreen) {
         return guiScreen.g;
     }
-    protected int getGuiX(atr guiContainer) { // GuiContainer
+    protected int getGuiX(atq guiContainer) { // GuiContainer
         return guiContainer.m;
     }
-    protected int getGuiY(atr guiContainer) {
+    protected int getGuiY(atq guiContainer) {
         return guiContainer.n;
     }
-    protected int getGuiWidth(atr guiContainer) { // GuiContainer
+    protected int getGuiWidth(atq guiContainer) { // GuiContainer
         return guiContainer.b;
     }
-    protected int getGuiHeight(atr guiContainer) {
+    protected int getGuiHeight(atq guiContainer) {
         return guiContainer.c;
     }
     @SuppressWarnings("unchecked")
@@ -151,8 +151,8 @@ public class InvTweaksObfuscation {
     protected void setControlList(asw guiScreen, List<?> controlList) {
         guiScreen.h = controlList;
     }
-    protected atr asGuiContainer(asw guiScreen) {
-        return (atr) guiScreen;
+    protected atq asGuiContainer(asw guiScreen) {
+        return (atq) guiScreen;
     }
 
     // FontRenderer members
@@ -288,7 +288,7 @@ public class InvTweaksObfuscation {
 
     // GuiContainer members
 
-    protected qy getContainer(atr guiContainer) {
+    protected qy getContainer(atq guiContainer) {
         return guiContainer.d; /* inventorySlots */
     }
 
@@ -321,7 +321,7 @@ public class InvTweaksObfuscation {
     protected int getKeyCode(aqi w) { // KeyBinding
         return w.d;
     }
-    protected int getSpecialChestRowSize(atr guiContainer, int defaultValue) {
+    protected int getSpecialChestRowSize(atq guiContainer, int defaultValue) {
     	return mods.getSpecialChestRowSize(guiContainer, defaultValue);
     }
     protected boolean hasTexture(String texture) {
@@ -374,7 +374,7 @@ public class InvTweaksObfuscation {
 	// ================  TODO  ================
 	
     protected boolean isGuiContainer(Object o) { // GuiContainer (abstract class)
-        return o != null && o instanceof atr;
+        return o != null && o instanceof atq;
     }
     protected boolean isGuiBeacon(Object o) { // GuiBeacon
         return o != null && o.getClass().equals(atr.class);

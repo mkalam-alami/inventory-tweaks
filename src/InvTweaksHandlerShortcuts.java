@@ -307,7 +307,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private void runShortcut(ShortcutConfig shortcut) throws TimeoutException {
         // Try to put held item down
         if (getHeldStack() != null) {
-            ry slot = container.getSlotAtMousePosition();
+            rz slot = container.getSlotAtMousePosition();
             if (slot != null) {
                 int slotNumber = getSlotNumber(slot);
                 container.putHoldItemDown(container.getSlotSection(slotNumber), container.getSlotIndex(slotNumber));

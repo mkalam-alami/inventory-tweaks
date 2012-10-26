@@ -195,11 +195,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             if (getHeldStack() != null) {
                 // FIXME What if we can't put the item back in the source? (for example crafting/furnace output)
                 leftClick(srcSection, srcIndex);
-                return false;
             }
         }
-        
-      
         
         return true;
     }

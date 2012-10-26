@@ -127,6 +127,11 @@ public class InvTweaks extends InvTweaksObfuscation {
             }
             handleGUILayout(guiScreen);
             handleShortcuts(guiScreen);
+            
+            // Copy some info about current selected stack for auto-refill 
+            tv currentStack = getFocusedStack();
+            storedStackId = (currentStack == null) ? 0 : getItemID(currentStack);
+            storedStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
         }
     }
 
@@ -456,7 +461,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                 }
             }
         }
-    
+        
+        // Copy some info about current selected stack for auto-refill 
         storedStackId = currentStackId;
         storedStackDamage = currentStackDamage;
     

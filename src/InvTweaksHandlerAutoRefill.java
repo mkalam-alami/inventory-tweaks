@@ -41,6 +41,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 		        mc, InvTweaksContainerSection.INVENTORY);
 		tv candidateStack, replacementStack = null;
 		int replacementStackSlot = -1;
+        boolean refillBeforeBreak = config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
+                .equals(InvTweaksConfig.VALUE_TRUE); 
 		
 		List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<InvTweaksConfigSortingRule>();
 		List<InvTweaksConfigSortingRule> rules = config.getRules();
@@ -86,10 +88,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
     					if (tree.matches(candidateItems, rule.getKeyword())) {
                             // Choose tool of highest damage value
 						    if (getMaxStackSize(candidateStack) == 1) {
-						        boolean filterAlmostBroken = config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
-						                .equals(InvTweaksConfig.VALUE_TRUE); 
 						        if ((replacementStack == null || getItemDamage(candidateStack) > getItemDamage(replacementStack)) &&
-						                (!filterAlmostBroken || getMaxDamage(getItem(candidateStack)) - getItemDamage(candidateStack)
+						                (!refillBeforeBreak || getMaxDamage(getItem(candidateStack)) - getItemDamage(candidateStack)
 						                        > InvTweaksConst.AUTO_REFILL_DAMAGE_TRESHOLD)) {
 						            replacementStack = candidateStack;
 	                                replacementStackSlot = i;
@@ -122,7 +122,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 		
 		//// Proceed to replacement
 	
-		if (replacementStack != null) {
+		if (replacementStack != null || (refillBeforeBreak && getStack(container.getSlot(slot)) != null)) {
 			
 			log.info("Automatic stack replacement.");
 			
@@ -135,15 +135,22 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 				private InvTweaksContainerSectionManager containerMgr;
 				private int targetedSlot;
 				private int i, expectedItemId;
+				private boolean refillBeforeBreak;
 				
 				public Runnable init(Minecraft mc,
-						int i, int currentItem) throws Exception {
+						int i, int currentItem, boolean refillBeforeBreak) throws Exception {
 					this.containerMgr = new InvTweaksContainerSectionManager(
 					        mc, InvTweaksContainerSection.INVENTORY);
 					this.targetedSlot = currentItem;
-					this.expectedItemId = getItemID(
-					        containerMgr.getItemStack(i));
-					this.i = i;
+					if (i != -1) {
+	                    this.i = i;
+					    this.expectedItemId = getItemID(containerMgr.getItemStack(i));
+					}
+					else {
+                        this.i = containerMgr.getFirstEmptyIndex();
+                        this.expectedItemId = -1;
+					}
+					this.refillBeforeBreak = refillBeforeBreak;
 					return this;
 				}
 				
@@ -168,8 +175,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 					// In POLLING_DELAY ms, things might have changed
 					try {
 						tv stack = containerMgr.getItemStack(i);
-						if (stack != null && getItemID(stack) == expectedItemId) {
-							if (containerMgr.move(i, targetedSlot)) {
+						if (stack != null && getItemID(stack) == expectedItemId || this.refillBeforeBreak) {
+							if (containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
 								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS).equals(InvTweaksConfig.VALUE_FALSE)) {
 								    playSound("mob.chickenplop", 1.4F, 0.5F);
 								}
@@ -198,7 +205,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 					
 				}
 				
-			}.init(mc, replacementStackSlot, slot)).start();
+			}.init(mc, replacementStackSlot, slot, refillBeforeBreak)).start();
 			
 		}
     }

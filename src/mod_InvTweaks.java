@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
  * License: MIT
  * 
  */
-public class not_mod_InvTweaks extends BaseMod_InvTweaks {
+public class mod_InvTweaks extends BaseMod {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
@@ -36,11 +36,11 @@ public class not_mod_InvTweaks extends BaseMod_InvTweaks {
     
 	@Override
 	public void load() {
-		Minecraft mc = ModLoader_InvTweaks.getMinecraftInstance();
+		Minecraft mc = ModLoader.getMinecraftInstance();
 		obf = new InvTweaksObfuscation(mc);
 		
 		// Register onTick hook
-		ModLoader_InvTweaks.setInGameHook(this, true, true);
+		ModLoader.setInGameHook(this, true, true);
 
 		// Instantiate mod core
 		instance = new InvTweaks(mc);
@@ -62,7 +62,7 @@ public class not_mod_InvTweaks extends BaseMod_InvTweaks {
     /**
 	 * Called by ModLoader when an item has been picked up.
 	 */
-	public void onItemPickup(qf player, tu itemStack) {
+	public void onItemPickup(qg player, tv itemStack) {
 		instance.setItemPickupPending(true);
 	}
 

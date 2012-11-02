@@ -39,6 +39,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
 		InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(
 		        mc, InvTweaksContainerSection.INVENTORY);
+		container.setClickDelay(config.getClickDelay());
 		tv candidateStack, replacementStack = null;
 		int replacementStackSlot = -1;
         boolean refillBeforeBreak = config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)

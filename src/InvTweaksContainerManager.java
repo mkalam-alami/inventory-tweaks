@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-import org.lwjgl.input.Mouse;
-
 import net.minecraft.client.Minecraft;
+
+import org.lwjgl.input.Mouse;
 
 /**
  * Allows to perform various operations on the inventory
@@ -29,13 +29,14 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     private qy container;
     private Map<InvTweaksContainerSection, List<rz>> slotRefs 
             = new HashMap<InvTweaksContainerSection, List<rz>>();
-    
+    private int clickDelay = 0;
     
     /**
      * Creates an container manager linked to the currently available container:
      * - If a container GUI is open, the manager gives access to this container contents.
      * - If no GUI is open, the manager works as if the player's inventory was open. 
      * @param mc Minecraft
+     * @param config 
      */
     @SuppressWarnings({"unchecked"})
     public InvTweaksContainerManager(Minecraft mc) {
@@ -281,7 +282,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
     
     public void click(InvTweaksContainerSection section, int index, boolean rightClick) {
-//    	System.out.println("Click " + section + ":" + index);
+        //System.out.println("Click " + section + ":" + index);
         // Click! (we finally call the Minecraft code)
         int slot = indexToSlot(section, index);
         if (slot != -1) {
@@ -291,6 +292,15 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
                     (rightClick) ? 1 : 0, // Click #
                     false, // Shift not held
                     getThePlayer());
+        }
+        
+        if (clickDelay > 0) {
+            try {
+                Thread.sleep(clickDelay);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 
@@ -521,6 +531,10 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         else {
             return -1;
         }
+    }
+
+    public void setClickDelay(int delay) {
+        this.clickDelay = delay;
     }
     
 }

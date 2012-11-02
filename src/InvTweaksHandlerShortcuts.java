@@ -144,6 +144,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     
         // Init
         container = new InvTweaksContainerManager(mc);
+        container.setClickDelay(config.getClickDelay());
         rz slot = container.getSlotAtMousePosition();
         ShortcutConfig shortcutConfig = new ShortcutConfig();
         

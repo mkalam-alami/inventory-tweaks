@@ -19,6 +19,10 @@ public class InvTweaksContainerSectionManager {
         this(new InvTweaksContainerManager(mc), section);
     }
     
+    public void setClickDelay(int delay) {
+        this.containerMgr.setClickDelay(delay);
+    }
+    
     public InvTweaksContainerSectionManager(InvTweaksContainerManager manager, InvTweaksContainerSection section) throws Exception {
         this.containerMgr = manager;
         this.section = section;

@@ -173,7 +173,8 @@ public class InvTweaks extends InvTweaksObfuscation {
     
         try {
             InvTweaksContainerSectionManager containerMgr = new InvTweaksContainerSectionManager(mc, InvTweaksContainerSection.INVENTORY);
-    
+            containerMgr.setClickDelay(config.getClickDelay());
+            
             // Find stack slot (look in hotbar only).
             // We're looking for a brand new stack in the hotbar
             // (not an existing stack whose amount has been increased)
@@ -485,6 +486,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     chestAlgorithmButtonDown = true;
 
                     InvTweaksContainerManager containerMgr = new InvTweaksContainerManager(mc);
+                    containerMgr.setClickDelay(config.getClickDelay());
                     rz slotAtMousePosition = containerMgr.getSlotAtMousePosition();
                     InvTweaksContainerSection target = null;
                     if (slotAtMousePosition != null) {

@@ -25,12 +25,16 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     private final static int ID_AUTO_EQUIP_ARMOR = 2;
     private final static int ID_ENABLE_SOUNDS = 3;
     private final static int ID_CHESTS_BUTTONS = 4;
+    private final static int ID_SLOW_SORTING = 5;
     private final static int ID_EDITSHORTCUTS = 100;
 
+    private final Object[] SLOW_SORTING_VALUES = new Object[]{ false, 50, 100, 200, 500 };
+    
     private static String labelChestButtons;
     private static String labelSortOnPickup;
     private static String labelEquipArmor;
     private static String labelEnableSounds;
+    private static String labelSlowSorting;
 
     public InvTweaksGuiSettingsAdvanced(Minecraft mc, asw parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
@@ -39,6 +43,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 		labelEquipArmor = InvTweaksLocalization.get("invtweaks.settings.advanced.autoequip");
 		labelEnableSounds = InvTweaksLocalization.get("invtweaks.settings.advanced.sounds");
 	    labelChestButtons = InvTweaksLocalization.get("invtweaks.settings.chestbuttons");
+        labelSlowSorting = InvTweaksLocalization.get("invtweaks.settings.slowsorting");
     }
 
     public void A_() { /* initGui */
@@ -55,26 +60,33 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
         // Create settings buttons
         
+        i += 2;
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton sortOnPickupBtn = new InvTweaksGuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, labelSortOnPickup), InvTweaksLocalization.get("invtweaks.settings.advanced.sortonpickup.tooltip"));
         controlList.add(sortOnPickupBtn);
-        
-        moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(), p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor), 
-                InvTweaksLocalization.get("invtweaks.settings.advanced.autoequip.tooltip"));
-        controlList.add(autoEquipArmorBtn);
-        
+
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton enableSoundsBtn = new InvTweaksGuiTooltipButton(ID_ENABLE_SOUNDS, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_SOUNDS, labelEnableSounds),
                 InvTweaksLocalization.get("invtweaks.settings.advanced.sounds.tooltip"));
         controlList.add(enableSoundsBtn);
-
+        
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons), InvTweaksLocalization.get("invtweaks.settings.chestbuttons.tooltip")));
+
+        moveToButtonCoords(i++, p);
+        InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(), p.getY(), computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor), InvTweaksLocalization.get("invtweaks.settings.advanced.autoequip.tooltip"));
+        controlList.add(autoEquipArmorBtn);
+
+        i += 3;
+        moveToButtonCoords(i++, p);
+        InvTweaksGuiTooltipButton slowSortingBtn = new InvTweaksGuiTooltipButton(ID_SLOW_SORTING, p.getX(), p.getY() + 10, null, null);
+        updateSlowSortingLabel(slowSortingBtn, config.getProperty(InvTweaksConfig.PROP_SLOW_SORTING));
+        controlList.add(slowSortingBtn);
+
         
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
@@ -94,11 +106,16 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     }
 
 	public void a(int i, int j, float f) { /* drawScreen */
-		super.a(i, j, f);
+        super.a(i, j, f);
+        
         Point p = new Point();
         moveToButtonCoords(1, p);
-        b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt1"), p.getX(), 100, 0x999999); // Gui.drawCenteredString
-        b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt2"), p.getX(), 110, 0x999999);
+        b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt1"), p.getX(), 40, 0x999999); // Gui.drawCenteredString
+        b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt2"), p.getX(), 50, 0x999999);
+        
+        b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.slowsorting.pt1"), p.getX(), 115, 0x999999); 
+        b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.slowsorting.pt2"), p.getX(), 125, 0x999999);
+        b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.slowsorting.pt3"), p.getX(), 135, 0x999999);
     }
     
     protected void a(arl guibutton) { /* actionPerformed */
@@ -124,6 +141,22 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         case ID_CHESTS_BUTTONS:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons);
             break;
+            
+        // Toggle sounds
+        case ID_SLOW_SORTING:
+            Object slowSortingValue = config.getProperty(InvTweaksConfig.PROP_SLOW_SORTING);
+            int valueIndex = 0, i = 0;
+            for (Object candidateValue : SLOW_SORTING_VALUES) {
+                if (candidateValue.toString().equals(slowSortingValue)) {
+                    valueIndex = i;
+                    break;
+                }
+                i++;
+            }
+            Object newValue = SLOW_SORTING_VALUES[(valueIndex + 1) % (SLOW_SORTING_VALUES.length)];
+            config.setProperty(InvTweaksConfig.PROP_SLOW_SORTING, newValue.toString());
+            updateSlowSortingLabel(guibutton, newValue);
+            break;
                 
         // Open shortcuts mappings in external editor
         case ID_EDITSHORTCUTS:
@@ -140,6 +173,17 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                 
         }
 
+    }
+
+    private void updateSlowSortingLabel(arl guibutton, Object value) {
+        String displayedValue;
+        try {
+            displayedValue = ((Boolean.FALSE.equals(value) || "false".equals(value)) ? OFF : Integer.valueOf(value.toString()) + "ms");
+        }
+        catch (Exception e) {
+            displayedValue = "???";
+        }
+        obf.setDisplayString(guibutton, labelSlowSorting + ": " + displayedValue);
     }
 
 }

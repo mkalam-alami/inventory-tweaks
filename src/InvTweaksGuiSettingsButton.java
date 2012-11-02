@@ -50,6 +50,7 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
             try {
                 containerMgr = new InvTweaksContainerSectionManager(
                         minecraft, InvTweaksContainerSection.INVENTORY);
+                containerMgr.setClickDelay(config.getClickDelay());
                 if (obf.getHeldStack() != null) {
                     try {
                         // Put hold item down

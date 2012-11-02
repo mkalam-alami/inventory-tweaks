@@ -23,6 +23,7 @@ public class InvTweaksConst {
     public static final int POLLING_TIMEOUT = 1500;
     public static final int CHEST_ALGORITHM_SWAP_MAX_INTERVAL = 2000;
     public static final int TOOLTIP_DELAY = 800;
+    public static final int INTERRUPT_DELAY = 300;
 
     // File constants
     public static final String MINECRAFT_DIR = getMinecraftDir();

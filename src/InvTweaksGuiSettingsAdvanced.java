@@ -28,7 +28,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     private final static int ID_SLOW_SORTING = 5;
     private final static int ID_EDITSHORTCUTS = 100;
 
-    private final Object[] SLOW_SORTING_VALUES = new Object[]{ false, 50, 100, 200, 500 };
+    private final Object[] SLOW_SORTING_VALUES = new Object[]{ false, 30, 50, 100, 200 };
     
     private static String labelChestButtons;
     private static String labelSortOnPickup;

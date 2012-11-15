@@ -3,6 +3,11 @@
 Latest changes
 ==============
 
+`[11.15.2012] 1.45 (1.4.4) <???>`_
+ * Added Beta option to make the mod work on anti-cheat servers
+ * Fixed the potato IDs in the item tree (delete config/InvTweaksTree.txt to refresh it)
+ * Added Norwegian translation (thanks to mymusicmanager)
+ 
 `[10.26.2012] 1.44 (1.4.2) <http://adf.ly/E3TGa>`_
  * Updated mod and item list to Minecraft 1.4.2
  * Added option to replace tools just before they break

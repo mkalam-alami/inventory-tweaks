@@ -70,7 +70,7 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
             // Draw tooltip if hover time is long enough
             if (hoverTime > InvTweaksConst.TOOLTIP_DELAY && tooltipLines != null) {
                 
-                asb fontRenderer = obf.getFontRenderer();
+                atj fontRenderer = obf.getFontRenderer();
 
                 // Compute tooltip params
                 int x = i + 12, y = j - LINE_HEIGHT*tooltipLines.length;

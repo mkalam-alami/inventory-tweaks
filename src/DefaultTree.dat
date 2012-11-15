@@ -471,7 +471,7 @@
           <cookedFish id="350" />
           <steak id="364" />
           <cookedChicken id="366" />
-		  <bakedPotato id="392" />
+          <bakedPotato id="393" />
         </cookedFood>
         <bread id="297" />
         <pumpkinPie id="400" />
@@ -490,13 +490,14 @@
           <rawFish id="349" />
           <rawBeef id="363" />
           <rawChicken id="365" />
-		  <potato id="392" />
+          <potato id="392" />
         </rawFood>
       </edibleFood>
       <poisonedFood>
         <rottenFlesh id="367" />
         <spiderEye id="375" />
-		<poisonedPotato id="392" />
+        <poisonedPotato id="394" />
+        <poisonousPotato id="394" />
       </poisonedFood>
       <unedibleFood>
         <cake id="354" />

@@ -36,7 +36,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     private static String labelEnableSounds;
     private static String labelSlowSorting;
 
-    public InvTweaksGuiSettingsAdvanced(Minecraft mc, asw parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiSettingsAdvanced(Minecraft mc, aue parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
         
         labelSortOnPickup = InvTweaksLocalization.get("invtweaks.settings.advanced.sortonpickup");
@@ -56,7 +56,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new arl(ID_EDITSHORTCUTS, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.advanced.mappingsfile")));
+        controlList.add(new ast(ID_EDITSHORTCUTS, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.advanced.mappingsfile")));
 
         // Create settings buttons
         
@@ -92,7 +92,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
             	if (obf.isGuiButton(o)) {
-            	    arl button = obf.asGuiButton(o);
+            	    ast button = obf.asGuiButton(o);
 	                if (obf.getId(button) == ID_EDITSHORTCUTS) {
 	                    obf.setEnabled(button, false);
 	                }
@@ -118,7 +118,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.slowsorting.pt3"), p.getX(), 135, 0x999999);
     }
     
-    protected void a(arl guibutton) { /* actionPerformed */
+    protected void a(ast guibutton) { /* actionPerformed */
     	
         switch (obf.getId(guibutton)) {
 
@@ -175,7 +175,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
     }
 
-    private void updateSlowSortingLabel(arl guibutton, Object value) {
+    private void updateSlowSortingLabel(ast guibutton, Object value) {
         String displayedValue;
         try {
             displayedValue = ((Boolean.FALSE.equals(value) || "false".equals(value)) ? OFF : Integer.valueOf(value.toString()) + "ms");

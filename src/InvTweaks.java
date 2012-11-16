@@ -340,6 +340,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         aue currentScreen = getCurrentScreen();
 
         // Switch between configurations (shortcut)
+        cfgManager.getShortcutsHandler().updatePressedKeys();
         InvTweaksShortcutMapping switchMapping = cfgManager.getShortcutsHandler()
                 .isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
         if (isSortingShortcutDown() && switchMapping != null) {

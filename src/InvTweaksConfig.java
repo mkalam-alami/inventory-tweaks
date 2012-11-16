@@ -366,7 +366,7 @@ public class InvTweaksConfig {
             return 0;
         }
         else {
-            return Integer.parseInt(slowSortingValue);
+            return InvTweaksConst.SLOW_SORTING_DELAY;
         }
     }
 

@@ -2,8 +2,6 @@ import invtweaks.InvTweaksConst;
 
 import java.util.logging.Logger;
 
-import org.lwjgl.input.Mouse;
-
 import net.minecraft.client.Minecraft;
 
 /**
@@ -21,39 +19,10 @@ public class mod_InvTweaks extends BaseMod {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
-    
-    private Thread tickThread = null;
-    
-    private InvTweaksRunnable tickRunnable;
-    
-    private boolean mouseWasDown = false;
-    
-    private class InvTweaksRunnable implements Runnable {
 
-        private InvTweaks instance;
-        
-        private InvTweaksObfuscation obf;
-
-        public InvTweaksRunnable(Minecraft mc) {
-            this.obf = new InvTweaksObfuscation(mc);
-            this.instance = new InvTweaks(mc);
-        }
-        
-        @Override
-        public void run() {
-            if (obf.getCurrentScreen() != null) {
-                instance.onTickInGUI(obf.getCurrentScreen());
-            }
-            else {
-                instance.onTickInGame();
-            }
-        }
-        
-        public InvTweaks getInstance() {
-            return instance;
-        }
-        
-    }
+	private InvTweaks instance;
+	
+    private InvTweaksObfuscation obf;
     
     @Override
     public String getName() {
@@ -68,44 +37,34 @@ public class mod_InvTweaks extends BaseMod {
 	@Override
 	public void load() {
 		Minecraft mc = ModLoader.getMinecraftInstance();
+		obf = new InvTweaksObfuscation(mc);
 		
 		// Register onTick hook
 		ModLoader.setInGameHook(this, true, true);
 
-		// Instantiate mod
-		tickRunnable = new InvTweaksRunnable(mc);
+		// Instantiate mod core
+		instance = new InvTweaks(mc);
 	}
     
 	/**
 	 * Called by ModLoader for each tick during the game.
 	 */
-	@SuppressWarnings("deprecation")
-    public boolean onTickInGame(float clock, Minecraft minecraft) {
-	    // Launch mod loop asynchronously to support slow sorting
-	    if (tickThread != null && !tickThread.isAlive()) {
-	        tickThread = null;
-	    }
-	    if (tickThread == null) {
-	        tickThread = new Thread(tickRunnable);
-	        tickThread.start();
-	        mouseWasDown = true;
-	    }
-	    else {
-	        if (!mouseWasDown && (Mouse.isButtonDown(0) || Mouse.isButtonDown(1))) {
-	            tickThread.stop();
-	            tickThread = null;
-	            System.out.println("int!");
-	        }
-	    }
-        mouseWasDown = Mouse.isButtonDown(0) || Mouse.isButtonDown(1);
-        return true;
+	public boolean onTickInGame(float clock, Minecraft minecraft) {
+		if (obf.getCurrentScreen() != null) {
+            instance.onTickInGUI(obf.getCurrentScreen());
+		}
+		else {
+	        instance.onTickInGame();
+		}
+		return true;
 	}
 
     /**
 	 * Called by ModLoader when an item has been picked up.
 	 */
-	public void onItemPickup(qg player, tv itemStack) {
-	    tickRunnable.getInstance().setItemPickupPending(true);
+	@Override
+	public void onItemPickup(qx entityplayer, um itemstack) {
+		instance.setItemPickupPending(true);
 	}
 
 }

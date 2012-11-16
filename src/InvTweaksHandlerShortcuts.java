@@ -280,7 +280,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         return null;
     }
 
-    private void updatePressedKeys() {
+    // XXX Bad API
+    public void updatePressedKeys() {
         if (haveControlsChanged()) {
             loadShortcuts(); // Reset mappings
         }

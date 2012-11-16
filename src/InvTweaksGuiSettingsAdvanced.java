@@ -27,8 +27,6 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     private final static int ID_CHESTS_BUTTONS = 4;
     private final static int ID_SLOW_SORTING = 5;
     private final static int ID_EDITSHORTCUTS = 100;
-
-    private final Object[] SLOW_SORTING_VALUES = new Object[]{ false, 30, 50, 100, 200 };
     
     private static String labelChestButtons;
     private static String labelSortOnPickup;
@@ -83,10 +81,9 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
         i += 3;
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton slowSortingBtn = new InvTweaksGuiTooltipButton(ID_SLOW_SORTING, p.getX(), p.getY() + 10, null, null);
-        updateSlowSortingLabel(slowSortingBtn, config.getProperty(InvTweaksConfig.PROP_SLOW_SORTING));
+        InvTweaksGuiTooltipButton slowSortingBtn = new InvTweaksGuiTooltipButton(ID_SLOW_SORTING, p.getX(), p.getY() + 10,
+        		computeBooleanButtonLabel(InvTweaksConfig.PROP_SLOW_SORTING, labelSlowSorting), null);
         controlList.add(slowSortingBtn);
-
         
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
@@ -144,18 +141,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
             
         // Toggle sounds
         case ID_SLOW_SORTING:
-            Object slowSortingValue = config.getProperty(InvTweaksConfig.PROP_SLOW_SORTING);
-            int valueIndex = 0, i = 0;
-            for (Object candidateValue : SLOW_SORTING_VALUES) {
-                if (candidateValue.toString().equals(slowSortingValue)) {
-                    valueIndex = i;
-                    break;
-                }
-                i++;
-            }
-            Object newValue = SLOW_SORTING_VALUES[(valueIndex + 1) % (SLOW_SORTING_VALUES.length)];
-            config.setProperty(InvTweaksConfig.PROP_SLOW_SORTING, newValue.toString());
-            updateSlowSortingLabel(guibutton, newValue);
+            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_SLOW_SORTING, labelSlowSorting);
             break;
                 
         // Open shortcuts mappings in external editor
@@ -173,17 +159,6 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                 
         }
 
-    }
-
-    private void updateSlowSortingLabel(ast guibutton, Object value) {
-        String displayedValue;
-        try {
-            displayedValue = ((Boolean.FALSE.equals(value) || "false".equals(value)) ? OFF : Integer.valueOf(value.toString()) + "ms");
-        }
-        catch (Exception e) {
-            displayedValue = "???";
-        }
-        obf.setDisplayString(guibutton, labelSlowSorting + ": " + displayedValue);
     }
 
 }

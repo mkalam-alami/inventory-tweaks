@@ -51,7 +51,7 @@ public class InvTweaksConst {
     public static final int DISPENSER_ROW_SIZE = 3;
     public static final int INVENTORY_HOTBAR_SIZE = INVENTORY_ROW_SIZE;
     public static final int PLAYER_INVENTORY_WINDOW_ID = 0;
-    
+	public static final int SLOW_SORTING_DELAY = 30;
 
     /**
      * Returns the Minecraft folder ensuring: - It is an absolute path - It ends

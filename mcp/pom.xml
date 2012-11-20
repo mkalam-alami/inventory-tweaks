@@ -18,7 +18,7 @@
 		<finalName>${archive.name}</finalName>
 
 		<!-- Custom project layout -->
-		<sourceDirectory>src/minecraft</sourceDirectory>
+		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
 				<targetPath>.</targetPath>
@@ -131,24 +131,17 @@
 		<!-- Minecraft binaries -->
 		<dependency>
 			<groupId>net.minecraft</groupId>
-			<artifactId>minecraft</artifactId>
-			<version>any</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/jars/bin/minecraft.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>net.minecraft</groupId>
 			<artifactId>lwjgl</artifactId>
 			<version>1.8</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/jars/bin/lwjgl.jar</systemPath>
+			<systemPath>${minecraft.bin.path}lwjgl.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>net.minecraft</groupId>
 			<artifactId>lwjgl_util</artifactId>
 			<version>1.8</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/jars/bin/lwjgl_util.jar</systemPath>
+			<systemPath>${minecraft.bin.path}lwjgl_util.jar</systemPath>
 		</dependency>
 	</dependencies>
 

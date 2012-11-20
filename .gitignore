@@ -1,19 +1,43 @@
+# Filter Minecraft sources
+/src/minecraft/*
+!/src/minecraft/invtweaks
+!/src/minecraft/net
+/src/minecraft/net/minecraft/client
+/src/minecraft/net/minecraft/server
+/src/minecraft/net/minecraft/src/*
+!/src/minecraft/net/minecraft/src/InvTweaks*
+
+# Builds & binaries
 bin/
 target/
 lib/
-client/
-isom/
-InvTweaks-*/
-files/
+invtweaks_docs/_build
 launcher/
-docs/_build
 *.zip
 *.jar
-minecraft/net/minecraft/src/*.java
-*#
+
+# Tmp files
 *~
-*.rej
+*#
+
+# IDEs
 .classpath
 .project
 .settings
 .pydevproject
+
+# MCP Files
+docs/
+conf/
+eclipse/
+jars/
+logs/
+runtime/
+temp/
+CHANGELOG
+LICENSE.txt
+*.bat
+*.sh
+
+# Misc
+*.rej

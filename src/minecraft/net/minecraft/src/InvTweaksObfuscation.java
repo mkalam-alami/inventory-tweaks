@@ -96,11 +96,8 @@ public class InvTweaksObfuscation {
 	public ItemStack getCurrentEquippedItem() { // ItemStack
 		return getThePlayer().getCurrentEquippedItem();
 	}
-	public Container getCraftingInventory() { // Container
-		return getThePlayer().craftingInventory;
-	}
-    public ContainerPlayer getPlayerContainer() { // ContainerPlayer
-        return (ContainerPlayer) getThePlayer().inventorySlots;
+    public ContainerPlayer getPlayerContainer() {
+        return (ContainerPlayer) getThePlayer().inventoryContainer;
     }
 
 	// InventoryPlayer members

@@ -377,37 +377,37 @@ public class InvTweaksObfuscation {
     }
 	
     protected boolean isGuiBeacon(Object o) { // GuiBeacon
-        return o != null && o.getClass().equals(auz.class);
-    }
-    protected boolean isGuiBrewingStand(Object o) { // GuiBrewingStand
         return o != null && o.getClass().equals(avg.class);
     }
+    protected boolean isGuiBrewingStand(Object o) { // GuiBrewingStand
+        return o != null && o.getClass().equals(avn.class);
+    }
     protected boolean isGuiChest(Object o) { // GuiChest
-        return o != null && o.getClass().equals(avi.class);
+        return o != null && o.getClass().equals(avp.class);
     }
     protected boolean isGuiWorkbench(Object o) { // GuiWorkbench
-        return o != null && o.getClass().equals(avj.class);
+        return o != null && o.getClass().equals(rz.class);
     }
-    protected boolean isGuiInventoryCreative(Object o) { // GuiInventoryCreative
-        return o != null && o.getClass().equals(avl.class);
-    }
-    protected boolean isGuiEnchantmentTable(Object o) { // GuiEnchantmentTable
-        return o != null && o.getClass().equals(avq.class);
-    }
-    protected boolean isGuiFurnace(Object o) { // GuiFurnace
-        return o != null && o.getClass().equals(avr.class);
-    }
-    protected boolean isGuiInventory(Object o) { // GuiInventory
+    protected boolean isGuiInventoryCreative(Object o) { // GuiContainerCreative
         return o != null && o.getClass().equals(avs.class);
     }
-    protected boolean isGuiTrading(Object o) { // GuiTrading
-        return o != null && o.getClass().equals(avt.class);
+    protected boolean isGuiEnchantmentTable(Object o) { // GuiEnchantment
+        return o != null && o.getClass().equals(avx.class);
     }
-    protected boolean isGuiAnvil(Object o) { // GuiAnvil
-        return o != null && o.getClass().equals(avv.class);
+    protected boolean isGuiFurnace(Object o) { // GuiFurnace
+        return o != null && o.getClass().equals(avy.class);
+    }
+    protected boolean isGuiInventory(Object o) { // GuiInventory
+        return o != null && o.getClass().equals(avz.class);
+    }
+    protected boolean isGuiTrading(Object o) { // GuiMerchant
+        return o != null && o.getClass().equals(awa.class);
+    }
+    protected boolean isGuiAnvil(Object o) { // GuiRepair
+        return o != null && o.getClass().equals(awc.class);
     }
     protected boolean isGuiDispenser(Object o) { // GuiDispenser
-        return o != null && o.getClass().equals(avx.class);
+        return o != null && o.getClass().equals(awe.class);
     }
     
     protected boolean isGuiButton(Object o) { // GuiButton

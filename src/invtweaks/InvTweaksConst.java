@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 public class InvTweaksConst {
 
     // Mod version
-    public static final String MOD_VERSION = "1.45 (1.4.4)";
+    public static final String MOD_VERSION = "1.46 (1.4.6)";
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs
@@ -58,7 +58,7 @@ public class InvTweaksConst {
      * with a folder separator
      */
     public static String getMinecraftDir() {
-        String absolutePath = Minecraft.b().getAbsolutePath();
+        String absolutePath = Minecraft.getMinecraftDir().getAbsolutePath();
         if (absolutePath.endsWith(".")) {
             return absolutePath.substring(0, absolutePath.length() - 1);
         }

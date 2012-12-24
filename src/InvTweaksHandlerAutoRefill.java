@@ -40,7 +40,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 		InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(
 		        mc, InvTweaksContainerSection.INVENTORY);
 		container.setClickDelay(config.getClickDelay());
-		um candidateStack, replacementStack = null;
+		ur candidateStack, replacementStack = null;
 		int replacementStackSlot = -1;
         boolean refillBeforeBreak = config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
                 .equals(InvTweaksConfig.VALUE_TRUE); 
@@ -175,7 +175,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 					
 					// In POLLING_DELAY ms, things might have changed
 					try {
-						um stack = containerMgr.getItemStack(i);
+						ur stack = containerMgr.getItemStack(i);
 						if (stack != null && getItemID(stack) == expectedItemId || this.refillBeforeBreak) {
 							if (containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
 								if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS).equals(InvTweaksConfig.VALUE_FALSE)) {

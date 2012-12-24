@@ -34,7 +34,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     private static String labelEnableSounds;
     private static String labelSlowSorting;
 
-    public InvTweaksGuiSettingsAdvanced(Minecraft mc, aue parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiSettingsAdvanced(Minecraft mc, aul parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
         
         labelSortOnPickup = InvTweaksLocalization.get("invtweaks.settings.advanced.sortonpickup");
@@ -54,7 +54,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new ast(ID_EDITSHORTCUTS, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.advanced.mappingsfile")));
+        controlList.add(new atb(ID_EDITSHORTCUTS, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.advanced.mappingsfile")));
 
         // Create settings buttons
         
@@ -89,7 +89,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
             	if (obf.isGuiButton(o)) {
-            	    ast button = obf.asGuiButton(o);
+            		atb button = obf.asGuiButton(o);
 	                if (obf.getId(button) == ID_EDITSHORTCUTS) {
 	                    obf.setEnabled(button, false);
 	                }
@@ -115,7 +115,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         b(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.slowsorting.pt3"), p.getX(), 135, 0x999999);
     }
     
-    protected void a(ast guibutton) { /* actionPerformed */
+    protected void a(atb guibutton) { /* actionPerformed */
     	
         switch (obf.getId(guibutton)) {
 

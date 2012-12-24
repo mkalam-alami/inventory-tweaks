@@ -6,16 +6,16 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
 
-public class InvTweaksGuiShortcutsHelp extends aue /* GuiScreen */ {
+public class InvTweaksGuiShortcutsHelp extends aul /* GuiScreen */ {
     
     private final static int ID_DONE = 0;
 
     private InvTweaksObfuscation obf;
-    private aue parentScreen;
+    private aul parentScreen;
     private InvTweaksConfig config;
     
     public InvTweaksGuiShortcutsHelp(Minecraft mc, 
-    		aue parentScreen, InvTweaksConfig config) {
+    		aul parentScreen, InvTweaksConfig config) {
         this.obf = new InvTweaksObfuscation(mc);
         this.parentScreen = parentScreen;
         this.config = config;
@@ -24,7 +24,7 @@ public class InvTweaksGuiShortcutsHelp extends aue /* GuiScreen */ {
     public void A_() { /* initGui */
         // Create Done button
         List<Object> controlList = new LinkedList<Object>(); /* GuiButton */
-        controlList.add(new ast(ID_DONE, 
+        controlList.add(new atb(ID_DONE, 
                 obf.getWindowWidth(this) / 2 - 100, 
                 obf.getWindowHeight(this) / 6 + 168, "Done"));
         obf.setControlList(this, controlList);
@@ -34,7 +34,7 @@ public class InvTweaksGuiShortcutsHelp extends aue /* GuiScreen */ {
         
         // Note: 0x0000EEFF = blue color (currently unused)
         
-        z_(); // Gui.drawDefaultBackground
+        e(); // Gui.drawDefaultBackground
         a(obf.getFontRenderer(), "WARNING: Since 1.3.1, shortcuts won't work as expected. Looking for a workaround...", obf.getWindowWidth(this) / 2, 5, 0xff0000);
         a(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.help.shortcuts.title"), obf.getWindowWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         String clickLabel =  InvTweaksLocalization.get("invtweaks.help.shortcuts.click");
@@ -82,7 +82,7 @@ public class InvTweaksGuiShortcutsHelp extends aue /* GuiScreen */ {
         super.a(i, j, f); // drawScreen
     }
 
-    protected void a(ast guibutton) { /* actionPerformed */
+    protected void a(atb guibutton) { /* actionPerformed */
 
         switch (obf.getId(guibutton)) {
 

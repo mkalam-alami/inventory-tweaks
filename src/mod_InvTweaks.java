@@ -63,7 +63,7 @@ public class mod_InvTweaks extends BaseMod {
 	 * Called by ModLoader when an item has been picked up.
 	 */
 	@Override
-	public void onItemPickup(qx entityplayer, um itemstack) {
+	public void onItemPickup(qx entityplayer, ur itemstack) {
 		instance.setItemPickupPending(true);
 	}
 

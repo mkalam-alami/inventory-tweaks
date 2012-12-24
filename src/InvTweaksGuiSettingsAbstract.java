@@ -12,7 +12,7 @@ import org.lwjgl.util.Point;
  * @author Jimeo Wan
  * 
  */
-public abstract class InvTweaksGuiSettingsAbstract extends aue /* GuiScreen */ {
+public abstract class InvTweaksGuiSettingsAbstract extends aul /* GuiScreen */ {
 
 	protected static final Logger log = Logger.getLogger("InvTweaks");
     
@@ -23,12 +23,12 @@ public abstract class InvTweaksGuiSettingsAbstract extends aue /* GuiScreen */ {
     protected Minecraft mc;
     protected InvTweaksObfuscation obf;
     protected InvTweaksConfig config;
-    protected aue parentScreen;
+    protected aul parentScreen;
 
     protected static String LABEL_DONE;
     protected final static int ID_DONE = 200;
 
-    public InvTweaksGuiSettingsAbstract(Minecraft mc, aue parentScreen,
+    public InvTweaksGuiSettingsAbstract(Minecraft mc, aul parentScreen,
             InvTweaksConfig config) {
     	
     	LABEL_DONE = InvTweaksLocalization.get("invtweaks.settings.exit");
@@ -47,7 +47,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends aue /* GuiScreen */ {
         List<Object> controlList = obf.getControlList(this);
         Point p = new Point();
         moveToButtonCoords(1, p);
-        controlList.add(new ast(ID_DONE, p.getX() + 55, obf.getWindowHeight(this) / 6 + 168, LABEL_DONE)); // GuiButton
+        controlList.add(new atb(ID_DONE, p.getX() + 55, obf.getWindowHeight(this) / 6 + 168, LABEL_DONE)); // GuiButton
 
         // Save control list
         obf.setControlList(this, controlList);
@@ -55,12 +55,12 @@ public abstract class InvTweaksGuiSettingsAbstract extends aue /* GuiScreen */ {
     }
     
     public void a(int i, int j, float f) { /* drawScreen */
-        z_(); // Gui.drawDefaultBackground
+        e(); // Gui.drawDefaultBackground
         a(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.title"), obf.getWindowWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
         super.a(i, j, f); // drawScreen
     }
 
-    protected void a(ast guibutton) { /* actionPerformed */
+    protected void a(atb guibutton) { /* actionPerformed */
         if (obf.getId(guibutton) == ID_DONE) {
             obf.displayGuiScreen(parentScreen);
         }
@@ -71,7 +71,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends aue /* GuiScreen */ {
         p.setY(obf.getWindowHeight(this) / 6 + (buttonOrder / 2) * 24);
     }
 
-    protected void toggleBooleanButton(ast guibutton, String property, String label) {
+    protected void toggleBooleanButton(atb guibutton, String property, String label) {
         Boolean enabled = !new Boolean(config.getProperty(property));
         config.setProperty(property, enabled.toString());
         obf.setDisplayString(guibutton, computeBooleanButtonLabel(property, label));

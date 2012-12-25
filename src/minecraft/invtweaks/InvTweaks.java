@@ -536,7 +536,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                         }
 
                     } else if (isValidInventory(guiScreen)) {
-                    	 // Crafting stacks evening (hook ready, TODO implement algorithm)
+                    	 // Crafting stacks evening
                         if(InvTweaksContainerSection.CRAFTING_IN.equals(target))
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),

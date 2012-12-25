@@ -134,9 +134,74 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         if (algorithm != ALGORITHM_DEFAULT) {
 
             if (algorithm == ALGORITHM_EVEN_STACKS) {
-                distribute();
+
+                //item and slot counts for each unique item
+                HashMap itemCounts = new HashMap();
+                for(int i = 0; i < size; i++) {
+                    um stack = containerMgr.getItemStack(i);
+                    if(stack != null) {
+                        List<Integer> item = Arrays.asList(getItemID(stack),getItemDamage(stack));
+                        int[] count = (int[])itemCounts.get(item);
+                        if(count == null) {
+                            int[] newCount = {getStackSize(stack),1};
+                            itemCounts.put(item,newCount);
+                        } else {
+                            count[0] += getStackSize(stack); //amount of item
+                            count[1]++;                      //slots with item
+                        }
+                    }
+                }
+
+                //handle each unique item separately
+                for(Object object:itemCounts.entrySet()) {
+                    Map.Entry entry = (Map.Entry)object;
+                    List<Integer> item = (List<Integer>)entry.getKey();
+                    int[] count = (int[])entry.getValue();
+                    int numPerSlot = count[0]/count[1];  //totalNumber/numberOfSlots
+
+                    //linkedlists to store which stacks have too many/few items
+                    LinkedList smallStacks = new LinkedList();
+                    LinkedList largeStacks = new LinkedList();
+                    for(int i = 0; i < size; i++) {
+                        um stack = containerMgr.getItemStack(i);
+                        if(stack != null && Arrays.asList(getItemID(stack),getItemDamage(stack)).equals(item)) {
+                            int stackSize = getStackSize(stack);
+                            if(stackSize > numPerSlot)
+                                largeStacks.offer(i);
+                            else if(stackSize < numPerSlot)
+                                smallStacks.offer(i);
+                        }
+                    }
+
+                    //move items from stacks with too many to those with too little
+                    while((!smallStacks.isEmpty())) {
+                        int largeIndex = (Integer)largeStacks.peek();
+                        int largeSize = getStackSize(containerMgr.getItemStack(largeIndex));
+                        int smallIndex = (Integer)smallStacks.peek();
+                        int smallSize = getStackSize(containerMgr.getItemStack(smallIndex));
+                        containerMgr.moveSome(largeIndex, smallIndex, Math.min(numPerSlot-smallSize,largeSize-numPerSlot));
+
+                        //update stack lists
+                        largeSize = getStackSize(containerMgr.getItemStack(largeIndex));
+                        smallSize = getStackSize(containerMgr.getItemStack(smallIndex));
+                        if(largeSize == numPerSlot)
+                            largeStacks.remove();
+                        if(smallSize == numPerSlot)
+                            smallStacks.remove();
+                    }
+
+                    //put all leftover into one stack for easy removal
+                    while(largeStacks.size() > 1) {
+                        int pickupIndex = (Integer)largeStacks.poll();
+                        int pickupSize = getStackSize(containerMgr.getItemStack(pickupIndex));
+                        containerMgr.moveSome(pickupIndex,(Integer)largeStacks.peek(),pickupSize-numPerSlot);
+                    }
+                }
+
+                //mark all items as moved. (is there a better way?)
                 for(int i=0;i<size;i++)
                     markAsMoved(i,1);
+
             } else if (algorithm == ALGORITHM_INVENTORY) {
 
                 //// Move items out of the crafting slots
@@ -673,94 +738,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     private int getContainerColumnSize(int rowSize) {
         return size / rowSize;
-    }
-
-    private void distribute() {
-        HashMap itemCounts = getItemCounts();
-        for(Object object:itemCounts.entrySet()) { //handle each unique item separately
-            Map.Entry item = (Map.Entry)object;
-            int id = (Integer)item.getKey();
-            int[] count = (int[])item.getValue();
-            int amtPerSlot = count[0]/count[1];  //totalNumber/numberOfSlots
-
-            //linkedlists to store which stacks have too many/few items
-            LinkedList toFill = new LinkedList();
-            LinkedList toPickup = new LinkedList();
-            fillTodos(toFill, toPickup, id, amtPerSlot);
-
-            while((!toFill.isEmpty())) { //move items from stacks with too many to those with too little
-                int pickupIndex = (Integer)toPickup.poll();
-                int fillIndex = (Integer)toFill.poll();
-                int fillSize = getStackSize(containerMgr.getItemStack(fillIndex));
-                try {
-                    containerMgr.moveSome(pickupIndex, fillIndex, amtPerSlot-fillSize);
-                } catch(Exception e) {
-                    System.out.println("error: " + e);
-                }
-
-                //update todos
-                int pickupSize = getStackSize(containerMgr.getItemStack(pickupIndex));
-                if(pickupSize > amtPerSlot)
-                    toPickup.offer(pickupIndex);
-                else if(pickupSize < amtPerSlot)
-                    toFill.offer(pickupIndex);
-            }
-
-            //put all leftover into one stack for easy removal
-            while(toPickup.size() > 1) {
-                int pickupIndex = (Integer)toPickup.poll();
-                int pickupSize = getStackSize(containerMgr.getItemStack(pickupIndex));
-                try {
-                    containerMgr.moveSome(pickupIndex,(Integer)toPickup.peek(),pickupSize-amtPerSlot);
-                } catch(Exception e) {
-                    System.out.println("error2: " + e);
-                }
-            }
-        }
-    }
-
-    /**
-     * @return a hashmap with entries per item including the number of stacks with the item and
-     * the total amount of the item across all stacks
-     */
-    protected HashMap getItemCounts() {
-        HashMap itemCounts = new HashMap();
-        for(int i = 0; i < 9; i++) {
-            um stack = containerMgr.getItemStack(i);
-            if(stack != null) {
-                Integer id = getItemID(stack);
-                int[] count = (int[])itemCounts.get(id);
-                if(count == null) {
-                    int[] newCount = {getStackSize(stack),1};
-                    itemCounts.put(id,newCount);
-                } else {
-                    count[0] += getStackSize(stack); //amount of item
-                    count[1] += 1;                   //slots with item
-                }
-            }
-        }
-        return itemCounts;
-    }
-
-    /**
-     * fills linked lists with indeces of stacks based on whether the stack has too little
-     * or too many items
-     * @param toFill a linkedlist to be filled with indeces of stacks that need more
-     * @param toPickup a linkedlist to be filled with indeces of stacks that have too much
-     * @param id item id of relevant items
-     * @param numPerSlot number of items each slot should have
-     */
-      protected void fillTodos(LinkedList toFill, LinkedList toPickup, int id, int numPerSlot) {
-        for(int i = 0; i < 9; i++) {
-            um stack = containerMgr.getItemStack(i);
-            if(stack != null && getItemID(stack) == id) {
-                int stackSize = getStackSize(stack);
-                if(stackSize > numPerSlot)
-                    toPickup.offer(i);
-                else if(stackSize < numPerSlot)
-                    toFill.offer(i);
-            }
-        }
     }
 
 }

@@ -168,9 +168,13 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     int[] count = (int[])entry.getValue();
                     int numPerSlot = count[0]/count[1];  //totalNumber/numberOfSlots
 
+                    // Skip potential null items
+                    if(net.minecraft.item.Item.itemsList[item.get(0)] == null) {
+                        continue;
+                    }
                     //skip hacked itemstacks that are larger than their max size
                     //no idea why they would be here, but may as well account for them anyway
-                    if(numPerSlot <= getMaxStackSize(new um(new uk(item.get(0))))) {
+                    if(numPerSlot <= getMaxStackSize(new ItemStack(net.minecraft.item.Item.itemsList[item.get(0)]))) {
 
                         //linkedlists to store which stacks have too many/few items
                         LinkedList smallStacks = new LinkedList();

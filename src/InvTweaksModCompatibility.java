@@ -39,6 +39,7 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiFilter") // Red Power 2
                 || is(guiScreen, "GuiAdvBench") // Red Power 2
                 || is(guiScreen, "GuiEject") // Red Power 2
+                || is(guiScreen, "GuiBag") // Red Power 2
                 || is(guiScreen, "GuiPersonalChest")
                 || is(guiScreen, "GuiNuclearReactor") // IC2
                 || is(guiScreen, "GuiEnderChest") // EnderChest
@@ -47,6 +48,7 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "FC_GuiChest") // Metallurgy
                 || is(guiScreen, "FM_GuiMintStorage") // Metallurgy
                 || is(guiScreen, "GuiChestTFC") // TerraFirmaCraft
+                || is(guiScreen, "GuiBackpack") // Backpacks
           ;
     }
 

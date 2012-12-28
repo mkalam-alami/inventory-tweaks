@@ -68,6 +68,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private ItemStack[] hotbarClone = new ItemStack[InvTweaksConst.INVENTORY_HOTBAR_SIZE];
     private boolean hadFocus = true, mouseWasDown = false;;
 
+    private boolean wasInGUI = false;
     /**
      * Allows to trigger some logic only every Const.POLLING_DELAY.
      */
@@ -116,6 +117,9 @@ public class InvTweaks extends InvTweaksObfuscation {
                 return;
             }
             handleAutoRefill();
+            if(wasInGUI) {
+                wasInGUI = false;
+            }
         }
     }
 
@@ -134,12 +138,20 @@ public class InvTweaks extends InvTweaksObfuscation {
                 unlockKeysIfNecessary();
             }
             handleGUILayout(guiScreen);
+            if(!wasInGUI) {
+                // Right-click is always true on initial open of GUI.
+                // Ignore it to prevent erroneous trigger of shortcuts.
+                mouseWasDown = true;
+            }
             handleShortcuts(guiScreen);
 
             // Copy some info about current selected stack for auto-refill
             ItemStack currentStack = getFocusedStack();
             storedStackId = (currentStack == null) ? 0 : getItemID(currentStack);
             storedStackDamage = (currentStack == null) ? 0 : getItemDamage(currentStack);
+            if(!wasInGUI) {
+                wasInGUI = true;
+            }
         }
     }
 

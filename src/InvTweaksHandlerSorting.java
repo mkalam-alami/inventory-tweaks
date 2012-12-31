@@ -163,7 +163,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
                     //skip hacked itemstacks that are larger than their max size
                     //no idea why they would be here, but may as well account for them anyway
-                    if(numPerSlot <= getMaxStackSize(new um(new uk(item.get(0))))) {
+                    if(numPerSlot <= getMaxStackSize(new um(item.get(0),1,0))) {
 
                         //linkedlists to store which stacks have too many/few items
                         LinkedList smallStacks = new LinkedList();

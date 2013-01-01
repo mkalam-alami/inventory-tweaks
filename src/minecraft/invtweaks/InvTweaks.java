@@ -542,6 +542,17 @@ public class InvTweaks extends InvTweaksObfuscation {
                             chestAlgorithm = (chestAlgorithm + 1) % 3;
                             chestAlgorithmClickTimestamp = timestamp;
 
+                        } else if(InvTweaksContainerSection.CRAFTING_IN.equals(target)) {
+                            try {
+                                new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
+                                        InvTweaksContainerSection.CRAFTING_IN,
+                                        InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
+                                        (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
+                            } catch(Exception e) {
+                                logInGameError("invtweaks.sort.crafting.error", e);
+                                e.printStackTrace();
+                            }
+
                         } else if (InvTweaksContainerSection.INVENTORY_HOTBAR.equals(target)
                         		|| (InvTweaksContainerSection.INVENTORY_NOT_HOTBAR.equals(target))) {
                             handleSorting(guiScreen);

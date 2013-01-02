@@ -135,6 +135,9 @@ public class InvTweaksModCompatibility {
             result.put(ContainerSection.CRAFTING_IN, slots.subList(0, 9));
             result.put(ContainerSection.CRAFTING_OUT, slots.subList(10, 11));
             result.put(ContainerSection.CHEST, slots.subList(11, 29));
+    	} else if(is(guiScreen, "GuiArcaneWorkbench") || is(guiScreen, "GuiInfusionWorkbench")) { // Thaumcraft 3
+            result.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+            result.put(ContainerSection.CRAFTING_IN, slots.subList(2, 11));
     	}
     	
 		return result;

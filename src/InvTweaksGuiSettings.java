@@ -43,7 +43,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private InvTweaksGuiTooltipButton sortMappingButton;
     private boolean sortMappingEdition = false;
     
-    public InvTweaksGuiSettings(Minecraft mc, aue parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiSettings(Minecraft mc, aul parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
         
         labelMiddleClick = InvTweaksLocalization.get("invtweaks.settings.middleclick");
@@ -64,9 +64,9 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new ast(ID_EDITRULES, p.getX() + 55, obf.getWindowHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
-        controlList.add(new ast(ID_EDITTREE, p.getX() + 55, obf.getWindowHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
-        controlList.add(new ast(ID_HELP, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
+        controlList.add(new atb(ID_EDITRULES, p.getX() + 55, obf.getWindowHeight(this) / 6 + 96, InvTweaksLocalization.get("invtweaks.settings.rulesfile")));
+        controlList.add(new atb(ID_EDITTREE, p.getX() + 55, obf.getWindowHeight(this) / 6 + 120, InvTweaksLocalization.get("invtweaks.settings.treefile")));
+        controlList.add(new atb(ID_HELP, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.onlinehelp")));
 
         // Create settings buttons
 
@@ -116,7 +116,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
             	if (obf.isGuiButton(o)) {
-            		ast guiButton = obf.asGuiButton(o);
+            		atb guiButton = obf.asGuiButton(o);
 	                if (obf.getId(guiButton) >= ID_EDITRULES && obf.getId(guiButton) <= ID_HELP) {
 	                    obf.setEnabled(guiButton, false);
 	                }
@@ -129,7 +129,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
     }
     
-    protected void a(ast guibutton) { /* actionPerformed */
+    protected void a(atb guibutton) { /* actionPerformed */
     	super.a(guibutton);
     
         switch (obf.getId(guibutton)) {

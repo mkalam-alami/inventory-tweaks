@@ -263,12 +263,17 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 	                                    		move = true;
 	                                    	}
 	                                    	else {
-	                                    		int armorLevel = getArmorLevel(asItemArmor(getItem(getStack(slot))));
-	                                    		if (armorLevel < getArmorLevel(fromItemArmor)
-	                                    				|| (armorLevel == getArmorLevel(fromItemArmor)
-	                                    						&& getItemDamage(getStack(slot)) < getItemDamage(from))) {
-	                                    			move = true;
-	                                    		}
+                                                Item currentArmor = getItem(getStack(slot));
+                                                if(isItemArmor(currentArmor)) {
+                                                    int armorLevel = getArmorLevel(asItemArmor(currentArmor));
+                                                    if (armorLevel < getArmorLevel(fromItemArmor)
+                                                            || (armorLevel == getArmorLevel(fromItemArmor)
+                                                                    && getItemDamage(getStack(slot)) < getItemDamage(from))) {
+                                                        move = true;
+                                                    }
+                                                } else {
+                                                    move = true
+                                                }
 	                                    	}
 	                                        if (areSlotAndStackCompatible(slot, from) && move) {
 	                                            globalContainer.move(InvTweaksContainerSection.INVENTORY, i, InvTweaksContainerSection.ARMOR,

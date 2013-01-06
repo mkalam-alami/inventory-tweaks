@@ -537,21 +537,21 @@ public class InvTweaks extends InvTweaksObfuscation {
     
                     } else if (isValidInventory(guiScreen)) {
 
-                    	/*
-                    	 // Crafting stacks evening (hook ready, TODO implement algorithm)
-                    	 if (InvTweaksContainerSection.CRAFTING_IN.equals(target)) {
+                        if (InvTweaksContainerSection.CRAFTING_IN.equals(target)) {
+                            // Crafting stacks evening
                             try {
-								new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-								        InvTweaksContainerSection.CRAFTING_IN,
-								        InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
-								        (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
-							} catch (Exception e) {
+                                new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
+                                        InvTweaksContainerSection.CRAFTING_IN,
+                                        InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
+                                        (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
+                            } catch (Exception e) {
                                 logInGameError("invtweaks.sort.crafting.error", e);
                                 e.printStackTrace();
-							}
-                        }*/
-                    	
-                    	handleSorting(guiScreen);
+                            }
+                        } else {
+                            // Sorting
+                            handleSorting(guiScreen);
+                        }
                     	
                     }
                 }

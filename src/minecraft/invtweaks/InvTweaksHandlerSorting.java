@@ -148,7 +148,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 //item and slot counts for each unique item
                 HashMap<List<Integer>, int[]> itemCounts = new HashMap<List<Integer>, int[]>();
                 for(int i = 0; i < size; i++) {
-                    ur stack = containerMgr.getItemStack(i);
+                    ItemStack stack = containerMgr.getItemStack(i);
                     if(stack != null) {
                         List<Integer> item = Arrays.asList(getItemID(stack), getItemDamage(stack));
                         int[] count = itemCounts.get(item);
@@ -170,13 +170,13 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
                     //skip hacked itemstacks that are larger than their max size
                     //no idea why they would be here, but may as well account for them anyway
-                    if(numPerSlot <= getMaxStackSize(new ur(item.get(0),1,0))) {
+                    if(numPerSlot <= getMaxStackSize(new ItemStack(item.get(0),1,0))) {
 
                         //linkedlists to store which stacks have too many/few items
                         LinkedList<Integer> smallStacks = new LinkedList<Integer>();
                         LinkedList<Integer> largeStacks = new LinkedList<Integer>();
                         for(int i = 0; i < size; i++) {
-                            ur stack = containerMgr.getItemStack(i);
+                            ItemStack stack = containerMgr.getItemStack(i);
                             if(stack != null && Arrays.asList(getItemID(stack),getItemDamage(stack)).equals(item)) {
                                 int stackSize = getStackSize(stack);
                                 if(stackSize > numPerSlot)
@@ -263,12 +263,17 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 	                                    		move = true;
 	                                    	}
 	                                    	else {
-	                                    		int armorLevel = getArmorLevel(asItemArmor(getItem(getStack(slot))));
-	                                    		if (armorLevel < getArmorLevel(fromItemArmor)
-	                                    				|| (armorLevel == getArmorLevel(fromItemArmor)
-	                                    						&& getItemDamage(getStack(slot)) < getItemDamage(from))) {
-	                                    			move = true;
-	                                    		}
+                                                Item currentArmor = getItem(getStack(slot));
+                                                if(isItemArmor(currentArmor)) {
+                                                    int armorLevel = getArmorLevel(asItemArmor(currentArmor));
+                                                    if (armorLevel < getArmorLevel(fromItemArmor)
+                                                            || (armorLevel == getArmorLevel(fromItemArmor)
+                                                                    && getItemDamage(getStack(slot)) < getItemDamage(from))) {
+                                                        move = true;
+                                                    }
+                                                } else {
+                                                    move = true
+                                                }
 	                                    	}
 	                                        if (areSlotAndStackCompatible(slot, from) && move) {
 	                                            globalContainer.move(InvTweaksContainerSection.INVENTORY, i, InvTweaksContainerSection.ARMOR,

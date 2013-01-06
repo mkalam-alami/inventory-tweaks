@@ -1,0 +1,1 @@
+java -Xmx1024m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 -Dsun.java2d.noddraw=true -Dsun.java2d.d3d=false -Dsun.java2d.opengl=false -Dsun.java2d.pmoffscreen=false -classpath minecraft.jar  net.minecraft.LauncherFrame

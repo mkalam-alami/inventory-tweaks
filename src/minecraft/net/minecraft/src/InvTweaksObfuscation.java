@@ -368,7 +368,8 @@ public class InvTweaksObfuscation {
     public boolean isValidChest(GuiScreen guiScreen) {
         return guiScreen != null && (isGuiChest(guiScreen)
         		|| isGuiDispenser(guiScreen)
-        		|| mods.isSpecialChest(guiScreen));
+        		|| mods.isSpecialChest(guiScreen))
+                && (guiScreen instanceof GuiContainer);
     }
 	public boolean isValidInventory(GuiScreen guiScreen) {
         return isStandardInventory(guiScreen)

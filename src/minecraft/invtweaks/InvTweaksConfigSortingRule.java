@@ -14,7 +14,6 @@ import java.util.logging.Logger;
  */
 public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSortingRule> {
 
-    @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     private String constraint;

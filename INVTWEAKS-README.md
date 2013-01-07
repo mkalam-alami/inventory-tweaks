@@ -1,4 +1,4 @@
-<img src="http://modding.kalam-alami.net/site/img/invtweaks.png" />
+<img src="http://inventory-tweaks.readthedocs.org/en/latest/_images/invtweaks.png" />
 
 * Matching Minecraft version: **1.4.4**
 
@@ -8,5 +8,5 @@ This Open Source project (see [License](https://github.com/mkalam-alami/inventor
 
 ## Get started
 
-* For documentation about how to use or install the mod, see the [main page of Inventory Tweaks](http://wan.ka.free.fr/?invtweaks). This place is for developers!
+* For documentation about how to use or install the mod, see the [main page of Inventory Tweaks](http://modding.kalam-alami.net). This place is for developers!
 * To start coding, all is explained on the [project's wiki](https://github.com/mkalam-alami/inventory-tweaks/wiki).

@@ -15,7 +15,6 @@ import org.lwjgl.input.Keyboard;
  */
 public class InvTweaksShortcutMapping {
 
-    @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
     
     private List<Integer> keysToHold = new LinkedList<Integer>();

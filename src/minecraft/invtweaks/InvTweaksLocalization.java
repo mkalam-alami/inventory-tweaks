@@ -15,7 +15,6 @@ import net.minecraft.src.InvTweaksObfuscation;
  */
 public class InvTweaksLocalization {
 	
-    @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
 	private static final String LANG_RESOURCES_LOCATION = "invtweaks/lang/";
 	private static final String LANG_RESOURCES_LOCATION_MCP = "../invtweaks/lang/";

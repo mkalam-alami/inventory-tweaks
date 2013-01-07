@@ -24,7 +24,6 @@ import org.lwjgl.util.Point;
  */
 public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
-    @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     private final static int ID_MIDDLE_CLICK = 1;

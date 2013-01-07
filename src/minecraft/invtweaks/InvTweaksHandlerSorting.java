@@ -148,7 +148,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 //item and slot counts for each unique item
                 HashMap<List<Integer>, int[]> itemCounts = new HashMap<List<Integer>, int[]>();
                 for(int i = 0; i < size; i++) {
-                    ur stack = containerMgr.getItemStack(i);
+                    ItemStack stack = containerMgr.getItemStack(i);
                     if(stack != null) {
                         List<Integer> item = Arrays.asList(getItemID(stack), getItemDamage(stack));
                         int[] count = itemCounts.get(item);
@@ -217,11 +217,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     markAsMoved(i,1);
 
             } else if (algorithm == ALGORITHM_INVENTORY) {
-<<<<<<< HEAD
-                
-=======
-
->>>>>>> 3845c4cadc9c2ee70130c9bad5a88867002a652b
                 //// Move items out of the crafting slots
                 log.info("Handling crafting slots.");
                 if (globalContainer.hasSection(InvTweaksContainerSection.CRAFTING_IN)) {
@@ -276,7 +271,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                                         move = true;
                                                     }
                                                 } else {
-                                                    move = true
+                                                    move = true;
                                                 }
 	                                    	}
 	                                        if (areSlotAndStackCompatible(slot, from) && move) {

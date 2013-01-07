@@ -18,7 +18,6 @@ import java.util.logging.Logger;
  */
 public class InvTweaksItemTreeCategory {
 
-    @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     private final Map<Integer, List<InvTweaksItemTreeItem>> items = 

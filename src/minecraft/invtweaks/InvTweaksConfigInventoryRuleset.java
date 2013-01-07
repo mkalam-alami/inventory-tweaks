@@ -20,7 +20,6 @@ import java.util.logging.Logger;
  */
 public class InvTweaksConfigInventoryRuleset {
 
-	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
 	
 	private String name;

@@ -19,7 +19,6 @@ import net.minecraft.client.Minecraft;
  */
 public class mod_InvTweaks extends BaseMod {
 
-	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger("InvTweaks");
 
 	private InvTweaks instance;

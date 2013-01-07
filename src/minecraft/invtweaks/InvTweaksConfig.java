@@ -32,7 +32,6 @@ import org.lwjgl.input.Keyboard;
  */
 public class InvTweaksConfig {
 
-    @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     public static final String PROP_VERSION = "version";

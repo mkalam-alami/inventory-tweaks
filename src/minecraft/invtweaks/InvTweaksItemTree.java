@@ -247,7 +247,6 @@ public class InvTweaksItemTree {
     /**
      * For debug purposes. Call log(getRootCategory(), 0) to log the whole tree.
      */
-    @SuppressWarnings("unused")
     private void log(InvTweaksItemTreeCategory category, int indentLevel) {
 
         String logIdent = "";

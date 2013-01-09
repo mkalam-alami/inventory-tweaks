@@ -1,11 +1,11 @@
-package invtweaks;
+package invtweaks.api;
 
 /**
  * Names for specific parts of containers.
  * For unknown container types (such as mod containers),
  * only INVENTORY and CHEST sections are available.
  */
-public enum InvTweaksContainerSection {
+public enum ContainerSection {
     /** The player's inventory */
     INVENTORY,
     /** The player's inventory (only the hotbar) */

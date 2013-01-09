@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import invtweaks.api.InvTweaksContainerSection;
+import invtweaks.api.ContainerSection;
 import net.minecraft.src.Container;
 import net.minecraft.src.GuiContainer;
 import net.minecraft.src.GuiScreen;
@@ -122,21 +122,21 @@ public class InvTweaksModCompatibility {
     }
 
 	@SuppressWarnings("unchecked")
-    public Map<InvTweaksContainerSection, List<Slot>> getSpecialContainerSlots(GuiScreen guiScreen, Container container) {
+    public Map<ContainerSection, List<Slot>> getSpecialContainerSlots(GuiScreen guiScreen, Container container) {
 
-    	Map<InvTweaksContainerSection, List<Slot>> result = new HashMap<InvTweaksContainerSection, List<Slot>>();
+    	Map<ContainerSection, List<Slot>> result = new HashMap<ContainerSection, List<Slot>>();
 		List<Slot> slots = (List<Slot>) obf.getSlots(container);
 
     	if (is(guiScreen, "GuiCondenser")) { // EE
-    		result.put(InvTweaksContainerSection.CHEST, slots.subList(1, slots.size() - 36));
+    		result.put(ContainerSection.CHEST, slots.subList(1, slots.size() - 36));
     	}
     	else if (is(guiScreen, "GuiAdvBench")) { // RedPower 2
-            result.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(0, 9));
-            result.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(10, 11));
-            result.put(InvTweaksContainerSection.CHEST, slots.subList(11, 29));
+            result.put(ContainerSection.CRAFTING_IN, slots.subList(0, 9));
+            result.put(ContainerSection.CRAFTING_OUT, slots.subList(10, 11));
+            result.put(ContainerSection.CHEST, slots.subList(11, 29));
     	} else if(is(guiScreen, "GuiArcaneWorkbench") || is(guiScreen, "GuiInfusionWorkbench")) { // Thaumcraft 3
-            result.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(0, 1));
-            result.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(2, 11));
+            result.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+            result.put(ContainerSection.CRAFTING_IN, slots.subList(2, 11));
     	}
 
 		return result;

@@ -8,7 +8,7 @@ import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import invtweaks.api.InvTweaksContainerSection;
+import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaksObfuscation;
 import net.minecraft.src.ItemStack;
@@ -31,10 +31,10 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
 	private class ShortcutConfig {
         public InvTweaksShortcutType type = null;
-	    public InvTweaksContainerSection fromSection = null;
+	    public ContainerSection fromSection = null;
         public int fromIndex = -1;
         public ItemStack fromStack = null;
-        public InvTweaksContainerSection toSection = null;
+        public ContainerSection toSection = null;
         public int toIndex = -1;
         public boolean drop = false;
         public boolean forceEmptySlot = false;
@@ -180,7 +180,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
             // (Special case: can't move 1 item from crafting output)
             // TODO Better mod compat by testing slot class to make sure the 'move one' shortcut works
-            if (shortcutConfig.fromSection == InvTweaksContainerSection.CRAFTING_OUT
+            if (shortcutConfig.fromSection == ContainerSection.CRAFTING_OUT
                     && shortcutConfig.type == InvTweaksShortcutType.MOVE_ONE_ITEM) {
                 shortcutConfig.type = InvTweaksShortcutType.MOVE_ONE_STACK;
             }
@@ -189,7 +189,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
                 // Compute shortcut target
                 if (shortcutConfig.type == InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
-                    shortcutConfig.toSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
+                    shortcutConfig.toSection = ContainerSection.INVENTORY_HOTBAR;
                     InvTweaksShortcutMapping hotbarShortcut = isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
                     if (hotbarShortcut != null && !hotbarShortcut.getKeyCodes().isEmpty()) {
                          String keyName = Keyboard.getKeyName(hotbarShortcut.getKeyCodes().get(0));
@@ -198,36 +198,36 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 }
                 else {
                     // Compute targetable sections in order
-                    Vector<InvTweaksContainerSection> orderedSections = new Vector<InvTweaksContainerSection>();
+                    Vector<ContainerSection> orderedSections = new Vector<ContainerSection>();
 
                     // (Top part)
-                    if (container.hasSection(InvTweaksContainerSection.CHEST)) {
-                        orderedSections.add(InvTweaksContainerSection.CHEST);
+                    if (container.hasSection(ContainerSection.CHEST)) {
+                        orderedSections.add(ContainerSection.CHEST);
                     }
-                    else if (container.hasSection(InvTweaksContainerSection.CRAFTING_IN)) {
-                        orderedSections.add(InvTweaksContainerSection.CRAFTING_IN);
+                    else if (container.hasSection(ContainerSection.CRAFTING_IN)) {
+                        orderedSections.add(ContainerSection.CRAFTING_IN);
                     }
-                    else if (container.hasSection(InvTweaksContainerSection.FURNACE_IN)) {
-                        orderedSections.add(InvTweaksContainerSection.FURNACE_IN);
+                    else if (container.hasSection(ContainerSection.FURNACE_IN)) {
+                        orderedSections.add(ContainerSection.FURNACE_IN);
                     }
-                    else if (container.hasSection(InvTweaksContainerSection.BREWING_INGREDIENT)) {
+                    else if (container.hasSection(ContainerSection.BREWING_INGREDIENT)) {
                         ItemStack stack = container.getStack(slot);
                         if (stack != null) {
                             if (getItemID(stack) == 373 /* Water Bottle/Potions */) {
-                                orderedSections.add(InvTweaksContainerSection.BREWING_BOTTLES);
+                                orderedSections.add(ContainerSection.BREWING_BOTTLES);
                             }
                             else {
-                                orderedSections.add(InvTweaksContainerSection.BREWING_INGREDIENT);
+                                orderedSections.add(ContainerSection.BREWING_INGREDIENT);
                             }
                         }
                     }
-                    else if (container.hasSection(InvTweaksContainerSection.ENCHANTMENT)) {
-                        orderedSections.add(InvTweaksContainerSection.ENCHANTMENT);
+                    else if (container.hasSection(ContainerSection.ENCHANTMENT)) {
+                        orderedSections.add(ContainerSection.ENCHANTMENT);
                     }
 
                     // (Inventory part)
-                    orderedSections.add(InvTweaksContainerSection.INVENTORY_NOT_HOTBAR);
-                    orderedSections.add(InvTweaksContainerSection.INVENTORY_HOTBAR);
+                    orderedSections.add(ContainerSection.INVENTORY_NOT_HOTBAR);
+                    orderedSections.add(ContainerSection.INVENTORY_HOTBAR);
 
                     // Choose target section
                     boolean upMapping = isShortcutDown(InvTweaksShortcutType.MOVE_UP) != null,
@@ -246,28 +246,28 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                                     (orderedSections.size() + fromSectionIndex + sectionOffset) % orderedSections.size());
                         }
                         else {
-                            shortcutConfig.toSection = InvTweaksContainerSection.INVENTORY;
+                            shortcutConfig.toSection = ContainerSection.INVENTORY;
                         }
                     }
                     else { // Implicit section
                         switch (shortcutConfig.fromSection) {
                         case CHEST:
-                            shortcutConfig.toSection = InvTweaksContainerSection.INVENTORY; break;
+                            shortcutConfig.toSection = ContainerSection.INVENTORY; break;
                         case INVENTORY_HOTBAR:
-                            if (orderedSections.contains(InvTweaksContainerSection.CHEST)) {
-                                shortcutConfig.toSection = InvTweaksContainerSection.CHEST;
+                            if (orderedSections.contains(ContainerSection.CHEST)) {
+                                shortcutConfig.toSection = ContainerSection.CHEST;
                             } else {
-                                shortcutConfig.toSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR;
+                                shortcutConfig.toSection = ContainerSection.INVENTORY_NOT_HOTBAR;
                             }
                             break;
                         case CRAFTING_IN:
                         case FURNACE_IN:
-                            shortcutConfig.toSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;
+                            shortcutConfig.toSection = ContainerSection.INVENTORY_NOT_HOTBAR; break;
                         default:
-                            if (orderedSections.contains(InvTweaksContainerSection.CHEST)) {
-                                shortcutConfig.toSection = InvTweaksContainerSection.CHEST;
+                            if (orderedSections.contains(ContainerSection.CHEST)) {
+                                shortcutConfig.toSection = ContainerSection.CHEST;
                             } else {
-                                shortcutConfig.toSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
+                                shortcutConfig.toSection = ContainerSection.INVENTORY_HOTBAR;
                             }
                         }
                     }
@@ -343,8 +343,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     case MOVE_ONE_STACK:
                     {
                         Slot slot = container.getSlot(shortcut.fromSection, shortcut.fromIndex);
-                        if (shortcut.fromSection != InvTweaksContainerSection.CRAFTING_OUT
-                                && shortcut.toSection != InvTweaksContainerSection.ENCHANTMENT) {
+                        if (shortcut.fromSection != ContainerSection.CRAFTING_OUT
+                                && shortcut.toSection != ContainerSection.ENCHANTMENT) {
                             while (hasStack(slot) && toIndex != -1) {
                                 success = container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection, toIndex);
                                 newIndex = getNextTargetIndex(shortcut);
@@ -368,9 +368,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     case MOVE_ALL_ITEMS:
                     {
                         moveAll(shortcut, shortcut.fromStack);
-                        if (shortcut.fromSection == InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
-                                && shortcut.toSection == InvTweaksContainerSection.CHEST) {
-                            shortcut.fromSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
+                        if (shortcut.fromSection == ContainerSection.INVENTORY_NOT_HOTBAR
+                                && shortcut.toSection == ContainerSection.CHEST) {
+                            shortcut.fromSection = ContainerSection.INVENTORY_HOTBAR;
                             moveAll(shortcut, shortcut.fromStack);
                         }
                         break;
@@ -379,9 +379,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     case MOVE_EVERYTHING:
                     {
                         moveAll(shortcut, null);
-                        if (shortcut.fromSection == InvTweaksContainerSection.INVENTORY_HOTBAR
-                                && shortcut.toSection == InvTweaksContainerSection.CHEST) {
-                            shortcut.fromSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
+                        if (shortcut.fromSection == ContainerSection.INVENTORY_HOTBAR
+                                && shortcut.toSection == ContainerSection.CHEST) {
+                            shortcut.fromSection = ContainerSection.INVENTORY_HOTBAR;
                             moveAll(shortcut, null);
                         }
                         break;
@@ -445,8 +445,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
         // Switch from FURNACE_IN to FURNACE_FUEL if the slot is taken
         // TODO Better furnace shortcuts
-        if (result == -1 && shortcut.toSection == InvTweaksContainerSection.FURNACE_IN) {
-            shortcut.toSection = InvTweaksContainerSection.FURNACE_FUEL;
+        if (result == -1 && shortcut.toSection == ContainerSection.FURNACE_IN) {
+            shortcut.toSection = ContainerSection.FURNACE_FUEL;
             result = container.getFirstEmptyIndex(shortcut.toSection);
         }
 

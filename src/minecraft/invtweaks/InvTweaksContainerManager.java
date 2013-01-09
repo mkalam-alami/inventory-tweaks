@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-import invtweaks.api.InvTweaksContainerSection;
+import invtweaks.api.ContainerSection;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.Minecraft;
@@ -35,8 +35,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
     private GuiContainer guiContainer;
     private Container container;
-    private Map<InvTweaksContainerSection, List<Slot>> slotRefs
-            = new HashMap<InvTweaksContainerSection, List<Slot>>();
+    private Map<ContainerSection, List<Slot>> slotRefs
+            = new HashMap<ContainerSection, List<Slot>>();
     private int clickDelay = 0;
 
 
@@ -65,45 +65,45 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
         // Inventory: 4 crafting slots, then 4 armor slots, then inventory
         if (isContainerPlayer(container)) {
-            slotRefs.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(0, 1));
-            slotRefs.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(1, 5));
-            slotRefs.put(InvTweaksContainerSection.ARMOR, slots.subList(5, 9));
+            slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+            slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 5));
+            slotRefs.put(ContainerSection.ARMOR, slots.subList(5, 9));
         }
 
         // Creative mode inventory: 4 armor slots, then inventory
         else if (isContainerCreative(container)) {
-            slotRefs.put(InvTweaksContainerSection.ARMOR, slots.subList(5, 9));
+            slotRefs.put(ContainerSection.ARMOR, slots.subList(5, 9));
             size--; // Last slot is something else than the inventory (maybe the trash)
         }
 
         // Chest/Dispenser
         else if (isContainerChest(container)
                 || isContainerDispenser(container)) {
-            slotRefs.put(InvTweaksContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
+            slotRefs.put(ContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
         }
 
         // Furnace
         else if (isContainerFurnace(container)) {
-            slotRefs.put(InvTweaksContainerSection.FURNACE_IN, slots.subList(0, 1));
-            slotRefs.put(InvTweaksContainerSection.FURNACE_FUEL, slots.subList(1, 2));
-            slotRefs.put(InvTweaksContainerSection.FURNACE_OUT, slots.subList(2, 3));
+            slotRefs.put(ContainerSection.FURNACE_IN, slots.subList(0, 1));
+            slotRefs.put(ContainerSection.FURNACE_FUEL, slots.subList(1, 2));
+            slotRefs.put(ContainerSection.FURNACE_OUT, slots.subList(2, 3));
         }
 
         // Workbench
         else if (isContainerWorkbench(container)) {
-            slotRefs.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(0, 1));
-            slotRefs.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(1, 10));
+            slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+            slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 10));
         }
 
         // Enchantment table
         else if (isContainerEnchantmentTable(container)) {
-            slotRefs.put(InvTweaksContainerSection.ENCHANTMENT, slots.subList(0, 1));
+            slotRefs.put(ContainerSection.ENCHANTMENT, slots.subList(0, 1));
         }
 
         // Brewing stand
         else if (isContainerBrewingStand(container)) {
-            slotRefs.put(InvTweaksContainerSection.BREWING_BOTTLES, slots.subList(0, 3));
-            slotRefs.put(InvTweaksContainerSection.BREWING_INGREDIENT, slots.subList(3, 4));
+            slotRefs.put(ContainerSection.BREWING_BOTTLES, slots.subList(0, 3));
+            slotRefs.put(ContainerSection.BREWING_INGREDIENT, slots.subList(3, 4));
         }
 
         // Unknown = chest
@@ -116,19 +116,19 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         	if (slotRefs.isEmpty()) {
 	            if (size >= INVENTORY_SIZE) {
 	                // Assuming the container ends with the inventory, just like all vanilla containers.
-	                slotRefs.put(InvTweaksContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
+	                slotRefs.put(ContainerSection.CHEST, slots.subList(0, size-INVENTORY_SIZE));
 	            }
 	            else {
 	                guiWithInventory = false;
-	                slotRefs.put(InvTweaksContainerSection.CHEST, slots.subList(0, size));
+	                slotRefs.put(ContainerSection.CHEST, slots.subList(0, size));
 	            }
         	}
         }
 
-        if (guiWithInventory && !slotRefs.containsKey(InvTweaksContainerSection.INVENTORY)) {
-            slotRefs.put(InvTweaksContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
-            slotRefs.put(InvTweaksContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
-            slotRefs.put(InvTweaksContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
+        if (guiWithInventory && !slotRefs.containsKey(ContainerSection.INVENTORY)) {
+            slotRefs.put(ContainerSection.INVENTORY, slots.subList(size-INVENTORY_SIZE, size));
+            slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size-INVENTORY_SIZE, size-HOTBAR_SIZE));
+            slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size-HOTBAR_SIZE, size));
         }
 
     }
@@ -148,8 +148,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * holding an item that couln't be put down.
      * @throws TimeoutException
      */
-	public boolean move(InvTweaksContainerSection srcSection, int srcIndex,
-            InvTweaksContainerSection destSection, int destIndex) {
+	public boolean move(ContainerSection srcSection, int srcIndex,
+            ContainerSection destSection, int destIndex) {
 	    //System.out.println(srcSection + ":" + srcIndex + " to " + destSection + ":" + destIndex);
 	    ItemStack srcStack = getItemStack(srcSection, srcIndex);
 	    ItemStack destStack = getItemStack(destSection, destIndex);
@@ -163,9 +163,9 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
         // Put hold item down
         if (getHeldStack() != null) {
-            int firstEmptyIndex = getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
+            int firstEmptyIndex = getFirstEmptyIndex(ContainerSection.INVENTORY);
             if (firstEmptyIndex != -1) {
-                leftClick(InvTweaksContainerSection.INVENTORY, firstEmptyIndex);
+                leftClick(ContainerSection.INVENTORY, firstEmptyIndex);
             }
             else {
                 return false;
@@ -179,7 +179,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
                     hasDataTags(srcStack) || hasDataTags(destStack)
                 )) {
             int intermediateSlot = getFirstEmptyUsableSlotNumber();
-            InvTweaksContainerSection intermediateSection = getSlotSection(intermediateSlot);
+            ContainerSection intermediateSection = getSlotSection(intermediateSlot);
             int intermediateIndex = getSlotIndex(intermediateSlot);
             if (intermediateIndex != -1) {
                 // Step 1/3: Dest > Int
@@ -223,8 +223,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 	 * by a different item (meaning items cannot be moved to destination).
 	 * @throws TimeoutException
 	 */
-	public boolean moveSome(InvTweaksContainerSection srcSection, int srcIndex,
-	        InvTweaksContainerSection destSection, int destIndex,
+	public boolean moveSome(ContainerSection srcSection, int srcIndex,
+	        ContainerSection destSection, int destIndex,
 	        int amount) {
 
 	    ItemStack source = getItemStack(srcSection, srcIndex);
@@ -254,11 +254,11 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
 	}
 
-    public boolean drop(InvTweaksContainerSection srcSection, int srcIndex) {
+    public boolean drop(ContainerSection srcSection, int srcIndex) {
         return move(srcSection, srcIndex, null, DROP_SLOT);
     }
 
-    public boolean dropSome(InvTweaksContainerSection srcSection, int srcIndex, int amount) {
+    public boolean dropSome(ContainerSection srcSection, int srcIndex, int amount) {
         return moveSome(srcSection, srcIndex, null, DROP_SLOT, amount);
     }
 
@@ -268,7 +268,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @return true unless the item could not be put down
      * @throws Exception
      */
-    public boolean putHoldItemDown(InvTweaksContainerSection destSection, int destIndex) {
+    public boolean putHoldItemDown(ContainerSection destSection, int destIndex) {
         ItemStack heldStack = getHeldStack();
         if (heldStack != null) {
         	if (getItemStack(destSection, destIndex) == null) {
@@ -280,16 +280,16 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         return true;
     }
 
-	public void leftClick(InvTweaksContainerSection section, int index) {
+	public void leftClick(ContainerSection section, int index) {
         click(section, index, false);
     }
 
-    public void rightClick(InvTweaksContainerSection section, int index) {
+    public void rightClick(ContainerSection section, int index) {
         click(section, index, true);
     }
 
 
-    public void click(InvTweaksContainerSection section, int index, boolean rightClick) {
+    public void click(ContainerSection section, int index, boolean rightClick) {
         //System.out.println("Click " + section + ":" + index);
         // Click! (we finally call the Minecraft code)
         int slot = indexToSlot(section, index);
@@ -360,11 +360,11 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     }
 
 
-	public boolean hasSection(InvTweaksContainerSection section) {
+	public boolean hasSection(ContainerSection section) {
         return slotRefs.containsKey(section);
     }
 
-    public List<Slot> getSlots(InvTweaksContainerSection section) {
+    public List<Slot> getSlots(ContainerSection section) {
         return slotRefs.get(section);
     }
 
@@ -384,7 +384,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param slot
      * @return The size, or 0 if there is no such section.
      */
-    public int getSize(InvTweaksContainerSection section) {
+    public int getSize(ContainerSection section) {
         if (hasSection(section)) {
             return slotRefs.get(section).size();
         }
@@ -398,7 +398,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param section
      * @return -1 if no slot is free
      */
-    public int getFirstEmptyIndex(InvTweaksContainerSection section) {
+    public int getFirstEmptyIndex(ContainerSection section) {
         int i = 0;
         for (Slot slot : slotRefs.get(section)) {
             if (!hasStack(slot)) {
@@ -413,7 +413,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param slot
      * @return true if the specified slot exists and is empty, false otherwise.
      */
-    public boolean isSlotEmpty(InvTweaksContainerSection section, int slot) {
+    public boolean isSlotEmpty(ContainerSection section, int slot) {
         if (hasSection(section)) {
             return getItemStack(section, slot) == null;
         }
@@ -422,7 +422,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
     }
 
-    public Slot getSlot(InvTweaksContainerSection section, int index) {
+    public Slot getSlot(ContainerSection section, int index) {
         List<Slot> slots = slotRefs.get(section);
         if (slots != null) {
             return slots.get(index);
@@ -449,10 +449,10 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      */
     public int getSlotIndex(int slotNumber, boolean preferInventory) {
         // TODO Caching with getSlotSection
-        for (InvTweaksContainerSection section : slotRefs.keySet()) {
-            if (!preferInventory && section != InvTweaksContainerSection.INVENTORY
-                    || (preferInventory && section != InvTweaksContainerSection.INVENTORY_NOT_HOTBAR
-                            && section != InvTweaksContainerSection.INVENTORY_HOTBAR)) {
+        for (ContainerSection section : slotRefs.keySet()) {
+            if (!preferInventory && section != ContainerSection.INVENTORY
+                    || (preferInventory && section != ContainerSection.INVENTORY_NOT_HOTBAR
+                            && section != ContainerSection.INVENTORY_HOTBAR)) {
                 int i = 0;
                 for (Slot slot : slotRefs.get(section)) {
                     if (getSlotNumber(slot) == slotNumber) {
@@ -470,10 +470,10 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param slotNumber
      * @return null if the slot number is invalid.
      */
-    public InvTweaksContainerSection getSlotSection(int slotNumber) {
+    public ContainerSection getSlotSection(int slotNumber) {
         // TODO Caching with getSlotIndex
-        for (InvTweaksContainerSection section : slotRefs.keySet()) {
-            if (section != InvTweaksContainerSection.INVENTORY) {
+        for (ContainerSection section : slotRefs.keySet()) {
+            if (section != ContainerSection.INVENTORY) {
                 for (Slot slot : slotRefs.get(section)) {
                     if (getSlotNumber(slot) == slotNumber) {
                         return section;
@@ -490,7 +490,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param slot
      * @return An ItemStack or null.
      */
-    public ItemStack getItemStack(InvTweaksContainerSection section, int index)
+    public ItemStack getItemStack(ContainerSection section, int index)
             throws NullPointerException, IndexOutOfBoundsException {
         int slot = indexToSlot(section, index);
         if (slot >= 0 && slot < getSlots(container).size()) {
@@ -505,7 +505,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     }
 
     private int getFirstEmptyUsableSlotNumber() {
-        for (InvTweaksContainerSection section : slotRefs.keySet()) {
+        for (ContainerSection section : slotRefs.keySet()) {
             for (Slot slot : slotRefs.get(section)) {
                 // Use only standard slot (to make sure
                 // we can freely put and remove items there)
@@ -523,7 +523,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param index
      * @return -1 if not found
      */
-    private int indexToSlot(InvTweaksContainerSection section, int index) {
+    private int indexToSlot(ContainerSection section, int index) {
         if (index == DROP_SLOT) {
             return DROP_SLOT;
         }

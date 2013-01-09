@@ -1,6 +1,6 @@
 package invtweaks;
 
-import invtweaks.api.InvTweaksContainerSection;
+import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
  */
 public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
 
-    private final InvTweaksContainerSection section = InvTweaksContainerSection.CHEST;
+    private final ContainerSection section = ContainerSection.CHEST;
 
     private int algorithm;
     private int rowSize;

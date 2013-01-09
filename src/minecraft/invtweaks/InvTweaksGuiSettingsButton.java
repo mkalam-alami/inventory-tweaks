@@ -3,7 +3,7 @@ package invtweaks;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import invtweaks.api.InvTweaksContainerSection;
+import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaksObfuscation;
 
@@ -48,7 +48,7 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
 
             try {
                 containerMgr = new InvTweaksContainerSectionManager(
-                        minecraft, InvTweaksContainerSection.INVENTORY);
+                        minecraft, ContainerSection.INVENTORY);
                 containerMgr.setClickDelay(config.getClickDelay());
                 if (obf.getHeldStack() != null) {
                     try {

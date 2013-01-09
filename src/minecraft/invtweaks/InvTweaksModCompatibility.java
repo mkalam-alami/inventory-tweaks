@@ -1,10 +1,16 @@
 package invtweaks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.TypeVariable;
+
 import invtweaks.api.ContainerSection;
+import invtweaks.api.ContainerGUI;
+import invtweaks.api.InventoryGUI;
 import net.minecraft.src.Container;
 import net.minecraft.src.GuiContainer;
 import net.minecraft.src.GuiScreen;
@@ -27,7 +33,8 @@ public class InvTweaksModCompatibility {
      * @return
      */
     public boolean isSpecialChest(GuiScreen guiScreen) {
-        return is(guiScreen, "GuiAlchChest") // Equivalent Exchange
+        return getContainerGUIAnnotation(guiScreen.getClass()) != null // API-marked classes
+            || is(guiScreen, "GuiAlchChest") // Equivalent Exchange
         	|| is(guiScreen, "GuiCondenser") // Equivalent Exchange
         	|| is(guiScreen, "GUIChest") // Iron chests (formerly IC2)
                 || is(guiScreen, "GuiMultiPageChest") // Multi Page chest
@@ -67,7 +74,20 @@ public class InvTweaksModCompatibility {
      * @return
      */
     public int getSpecialChestRowSize(GuiContainer guiContainer, int defaultValue) {
-    	if (is(guiContainer, "GuiAlchChest")
+        ContainerGUI annotation = getContainerGUIAnnotation(guiContainer.getClass());
+        if(annotation != null) {
+            Method m = getAnnotatedMethod(guiContainer.getClass(), new Class[] { ContainerGUI.RowSizeCallback.class }, 0, int.class);
+            if(m != null) {
+                try {
+                    return (int)m.invoke(guiContainer);
+                } catch(Exception e) {
+                    // TODO: Do something here to tell mod authors they're doing it wrong.
+                    return annotation.rowSize();
+                }
+            } else {
+                return annotation.rowSize();
+            }
+        } else if(is(guiContainer, "GuiAlchChest")
     			|| is(guiContainer, "GuiCondenser")) { // Equivalent Exchange
             return 13;
         } else if (is(guiContainer, "GUIChest")) { // Iron chests (formerly IC2)
@@ -113,6 +133,9 @@ public class InvTweaksModCompatibility {
      * @return
      */
     public boolean isSpecialInventory(GuiScreen guiScreen) {
+        if(getInventoryGUIAnnotation(guiScreen.getClass()) != null) {
+            return true;
+        }
     	try {
 			return obf.getSlots(obf.getContainer(obf.asGuiContainer(guiScreen))).size() > InvTweaksConst.INVENTORY_SIZE
 					&& !obf.isGuiInventoryCreative(guiScreen);
@@ -123,6 +146,17 @@ public class InvTweaksModCompatibility {
 
 	@SuppressWarnings("unchecked")
     public Map<ContainerSection, List<Slot>> getSpecialContainerSlots(GuiScreen guiScreen, Container container) {
+        Class<? extends GuiScreen> clazz = guiScreen.getClass();
+        if(isAPIClass(clazz)) {
+            Method m = getAnnotatedMethod(clazz, new Class[] { ContainerGUI.ContainerSectionCallback.class, InventoryGUI.ContainerSectionCallback.class }, 0, Map.class);
+            if(m != null) {
+                try {
+                    return (Map<ContainerSection, List<Slot>>)m.invoke(guiScreen);
+                } catch(Exception e) {
+                    // TODO: Do something here to tell mod authors they're doing it wrong.
+                }
+            }
+        }
 
     	Map<ContainerSection, List<Slot>> result = new HashMap<ContainerSection, List<Slot>>();
 		List<Slot> slots = (List<Slot>) obf.getSlots(container);
@@ -152,5 +186,31 @@ public class InvTweaksModCompatibility {
 	    }
     }
 
+    private static final ContainerGUI getContainerGUIAnnotation(Class<? extends GuiScreen> clazz) {
+        ContainerGUI annotation = clazz.getAnnotation(ContainerGUI.class);
+        return annotation;
+    }
 
+    private static final InventoryGUI getInventoryGUIAnnotation(Class<? extends GuiScreen> clazz) {
+        InventoryGUI annotation = clazz.getAnnotation(InventoryGUI.class);
+        return annotation;
+    }
+
+    private static final boolean isAPIClass(Class<? extends GuiScreen> clazz) {
+        return (getContainerGUIAnnotation(clazz) != null) || (getInventoryGUIAnnotation(clazz) != null);
+    }
+
+    private static final Method getAnnotatedMethod(Class clazz, Class[] annotations, int numParams, Class retClass) {
+        Method[] methods = clazz.getMethods();
+        for(Method m : methods) {
+            for(Class annotation : annotations) {
+                if(m.getAnnotation(annotation) != null) {
+                    if(m.getParameterTypes().length == numParams && retClass.isAssignableFrom(m.getReturnType())) {
+                        return m;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }

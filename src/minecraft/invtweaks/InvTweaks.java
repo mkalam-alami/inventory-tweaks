@@ -1,9 +1,5 @@
 package invtweaks;
 
-import invtweaks.InvTweaksConst;
-import invtweaks.InvTweaksItemTree;
-import invtweaks.InvTweaksItemTreeItem;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -14,6 +10,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import invtweaks.api.InvTweaksContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiContainer;

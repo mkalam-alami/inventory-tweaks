@@ -1,11 +1,10 @@
 package invtweaks;
 
-import invtweaks.InvTweaksConst;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import invtweaks.api.InvTweaksContainerSection;
 import net.minecraft.src.Container;
 import net.minecraft.src.GuiContainer;
 import net.minecraft.src.GuiScreen;
@@ -14,13 +13,13 @@ import net.minecraft.src.Slot;
 
 
 public class InvTweaksModCompatibility {
-	
+
     private InvTweaksObfuscation obf;
-    
+
     public InvTweaksModCompatibility(InvTweaksObfuscation obf) {
     	this.obf = obf;
     }
-    
+
     /**
      * Returns true if the screen is a chest/dispenser,
      * despite not being a GuiChest or a GuiDispenser.
@@ -35,8 +34,8 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiGoldSafe") // More Storage
                 || is(guiScreen, "GuiLocker")
                 || is(guiScreen, "GuiDualLocker")
-                || is(guiScreen, "GuiSafe") 
-                || is(guiScreen, "GuiCabinet") 
+                || is(guiScreen, "GuiSafe")
+                || is(guiScreen, "GuiCabinet")
                 || is(guiScreen, "GuiTower")
                 || is(guiScreen, "GuiBufferChest") // Red Power 2
                 || is(guiScreen, "GuiRetriever") // Red Power 2
@@ -107,7 +106,7 @@ public class InvTweaksModCompatibility {
         		|| is(guiScreen, "FC_GuiChest") // Metallurgy
         	;
     }
-    
+
     /**
      * Returns true if the screen is the inventory screen, despite not being a GuiInventory.
      * @param guiScreen
@@ -124,10 +123,10 @@ public class InvTweaksModCompatibility {
 
 	@SuppressWarnings("unchecked")
     public Map<InvTweaksContainerSection, List<Slot>> getSpecialContainerSlots(GuiScreen guiScreen, Container container) {
-    	
+
     	Map<InvTweaksContainerSection, List<Slot>> result = new HashMap<InvTweaksContainerSection, List<Slot>>();
 		List<Slot> slots = (List<Slot>) obf.getSlots(container);
-    	
+
     	if (is(guiScreen, "GuiCondenser")) { // EE
     		result.put(InvTweaksContainerSection.CHEST, slots.subList(1, slots.size() - 36));
     	}
@@ -139,9 +138,9 @@ public class InvTweaksModCompatibility {
             result.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(0, 1));
             result.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(2, 11));
     	}
-    	
+
 		return result;
-		
+
 	}
 
 	private static final boolean is(GuiScreen guiScreen, String className) {

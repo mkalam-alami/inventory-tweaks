@@ -1,5 +1,6 @@
 package invtweaks;
 
+import invtweaks.api.InvTweaksContainerSection;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -10,11 +11,11 @@ import net.minecraft.client.Minecraft;
 public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
 
     private final InvTweaksContainerSection section = InvTweaksContainerSection.CHEST;
-    
+
     private int algorithm;
     private int rowSize;
 
-    public InvTweaksGuiSortingButton(InvTweaksConfigManager cfgManager, 
+    public InvTweaksGuiSortingButton(InvTweaksConfigManager cfgManager,
             int id, int x, int y, int w, int h,
             String displayString, String tooltip,
             int algorithm, int rowSize, boolean useCustomTexture) {
@@ -25,7 +26,7 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
 
     public void drawButton(Minecraft minecraft, int i, int j) {
         super.drawButton(minecraft, i, j);
-        
+
         // Display symbol
         int textColor = getTextColor(i, j);
         if (getDisplayString().equals("h")) {
@@ -61,5 +62,5 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
         }
 
     }
-    
+
 }

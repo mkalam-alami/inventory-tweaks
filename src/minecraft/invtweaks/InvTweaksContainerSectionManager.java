@@ -3,6 +3,7 @@ package invtweaks;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import invtweaks.api.InvTweaksContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Container;
 import net.minecraft.src.ItemStack;
@@ -11,7 +12,7 @@ import net.minecraft.src.Slot;
 /**
  * Allows to perform various operations on a single section of
  * the inventory and/or containers. Works in both single and multiplayer.
- * 
+ *
  * @author Jimeo Wan
  *
  */
@@ -19,15 +20,15 @@ public class InvTweaksContainerSectionManager {
 
     private InvTweaksContainerManager containerMgr;
     private InvTweaksContainerSection section;
-    
+
     public InvTweaksContainerSectionManager(Minecraft mc, InvTweaksContainerSection section) throws Exception {
         this(new InvTweaksContainerManager(mc), section);
     }
-    
+
     public void setClickDelay(int delay) {
         this.containerMgr.setClickDelay(delay);
     }
-    
+
     public InvTweaksContainerSectionManager(InvTweaksContainerManager manager, InvTweaksContainerSection section) throws Exception {
         this.containerMgr = manager;
         this.section = section;
@@ -47,15 +48,15 @@ public class InvTweaksContainerSectionManager {
     public boolean drop(int srcIndex) throws TimeoutException {
         return containerMgr.drop(section, srcIndex);
     }
-    
+
     public boolean dropSome(int srcIndex, int amount) throws TimeoutException {
         return containerMgr.dropSome(section, srcIndex, amount);
     }
-    
+
     public boolean putHoldItemDown(int destIndex) throws TimeoutException {
         return containerMgr.putHoldItemDown(section, destIndex);
     }
-    
+
     public void leftClick(int index) throws TimeoutException {
         containerMgr.leftClick(section, index);
     }
@@ -87,7 +88,7 @@ public class InvTweaksContainerSectionManager {
     public Slot getSlot(int index) {
         return containerMgr.getSlot(section, index);
     }
-    
+
     public int getSlotIndex(int slotNumber) {
         if (isSlotInSection(slotNumber)) {
             return containerMgr.getSlotIndex(slotNumber);
@@ -100,7 +101,7 @@ public class InvTweaksContainerSectionManager {
     public boolean isSlotInSection(int slotNumber) {
         return containerMgr.getSlotSection(slotNumber) == section;
     }
-    
+
     public ItemStack getItemStack(int index) throws NullPointerException, IndexOutOfBoundsException {
         return containerMgr.getItemStack(section, index);
     }
@@ -108,5 +109,5 @@ public class InvTweaksContainerSectionManager {
     public Container getContainer() {
         return containerMgr.getContainer();
     }
-    
+
 }

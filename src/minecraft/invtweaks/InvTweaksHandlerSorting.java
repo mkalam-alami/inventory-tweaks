@@ -1,9 +1,5 @@
 package invtweaks;
 
-import invtweaks.InvTweaksConst;
-import invtweaks.InvTweaksItemTree;
-import invtweaks.InvTweaksItemTreeItem;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,7 +13,7 @@ import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-
+import invtweaks.api.InvTweaksContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaksObfuscation;
 import net.minecraft.src.Item;

@@ -1,4 +1,4 @@
-package invtweaks;
+package invtweaks.api;
 
 /**
  * Names for specific parts of containers.

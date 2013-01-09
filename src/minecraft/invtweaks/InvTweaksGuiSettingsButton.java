@@ -3,7 +3,7 @@ package invtweaks;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-
+import invtweaks.api.InvTweaksContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaksObfuscation;
 
@@ -38,14 +38,14 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
      * Displays inventory settings GUI
      */
     public boolean mousePressed(Minecraft minecraft, int i, int j) {
-        
+
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
         InvTweaksConfig config = cfgManager.getConfig();
-        
+
         if (super.mousePressed(minecraft, i, j)) {
             // Put hold item down if necessary
             InvTweaksContainerSectionManager containerMgr;
-            
+
             try {
                 containerMgr = new InvTweaksContainerSectionManager(
                         minecraft, InvTweaksContainerSection.INVENTORY);
@@ -65,7 +65,7 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
             } catch (Exception e) {
             	log.severe(e.getMessage());
             }
-            
+
             // Refresh config
             cfgManager.makeSureConfigurationIsLoaded();
 
@@ -76,5 +76,5 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
             return false;
         }
     }
-    
+
 }

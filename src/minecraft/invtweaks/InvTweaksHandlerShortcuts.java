@@ -8,6 +8,7 @@ import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
+import invtweaks.api.InvTweaksContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaksObfuscation;
 import net.minecraft.src.ItemStack;
@@ -18,16 +19,16 @@ import org.lwjgl.input.Mouse;
 
 
 /**
- * 
+ *
  * @author Jimeo Wan
  *
  */
 public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
-    
+
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     private static final int DROP_SLOT = -999;
-    
+
 	private class ShortcutConfig {
         public InvTweaksShortcutType type = null;
 	    public InvTweaksContainerSection fromSection = null;
@@ -38,9 +39,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         public boolean drop = false;
         public boolean forceEmptySlot = false;
 	}
-	
+
 	private InvTweaksConfig config;
-	
+
     private InvTweaksContainerManager container;
 
     /**
@@ -53,7 +54,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
      */
     private Map<InvTweaksShortcutType, List<InvTweaksShortcutMapping>> shortcuts;
 
-    
+
     public InvTweaksHandlerShortcuts(Minecraft mc, InvTweaksConfig config) {
 		super(mc);
 		this.config = config;
@@ -64,7 +65,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 	public void loadShortcuts() {
 		pressedKeys.clear();
 		shortcuts.clear();
-		
+
         // Register shortcut mappings
         Map<String, String> keys = config.getProperties(
                 InvTweaksConfig.PROP_SHORTCUT_PREFIX);
@@ -78,25 +79,25 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 }
             }
         }
-        
+
         // Add Minecraft's Up & Down mappings
         int upKeyCode = getKeyBindingForwardKeyCode(),
             downKeyCode = getKeyBindingBackKeyCode();
-        
+
         registerShortcutMapping(InvTweaksShortcutType.MOVE_UP, new InvTweaksShortcutMapping(upKeyCode));
         registerShortcutMapping(InvTweaksShortcutType.MOVE_DOWN, new InvTweaksShortcutMapping(downKeyCode));
 
         // Add hotbar shortcuts (1-9) mappings
-        int[] hotbarKeys = {Keyboard.KEY_1, Keyboard.KEY_2, Keyboard.KEY_3, 
+        int[] hotbarKeys = {Keyboard.KEY_1, Keyboard.KEY_2, Keyboard.KEY_3,
                 Keyboard.KEY_4, Keyboard.KEY_5, Keyboard.KEY_6,
                 Keyboard.KEY_7, Keyboard.KEY_8, Keyboard.KEY_9,
                 Keyboard.KEY_NUMPAD1, Keyboard.KEY_NUMPAD2, Keyboard.KEY_NUMPAD3,
-                Keyboard.KEY_NUMPAD4, Keyboard.KEY_NUMPAD5, Keyboard.KEY_NUMPAD6, 
+                Keyboard.KEY_NUMPAD4, Keyboard.KEY_NUMPAD5, Keyboard.KEY_NUMPAD6,
                 Keyboard.KEY_NUMPAD7, Keyboard.KEY_NUMPAD8, Keyboard.KEY_NUMPAD9};
         for (int i : hotbarKeys) {
             registerShortcutMapping(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT, new InvTweaksShortcutMapping(i));
         }
-        
+
         // Register (L/R)SHIFT to allow to filter them
         pressedKeys.put(Keyboard.KEY_LSHIFT, false);
         pressedKeys.put(Keyboard.KEY_RSHIFT, false);
@@ -124,7 +125,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     		ShortcutConfig shortcutToTrigger = computeShortcutToTrigger();
     		if (shortcutToTrigger != null) {
     	        int ex = Mouse.getEventX(), ey = Mouse.getEventY();
-    	        
+
                 // GO!
                 runShortcut(shortcutToTrigger);
 
@@ -132,12 +133,12 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 // TODO Find a better solution, like 'anticipate' default action?
                 Mouse.destroy();
                 Mouse.create();
-    
+
                 // Fixes a tiny glitch (Steve looks for a short moment
                 // at [0, 0] because of the mouse reset).
                 Mouse.setCursorPosition(ex, ey);
     		}
-    		
+
 		} catch (Exception e) {
             InvTweaks.logInGameErrorStatic("invtweaks.shortcut.error", e);
         }
@@ -145,21 +146,21 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
     public ShortcutConfig computeShortcutToTrigger() {
         updatePressedKeys();
-    
+
         // Init
         container = new InvTweaksContainerManager(mc);
         Slot slot = container.getSlotAtMousePosition();
         ShortcutConfig shortcutConfig = new ShortcutConfig();
-        
+
         // If a valid and not empty slot is clicked
         if (slot != null && (hasStack(slot) || getHeldStack() != null)) {
             int slotNumber = getSlotNumber(slot);
-            
+
             // Set shortcut origin
-            shortcutConfig.fromSection = container.getSlotSection(slotNumber);                
-            shortcutConfig.fromIndex = container.getSlotIndex(slotNumber);             
+            shortcutConfig.fromSection = container.getSlotSection(slotNumber);
+            shortcutConfig.fromIndex = container.getSlotIndex(slotNumber);
             shortcutConfig.fromStack = (hasStack(slot)) ? copy(getStack(slot)) : copy(getHeldStack());
-            
+
             // Compute shortcut type
             if (isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != null) {
                 shortcutConfig.type = InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT;
@@ -175,16 +176,16 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         || isShortcutDown(InvTweaksShortcutType.DROP) != null)) {
                 shortcutConfig.type = InvTweaksShortcutType.MOVE_ONE_STACK;
             }
-            
+
             // (Special case: can't move 1 item from crafting output)
             // TODO Better mod compat by testing slot class to make sure the 'move one' shortcut works
             if (shortcutConfig.fromSection == InvTweaksContainerSection.CRAFTING_OUT
                     && shortcutConfig.type == InvTweaksShortcutType.MOVE_ONE_ITEM) {
                 shortcutConfig.type = InvTweaksShortcutType.MOVE_ONE_STACK;
             }
-            
+
             if (shortcutConfig.fromSection != null && shortcutConfig.fromIndex != -1 && shortcutConfig.type != null) {
-            
+
                 // Compute shortcut target
                 if (shortcutConfig.type == InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
                     shortcutConfig.toSection = InvTweaksContainerSection.INVENTORY_HOTBAR;
@@ -197,7 +198,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 else {
                     // Compute targetable sections in order
                     Vector<InvTweaksContainerSection> orderedSections = new Vector<InvTweaksContainerSection>();
-                    
+
                     // (Top part)
                     if (container.hasSection(InvTweaksContainerSection.CHEST)) {
                         orderedSections.add(InvTweaksContainerSection.CHEST);
@@ -222,11 +223,11 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     else if (container.hasSection(InvTweaksContainerSection.ENCHANTMENT)) {
                         orderedSections.add(InvTweaksContainerSection.ENCHANTMENT);
                     }
-                    
+
                     // (Inventory part)
                     orderedSections.add(InvTweaksContainerSection.INVENTORY_NOT_HOTBAR);
                     orderedSections.add(InvTweaksContainerSection.INVENTORY_HOTBAR);
-                    
+
                     // Choose target section
                     boolean upMapping = isShortcutDown(InvTweaksShortcutType.MOVE_UP) != null,
                             downMapping = isShortcutDown(InvTweaksShortcutType.MOVE_DOWN) != null;
@@ -270,16 +271,16 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         }
                     }
                 }
-                
+
                 // Shortcut modifiers
                 shortcutConfig.forceEmptySlot = Mouse.isButtonDown(1);
                 shortcutConfig.drop = isShortcutDown(InvTweaksShortcutType.DROP) != null;
-                
+
                 return shortcutConfig;
-            
+
             }
         }
-        
+
         return null;
     }
 
@@ -324,20 +325,20 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 return;
             }
         }
-        
+
         synchronized(this) {
             if (shortcut.type == InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) {
                 container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection, shortcut.toIndex);
             }
             else {
-                
+
                 int toIndex = getNextTargetIndex(shortcut);
                 boolean success;
                 int newIndex;
-                
+
                 if (toIndex != -1) {
                     switch (shortcut.type) {
-                    
+
                     case MOVE_ONE_STACK:
                     {
                         Slot slot = container.getSlot(shortcut.fromSection, shortcut.fromIndex);
@@ -354,15 +355,15 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                             container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection, toIndex);
                         }
                         break;
-        
+
                     }
-                    
+
                     case MOVE_ONE_ITEM:
                     {
                         container.moveSome(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection, toIndex, 1);
                         break;
                     }
-                        
+
                     case MOVE_ALL_ITEMS:
                     {
                         moveAll(shortcut, shortcut.fromStack);
@@ -373,7 +374,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         }
                         break;
                     }
-                    
+
                     case MOVE_EVERYTHING:
                     {
                         moveAll(shortcut, null);
@@ -384,14 +385,14 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         }
                         break;
                     }
-                    
+
                     default:
-                        
+
                     }
                 }
-            
+
             }
-            
+
         }
     }
 
@@ -413,11 +414,11 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         }
     }
     private int getNextTargetIndex(ShortcutConfig shortcut) {
-        
+
         if (shortcut.drop) {
             return DROP_SLOT;
         }
-        
+
         int result = -1;
 
         // Try to merge with existing slot
@@ -435,19 +436,19 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 i++;
             }
         }
-        
+
         // Else find empty slot
         if (result == -1) {
             result = container.getFirstEmptyIndex(shortcut.toSection);
         }
-        
+
         // Switch from FURNACE_IN to FURNACE_FUEL if the slot is taken
         // TODO Better furnace shortcuts
         if (result == -1 && shortcut.toSection == InvTweaksContainerSection.FURNACE_IN) {
             shortcut.toSection = InvTweaksContainerSection.FURNACE_FUEL;
             result = container.getFirstEmptyIndex(shortcut.toSection);
         }
-        
+
         return result;
     }
     /**

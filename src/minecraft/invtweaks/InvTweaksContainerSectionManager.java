@@ -3,7 +3,7 @@ package invtweaks;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import invtweaks.api.InvTweaksContainerSection;
+import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Container;
 import net.minecraft.src.ItemStack;
@@ -19,9 +19,9 @@ import net.minecraft.src.Slot;
 public class InvTweaksContainerSectionManager {
 
     private InvTweaksContainerManager containerMgr;
-    private InvTweaksContainerSection section;
+    private ContainerSection section;
 
-    public InvTweaksContainerSectionManager(Minecraft mc, InvTweaksContainerSection section) throws Exception {
+    public InvTweaksContainerSectionManager(Minecraft mc, ContainerSection section) throws Exception {
         this(new InvTweaksContainerManager(mc), section);
     }
 
@@ -29,7 +29,7 @@ public class InvTweaksContainerSectionManager {
         this.containerMgr.setClickDelay(delay);
     }
 
-    public InvTweaksContainerSectionManager(InvTweaksContainerManager manager, InvTweaksContainerSection section) throws Exception {
+    public InvTweaksContainerSectionManager(InvTweaksContainerManager manager, ContainerSection section) throws Exception {
         this.containerMgr = manager;
         this.section = section;
         if (!containerMgr.hasSection(section)) {

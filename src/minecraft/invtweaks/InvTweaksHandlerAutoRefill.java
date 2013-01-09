@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import invtweaks.api.InvTweaksContainerSection;
+import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaksObfuscation;
 import net.minecraft.src.ItemStack;
@@ -38,7 +38,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 	public void autoRefillSlot(int slot, int wantedId, int wantedDamage) throws Exception {
 
 		InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(
-		        mc, InvTweaksContainerSection.INVENTORY);
+		        mc, ContainerSection.INVENTORY);
 		ItemStack candidateStack, replacementStack = null;
 		int replacementStackSlot = -1;
         boolean refillBeforeBreak = config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
@@ -140,7 +140,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 				public Runnable init(Minecraft mc,
 						int i, int currentItem, boolean refillBeforeBreak) throws Exception {
 					this.containerMgr = new InvTweaksContainerSectionManager(
-					        mc, InvTweaksContainerSection.INVENTORY);
+					        mc, ContainerSection.INVENTORY);
 					this.targetedSlot = currentItem;
 					if (i != -1) {
 	                    this.i = i;

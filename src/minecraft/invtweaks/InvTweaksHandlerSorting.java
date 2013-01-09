@@ -13,7 +13,7 @@ import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import invtweaks.api.InvTweaksContainerSection;
+import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaksObfuscation;
 import net.minecraft.src.Item;
@@ -58,7 +58,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private boolean[] frozenSlots;
 
     public InvTweaksHandlerSorting(Minecraft mc, InvTweaksConfig config,
-            InvTweaksContainerSection section, int algorithm, int rowSize) throws Exception {
+            ContainerSection section, int algorithm, int rowSize) throws Exception {
         super(mc);
 
         // Init constants
@@ -85,7 +85,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
         this.rules = config.getRules();
         this.tree = config.getTree();
-        if (section == InvTweaksContainerSection.INVENTORY) {
+        if (section == ContainerSection.INVENTORY) {
             this.lockPriorities = config.getLockPriorities();
             this.frozenSlots = config.getFrozenSlots();
             this.algorithm = ALGORITHM_INVENTORY;
@@ -123,9 +123,9 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
         // Put hold item down
         if (getHeldStack() != null) {
-            int emptySlot = globalContainer.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
+            int emptySlot = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
             if (emptySlot != -1) {
-                globalContainer.putHoldItemDown(InvTweaksContainerSection.INVENTORY, emptySlot);
+                globalContainer.putHoldItemDown(ContainerSection.INVENTORY, emptySlot);
             }
             else {
                 return; // Not enough room to work, abort
@@ -211,18 +211,18 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             } else if (algorithm == ALGORITHM_INVENTORY) {
                 //// Move items out of the crafting slots
                 log.info("Handling crafting slots.");
-                if (globalContainer.hasSection(InvTweaksContainerSection.CRAFTING_IN)) {
-                    List<Slot> craftingSlots = globalContainer.getSlots(InvTweaksContainerSection.CRAFTING_IN);
-                    int emptyIndex = globalContainer.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
+                if (globalContainer.hasSection(ContainerSection.CRAFTING_IN)) {
+                    List<Slot> craftingSlots = globalContainer.getSlots(ContainerSection.CRAFTING_IN);
+                    int emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
                     if (emptyIndex != -1) {
                         for (Slot craftingSlot : craftingSlots) {
                             if (hasStack(craftingSlot)) {
                                 globalContainer.move(
-                                        InvTweaksContainerSection.CRAFTING_IN,
+                                        ContainerSection.CRAFTING_IN,
                                         globalContainer.getSlotIndex(getSlotNumber(craftingSlot)),
-                                        InvTweaksContainerSection.INVENTORY,
+                                        ContainerSection.INVENTORY,
                                         emptyIndex);
-                                emptyIndex = globalContainer.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
+                                emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
                                 if(emptyIndex == -1) {
                                     break;
                                 }
@@ -246,8 +246,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 	                        if (sortArmorParts) {
 	                             if (isItemArmor(fromItem)) {
 	                            	 ItemArmor fromItemArmor = asItemArmor(fromItem);
-	                                 if (globalContainer.hasSection(InvTweaksContainerSection.ARMOR)) {
-	                                     List<Slot> armorSlots = globalContainer.getSlots(InvTweaksContainerSection.ARMOR);
+	                                 if (globalContainer.hasSection(ContainerSection.ARMOR)) {
+	                                     List<Slot> armorSlots = globalContainer.getSlots(ContainerSection.ARMOR);
 	                                     for (Slot slot : armorSlots) {
 	                                    	boolean move = false;
 	                                    	if (!hasStack(slot)) {
@@ -267,7 +267,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                                 }
 	                                    	}
 	                                        if (areSlotAndStackCompatible(slot, from) && move) {
-	                                            globalContainer.move(InvTweaksContainerSection.INVENTORY, i, InvTweaksContainerSection.ARMOR,
+	                                            globalContainer.move(ContainerSection.INVENTORY, i, ContainerSection.ARMOR,
 	                                                    globalContainer.getSlotIndex(getSlotNumber(slot)));
 	                                        }
 	                                    }
@@ -372,9 +372,9 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
         //// Put hold item down, just in case
         if (getHeldStack() != null) {
-            int emptySlot = globalContainer.getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
+            int emptySlot = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
             if (emptySlot != -1) {
-                globalContainer.putHoldItemDown(InvTweaksContainerSection.INVENTORY, emptySlot);
+                globalContainer.putHoldItemDown(ContainerSection.INVENTORY, emptySlot);
             }
         }
     }

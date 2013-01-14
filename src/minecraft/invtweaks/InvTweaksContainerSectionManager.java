@@ -5,9 +5,9 @@ import java.util.concurrent.TimeoutException;
 
 import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.Container;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.Slot;
 
 /**
  * Allows to perform various operations on a single section of

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.GuiButton;
-import net.minecraft.src.GuiScreen;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.src.InvTweaksObfuscation;
 
 import org.lwjgl.input.Keyboard;
@@ -14,18 +14,18 @@ import org.lwjgl.util.Point;
 
 /**
  * The inventory and chest settings menu.
- * 
+ *
  * @author Jimeo Wan
- * 
+ *
  */
 public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
 	protected static final Logger log = Logger.getLogger("InvTweaks");
-    
+
     protected static String ON;
     protected static String OFF;
     protected static String DISABLE_CI;
-    
+
     protected Minecraft mc;
     protected InvTweaksObfuscation obf;
     protected InvTweaksConfig config;
@@ -36,12 +36,12 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
     public InvTweaksGuiSettingsAbstract(Minecraft mc, GuiScreen parentScreen,
             InvTweaksConfig config) {
-    	
+
     	LABEL_DONE = InvTweaksLocalization.get("invtweaks.settings.exit");
     	ON = ": " + InvTweaksLocalization.get("invtweaks.settings.on");
     	OFF = ": " + InvTweaksLocalization.get("invtweaks.settings.off");
     	DISABLE_CI = ": " + InvTweaksLocalization.get("invtweaks.settings.disableci");
-    	
+
         this.mc = mc;
         this.obf = new InvTweaksObfuscation(mc);
         this.parentScreen = parentScreen;
@@ -59,7 +59,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
         obf.setControlList(this, controlList);
 
     }
-    
+
     public void drawScreen(int i, int j, float f) {
     	drawDefaultBackground();
     	drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.title"), obf.getWindowWidth(this) / 2, 20, 0xffffff);

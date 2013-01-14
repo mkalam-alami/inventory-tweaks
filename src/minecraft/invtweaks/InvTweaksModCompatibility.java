@@ -1,21 +1,19 @@
 package invtweaks;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.TypeVariable;
 
 import invtweaks.api.ContainerSection;
 import invtweaks.api.ContainerGUI;
 import invtweaks.api.InventoryGUI;
-import net.minecraft.src.Container;
-import net.minecraft.src.GuiContainer;
-import net.minecraft.src.GuiScreen;
+import net.minecraft.inventory.Container;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.src.InvTweaksObfuscation;
-import net.minecraft.src.Slot;
+import net.minecraft.inventory.Slot;
 
 
 public class InvTweaksModCompatibility {

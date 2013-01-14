@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.GuiButton;
-import net.minecraft.src.GuiScreen;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.Point;
@@ -18,9 +18,9 @@ import org.lwjgl.util.Point;
 
 /**
  * The inventory and chest settings menu.
- * 
+ *
  * @author Jimeo Wan
- * 
+ *
  */
 public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
@@ -37,13 +37,13 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private final static int ID_EDITRULES = 100;
     private final static int ID_EDITTREE = 101;
     private final static int ID_HELP = 102;
-    
+
     private static String labelMiddleClick;
     private static String labelShortcuts;
     private static String labelAutoRefill;
     private static String labelAutoRefillBeforeBreak;
     private static String labelMoreOptions;
-	private static String labelBugSorting;
+    private static String labelBugSorting;
 
     private InvTweaksGuiTooltipButton sortMappingButton;
     private boolean sortMappingEdition = false;
@@ -51,7 +51,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     
     public InvTweaksGuiSettings(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
-        
+
         labelMiddleClick = InvTweaksLocalization.get("invtweaks.settings.middleclick");
         labelShortcuts = InvTweaksLocalization.get("invtweaks.settings.shortcuts");
         labelAutoRefill = InvTweaksLocalization.get("invtweaks.settings.autorefill");
@@ -77,7 +77,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         // Create settings buttons
 
         moveToButtonCoords(i++, p);
-        controlList.add(new InvTweaksGuiTooltipButton(ID_SHORTCUTS_HELP, 
+        controlList.add(new InvTweaksGuiTooltipButton(ID_SHORTCUTS_HELP,
                 p.getX() + 130, p.getY(), 20, 20, "?", "Shortcuts help"));
         String shortcuts = config.getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
         InvTweaksGuiTooltipButton shortcutsBtn = new InvTweaksGuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130, 20, computeBooleanButtonLabel(
@@ -88,7 +88,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             obf.setEnabled(shortcutsBtn, false);
             shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(" + InvTweaksLocalization.get("invtweaks.settings.disableci.tooltip") + ")");
         }
-        
+
         moveToButtonCoords(i++, p);
         sortMappingButton = new InvTweaksGuiTooltipButton(ID_SORTING_KEY, p.getX(), p.getY(),
                 InvTweaksLocalization.get("invtweaks.settings.key") + " " + config.getProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY));
@@ -106,7 +106,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_MORE_OPTIONS, p.getX(), p.getY(), labelMoreOptions, InvTweaksLocalization.get("invtweaks.settings.moreoptions.tooltip")));
-    
+
         controlList.add(new InvTweaksGuiTooltipButton(ID_BUG_SORTING, 5, this.height - 20, 100, 20, labelBugSorting, null, false));
     
         String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
@@ -136,10 +136,10 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         obf.setControlList(this, controlList);
 
     }
-    
+
     protected void actionPerformed(GuiButton guibutton) {
     	super.actionPerformed(guibutton);
-    
+
         switch (obf.getId(guibutton)) {
 
         // Switch sorting key
@@ -162,7 +162,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         case ID_BEFORE_BREAK:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK, labelAutoRefillBeforeBreak);
             break;
-                
+
         // Toggle shortcuts
         case ID_SHORTCUTS:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SHORTCUTS, labelShortcuts);
@@ -172,7 +172,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         case ID_SHORTCUTS_HELP:
             obf.displayGuiScreen(new InvTweaksGuiShortcutsHelp(mc, this, config));
             break;
-            
+
         // More options screen
         case ID_MORE_OPTIONS:
             obf.displayGuiScreen(new InvTweaksGuiSettingsAdvanced(mc, parentScreen, config));
@@ -209,7 +209,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                 InvTweaks.logInGameErrorStatic("invtweaks.settings.onlinehelp.error", e);
             }
             break;
-            
+
         }
 
     }

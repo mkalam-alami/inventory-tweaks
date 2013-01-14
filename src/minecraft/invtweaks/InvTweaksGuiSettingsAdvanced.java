@@ -6,20 +6,20 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.GuiButton;
-import net.minecraft.src.GuiScreen;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 
 import org.lwjgl.util.Point;
 
 
 /**
  * The inventory and chest advanced settings menu.
- * 
+ *
  * @author Jimeo Wan
- * 
+ *
  */
 public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
-	
+
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     private final static int ID_SORT_ON_PICKUP = 1;
@@ -27,7 +27,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     private final static int ID_ENABLE_SOUNDS = 3;
     private final static int ID_CHESTS_BUTTONS = 4;
     private final static int ID_EDITSHORTCUTS = 100;
-    
+
     private static String labelChestButtons;
     private static String labelSortOnPickup;
     private static String labelEquipArmor;
@@ -35,7 +35,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
     public InvTweaksGuiSettingsAdvanced(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
-        
+
         labelSortOnPickup = InvTweaksLocalization.get("invtweaks.settings.advanced.sortonpickup");
 		labelEquipArmor = InvTweaksLocalization.get("invtweaks.settings.advanced.autoequip");
 		labelEnableSounds = InvTweaksLocalization.get("invtweaks.settings.advanced.sounds");
@@ -55,7 +55,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         controlList.add(new GuiButton(ID_EDITSHORTCUTS, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144, InvTweaksLocalization.get("invtweaks.settings.advanced.mappingsfile")));
 
         // Create settings buttons
-        
+
         i += 2;
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton sortOnPickupBtn = new InvTweaksGuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), computeBooleanButtonLabel(
@@ -67,7 +67,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                 InvTweaksConfig.PROP_ENABLE_SOUNDS, labelEnableSounds),
                 InvTweaksLocalization.get("invtweaks.settings.advanced.sounds.tooltip"));
         controlList.add(enableSoundsBtn);
-        
+
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons), InvTweaksLocalization.get("invtweaks.settings.chestbuttons.tooltip")));
@@ -96,14 +96,14 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
 	public void drawScreen(int i, int j, float f) {
         super.drawScreen(i, j, f);
-        
+
         int x = obf.getWindowWidth(this) / 2;
         drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt1"), x, 40, 0x999999);
         drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt2"), x, 50, 0x999999);
     }
-    
+
     protected void actionPerformed(GuiButton guibutton) {
-    	
+
         switch (obf.getId(guibutton)) {
 
         // Toggle auto-refill sound
@@ -115,7 +115,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         case ID_AUTO_EQUIP_ARMOR:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor);
             break;
-            
+
         // Toggle sounds
         case ID_ENABLE_SOUNDS:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SOUNDS, labelEnableSounds);
@@ -125,7 +125,8 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         case ID_CHESTS_BUTTONS:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons);
             break;
-                
+
+
         // Open shortcuts mappings in external editor
         case ID_EDITSHORTCUTS:
             try {
@@ -134,11 +135,11 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                 InvTweaks.logInGameErrorStatic("invtweaks.settings.advanced.mappingsfile.error", e);
             }
             break;
-            
+
         // Back to main settings screen
         case ID_DONE:
                 obf.displayGuiScreen(new InvTweaksGuiSettings(mc, parentScreen, config));
-                
+
         }
 
     }

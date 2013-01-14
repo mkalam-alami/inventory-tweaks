@@ -16,10 +16,10 @@ import java.util.logging.Logger;
 import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaksObfuscation;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemArmor;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.Slot;
 
 /**
  * Core of the sorting behaviour. Allows to move items in a container

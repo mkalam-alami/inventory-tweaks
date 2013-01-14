@@ -2,7 +2,7 @@ package invtweaks;
 
 import invtweaks.InvTweaksConst;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.FontRenderer;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.src.InvTweaksObfuscation;
 
 /**
@@ -11,18 +11,18 @@ import net.minecraft.src.InvTweaksObfuscation;
  *
  */
 public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
-    
+
     public final static int DEFAULT_BUTTON_WIDTH = 200;
     public final static int LINE_HEIGHT = 11;
-    
+
     private int hoverTime = 0;
     private long prevSystemTime = 0;
-    
+
     private String tooltip = null;
     private String[] tooltipLines = null;
     private int tooltipWidth = -1;
-	private boolean drawBackground = true;
-    
+    private boolean drawBackground = true;
+
     public InvTweaksGuiTooltipButton(int id,
             int x, int y, String displayString) {
         this(id, x, y, 150, 20, displayString, null);
@@ -40,7 +40,7 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
             String displayString) {
         this(id, x, y, w, h, displayString, null);
     }
-    
+
     public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h,
             String displayString, String tooltip) {
         super(id, x, y, w, h, displayString);
@@ -60,14 +60,14 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
 
     public void drawButton(Minecraft minecraft, int i, int j) {
     	if (this.drawBackground) {
-    		super.drawButton(minecraft, i, j);
+            super.drawButton(minecraft, i, j);
     	}
     	else {
             this.drawString(minecraft.fontRenderer, this.displayString, this.xPosition, this.yPosition + (this.height - 8) / 2, 0x999999);
     	}
-        
+
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
-        
+
         if (tooltipLines != null) {
             // Compute hover time
             if (isMouseOverButton(i, j)) {
@@ -81,10 +81,10 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
                 hoverTime = 0;
                 prevSystemTime = 0;
             }
-            
+
             // Draw tooltip if hover time is long enough
             if (hoverTime > InvTweaksConst.TOOLTIP_DELAY && tooltipLines != null) {
-                
+
                 FontRenderer fontRenderer = obf.getFontRenderer();
 
                 // Compute tooltip params
@@ -99,12 +99,12 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
                 if (x + tooltipWidth > obf.getWindowWidth(obf.getCurrentScreen())) {
                     x = obf.getWindowWidth(obf.getCurrentScreen()) - tooltipWidth;
                 }
-                
+
                 // Draw background
-                drawGradientRect(x - 3, y - 3, 
-                        x + tooltipWidth + 3, y + LINE_HEIGHT*tooltipLines.length, 
+                drawGradientRect(x - 3, y - 3,
+                        x + tooltipWidth + 3, y + LINE_HEIGHT*tooltipLines.length,
                         0xc0000000, 0xc0000000);
-                
+
                 // Draw lines
                 int lineCount = 0;
                 for (String line : tooltipLines) {
@@ -115,15 +115,15 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
         }
 
     }
-    
+
     protected boolean isMouseOverButton(int i, int j) {
-        return i >= getXPosition() && j >= getYPosition() 
-            && i < getXPosition() + getWidth() 
+        return i >= getXPosition() && j >= getYPosition()
+            && i < getXPosition() + getWidth()
             && j < getYPosition() + getHeight();
     }
-    
+
     protected int getTextColor(int i, int j) {
-        
+
         int textColor = 0xffe0e0e0;
         if (!isEnabled()) {
             textColor = 0xffa0a0a0;
@@ -133,14 +133,14 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
         return textColor;
 
     }
-    
+
     public void setTooltip(String tooltip) {
         this.tooltip = tooltip;
         this.tooltipLines = tooltip.split("\n");
     }
-    
+
     public String getTooltip() {
         return tooltip;
     }
-    
+
 }

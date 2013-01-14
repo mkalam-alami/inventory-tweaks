@@ -12,28 +12,43 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.inventory.*;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.renderer.RenderEngine;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.texturepacks.TexturePackList;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StringTranslate;
+import net.minecraft.world.World;
 
 /**
  * Minecraft 1.3 Obfuscation layer
- * 
+ *
  * @author Jimeo Wan
  *
  */
 public class InvTweaksObfuscation {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
-    
+
     public Minecraft mc;
 
     public InvTweaksModCompatibility mods;
 
     private static Map<String, Field> fieldsMap = new HashMap<String, Field>();
-    
+
 	public InvTweaksObfuscation(Minecraft mc) {
 		this.mc = mc;
 		this.mods = new InvTweaksModCompatibility(this);
 	}
-	
+
 	// Minecraft members
 
 	public void addChatMessage(String message) {
@@ -94,7 +109,7 @@ public class InvTweaksObfuscation {
     }
 
 	// InventoryPlayer members
-	
+
 	public ItemStack[] getMainInventory() {
 		return getInventoryPlayer().mainInventory;
 	}
@@ -119,7 +134,7 @@ public class InvTweaksObfuscation {
 	public int getFocusedSlot() {
 		return getInventoryPlayer().currentItem; // currentItem
 	}
-	
+
     // GuiScreen members
 
 	public int getWindowWidth(GuiScreen guiScreen) {
@@ -152,7 +167,7 @@ public class InvTweaksObfuscation {
     }
 
     // FontRenderer members
-	
+
 	public int getStringWidth(FontRenderer fontRenderer, String line) {
 	    return fontRenderer.getStringWidth(line);
 	}
@@ -160,7 +175,7 @@ public class InvTweaksObfuscation {
             String s, int i, int j, int k) {
         fontRenderer.drawStringWithShadow(s, i, j, k);
     }
-	
+
 	// ItemStack members
 
 	public ItemStack createItemStack(int id, int size, int damage) {
@@ -204,9 +219,9 @@ public class InvTweaksObfuscation {
     public Item getItem(ItemStack itemStack) { // Item
         return itemStack.getItem();
     }
-    
+
     // Item & ItemArmor
-    
+
     public boolean isDamageable(Item item) {
         return item.isDamageable();
     }
@@ -219,7 +234,7 @@ public class InvTweaksObfuscation {
     public ItemArmor asItemArmor(Item item) { // ItemArmor
         return (ItemArmor) item;
     }
-	
+
 	// PlayerController members
 
 	public ItemStack clickInventory(PlayerControllerMP playerController,
@@ -228,7 +243,7 @@ public class InvTweaksObfuscation {
 		return playerController.windowClick(windowId, slot, clickButton,
 				(shiftHold) ? 1 : 0 /* XXX Placeholder */, entityPlayer);
 	}
-	
+
 	// Container members
 
 	public int getWindowId(Container container) {
@@ -251,8 +266,8 @@ public class InvTweaksObfuscation {
     }
 
     // Slot members
-    
-    public boolean hasStack(Slot slot) { 
+
+    public boolean hasStack(Slot slot) {
         return slot.getHasStack();
     }
     public int getSlotNumber(Slot slot) {
@@ -305,7 +320,7 @@ public class InvTweaksObfuscation {
     public String getDisplayString(GuiButton guiButton) {
         return guiButton.displayString;
     }
-    
+
     // Other
 
     public void playSound(String string, float f, float g) {
@@ -355,9 +370,9 @@ public class InvTweaksObfuscation {
     public static GuiScreen getCurrentScreenStatic(Minecraft mc) {
         return new InvTweaksObfuscation(mc).getCurrentScreen();
     }
-    
+
 	// Classes
-    
+
     public boolean isValidChest(GuiScreen guiScreen) {
         return guiScreen != null && (isGuiChest(guiScreen)
         		|| isGuiDispenser(guiScreen)
@@ -377,14 +392,14 @@ public class InvTweaksObfuscation {
                 || isGuiTrading(guiScreen)
                 || isGuiAnvil(guiScreen)
                 || isGuiBeacon(guiScreen)
-                || (isGuiInventoryCreative(guiScreen) 
+                || (isGuiInventoryCreative(guiScreen)
                         && getSlots(getContainer(asGuiContainer(guiScreen))).size() == 46);
     }
 
     public boolean isGuiContainer(Object o) { // GuiContainer (abstract class)
         return o != null && o instanceof GuiContainer;
     }
-	
+
     public boolean isGuiBeacon(Object o) { // GuiBeacon
         return o != null && o.getClass().equals(GuiBeacon.class);
     }
@@ -418,11 +433,11 @@ public class InvTweaksObfuscation {
     public boolean isGuiDispenser(Object o) { // GuiDispenser
         return o != null && o.getClass().equals(GuiDispenser.class);
     }
-    
+
     public boolean isGuiButton(Object o) { // GuiButton
         return o != null && o instanceof GuiButton;
     }
-    
+
     public boolean isGuiEditSign(Object o) {
         return o != null && o.getClass().equals(GuiEditSign.class);
     }
@@ -441,7 +456,7 @@ public class InvTweaksObfuscation {
     public boolean isContainerEnchantmentTable(Object o) {
         return o != null && o.getClass().equals(ContainerEnchantment.class);
     }
-    public boolean isContainerFurnace(Object o) { 
+    public boolean isContainerFurnace(Object o) {
         return o != null && o.getClass().equals(ContainerFurnace.class);
     }
 	public boolean isContainerPlayer(Object o) {

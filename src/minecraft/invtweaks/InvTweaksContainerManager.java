@@ -9,12 +9,12 @@ import invtweaks.api.ContainerSection;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.Container;
-import net.minecraft.src.GuiContainer;
-import net.minecraft.src.GuiScreen;
+import net.minecraft.inventory.Container;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.src.InvTweaksObfuscation;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.Slot;
 
 /**
  * Allows to perform various operations on the inventory

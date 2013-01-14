@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.InvTweaksObfuscation;
-import net.minecraft.src.ItemStack;
+import net.minecraft.item.ItemStack;
 
 /**
  * Handles the auto-refilling of the hotbar.

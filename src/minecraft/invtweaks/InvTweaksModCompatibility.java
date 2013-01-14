@@ -77,7 +77,7 @@ public class InvTweaksModCompatibility {
             Method m = getAnnotatedMethod(guiContainer.getClass(), new Class[] { ContainerGUI.RowSizeCallback.class }, 0, int.class);
             if(m != null) {
                 try {
-                    return (int)m.invoke(guiContainer);
+                    return (Integer)m.invoke(guiContainer);
                 } catch(Exception e) {
                     // TODO: Do something here to tell mod authors they're doing it wrong.
                     return annotation.rowSize();

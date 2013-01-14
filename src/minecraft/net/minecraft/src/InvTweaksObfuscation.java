@@ -341,12 +341,11 @@ public class InvTweaksObfuscation {
     public int getSpecialChestRowSize(GuiContainer guiContainer, int defaultValue) {
     	return mods.getSpecialChestRowSize(guiContainer, defaultValue);
     }
-    /*public boolean hasTexture(String texture) {
-    	TexturePackList texturePacksManager = (TexturePackList) getThroughReflection(RenderEngine.class, "texturePack", mc.renderEngine);
+    public boolean hasTexture(String texture) {
     	InputStream resourceAsStream = null;
     	try {
-	        resourceAsStream = texturePacksManager.getSelectedTexturePack().getResourceAsStream(texture);
-			return texturePacksManager != null && resourceAsStream != null;
+	        resourceAsStream = mc.renderEngine.texturePack.getSelectedTexturePack().getResourceAsStream(texture);
+			return resourceAsStream != null;
     	}
     	finally {
     		if (resourceAsStream != null) {
@@ -357,7 +356,7 @@ public class InvTweaksObfuscation {
 				}
     		}
     	}
-    }*/
+    }
 
     // Static access
 

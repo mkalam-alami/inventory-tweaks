@@ -1,5 +1,7 @@
 package net.minecraft.src;
 
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import invtweaks.InvTweaksModCompatibility;
 
 import java.io.IOException;
@@ -44,6 +46,9 @@ public class InvTweaksObfuscation {
 
     private static Map<String, Field> fieldsMap = new HashMap<String, Field>();
 
+    private static Class slotCreativeInventory = ReflectionHelper.getClass(InvTweaksObfuscation.class.getClassLoader(), "avu", "net.minecraft.client.gui.inventory.SlotCreativeInventory");
+
+    private static Class containerCreative = ReflectionHelper.getClass(InvTweaksObfuscation.class.getClassLoader(), "avt", "net.minecraft.client.gui.inventory.ContainerCreative");
 	public InvTweaksObfuscation(Minecraft mc) {
 		this.mc = mc;
 		this.mods = new InvTweaksModCompatibility(this);
@@ -144,23 +149,23 @@ public class InvTweaksObfuscation {
         return guiScreen.height;
     }
     public int getGuiX(GuiContainer guiContainer) {
-        return guiContainer.guiLeft;
+        return ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "n", "guiLeft");
     }
     public int getGuiY(GuiContainer guiContainer) {
-        return guiContainer.guiTop;
+        return ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "o", "guiTop");
     }
     public int getGuiWidth(GuiContainer guiContainer) {
-        return guiContainer.xSize;
+        return ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "b", "xSize");
     }
     public int getGuiHeight(GuiContainer guiContainer) {
-        return guiContainer.ySize;
+        return ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "c", "ySize");
     }
     @SuppressWarnings("unchecked")
-	public List<Object> getControlList(GuiScreen guiScreen) {
-        return guiScreen.controlList;
+    public List<Object> getControlList(GuiScreen guiScreen) {
+        return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, guiScreen, "i", "controlList");
     }
     public void setControlList(GuiScreen guiScreen, List<?> controlList) {
-        guiScreen.controlList = controlList;
+        ObfuscationReflectionHelper.setPrivateValue(GuiScreen.class, guiScreen, controlList, "i", "controlList");
     }
     public GuiContainer asGuiContainer(GuiScreen guiScreen) {
         return (GuiContainer) guiScreen;
@@ -273,8 +278,9 @@ public class InvTweaksObfuscation {
     public int getSlotNumber(Slot slot) {
         try {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots
-            if (slot instanceof SlotCreativeInventory) {
-            	Slot underlyingSlot = SlotCreativeInventory.func_75240_a((SlotCreativeInventory) slot);
+            if (slotCreativeInventory.isInstance(slot)) {
+            	//Slot underlyingSlot = SlotCreativeInventory.func_75240_a((SlotCreativeInventory) slot);
+            	Slot underlyingSlot = (Slot)ObfuscationReflectionHelper.getPrivateValue(slotCreativeInventory, slot, "b", "theSlot");
                 if (underlyingSlot != null) {
                     return underlyingSlot.slotNumber;
                 }
@@ -472,7 +478,7 @@ public class InvTweaksObfuscation {
         return o != null && o.getClass().equals(ContainerDispenser.class);
     }
     public boolean isContainerCreative(Object o) { // ContainerCreative
-        return o != null && o.getClass().equals(ContainerCreative.class);
+        return o != null && o.getClass().equals(containerCreative);
     }
 
     public boolean isItemArmor(Object o) { // ItemArmor

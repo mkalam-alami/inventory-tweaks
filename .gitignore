@@ -34,6 +34,7 @@ jars/
 logs/
 runtime/
 temp/
+reobf/
 CHANGELOG
 LICENSE.txt
 *.bat

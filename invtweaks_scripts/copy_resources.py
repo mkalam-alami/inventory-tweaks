@@ -22,10 +22,10 @@ def copy_resource(resource):
 
 # Resources copy
 
-sys.stdout.write('Copying InvTweaks resources...\n')
+print 'Copying InvTweaks resources...'
 
 copy_resource_tree('lang/')
 copy_resource('DefaultConfig.dat')
 copy_resource('DefaultTree.dat')
 
-sys.stdout.write('OK!\n')
+print 'OK!'

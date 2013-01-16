@@ -52,7 +52,9 @@ Just start playing Minecraft, you can already use most features of the mod. Noti
 Inventory sorting
 ~~~~~~~~~~~~~~~~~
 
-Trigger the sorting in your inventory by using the **middle click**, or by pressing **R** (by default), at any time. If you want to change the shortcut, you can do that from the "..." menu in your inventory. 
+Trigger the sorting in your inventory by using the **middle click**, or by pressing **R** (by default), at any time. If you want to change the shortcut, you can do that from the "..." menu in your inventory.
+
+Tip: The middle click shortcut behaves differently if you target the **crafting input**: in that case, it will adjust the item amounts to balance them, helping optimize your recipe input. For example, if you want to make sticks, it will make sure your wood will be split equally between the top and the bottom stack.
 
 Chests sorting
 ~~~~~~~~~~~~~~

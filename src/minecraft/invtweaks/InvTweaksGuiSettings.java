@@ -220,7 +220,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
            config.setProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY, keyName);
            sortMappingButton.displayString = InvTweaksLocalization.get("invtweaks.settings.key") + " " + keyName;
         }
-        
+        super.keyTyped(c, keyCode);
     }
 
 }

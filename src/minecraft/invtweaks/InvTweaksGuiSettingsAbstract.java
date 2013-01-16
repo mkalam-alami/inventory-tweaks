@@ -8,6 +8,7 @@ import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.InvTweaksObfuscation;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.Point;
 
 
@@ -69,6 +70,12 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
         if (obf.getId(guibutton) == ID_DONE) {
             obf.displayGuiScreen(parentScreen);
         }
+    }
+    
+    protected void keyTyped(char c, int keyCode) {
+    	if (keyCode == Keyboard.KEY_ESCAPE) {
+            obf.displayGuiScreen(parentScreen);
+    	}
     }
 
     protected void moveToButtonCoords(int buttonOrder, Point p) {

@@ -53,7 +53,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private int algorithm;
     private int size;
     private boolean sortArmorParts;
-    private int clickDelay;
 
     private InvTweaksItemTree tree;
     private Vector<InvTweaksConfigSortingRule> rules;
@@ -83,9 +82,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
         // Init attributes
 
-        this.clickDelay = config.getClickDelay();
         this.containerMgr = new InvTweaksContainerSectionManager(mc, section);
-        this.containerMgr.setClickDelay(this.clickDelay);
         this.size = containerMgr.getSize();
         this.sortArmorParts = config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR).equals(InvTweaksConfig.VALUE_TRUE)
                 && !isGuiInventoryCreative(getCurrentScreen()); // FIXME Armor parts disappear when sorting in creative mode while holding an item
@@ -127,7 +124,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
         long timer = System.nanoTime();
         InvTweaksContainerManager globalContainer = new InvTweaksContainerManager(mc);
-        globalContainer.setClickDelay(this.clickDelay);
 
         // Put hold item down
         if (getHeldStack() != null) {

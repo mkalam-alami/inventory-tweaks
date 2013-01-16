@@ -88,16 +88,19 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
     }
 
     protected void actionPerformed(GuiButton guibutton) {
-
         switch (obf.getId(guibutton)) {
-
         case ID_DONE:
             obf.displayGuiScreen(parentScreen);
             break;
-        
         }
     }
 
+    protected void keyTyped(char c, int keyCode) {
+    	if (keyCode == Keyboard.KEY_ESCAPE) {
+            obf.displayGuiScreen(parentScreen);
+    	}
+    }
+    
     private String buildUpOrDownLabel(String shortcutProp, int keyCode, String defaultKeyName) {
     	String shortcutLabel = config.getProperty(shortcutProp);
     	String keyLabel = getKeyName(keyCode, defaultKeyName);

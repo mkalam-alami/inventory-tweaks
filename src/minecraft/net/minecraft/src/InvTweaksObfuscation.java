@@ -142,10 +142,10 @@ public class InvTweaksObfuscation {
         return guiContainer.guiTop;
     }
     public int getGuiWidth(GuiContainer guiContainer) {
-        return guiContainer.width;
+        return guiContainer.xSize;
     }
     public int getGuiHeight(GuiContainer guiContainer) {
-        return guiContainer.height;
+        return guiContainer.ySize;
     }
     @SuppressWarnings("unchecked")
 	public List<Object> getControlList(GuiScreen guiScreen) {

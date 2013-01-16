@@ -106,14 +106,13 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 	public void drawScreen(int i, int j, float f) {
         super.drawScreen(i, j, f);
         
-        Point p = new Point();
-        moveToButtonCoords(1, p);
-        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt1"), p.getX(), 40, 0x999999);
-        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt2"), p.getX(), 50, 0x999999);
+        int x = obf.getWindowWidth(this) / 2;
+        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt1"), x, 40, 0x999999);
+        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt2"), x, 50, 0x999999);
         
-        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.slowsorting.pt1"), p.getX(), 115, 0x999999); 
-        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.slowsorting.pt2"), p.getX(), 125, 0x999999);
-        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.slowsorting.pt3"), p.getX(), 135, 0x999999);
+        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.slowsorting.pt1"), x, 115, 0x999999); 
+        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.slowsorting.pt2"), x, 125, 0x999999);
+        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.slowsorting.pt3"), x, 135, 0x999999);
     }
     
     protected void actionPerformed(GuiButton guibutton) {

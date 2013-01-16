@@ -33,6 +33,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private final static int ID_AUTO_REFILL = 5;
     private final static int ID_MORE_OPTIONS = 6;
     private final static int ID_SORTING_KEY = 7;
+    private final static int ID_BUG_SORTING = 8;
     private final static int ID_EDITRULES = 100;
     private final static int ID_EDITTREE = 101;
     private final static int ID_HELP = 102;
@@ -42,9 +43,11 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private static String labelAutoRefill;
     private static String labelAutoRefillBeforeBreak;
     private static String labelMoreOptions;
+	private static String labelBugSorting;
 
     private InvTweaksGuiTooltipButton sortMappingButton;
     private boolean sortMappingEdition = false;
+
     
     public InvTweaksGuiSettings(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
@@ -54,7 +57,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         labelAutoRefill = InvTweaksLocalization.get("invtweaks.settings.autorefill");
         labelAutoRefillBeforeBreak = InvTweaksLocalization.get("invtweaks.settings.beforebreak");
         labelMoreOptions = InvTweaksLocalization.get("invtweaks.settings.moreoptions");
-        
+        labelBugSorting = InvTweaksLocalization.get("invtweaks.help.bugsorting");
     }
 
     public void initGui() {
@@ -104,6 +107,8 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_MORE_OPTIONS, p.getX(), p.getY(), labelMoreOptions, InvTweaksLocalization.get("invtweaks.settings.moreoptions.tooltip")));
     
+        controlList.add(new InvTweaksGuiTooltipButton(ID_BUG_SORTING, 5, this.height - 20, 100, 20, labelBugSorting, null, false));
+    
         String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton middleClickBtn = new InvTweaksGuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(), computeBooleanButtonLabel(
@@ -114,7 +119,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             obf.setEnabled(middleClickBtn, false);
             middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(" + InvTweaksLocalization.get("invtweaks.settings.disableci.tooltip"));
         }
-
+        
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
@@ -173,6 +178,11 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             obf.displayGuiScreen(new InvTweaksGuiSettingsAdvanced(mc, parentScreen, config));
             break;
 
+        // Sorting bug help screen
+        case ID_BUG_SORTING:
+            obf.displayGuiScreen(new InvTweaksGuiModNotWorking(mc, parentScreen, config));
+            break;
+                
         // Open rules configuration in external editor
         case ID_EDITRULES:
             try {

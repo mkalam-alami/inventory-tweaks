@@ -23,7 +23,7 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
     }
 
     public void drawButton(Minecraft minecraft, int i, int j) {
-        super.drawButton(minecraft, i, j);
+    	super.drawButton(minecraft, i, j);
 
         // Display string
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
@@ -71,8 +71,7 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
             cfgManager.makeSureConfigurationIsLoaded();
 
             // Display menu
-            obf.displayGuiScreen(
-                    new InvTweaksGuiSettings(minecraft, obf.getCurrentScreen(), config));
+            obf.displayGuiScreen(new InvTweaksGuiSettings(minecraft, obf.getCurrentScreen(), config));
             return true;
         } else {
             return false;

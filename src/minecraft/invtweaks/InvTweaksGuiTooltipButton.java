@@ -21,12 +21,13 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
     private String tooltip = null;
     private String[] tooltipLines = null;
     private int tooltipWidth = -1;
-
+	private boolean drawBackground = true;
+    
     public InvTweaksGuiTooltipButton(int id,
             int x, int y, String displayString) {
         this(id, x, y, 150, 20, displayString, null);
     }
-    
+
     /**
      * Default size is 150, the common "GuiSmallButton" button size.
      */
@@ -48,8 +49,22 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
         }
     }
 
+    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h,
+            String displayString, String tooltip, boolean drawBackground) {
+        super(id, x, y, w, h, displayString);
+        if (tooltip != null) {
+            setTooltip(tooltip);
+        }
+		this.drawBackground = drawBackground;
+    }
+
     public void drawButton(Minecraft minecraft, int i, int j) {
-        super.drawButton(minecraft, i, j); 
+    	if (this.drawBackground) {
+    		super.drawButton(minecraft, i, j);
+    	}
+    	else {
+            this.drawString(minecraft.fontRenderer, this.displayString, this.xPosition, this.yPosition + (this.height - 8) / 2, 0x999999);
+    	}
         
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
         

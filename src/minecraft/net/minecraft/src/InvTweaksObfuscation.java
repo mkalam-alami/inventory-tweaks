@@ -29,13 +29,6 @@ public class InvTweaksObfuscation {
 
     private static Map<String, Field> fieldsMap = new HashMap<String, Field>();
     
-    static {
-        // CreativeSlot.underlyingSlot
-        makeFieldPublic(SlotCreativeInventory.class, "theSlot");
-        // RenderEngine.texturePack
-        makeFieldPublic(RenderEngine.class, "texturePack");
-    }
-    
 	public InvTweaksObfuscation(Minecraft mc) {
 		this.mc = mc;
 		this.mods = new InvTweaksModCompatibility(this);
@@ -266,7 +259,7 @@ public class InvTweaksObfuscation {
         try {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots
             if (slot instanceof SlotCreativeInventory) {
-            	Slot underlyingSlot = (Slot) getThroughReflection(SlotCreativeInventory.class, "theSlot", slot);
+            	Slot underlyingSlot = SlotCreativeInventory.func_75240_a((SlotCreativeInventory) slot);
                 if (underlyingSlot != null) {
                     return underlyingSlot.slotNumber;
                 }
@@ -327,7 +320,7 @@ public class InvTweaksObfuscation {
     public int getSpecialChestRowSize(GuiContainer guiContainer, int defaultValue) {
     	return mods.getSpecialChestRowSize(guiContainer, defaultValue);
     }
-    public boolean hasTexture(String texture) {
+    /*public boolean hasTexture(String texture) {
     	TexturePackList texturePacksManager = (TexturePackList) getThroughReflection(RenderEngine.class, "texturePack", mc.renderEngine);
     	InputStream resourceAsStream = null;
     	try {
@@ -343,7 +336,7 @@ public class InvTweaksObfuscation {
 				}
     		}
     	}
-    }
+    }*/
 
     // Static access
 
@@ -473,35 +466,6 @@ public class InvTweaksObfuscation {
 
     public boolean isBasicSlot(Object o) { // Slot
         return o != null && o.getClass().equals(Slot.class);
-    }
-    
-    // Reflection utils
-    
-    public static void makeFieldPublic(Class<?> c, String field) {
-        try {
-            Field f = c.getDeclaredField(field);
-            f.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(f, Modifier.PUBLIC);
-            fieldsMap.put(c.getName() + field, f);
-        }
-        catch (Exception e) {
-            log.severe("Failed to make " + c.getName() + "." + field + " accessible: " +  e.getMessage());
-        }
-    }
-   
-    /**
-     * Access value from any field, even private.
-     * Field must be made public through the makeFieldPublic() function first.
-     * @return
-     */
-    public static Object getThroughReflection(Class<?> c, String field, Object instance) {
-        try {
-            return fieldsMap.get(c.getName() + field).get(instance);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
 }

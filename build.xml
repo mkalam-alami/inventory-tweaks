@@ -25,7 +25,7 @@
 		</delete>
 		<echo>  - Copying zip to mods folder</echo>
 		<copy todir="${modsDir}">
-			<fileset dir="target/" includes="InvTweaks*.zip" />
+			<fileset dir="." includes="InvTweaks-DEV.zip" />
 		</copy>
 		<echo>  - Done!</echo>
 	</target>

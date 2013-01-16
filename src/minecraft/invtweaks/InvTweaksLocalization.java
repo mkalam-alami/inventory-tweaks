@@ -16,8 +16,7 @@ import net.minecraft.src.InvTweaksObfuscation;
 public class InvTweaksLocalization {
 	
     private static final Logger log = Logger.getLogger("InvTweaks");
-	private static final String LANG_RESOURCES_LOCATION = "invtweaks/lang/";
-	private static final String LANG_RESOURCES_LOCATION_MCP = "../invtweaks/lang/";
+	private static final String LANG_RESOURCES_LOCATION = "/invtweaks/lang/";
     private static final String DEFAULT_LANGUAGE = "en_US";
     private static Properties defaultMappings = new Properties();
     private static Properties mappings = new Properties();
@@ -43,11 +42,7 @@ public class InvTweaksLocalization {
         try {
             InputStream langStream = InvTweaksLocalization.class.getResourceAsStream(LANG_RESOURCES_LOCATION + currentLanguage + ".properties");
             InputStream defaultLangStream = InvTweaksLocalization.class.getResourceAsStream(LANG_RESOURCES_LOCATION + DEFAULT_LANGUAGE + ".properties");
-            if (langStream == null) {
-            	langStream = InvTweaksLocalization.class.getResourceAsStream(LANG_RESOURCES_LOCATION_MCP + currentLanguage + ".properties");
-                defaultLangStream = InvTweaksLocalization.class.getResourceAsStream(LANG_RESOURCES_LOCATION_MCP + DEFAULT_LANGUAGE + ".properties");
-            }
-
+            
             mappings.load((langStream == null) ? defaultLangStream : langStream);
             defaultMappings.load(defaultLangStream);
 

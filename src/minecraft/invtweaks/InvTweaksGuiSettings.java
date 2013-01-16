@@ -213,8 +213,8 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         }
 
     }
-
-    protected void keyPressed(char c, int keyCode) {
+    
+    protected void keyTyped(char c, int keyCode) {
         if (sortMappingEdition) {
            String keyName = Keyboard.getKeyName(keyCode);
            config.setProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY, keyName);

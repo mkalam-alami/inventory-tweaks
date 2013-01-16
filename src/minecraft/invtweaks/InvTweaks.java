@@ -557,7 +557,10 @@ public class InvTweaks extends InvTweaksObfuscation {
                         		|| (InvTweaksContainerSection.INVENTORY_NOT_HOTBAR.equals(target))) {
                             handleSorting(guiScreen);
                         }
-
+                        
+                    }
+                    
+                    else if (isValidInventory(guiScreen)) {
                         if (InvTweaksContainerSection.CRAFTING_IN.equals(target)) {
                             // Crafting stacks evening
                             try {

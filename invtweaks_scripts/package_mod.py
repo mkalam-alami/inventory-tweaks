@@ -23,7 +23,7 @@ shutil.copytree(INVTWEAKS_CLASS, INVTWEAKS_TMP)
 shutil.copy(INVTWEAKS_SRC + '/DefaultConfig.dat', INVTWEAKS_TMP + '/invtweaks/DefaultConfig.dat')
 shutil.copy(INVTWEAKS_SRC + '/DefaultTree.dat', INVTWEAKS_TMP + '/invtweaks/DefaultTree.dat')
 shutil.copytree(INVTWEAKS_SRC + '/lang', INVTWEAKS_TMP + '/invtweaks/lang')
-shutil.copy('INVTWEAKS-LICENSE.md', INVTWEAKS_TMP + '/INVTWEAKS-LICENSE.txt')
+shutil.copy('LICENSE.md', INVTWEAKS_TMP + '/LICENSE.txt')
 
 # Zip
 

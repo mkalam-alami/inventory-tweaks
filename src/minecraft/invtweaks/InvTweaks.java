@@ -189,7 +189,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
 
         try {
-            ContainerSectionManager containerMgr = new ContainerSectionManager(mc, ContainerSection.INVENTORY);
+            InvTweaksContainerSectionManager containerMgr = new InvTweaksContainerSectionManager(mc, ContainerSection.INVENTORY);
             
             // Find stack slot (look in hotbar only).
             // We're looking for a brand new stack in the hotbar

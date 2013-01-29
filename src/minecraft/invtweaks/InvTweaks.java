@@ -193,7 +193,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         try {
             InvTweaksContainerSectionManager containerMgr = new InvTweaksContainerSectionManager(mc, InvTweaksContainerSection.INVENTORY);
-            
+
             // Find stack slot (look in hotbar only).
             // We're looking for a brand new stack in the hotbar
             // (not an existing stack whose amount has been increased)
@@ -540,10 +540,10 @@ public class InvTweaks extends InvTweaksObfuscation {
                             chestAlgorithm = (chestAlgorithm + 1) % 3;
                             chestAlgorithmClickTimestamp = timestamp;
 
-                        } else if(InvTweaksContainerSection.CRAFTING_IN.equals(target)) {
+                        } else if(InvTweaksContainerSection.CRAFTING_IN.equals(target) || InvTweaksContainerSection.CRAFTING_IN_PERSISTENT.equals(target)) {
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-                                        InvTweaksContainerSection.CRAFTING_IN,
+                                        target,
                                         InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
                                         (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
                             } catch(Exception e) {
@@ -555,15 +555,15 @@ public class InvTweaks extends InvTweaksObfuscation {
                         		|| (InvTweaksContainerSection.INVENTORY_NOT_HOTBAR.equals(target))) {
                             handleSorting(guiScreen);
                         }
-                        
+
                     }
-                    
+
                     else if (isValidInventory(guiScreen)) {
-                        if (InvTweaksContainerSection.CRAFTING_IN.equals(target)) {
+                        if (InvTweaksContainerSection.CRAFTING_IN.equals(target) || InvTweaksContainerSection.CRAFTING_IN_PERSISTENT.equals(target)) {
                             // Crafting stacks evening
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-                                        InvTweaksContainerSection.CRAFTING_IN,
+                                        target,
                                         InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
                                         (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
                             } catch (Exception e) {
@@ -610,7 +610,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 // Check for custom button texture
             	// Disabled because the current implementation requires reflection, which is difficult to manage
             	// in a MCP environment - TODO find a workaround to access the texture packs data
-                boolean customTextureAvailable = false;//hasTexture("/gui/button10px.png"); 
+                boolean customTextureAvailable = false;//hasTexture("/gui/button10px.png");
 
                 // Inventory button
                 if (!isValidChest) {

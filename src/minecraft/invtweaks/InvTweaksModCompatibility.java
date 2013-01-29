@@ -132,12 +132,12 @@ public class InvTweaksModCompatibility {
     		result.put(InvTweaksContainerSection.CHEST, slots.subList(1, slots.size() - 36));
     	}
     	else if (is(guiScreen, "GuiAdvBench")) { // RedPower 2
-            result.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(0, 9));
+            result.put(InvTweaksContainerSection.CRAFTING_IN_PERSISTENT, slots.subList(0, 9));
             result.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(10, 11));
             result.put(InvTweaksContainerSection.CHEST, slots.subList(11, 29));
     	} else if(is(guiScreen, "GuiArcaneWorkbench") || is(guiScreen, "GuiInfusionWorkbench")) { // Thaumcraft 3
             result.put(InvTweaksContainerSection.CRAFTING_OUT, slots.subList(0, 1));
-            result.put(InvTweaksContainerSection.CRAFTING_IN, slots.subList(2, 11));
+            result.put(InvTweaksContainerSection.CRAFTING_IN_PERSISTENT, slots.subList(2, 11));
     	}
     	
 		return result;

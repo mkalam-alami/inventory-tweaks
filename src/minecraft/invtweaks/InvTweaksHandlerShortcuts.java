@@ -206,6 +206,9 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     else if (container.hasSection(ContainerSection.CRAFTING_IN)) {
                         orderedSections.add(ContainerSection.CRAFTING_IN);
                     }
+                    else if (container.hasSection(ContainerSection.CRAFTING_IN_PERSISTENT)) {
+                        orderedSections.add(ContainerSection.CRAFTING_IN_PERSISTENT);
+                    }
                     else if (container.hasSection(ContainerSection.FURNACE_IN)) {
                         orderedSections.add(ContainerSection.FURNACE_IN);
                     }
@@ -260,6 +263,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                             }
                             break;
                         case CRAFTING_IN:
+                        case CRAFTING_IN_PERSISTENT:
                         case FURNACE_IN:
                             shortcutConfig.toSection = ContainerSection.INVENTORY_NOT_HOTBAR; break;
                         default:

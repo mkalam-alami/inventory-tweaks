@@ -17,6 +17,8 @@ public enum ContainerSection {
     CHEST,
     /** The crafting input */
     CRAFTING_IN,
+    /** The crafting input, for containters that store it internally */
+    CRAFTING_IN_PERSISTENT,
     /** The crafting output */
     CRAFTING_OUT,
     /** The armor slots */

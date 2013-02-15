@@ -22,7 +22,6 @@ import net.minecraft.entity.player.EntityPlayer;
  *         License: MIT
  */
 @Mod(modid = "inventorytweaks_forge", version = InvTweaksConst.MOD_VERSION,
-        certificateFingerprint = "b9f6724e93d168cc1cfb7e822a4e8bc66c6b3265",
         dependencies = "required-after:FML@[4.6.0,);required-after:Forge@[6.5.0,)")
 public class InvTweaksMod implements IPickupNotifier {
     private InvTweaks instance;

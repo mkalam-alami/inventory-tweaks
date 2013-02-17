@@ -276,9 +276,9 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     public void logInGameError(String message, Exception e) {
+        e.printStackTrace();
         String formattedMsg = buildlogString(Level.SEVERE, InvTweaksLocalization.get(message), e);
         addChatMessage(formattedMsg);
-        log.severe(formattedMsg);
     }
 
     public static void logInGameStatic(String message) {

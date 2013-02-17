@@ -1,0 +1,87 @@
+<project name="InventoryTweaks" default="dist" basedir=".">
+    <property environment="env"/>
+
+    <property name="invtweaks.version" value="1.50"/>
+
+    <property name="minecraft.version" value="1.4.7"/>
+
+    <property name="forge.build" value="527"/>
+    <property name="forge.version" value="6.6.1"/>
+    <property name="forge.filename" value="minecraftforge-src-${minecraft.version}-${forge.version}.${forge.build}.zip"/>
+
+    <property name="forge.download" value="http://files.minecraftforge.net/minecraftforge/${forge.filename}"/>
+
+    <property name="build.dir" value="build"/>
+    <property name="forge.dir" value="${build.dir}/forge"/>
+
+    <property file="${forge.dir}/forgeversion.properties"/>
+    <condition property="forge.installed">
+        <equals arg1="${forge.build.number}" arg2="${forge.build}"/>
+    </condition>
+
+    <property name="temp.dir" value="${build.dir}/temp"/>
+    <property name="src.dir" value="src/minecraft"/>
+    <property name="mcp.dir" value="${forge.dir}/mcp"/>
+    <property name="class.dir" value="${mcp.dir}/bin/minecraft"/>
+    <property name="reobf.dir" value="${mcp.dir}/reobf/minecraft"/>
+
+    <property name="invtweaks.jar" value="${build.dir}/out/InventoryTweaks-${invtweaks.version}.jar"/>
+
+    <path id="invtweaks.classpath">
+        <pathelement location="${mcp.dir}/bin/minecraft"/>
+        <pathelement location="${mcp.dir}/lib/argo-2.2.5.jar"/>
+        <pathelement location="${mcp.dir}/lib/asm-all-4.0.jar"/>
+        <pathelement location="${mcp.dir}/lib/bcprov-jdk15on-147.jar"/>
+        <pathelement location="${mcp.dir}/lib/guava-12.0.1.jar"/>
+        <pathelement location="${mcp.dir}/jars/bin/jinput.jar"/>
+        <pathelement location="${mcp.dir}/jars/bin/lwjgl.jar"/>
+        <pathelement location="${mcp.dir}/jars/bin/lwjgl_util.jar"/>
+    </path>
+
+    <target name="dist" depends="package-invtweaks"/>
+
+    <target name="package-invtweaks" depends="reobf-invtweaks">
+        <jar destfile="${invtweaks.jar}">
+            <fileset dir="${reobf.dir}"/>
+            <fileset dir="${src.dir}" excludes="**/*.java net/"/>
+        </jar>
+    </target>
+
+    <target name="reobf-invtweaks" depends="build-invtweaks">
+        <exec dir="${mcp.dir}" executable="${mcp.dir}/runtime/bin/python/python_mcp" osfamily="windows">
+            <arg value="runtime\reobfuscate.py"/>
+        </exec>
+        <exec dir="${mcp.dir}" executable="python" osfamily="unix">
+            <arg value="runtime\reobfuscate.py"/>
+        </exec>
+    </target>
+
+    <target name="build-invtweaks" depends="install-forge">
+        <javac srcdir="${src.dir}" destdir="${class.dir}" target="1.6" source="1.6"
+                classpathref="invtweaks.classpath"/>
+    </target>
+
+    <target name="install-forge" depends="download-forge" unless="forge.installed">
+        <delete dir="${forge.dir}" failonerror="no"/>
+
+        <unzip src="${temp.dir}/${forge.filename}" dest="${build.dir}"/>
+
+        <chmod file="${forge.dir}/install.sh" perm="+x"/>
+
+        <exec dir="${forge.dir}" executable="${forge.dir}/fml/python/python_fml" osfamily="windows" inputstring="Yes\n">
+            <arg value="install.py"/>
+        </exec>
+        <exec dir="${forge.dir}" executable="python" osfamily="unix" inputstring="Yes\n">
+            <arg value="install.py"/>
+        </exec>
+    </target>
+
+    <target name="download-forge">
+        <mkdir dir="${temp.dir}"/>
+        <get src="${forge.download}" dest="${temp.dir}/${forge.filename}" verbose="true" skipexisting="true"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+</project>

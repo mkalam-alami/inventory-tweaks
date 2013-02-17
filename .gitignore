@@ -8,6 +8,7 @@
 !/src/minecraft/net/minecraft/src/InvTweaks*
 
 # Builds & binaries
+build/
 bin/
 target/
 lib/

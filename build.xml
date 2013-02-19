@@ -50,7 +50,7 @@
         <delete file="${invtweaks.jar}" failonerror="no"/>
         <jar destfile="${invtweaks.jar}">
             <fileset dir="${reobf.dir}"/>
-            <fileset dir="${src.dir}" excludes="**/*.java net/"/>
+            <fileset dir="${src.dir}" excludes="**/*.java"/>
         </jar>
     </target>
 

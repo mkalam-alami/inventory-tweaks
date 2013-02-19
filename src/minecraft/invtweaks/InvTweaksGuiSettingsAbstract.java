@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.src.InvTweaksObfuscation;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.Point;

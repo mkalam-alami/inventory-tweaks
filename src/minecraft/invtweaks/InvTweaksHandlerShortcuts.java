@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.InvTweaksObfuscation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.inventory.Slot;
 

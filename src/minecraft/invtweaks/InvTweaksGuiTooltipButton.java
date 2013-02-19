@@ -1,9 +1,7 @@
 package invtweaks;
 
-import invtweaks.InvTweaksConst;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.src.InvTweaksObfuscation;
 
 /**
  * Icon-size button, which get drawns in a specific way to fit its small size.

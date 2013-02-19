@@ -12,7 +12,6 @@ import invtweaks.api.InventoryGUI;
 import net.minecraft.inventory.Container;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.src.InvTweaksObfuscation;
 import net.minecraft.inventory.Slot;
 
 

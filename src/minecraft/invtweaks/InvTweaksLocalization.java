@@ -4,8 +4,6 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import net.minecraft.src.InvTweaksObfuscation;
-
 
 /**
  * The global mod's configuration.

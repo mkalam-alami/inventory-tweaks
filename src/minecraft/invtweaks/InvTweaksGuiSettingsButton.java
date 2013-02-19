@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.InvTweaksObfuscation;
 
 /**
  * Button that opens the inventory & chest settings screen.

@@ -65,7 +65,7 @@
 
     <target name="build-invtweaks" depends="install-forge">
         <javac srcdir="${src.dir}" destdir="${class.dir}" target="1.6" source="1.6"
-                classpathref="invtweaks.classpath"/>
+                classpathref="invtweaks.classpath" debug="true" debuglevel="lines,source" includeAntRuntime="false"/>
     </target>
 
     <target name="install-forge" depends="download-forge" unless="forge.installed">

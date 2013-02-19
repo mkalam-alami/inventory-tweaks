@@ -17,6 +17,9 @@ launcher/
 *.zip
 *.jar
 
+# Can contain sensitive info
+build.properties
+
 # Tmp files
 *~
 *#

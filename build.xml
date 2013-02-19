@@ -1,7 +1,8 @@
 <project name="InventoryTweaks" default="dist" basedir=".">
     <property environment="env"/>
+    <property file="build.properties"/>
 
-    <property name="invtweaks.version" value="1.50"/>
+    <property name="invtweaks.version" value="UNKNOWN"/>
 
     <property name="minecraft.version" value="1.4.7"/>
 
@@ -38,9 +39,15 @@
         <pathelement location="${mcp.dir}/jars/bin/lwjgl_util.jar"/>
     </path>
 
-    <target name="dist" depends="package-invtweaks"/>
+    <target name="dist" depends="package-invtweaks, sign-invtweaks"/>
+
+    <target name="sign-invtweaks" depends="package-invtweaks" if="${signature.enable}">
+        <signjar jar="${invtweaks.jar}" alias="${signature.alias}" storepass="${signature.storepass}"
+                 keypass="${signature.keypass}"/>
+    </target>
 
     <target name="package-invtweaks" depends="reobf-invtweaks">
+        <delete file="${invtweaks.jar}" failonerror="no"/>
         <jar destfile="${invtweaks.jar}">
             <fileset dir="${reobf.dir}"/>
             <fileset dir="${src.dir}" excludes="**/*.java net/"/>
@@ -64,9 +71,9 @@
     <target name="install-forge" depends="download-forge" unless="forge.installed">
         <delete dir="${forge.dir}" failonerror="no"/>
 
-        <unzip src="${temp.dir}/${forge.filename}" dest="${build.dir}"/>
-
-        <chmod file="${forge.dir}/install.sh" perm="+x"/>
+        <unzip src="${temp.dir}/${forge.filename}" dest="${forge.dir}">
+            <cutdirsmapper dirs="1"/>
+        </unzip>
 
         <exec dir="${forge.dir}" executable="${forge.dir}/fml/python/python_fml" osfamily="windows" inputstring="Yes\n">
             <arg value="install.py"/>

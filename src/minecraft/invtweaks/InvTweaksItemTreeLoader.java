@@ -33,11 +33,10 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     private static int itemOrder;
     private static LinkedList<String> categoryStack;
 
-    private static Boolean treeLoaded;
+    private static boolean treeLoaded = false;
     private static List<InvTweaksItemTreeListener> onLoadListeners = new ArrayList<InvTweaksItemTreeListener>();
 
     private static void init() {
-    	treeLoaded = false;
     	treeVersion = null;
     	tree = new InvTweaksItemTree();
     	itemOrder = 0;

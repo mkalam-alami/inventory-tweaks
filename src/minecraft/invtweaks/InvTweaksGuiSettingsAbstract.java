@@ -19,7 +19,7 @@ import org.lwjgl.util.Point;
  */
 public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
-	protected static final Logger log = Logger.getLogger("InvTweaks");
+	protected static final Logger log = InvTweaks.log;
 
     protected static String ON;
     protected static String OFF;

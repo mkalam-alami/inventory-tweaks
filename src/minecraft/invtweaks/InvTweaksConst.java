@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 public class InvTweaksConst {
 
     // Mod version
-    public static final String MOD_VERSION = "1.50 (1.4.7)";
+    public static final String MOD_VERSION = "k1.50c";
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs

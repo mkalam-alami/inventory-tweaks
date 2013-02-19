@@ -1,6 +1,7 @@
 package invtweaks.forge;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IPickupNotifier;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -13,6 +14,8 @@ import invtweaks.forge.ForgeClientTick;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+
+import java.util.logging.Logger;
 
 /**
  * ModLoader entry point to load and configure the mod.
@@ -34,6 +37,9 @@ public class InvTweaksMod implements IPickupNotifier {
     @Mod.Init
     public void init(FMLInitializationEvent e) {
         if(e.getSide() == Side.CLIENT) {
+            InvTweaks.log.setParent(FMLLog.getLogger());
+            InvTweaks.log.setUseParentHandlers(true);
+
             Minecraft mc = FMLClientHandler.instance().getClient();
             // Instantiate mod core
             instance = new InvTweaks(mc);

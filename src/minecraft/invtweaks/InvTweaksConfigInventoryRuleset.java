@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class InvTweaksConfigInventoryRuleset {
 
-	private static final Logger log = Logger.getLogger("InvTweaks");
+	private static final Logger log = InvTweaks.log;
 	
 	private String name;
 	private int[] lockPriorities;

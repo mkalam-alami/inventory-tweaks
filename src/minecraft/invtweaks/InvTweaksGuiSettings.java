@@ -24,7 +24,7 @@ import org.lwjgl.util.Point;
  */
 public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     private final static int ID_MIDDLE_CLICK = 1;
     private final static int ID_BEFORE_BREAK = 2;

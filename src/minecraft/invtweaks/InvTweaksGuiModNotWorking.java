@@ -15,7 +15,7 @@ import net.minecraft.client.gui.GuiScreen;
  */
 public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
 
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     public InvTweaksGuiModNotWorking(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);

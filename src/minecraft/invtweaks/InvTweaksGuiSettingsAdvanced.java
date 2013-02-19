@@ -20,7 +20,7 @@ import org.lwjgl.util.Point;
  */
 public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     private final static int ID_SORT_ON_PICKUP = 1;
     private final static int ID_AUTO_EQUIP_ARMOR = 2;

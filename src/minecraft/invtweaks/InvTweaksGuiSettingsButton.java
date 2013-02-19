@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
  */
 public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
 
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     public InvTweaksGuiSettingsButton(InvTweaksConfigManager cfgManager,
             int id, int x, int y, int w, int h,

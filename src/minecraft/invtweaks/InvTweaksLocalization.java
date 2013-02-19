@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  */
 public class InvTweaksLocalization {
 	
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 	private static final String LANG_RESOURCES_LOCATION = "/invtweaks/lang/";
     private static final String DEFAULT_LANGUAGE = "en_US";
     private static Properties defaultMappings = new Properties();

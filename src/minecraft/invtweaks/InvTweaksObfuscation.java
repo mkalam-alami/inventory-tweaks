@@ -34,7 +34,7 @@ import net.minecraft.world.World;
  */
 public class InvTweaksObfuscation {
 
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     public Minecraft mc;
 

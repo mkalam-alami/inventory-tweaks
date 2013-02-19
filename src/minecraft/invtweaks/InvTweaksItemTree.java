@@ -22,7 +22,7 @@ public class InvTweaksItemTree {
     public static final int MAX_CATEGORY_RANGE = 1000;
     public static final String UNKNOWN_ITEM = "unknown";
 
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     /** All categories, stored by name */
     private Map<String, InvTweaksItemTreeCategory> categories = 

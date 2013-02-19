@@ -29,7 +29,7 @@ import net.minecraft.inventory.Slot;
  */
 public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     public static final boolean STACK_NOT_EMPTIED = true;
     public static final boolean STACK_EMPTIED = false;

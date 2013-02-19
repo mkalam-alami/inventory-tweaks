@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
  */
 public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     private InvTweaksConfig config = null;
 

@@ -24,7 +24,7 @@ import org.lwjgl.input.Mouse;
  */
 public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     private static final int DROP_SLOT = -999;
 

@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSortingRule> {
 
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     private String constraint;
     private int[] preferredPositions;

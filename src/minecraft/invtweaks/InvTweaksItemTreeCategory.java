@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class InvTweaksItemTreeCategory {
 
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     private final Map<Integer, List<InvTweaksItemTreeItem>> items = 
         new HashMap<Integer, List<InvTweaksItemTreeItem>>();

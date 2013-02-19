@@ -1,12 +1,3 @@
-# Filter Minecraft sources
-/src/minecraft/*
-!/src/minecraft/invtweaks
-!/src/minecraft/net
-/src/minecraft/net/minecraft/client
-/src/minecraft/net/minecraft/server
-/src/minecraft/net/minecraft/src/*
-!/src/minecraft/net/minecraft/src/InvTweaks*
-
 # Builds & binaries
 build/
 bin/
@@ -16,9 +7,6 @@ invtweaks_docs/_build
 launcher/
 *.zip
 *.jar
-
-# Can contain sensitive info
-build.properties
 
 # Tmp files
 *~

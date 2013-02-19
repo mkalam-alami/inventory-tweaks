@@ -5,6 +5,7 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IPickupNotifier;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -34,12 +35,14 @@ public class InvTweaksMod implements IPickupNotifier {
     private InvTweaks instance;
     private ForgeClientTick clientTick;
 
+    @Mod.PreInit
+    public void preInit(FMLPreInitializationEvent e) {
+        InvTweaks.log = e.getModLog();
+    }
+
     @Mod.Init
     public void init(FMLInitializationEvent e) {
         if(e.getSide() == Side.CLIENT) {
-            InvTweaks.log.setParent(FMLLog.getLogger());
-            InvTweaks.log.setUseParentHandlers(true);
-
             Minecraft mc = FMLClientHandler.instance().getClient();
             // Instantiate mod core
             instance = new InvTweaks(mc);

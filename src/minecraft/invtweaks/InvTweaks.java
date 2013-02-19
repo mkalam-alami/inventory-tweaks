@@ -37,8 +37,7 @@ import org.lwjgl.opengl.Display;
  *
  */
 public class InvTweaks extends InvTweaksObfuscation {
-
-    public static final Logger log = Logger.getLogger("InvTweaks");
+    public static Logger log = Logger.getLogger("InvTweaks");
 
     private static InvTweaks instance;
 

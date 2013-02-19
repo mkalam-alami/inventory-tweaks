@@ -1,4 +1,4 @@
-package invtweaks;
+package invtweaks.forge;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.IPickupNotifier;
@@ -7,6 +7,9 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+import invtweaks.InvTweaks;
+import invtweaks.InvTweaksConst;
+import invtweaks.forge.ForgeClientTick;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,6 +25,7 @@ import net.minecraft.entity.player.EntityPlayer;
  *         License: MIT
  */
 @Mod(modid = "inventorytweaks_forge", version = InvTweaksConst.MOD_VERSION,
+        certificateFingerprint = "eac60f974c9439dc644ab1c03c62255b1fg30a78",
         dependencies = "required-after:FML@[4.6.0,);required-after:Forge@[6.5.0,)")
 public class InvTweaksMod implements IPickupNotifier {
     private InvTweaks instance;

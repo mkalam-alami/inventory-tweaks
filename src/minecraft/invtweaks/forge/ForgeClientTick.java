@@ -1,8 +1,9 @@
-package invtweaks;
+package invtweaks.forge;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
+import invtweaks.InvTweaks;
 import net.minecraft.client.Minecraft;
 
 import java.util.EnumSet;

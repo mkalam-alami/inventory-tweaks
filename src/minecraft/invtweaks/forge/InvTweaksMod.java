@@ -29,7 +29,6 @@ import java.util.logging.Logger;
  *         License: MIT
  */
 @Mod(modid = "inventorytweaks_forge", version = InvTweaksConst.MOD_VERSION,
-        certificateFingerprint = "eac60f974c9439dc644ab1c03c62255b1fg30a78",
         dependencies = "required-after:FML@[4.6.0,);required-after:Forge@[6.5.0,)")
 public class InvTweaksMod implements IPickupNotifier {
     private InvTweaks instance;

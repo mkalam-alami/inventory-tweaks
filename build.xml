@@ -47,10 +47,14 @@
     </target>
 
     <target name="package-invtweaks" depends="reobf-invtweaks">
+        <propertyfile file="${temp.dir}/version.properties">
+            <entry key="inventorytweaks_forge.version" value="${invtweaks.version}"/>
+        </propertyfile>
         <delete file="${invtweaks.jar}" failonerror="no"/>
         <jar destfile="${invtweaks.jar}">
             <fileset dir="${reobf.dir}"/>
             <fileset dir="${src.dir}" excludes="**/*.java"/>
+            <file file="${temp.dir}/version.properties"/>
         </jar>
     </target>
 

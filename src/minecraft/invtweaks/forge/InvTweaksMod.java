@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  *         Source code: {@link https://github.com/mkalam-alami/inventory-tweaks}
  *         License: MIT
  */
-@Mod(modid = "inventorytweaks_forge", version = InvTweaksConst.MOD_VERSION,
+@Mod(modid = "inventorytweaks_forge",
         dependencies = "required-after:FML@[4.6.0,);required-after:Forge@[6.5.0,)")
 public class InvTweaksMod implements IPickupNotifier {
     private InvTweaks instance;

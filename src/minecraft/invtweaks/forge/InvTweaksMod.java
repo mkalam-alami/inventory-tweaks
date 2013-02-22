@@ -11,7 +11,6 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import invtweaks.InvTweaks;
 import invtweaks.InvTweaksConst;
-import invtweaks.forge.ForgeClientTick;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;

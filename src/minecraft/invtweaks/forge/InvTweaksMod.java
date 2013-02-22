@@ -5,12 +5,15 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IPickupNotifier;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import invtweaks.InvTweaks;
+import invtweaks.InvTweaksConfig;
 import invtweaks.InvTweaksConst;
+import invtweaks.InvTweaksItemTreeLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,6 +50,13 @@ public class InvTweaksMod implements IPickupNotifier {
             clientTick = new ForgeClientTick(instance);
             TickRegistry.registerTickHandler(clientTick, Side.CLIENT);
             GameRegistry.registerPickupHandler(this);
+        }
+    }
+
+    @Mod.PostInit
+    public void postInit(FMLPostInitializationEvent e) {
+        if(!InvTweaks.getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_FORGE_ITEMTREE).equals(InvTweaksConfig.VALUE_FALSE)) {
+            InvTweaksItemTreeLoader.addOnLoadListener(new ForgeItemTreeListener());
         }
     }
 

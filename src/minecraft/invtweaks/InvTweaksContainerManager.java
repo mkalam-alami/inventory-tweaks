@@ -162,9 +162,11 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
         // Mod support -- some mods play tricks with slots to display an item but not let it be interacted with.
         // (Specifically forestry backpack UI)
-        Slot destSlot = getSlot(destSection, destIndex);
-        if(!destSlot.isItemValid(srcStack)) {
-            return false;
+        if (destIndex != DROP_SLOT) {
+            Slot destSlot = getSlot(destSection, destIndex);
+            if(!destSlot.isItemValid(srcStack)) {
+                return false;
+            }
         }
 
 

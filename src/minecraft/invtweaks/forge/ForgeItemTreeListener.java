@@ -51,7 +51,7 @@ public class ForgeItemTreeListener implements InvTweaksItemTreeListener {
                 tree.addCategory(tree.getRootCategory().getName(), new InvTweaksItemTreeCategory("forge_oreDict_" + name));
 
                 for(ItemStack i : OreDictionary.getOres(name)) {
-                    tree.addItem("forge_oreDict_" + name, new InvTweaksItemTreeItem(i.getItemName(), i.itemID, -1, 0));
+                    tree.addItem("forge_oreDict_" + name, new InvTweaksItemTreeItem(i.getItemName(), i.itemID, i.getItemDamage(), 0));
                 }
             }
         } catch(Exception e) {

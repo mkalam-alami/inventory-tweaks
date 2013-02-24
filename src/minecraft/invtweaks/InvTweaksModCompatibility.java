@@ -60,6 +60,8 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "FM_GuiMintStorage") // Metallurgy
                 || is(guiScreen, "GuiChestTFC") // TerraFirmaCraft
                 || is(guiScreen, "GuiBackpack") // Backpacks
+                || isExact(guiScreen, "com.pahimar.ee3.client.gui.inventory.GuiPortableCrafting")
+                || isExact(guiScreen, "codechicken.enderstorage.storage.item.GuiEnderItemStorage")
           ;
     }
 
@@ -168,7 +170,10 @@ public class InvTweaksModCompatibility {
     	} else if(is(guiScreen, "GuiArcaneWorkbench") || is(guiScreen, "GuiInfusionWorkbench")) { // Thaumcraft 3
             result.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
             result.put(ContainerSection.CRAFTING_IN_PERSISTENT, slots.subList(2, 11));
-    	}
+    	} else if(isExact(guiScreen, "com.pahimar.ee3.client.gui.inventory.GuiPortableCrafting")) {
+            result.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+            result.put(ContainerSection.CRAFTING_IN, slots.subList(1, 10));
+        }
 
 		return result;
 
@@ -181,6 +186,15 @@ public class InvTweaksModCompatibility {
 	    catch (Exception e) {
 	        return false;
 	    }
+    }
+
+    private static final boolean isExact(GuiScreen guiScreen, String className) {
+        try {
+            return guiScreen.getClass().getName().equals(className);
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 
     private static final ContainerGUI getContainerGUIAnnotation(Class<? extends GuiScreen> clazz) {

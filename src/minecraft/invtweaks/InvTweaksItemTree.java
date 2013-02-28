@@ -1,13 +1,7 @@
 package invtweaks;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Vector;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -72,7 +66,7 @@ public class InvTweaksItemTree {
 
         // The keyword is an item
         for (InvTweaksItemTreeItem item : items) {
-            if (item.getName().equals(keyword)) {
+            if (item.getName() != null && item.getName().equals(keyword)) {
                 return true;
             }
         }
@@ -187,7 +181,14 @@ public class InvTweaksItemTree {
 			filteredItems.add(newItemId);
 			filteredItems.add(newItemDamage);
         }
-    
+
+        Iterator<InvTweaksItemTreeItem> it = filteredItems.iterator();
+        while(it.hasNext()) {
+            if(it.next() == null) {
+                it.remove();
+            }
+        }
+
         return filteredItems;
     }
 

@@ -62,6 +62,7 @@ public class InvTweaksModCompatibility {
                 || is(guiScreen, "GuiBackpack") // Backpacks
                 || isExact(guiScreen, "com.pahimar.ee3.client.gui.inventory.GuiPortableCrafting")
                 || isExact(guiScreen, "codechicken.enderstorage.storage.item.GuiEnderItemStorage")
+                || isExact(guiScreen, "net.mcft.copy.betterstorage.client.GuiReinforcedChest")
           ;
     }
 
@@ -93,7 +94,7 @@ public class InvTweaksModCompatibility {
 	        try {
 	          return (Integer)guiContainer.getClass().getMethod("getRowLength").invoke(guiContainer);
 	        } catch (Exception e) {
-	        	// Skip it
+                return defaultValue;
 	        }
 	    } else if (is(guiContainer, "GuiMultiPageChest")) { // Multi Page chest
 	      return 13;
@@ -114,7 +115,13 @@ public class InvTweaksModCompatibility {
 	      return 3;
 	    } else if (is(guiContainer, "GuiNuclearReactor")) { // IC2
 	    	return (obf.getSlots(obf.getContainer(guiContainer)).size() - 36) / 6;
-	    }
+	    } else if(isExact(guiContainer, "net.mcft.copy.betterstorage.client.GuiReinforcedChest")) {
+            try {
+                return (Integer)guiContainer.getClass().getMethod("getNumColumns").invoke(guiContainer);
+            } catch (Exception e) {
+                return defaultValue;
+            }
+        }
         return defaultValue;
     }
 

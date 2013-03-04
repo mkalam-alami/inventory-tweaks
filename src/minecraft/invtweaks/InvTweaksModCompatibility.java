@@ -17,7 +17,7 @@ import net.minecraft.inventory.Slot;
 
 public class InvTweaksModCompatibility {
 
-    private InvTweaksObfuscation obf;
+    private final InvTweaksObfuscation obf;
 
     public InvTweaksModCompatibility(InvTweaksObfuscation obf) {
     	this.obf = obf;
@@ -26,7 +26,7 @@ public class InvTweaksModCompatibility {
     /**
      * Returns true if the screen is a chest/dispenser,
      * despite not being a GuiChest or a GuiDispenser.
-     * @param guiContainer
+     * @param guiScreen
      * @return
      */
     public boolean isSpecialChest(GuiScreen guiScreen) {
@@ -186,7 +186,7 @@ public class InvTweaksModCompatibility {
 
 	}
 
-	private static final boolean is(GuiScreen guiScreen, String className) {
+	private static boolean is(GuiScreen guiScreen, String className) {
 	    try {
 	        return guiScreen.getClass().getSimpleName().contains(className);
 	    }
@@ -195,7 +195,7 @@ public class InvTweaksModCompatibility {
 	    }
     }
 
-    private static final boolean isExact(GuiScreen guiScreen, String className) {
+    private static boolean isExact(GuiScreen guiScreen, String className) {
         try {
             return guiScreen.getClass().getName().equals(className);
         }
@@ -204,21 +204,20 @@ public class InvTweaksModCompatibility {
         }
     }
 
-    private static final ContainerGUI getContainerGUIAnnotation(Class<? extends GuiScreen> clazz) {
-        ContainerGUI annotation = clazz.getAnnotation(ContainerGUI.class);
-        return annotation;
+    private static ContainerGUI getContainerGUIAnnotation(Class<? extends GuiScreen> clazz) {
+        return clazz.getAnnotation(ContainerGUI.class);
     }
 
-    private static final InventoryGUI getInventoryGUIAnnotation(Class<? extends GuiScreen> clazz) {
-        InventoryGUI annotation = clazz.getAnnotation(InventoryGUI.class);
-        return annotation;
+    private static InventoryGUI getInventoryGUIAnnotation(Class<? extends GuiScreen> clazz) {
+        return clazz.getAnnotation(InventoryGUI.class);
     }
 
-    private static final boolean isAPIClass(Class<? extends GuiScreen> clazz) {
+    private static boolean isAPIClass(Class<? extends GuiScreen> clazz) {
         return (getContainerGUIAnnotation(clazz) != null) || (getInventoryGUIAnnotation(clazz) != null);
     }
 
-    private static final Method getAnnotatedMethod(Class clazz, Class[] annotations, int numParams, Class retClass) {
+    @SuppressWarnings("unchecked")
+    private static Method getAnnotatedMethod(Class clazz, Class[] annotations, int numParams, Class retClass) {
         Method[] methods = clazz.getMethods();
         for(Method m : methods) {
             for(Class annotation : annotations) {

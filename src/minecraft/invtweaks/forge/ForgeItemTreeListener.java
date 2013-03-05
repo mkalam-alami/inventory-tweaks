@@ -43,7 +43,7 @@ public class ForgeItemTreeListener implements InvTweaksItemTreeListener {
                 Collections.sort(itemList, new ItemPriorityComparator(itemsByPriority));
 
                 for(Item i : itemList) {
-                    tree.addItem("forge_toolClasses_" + name, new InvTweaksItemTreeItem(i.getItemName(), i.itemID, -1, (Integer)itemsByPriority.get(i)));
+                    tree.addItem("forge_toolClasses_" + name, new InvTweaksItemTreeItem(Integer.toString(i.itemID), i.itemID, -1, (Integer)itemsByPriority.get(i)));
                 }
             }
 
@@ -51,7 +51,7 @@ public class ForgeItemTreeListener implements InvTweaksItemTreeListener {
                 tree.addCategory(tree.getRootCategory().getName(), new InvTweaksItemTreeCategory("forge_oreDict_" + name));
 
                 for(ItemStack i : OreDictionary.getOres(name)) {
-                    tree.addItem("forge_oreDict_" + name, new InvTweaksItemTreeItem(i.getItemName(), i.itemID, i.getItemDamage(), 0));
+                    tree.addItem("forge_oreDict_" + name, new InvTweaksItemTreeItem(String.format("%d-%d", i.itemID, i.getItemDamage()), i.itemID, i.getItemDamage(), 0));
                 }
             }
         } catch(Exception e) {

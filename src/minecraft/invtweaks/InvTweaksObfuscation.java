@@ -145,16 +145,16 @@ public class InvTweaksObfuscation {
         return guiScreen.height;
     }
     public int getGuiX(GuiContainer guiContainer) {
-        return ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "n", "guiLeft");
+        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "n", "guiLeft");
     }
     public int getGuiY(GuiContainer guiContainer) {
-        return ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "o", "guiTop");
+        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "o", "guiTop");
     }
     public int getGuiWidth(GuiContainer guiContainer) {
-        return ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "b", "xSize");
+        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "b", "xSize");
     }
     public int getGuiHeight(GuiContainer guiContainer) {
-        return ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "c", "ySize");
+        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "c", "ySize");
     }
     @SuppressWarnings("unchecked")
     public List<Object> getControlList(GuiScreen guiScreen) {

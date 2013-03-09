@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  *         License: MIT
  */
 @Mod(modid = "inventorytweaks_forge",
-        dependencies = "required-after:FML@[4.6.0,);required-after:Forge@[6.5.0,)")
+        dependencies = "required-after:FML@[4.6.0,);required-after:Forge@[7.7.0,)")
 public class InvTweaksMod implements IPickupNotifier {
     private InvTweaks instance;
     private ForgeClientTick clientTick;

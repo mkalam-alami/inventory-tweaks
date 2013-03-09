@@ -4,10 +4,10 @@
 
     <property name="invtweaks.version" value="UNKNOWN"/>
 
-    <property name="minecraft.version" value="1.4.7"/>
+    <property name="minecraft.version" value="1.5"/>
 
-    <property name="forge.build" value="534"/>
-    <property name="forge.version" value="6.6.2"/>
+    <property name="forge.build" value="0"/>
+    <property name="forge.version" value="7.7.0"/>
     <property name="forge.filename" value="minecraftforge-src-${minecraft.version}-${forge.version}.${forge.build}.zip"/>
 
     <property name="forge.download" value="http://files.minecraftforge.net/minecraftforge/${forge.filename}"/>
@@ -61,9 +61,11 @@
     <target name="reobf-invtweaks" depends="build-invtweaks">
         <exec dir="${mcp.dir}" executable="${mcp.dir}/runtime/bin/python/python_mcp" osfamily="windows">
             <arg value="runtime\reobfuscate.py"/>
+            <arg value="--srgnames"/>
         </exec>
         <exec dir="${mcp.dir}" executable="python" osfamily="unix">
             <arg value="runtime\reobfuscate.py"/>
+            <arg value="--srgnames"/>
         </exec>
     </target>
 

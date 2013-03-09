@@ -342,8 +342,9 @@ public class InvTweaksObfuscation {
     	try {
 	        resourceAsStream = mc.renderEngine.texturePack.getSelectedTexturePack().getResourceAsStream(texture);
 			return resourceAsStream != null;
-    	}
-    	finally {
+    	} catch (IOException e) {
+            return false;
+        } finally {
     		if (resourceAsStream != null) {
     			try {
 					resourceAsStream.close();

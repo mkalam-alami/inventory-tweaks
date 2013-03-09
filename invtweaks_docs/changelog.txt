@@ -3,6 +3,13 @@
 Latest changes
 ==============
 
+`[03.09.2013] 1.51 (1.5) <http://www.mediafire.com/?7fra267h45hes30>`_
+ * Built with Minecraft Forge/FML instead of ModLoader
+ * Additional support for grouping ores and tools of the same type
+ * Fixed a bug with Forestry Backpacks/RP2 canvas bags and possibly other inventories causing the client to hang
+ * Crafting tables with persistent slots (RP2 project table, etc.) that are supported for even stacks will not have their crafting grid cleared by a main inventory sort
+ * Added a mod support API for mods to declare the info required for compatibility
+
 `[01.17.2013] 1.50 (1.4.7) <http://adf.ly/HQeh4>`_
  * Switched sources to MCP (= faster to update, easier to contribute)
  * Middle click evens the stacks on crafting tables (thanks to InvTweaks-1.50-1.4.7.zip)

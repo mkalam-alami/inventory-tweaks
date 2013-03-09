@@ -603,9 +603,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             if (!customButtonsAdded) {
 
                 // Check for custom button texture
-            	// Disabled because the current implementation requires reflection, which is difficult to manage
-            	// in a MCP environment - TODO find a workaround to access the texture packs data
-                boolean customTextureAvailable = false;//hasTexture("/gui/button10px.png");
+                boolean customTextureAvailable = hasTexture("/gui/button10px.png");
 
                 // Inventory button
                 if (!isValidChest) {

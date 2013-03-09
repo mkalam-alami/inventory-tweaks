@@ -279,6 +279,8 @@ public class InvTweaksObfuscation {
             	Slot underlyingSlot = (Slot)ObfuscationReflectionHelper.getPrivateValue(slotCreativeInventory, slot, "b", "field_75241_b", "theSlot");
                 if (underlyingSlot != null) {
                     return underlyingSlot.slotNumber;
+                } else {
+                    log.warning("Creative inventory: Failed to get real slot");
                 }
             }
         } catch (Exception e) {

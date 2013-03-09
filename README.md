@@ -1,6 +1,6 @@
 <img src="http://inventory-tweaks.readthedocs.org/en/latest/_images/invtweaks.png" />
 
-*InvTweaks now runs on MCP! The build process has changed, check [the wiki](https://github.com/mkalam-alami/inventory-tweaks/wiki/Getting-started) :)*
+*InvTweaks now runs on MCP! The build process has changed, check [the wiki](https://github.com/Kobata/inventory-tweaks/wiki/Getting-started) :)*
 
 ## What's this project about
 
@@ -8,5 +8,5 @@ This Open Source project (see [License](https://github.com/mkalam-alami/inventor
 
 ## Get started
 
-* For documentation about how to use or install the mod, see the [main page of Inventory Tweaks](http://modding.kalam-alami.net). This place is for developers!
-* To start coding, all is explained on the [project's wiki](https://github.com/mkalam-alami/inventory-tweaks/wiki).
+* For documentation about how to use or install the mod, see the [main page of Inventory Tweaks](http://inventory-tweaks.readthedocs.org/en/latest). This place is for developers!
+* To start coding, all is explained on the [project's wiki](https://github.com/Kobata/inventory-tweaks/wiki).

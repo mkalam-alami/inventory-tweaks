@@ -27,9 +27,9 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
         // Display string
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
         drawCenteredString(obf.getFontRenderer(),
-                getDisplayString(),
-                getXPosition() + 5,
-                getYPosition() - 1,
+                displayString,
+                xPosition + 5,
+                yPosition - 1,
                 getTextColor(i, j));
     }
 

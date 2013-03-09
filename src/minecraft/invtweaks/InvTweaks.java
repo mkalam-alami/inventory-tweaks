@@ -648,7 +648,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                         int rowSize = getContainerRowSize(guiContainer);
 
-                        InvTweaksObfuscationGuiButton button = new InvTweaksGuiSortingButton(
+                        GuiButton button = new InvTweaksGuiSortingButton(
                                 cfgManager, id++,
                                 (isChestWayTooBig) ? x + 22 : x - 13,
                                 (isChestWayTooBig) ? y + 12 : y,

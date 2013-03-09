@@ -31,16 +31,16 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         
         if (useCustomTexture) {
-            GL11.glBindTexture(3553, getTexture(minecraft, "/gui/button10px.png"));
-            drawTexturedModalRect(getXPosition(), getYPosition(), (k - 1) * 10, 0, getWidth(), getHeight());
+            GL11.glBindTexture(3553, minecraft.renderEngine.getTexture("/gui/button10px.png"));
+            drawTexturedModalRect(xPosition, yPosition, (k - 1) * 10, 0, width, height);
         }
         else {
-            GL11.glBindTexture(3553, getTexture(minecraft, "/gui/gui.png"));
-            drawTexturedModalRect(getXPosition(), getYPosition(), 1, 46 + k * 20 + 1, getWidth() / 2, getHeight() / 2);
-            drawTexturedModalRect(getXPosition(), getYPosition() + getHeight() / 2, 1, 46 + k * 20 + 20 - getHeight() / 2 - 1, getWidth() / 2, getHeight() / 2);
-            drawTexturedModalRect(getXPosition() + getWidth() / 2, getYPosition(), 200 - getWidth() / 2 - 1, 46 + k * 20 + 1, getWidth() / 2, getHeight() / 2);
-            drawTexturedModalRect(getXPosition() + getWidth() / 2, getYPosition() + getHeight() / 2, 200 - getWidth() / 2 - 1, 46 + k * 20 + 19 - getHeight() / 2, getWidth() / 2,
-                    getHeight() / 2);
+            GL11.glBindTexture(3553, minecraft.renderEngine.getTexture("/gui/gui.png"));
+            drawTexturedModalRect(xPosition, yPosition, 1, 46 + k * 20 + 1, width / 2, height / 2);
+            drawTexturedModalRect(xPosition, yPosition + height / 2, 1, 46 + k * 20 + 20 - height / 2 - 1, width / 2, height / 2);
+            drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2 - 1, 46 + k * 20 + 1, width / 2, height / 2);
+            drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2, 200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2, width / 2,
+                    height / 2);
         }
         
     }

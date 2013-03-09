@@ -2,13 +2,14 @@ package invtweaks;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
 
 /**
  * Icon-size button, which get drawns in a specific way to fit its small size.
  * @author Jimeo Wan
  *
  */
-public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
+public class InvTweaksGuiTooltipButton extends GuiButton {
 
     public final static int DEFAULT_BUTTON_WIDTH = 200;
     public final static int LINE_HEIGHT = 11;
@@ -115,15 +116,15 @@ public class InvTweaksGuiTooltipButton extends InvTweaksObfuscationGuiButton {
     }
 
     protected boolean isMouseOverButton(int i, int j) {
-        return i >= getXPosition() && j >= getYPosition()
-            && i < getXPosition() + getWidth()
-            && j < getYPosition() + getHeight();
+        return i >= xPosition && j >= yPosition
+            && i < xPosition + width
+            && j < xPosition + height;
     }
 
     protected int getTextColor(int i, int j) {
 
         int textColor = 0xffe0e0e0;
-        if (!isEnabled()) {
+        if (!enabled) {
             textColor = 0xffa0a0a0;
         } else if (isMouseOverButton(i, j)) {
             textColor = 0xffffffa0;

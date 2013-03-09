@@ -48,7 +48,7 @@
 
     <target name="package-invtweaks" depends="reobf-invtweaks">
         <propertyfile file="${temp.dir}/version.properties">
-            <entry key="inventorytweaks_forge.version" value="${invtweaks.version}"/>
+            <entry key="inventorytweaks.version" value="${invtweaks.version}"/>
         </propertyfile>
         <delete file="${invtweaks.jar}" failonerror="no"/>
         <jar destfile="${invtweaks.jar}">

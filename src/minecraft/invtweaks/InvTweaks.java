@@ -1,9 +1,5 @@
 package invtweaks;
 
-import invtweaks.InvTweaksConst;
-import invtweaks.InvTweaksItemTree;
-import invtweaks.InvTweaksItemTreeItem;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -14,6 +10,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiContainer;
@@ -192,7 +189,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
 
         try {
-            InvTweaksContainerSectionManager containerMgr = new InvTweaksContainerSectionManager(mc, InvTweaksContainerSection.INVENTORY);
+            InvTweaksContainerSectionManager containerMgr = new InvTweaksContainerSectionManager(mc, ContainerSection.INVENTORY);
             
             // Find stack slot (look in hotbar only).
             // We're looking for a brand new stack in the hotbar
@@ -423,7 +420,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         // Sorting
         try {
             new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-                    InvTweaksContainerSection.INVENTORY,
+                    ContainerSection.INVENTORY,
                     InvTweaksHandlerSorting.ALGORITHM_INVENTORY,
                     InvTweaksConst.INVENTORY_ROW_SIZE).sort();
         } catch (Exception e) {
@@ -507,7 +504,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                     InvTweaksContainerManager containerMgr = new InvTweaksContainerManager(mc);
 					Slot slotAtMousePosition = containerMgr.getSlotAtMousePosition();
-                    InvTweaksContainerSection target = null;
+                    ContainerSection target = null;
                     if (slotAtMousePosition != null) {
                     	target = containerMgr.getSlotSection(getSlotNumber(slotAtMousePosition));
                     }
@@ -518,7 +515,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                         // (copied GuiContainer.getSlotAtPosition algorithm)
                     	GuiContainer guiContainer = asGuiContainer(guiScreen);
 
-                        if (InvTweaksContainerSection.CHEST.equals(target)) {
+                        if (ContainerSection.CHEST.equals(target)) {
 
                             // Play click
                             playClick();
@@ -530,7 +527,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                             }
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-                                        InvTweaksContainerSection.CHEST,
+                                        ContainerSection.CHEST,
                                         chestAlgorithm,
                                         getContainerRowSize(guiContainer)).sort();
                             } catch (Exception e) {
@@ -540,10 +537,10 @@ public class InvTweaks extends InvTweaksObfuscation {
                             chestAlgorithm = (chestAlgorithm + 1) % 3;
                             chestAlgorithmClickTimestamp = timestamp;
 
-                        } else if(InvTweaksContainerSection.CRAFTING_IN.equals(target)) {
+                        } else if(ContainerSection.CRAFTING_IN.equals(target)) {
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-                                        InvTweaksContainerSection.CRAFTING_IN,
+                                        ContainerSection.CRAFTING_IN,
                                         InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
                                         (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
                             } catch(Exception e) {
@@ -551,19 +548,19 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 e.printStackTrace();
                             }
 
-                        } else if (InvTweaksContainerSection.INVENTORY_HOTBAR.equals(target)
-                        		|| (InvTweaksContainerSection.INVENTORY_NOT_HOTBAR.equals(target))) {
+                        } else if (ContainerSection.INVENTORY_HOTBAR.equals(target)
+                        		|| (ContainerSection.INVENTORY_NOT_HOTBAR.equals(target))) {
                             handleSorting(guiScreen);
                         }
                         
                     }
                     
                     else if (isValidInventory(guiScreen)) {
-                        if (InvTweaksContainerSection.CRAFTING_IN.equals(target)) {
+                        if (ContainerSection.CRAFTING_IN.equals(target)) {
                             // Crafting stacks evening
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-                                        InvTweaksContainerSection.CRAFTING_IN,
+                                        ContainerSection.CRAFTING_IN,
                                         InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
                                         (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
                             } catch (Exception e) {

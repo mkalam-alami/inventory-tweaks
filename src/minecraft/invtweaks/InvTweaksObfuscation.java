@@ -488,7 +488,7 @@ public class InvTweaksObfuscation {
     }
 
     public boolean isBasicSlot(Object o) { // Slot
-        return o != null && o.getClass().equals(Slot.class);
+        return o != null && (o.getClass().equals(Slot.class) || o.getClass().equals(slotCreativeInventory));
     }
 
 }

@@ -396,6 +396,7 @@ public class InvTweaksObfuscation {
                 || isGuiTrading(guiScreen)
                 || isGuiAnvil(guiScreen)
                 || isGuiBeacon(guiScreen)
+                || isGuiHopper(guiScreen)
                 || (isGuiInventoryCreative(guiScreen)
                         && getSlots(getContainer(asGuiContainer(guiScreen))).size() == 46);
     }
@@ -436,6 +437,9 @@ public class InvTweaksObfuscation {
     }
     public boolean isGuiDispenser(Object o) { // GuiDispenser
         return o != null && o.getClass().equals(GuiDispenser.class);
+    }
+    public boolean isGuiHopper(Object o) { // GuiHopper
+        return o != null && o.getClass().equals(GuiHopper.class);
     }
 
     public boolean isGuiButton(Object o) { // GuiButton

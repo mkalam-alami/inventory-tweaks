@@ -1,6 +1,6 @@
 <img src="http://inventory-tweaks.readthedocs.org/en/latest/_images/invtweaks.png" />
 
-#Kobata has a well maintained fork with numerous bugfixes and some additions.  Please go to https://github.com/Kobata/inventory-tweaks for further updates.  Additional links will be updated with time.
+_**Kobata has a well maintained fork with numerous bugfixes and some additions.  Please go to https://github.com/Kobata/inventory-tweaks for further updates.  Additional links will be updated with time.**_
 
 *InvTweaks now runs on MCP! The build process has changed, check [the wiki](https://github.com/mkalam-alami/inventory-tweaks/wiki/Getting-started) :)*
 

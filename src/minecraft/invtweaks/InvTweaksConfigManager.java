@@ -239,7 +239,12 @@ public class InvTweaksConfigManager {
                                 content.read(bytes);
                                 resourceContents += new String(bytes);
                             }
+                            invTweaksZip.close();
                             break;
+                        }
+                        else
+                        {
+                            invTweaksZip.close();
                         }
                     } catch (Exception e) {
                         log.warning("Failed to extract " + resource + " from mod: " + e.getMessage());

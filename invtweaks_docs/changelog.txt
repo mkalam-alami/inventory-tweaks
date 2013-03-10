@@ -3,7 +3,7 @@
 Latest changes
 ==============
 
-`[03.10.2013] 1.51b (1.5) <http://www.mediafire.com/?7fra267h45hes30>`_
+`[03.10.2013] 1.51b (1.5) <http://www.mediafire.com/?y1u2jfj3smmmr1q>`_
  * Added support for Hopper GUI
  * Fixed crash when viewing mod list
  * Added logo file for mod list

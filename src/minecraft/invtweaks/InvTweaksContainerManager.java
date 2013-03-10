@@ -160,6 +160,16 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             return true;
         }
 
+        // Mod support -- some mods play tricks with slots to display an item but not let it be interacted with.
+        // (Specifically forestry backpack UI)
+        if (destIndex != DROP_SLOT) {
+            Slot destSlot = getSlot(destSection, destIndex);
+            if(!destSlot.isItemValid(srcStack)) {
+                return false;
+            }
+        }
+
+
         // Put hold item down
         if (getHeldStack() != null) {
             int firstEmptyIndex = getFirstEmptyIndex(InvTweaksContainerSection.INVENTORY);
@@ -181,6 +191,14 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             InvTweaksContainerSection intermediateSection = getSlotSection(intermediateSlot);
             int intermediateIndex = getSlotIndex(intermediateSlot);
             if (intermediateIndex != -1) {
+                Slot interSlot = getSlot(intermediateSection, intermediateIndex);
+                if(!interSlot.isItemValid(destStack)) {
+                    return false;
+                }
+                Slot srcSlot = getSlot(srcSection, srcIndex);
+                if(!srcSlot.isItemValid(destStack)) {
+                    return false;
+                }
                 // Step 1/3: Dest > Int
                 leftClick(destSection, destIndex);
                 leftClick(intermediateSection, intermediateIndex);

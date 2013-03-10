@@ -117,8 +117,8 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
 
     protected boolean isMouseOverButton(int i, int j) {
         return i >= xPosition && j >= yPosition
-            && i < xPosition + width
-            && j < xPosition + height;
+            && i < (xPosition + width)
+            && j < (yPosition + height);
     }
 
     protected int getTextColor(int i, int j) {

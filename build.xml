@@ -27,6 +27,7 @@
     <property name="reobf.dir" value="${mcp.dir}/reobf/minecraft"/>
 
     <property name="invtweaks.jar" value="${build.dir}/out/InventoryTweaks-${invtweaks.version}.jar"/>
+    <property name="invtweaks.api.jar" value="${build.dir}/out/InventoryTweaks-api-${invtweaks.version}.jar"/>
 
     <path id="invtweaks.classpath">
         <pathelement location="${mcp.dir}/bin/minecraft"/>
@@ -55,6 +56,9 @@
             <fileset dir="${reobf.dir}"/>
             <fileset dir="${src.dir}" excludes="**/*.java"/>
             <file file="${temp.dir}/version.properties"/>
+        </jar>
+        <jar destfile="${invtweaks.api.jar}">
+            <fileset dir="${src.dir}" includes="invtweaks/api/*.java"/>
         </jar>
     </target>
 

@@ -205,8 +205,11 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     else if (container.hasSection(InvTweaksContainerSection.CRAFTING_IN)) {
                         orderedSections.add(InvTweaksContainerSection.CRAFTING_IN);
                     }
-                    else if (container.hasSection(InvTweaksContainerSection.FURNACE_IN)) {
-                        orderedSections.add(InvTweaksContainerSection.FURNACE_IN);
+                    else if (container.hasSection(InvTweaksContainerSection.CRAFTING_IN_PERSISTENT)) {
+                        orderedSections.add(InvTweaksContainerSection.CRAFTING_IN_PERSISTENT);
+                    }
+                    else if (container.hasSection(ContainerSection.FURNACE_IN)) {
+                        orderedSections.add(ContainerSection.FURNACE_IN);
                     }
                     else if (container.hasSection(InvTweaksContainerSection.BREWING_INGREDIENT)) {
                         ItemStack stack = container.getStack(slot);
@@ -259,6 +262,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                             }
                             break;
                         case CRAFTING_IN:
+                        case CRAFTING_IN_PERSISTENT:
                         case FURNACE_IN:
                             shortcutConfig.toSection = InvTweaksContainerSection.INVENTORY_NOT_HOTBAR; break;
                         default:

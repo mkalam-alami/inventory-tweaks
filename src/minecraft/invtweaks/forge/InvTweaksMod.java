@@ -1,22 +1,10 @@
 package invtweaks.forge;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
-import invtweaks.InvTweaks;
-import invtweaks.InvTweaksConfig;
-import invtweaks.InvTweaksItemTreeLoader;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.logging.Logger;
 
 /**
  * ModLoader entry point to load and configure the mod.

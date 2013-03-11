@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 public class ClientProxy extends CommonProxy implements IPickupNotifier {
     private InvTweaks instance;
     private ForgeClientTick clientTick;
+    public boolean serverSupportEnabled = false;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -44,5 +45,11 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
     @Override
     public void notifyPickup(EntityItem item, EntityPlayer player) {
         instance.setItemPickupPending(true);
+    }
+
+    @Override
+    public void setServerHasInvTweaks(boolean hasInvTweaks) {
+        InvTweaks.log.info("Server has support: " + hasInvTweaks);
+        serverSupportEnabled = hasInvTweaks;
     }
 }

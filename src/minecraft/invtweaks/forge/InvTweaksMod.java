@@ -5,6 +5,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkMod;
 
 /**
  * ModLoader entry point to load and configure the mod.
@@ -18,6 +19,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
  */
 @Mod(modid = "inventorytweaks",
         dependencies = "required-after:FML@[5.0.0,);required-after:Forge@[7.7.0,)")
+@NetworkMod(channels={"InventoryTweaks"}, packetHandler=PacketHandler.class, connectionHandler=ConnectionHandler.class)
 public class InvTweaksMod {
     @SidedProxy(clientSide="invtweaks.forge.ClientProxy", serverSide="invtweaks.forge.CommonProxy")
     public static CommonProxy proxy;

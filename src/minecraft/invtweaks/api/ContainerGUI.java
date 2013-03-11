@@ -11,7 +11,7 @@ public @interface ContainerGUI {
     // Size of a chest row
     int rowSize() default 9;
 
-    // Annotation for method to get special inventory slots
+    // Annotation for method to get size of a chest row if it can change
     // Signature int func()
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)

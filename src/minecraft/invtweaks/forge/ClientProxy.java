@@ -49,7 +49,7 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
 
     @Override
     public void setServerHasInvTweaks(boolean hasInvTweaks) {
-        InvTweaks.log.info("Server has support: " + hasInvTweaks);
-        serverSupportEnabled = hasInvTweaks;
+        serverSupportEnabled = hasInvTweaks && !InvTweaks.getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP).equals(InvTweaksConfig.VALUE_FALSE);
+        InvTweaks.log.info("Server has support: " + hasInvTweaks + " support enabled: " + serverSupportEnabled);
     }
 }

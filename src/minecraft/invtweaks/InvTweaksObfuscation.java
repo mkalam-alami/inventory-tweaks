@@ -2,15 +2,7 @@ package invtweaks;
 
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
+import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.inventory.*;
@@ -25,6 +17,14 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringTranslate;
 import net.minecraft.world.World;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Minecraft 1.3 Obfuscation layer
@@ -241,9 +241,9 @@ public class InvTweaksObfuscation {
 	public ItemStack clickInventory(PlayerControllerMP playerController,
 			int windowId, int slot, int clickButton,
 			boolean shiftHold, EntityPlayer entityPlayer) {
-		return playerController.windowClick(windowId, slot, clickButton,
-				(shiftHold) ? 1 : 0 /* XXX Placeholder */, entityPlayer);
-	}
+        InvTweaksMod.proxy.slotClick(playerController, windowId, slot, clickButton, shiftHold, entityPlayer);
+        return null;
+    }
 
 	// Container members
 

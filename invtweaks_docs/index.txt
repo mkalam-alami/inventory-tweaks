@@ -29,8 +29,8 @@ Download
 Contact
 -------
 
-* `Get support on Minecraft Forums <www.minecraftforum.net/topic/323444-166spsmp-inventory-tweaks-106-june-19/>`_
-* `Join the project on Github <https://github.com/mkalam-alami/inventory-tweaks/wiki>`_ (yep, it's Open Source!)
+* `Get support on Minecraft Forums <whttp://www.minecraftforum.net/topic/1720872-/>`_
+* `Join the project on Github <https://github.com/Kobata/inventory-tweaks/wiki>`_ (yep, it's Open Source!)
 
 
 
@@ -40,9 +40,7 @@ Getting started
 Setup
 -----
 
-Once you have `ModLoader <http://www.minecraftforum.net/topic/75440->`_, this mod is installed by simply moving the ZIP to the **mods** folder of Minecraft.
-
-If you picked a no-ModLoader version of the mod, you'll have instead to open **minecraft.jar**, copy in there the contents of the Inventory Tweaks zip, and remove the META-INF folder. There's no guarranty that this no-ModLoader version works with any other mod, except **Too Many Items** (install TMI first, then InvTweaks).
+Once you have `MinecraftForge <http://files.minecraftforge.net/>`_, this mod is installed by simply moving the JAR to the **mods** folder of Minecraft.
 
 Basic use
 ---------
@@ -112,7 +110,7 @@ Add them at the end of the targets (example: ``Ar``) to apply their effect.
 Available keywords
 ------------------
 
-All item names are supported, and even a whole lot of category keywords, such as ``edibleFood``, ``blocks``, ``items``, ``equipment``... The whole list is stored in the file *config/InvTweaksTree.txt* ; an online version is `available here <https://raw.github.com/mkalam-alami/inventory-tweaks/master/src/DefaultTree.dat>`_. Also, don't worry about syntax, for instance ``woodenSword`` works as well as ``WOODSWORD`` or ``Wooden Sword``.
+All item names are supported, and even a whole lot of category keywords, such as ``edibleFood``, ``blocks``, ``items``, ``equipment``... The whole list is stored in the file *config/InvTweaksTree.txt* ; an online version is `available here <https://github.com/Kobata/inventory-tweaks/blob/release/src/minecraft/invtweaks/DefaultTree.dat>`_. Also, don't worry about syntax, for instance ``woodenSword`` works as well as ``WOODSWORD`` or ``Wooden Sword``.
 
 Here are the special keywords you can use:
 
@@ -204,13 +202,13 @@ You can also define categories by entering a range of IDs. Useful for mods::
 F.A.Q.
 ======
 
-If you're having troubles making the mod work, or can't manage how to customize things as you want, tell your problem on the `Minecraft Forum topic <www.minecraftforum.net/topic/323444-15-01-inventory-tweaks-v10-beta-2>`_, other users and I will be glad to help!
+If you're having troubles making the mod work, or can't manage how to customize things as you want, tell your problem on the `Github Issue Tracker <http://github.com/Kobata/inventory-tweaks/issues>`_, or the `Minecraft Forum topic <http://www.minecraftforum.net/topic/1720872-/>`_, other users and I will be glad to help!
 
 * **I can't sort items from my mods like I want!**
 
 Currently, you have two solutions, the first being to make rules according to the item ID (e.g. ``D1 489`` or ``D1 489-5`` for a specific damage value).
 
-Second solution, edit the *InvTweaksTree.txt* file from the config folder, to manually add the items you want to sort. Each item is defined by its ID, and the easiest way to find out which item is which ID is to use something like the `Too Many Items <http://www.minecraftforum.net/topic/140684->`_ mod. You can gain time by defining item categories by ID ranges, look for that in the advanced documentation.
+Second solution, edit the *InvTweaksTree.txt* file from the config folder, to manually add the items you want to sort. Each item is defined by its ID, and the easiest way to find out which item is which ID is to use something like the `Not Enough Items <http://www.minecraftforum.net/topic/909223-/>`_ mod. You can gain time by defining item categories by ID ranges, look for that in the advanced documentation.
   
 * **The last update broke my InvTweaksTree.txt file!**
 

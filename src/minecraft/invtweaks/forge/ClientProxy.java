@@ -24,6 +24,7 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
     private InvTweaks instance;
     private ForgeClientTick clientTick;
     public boolean serverSupportEnabled = false;
+    public boolean serverSupportDetected = false;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -53,7 +54,14 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
     }
 
     @Override
+    public void setServerAssistEnabled(boolean enabled) {
+        serverSupportEnabled = serverSupportDetected && enabled;
+        InvTweaks.log.info("Server has support: " + serverSupportDetected + " support enabled: " + serverSupportEnabled);
+    }
+
+    @Override
     public void setServerHasInvTweaks(boolean hasInvTweaks) {
+        serverSupportDetected = hasInvTweaks;
         serverSupportEnabled = hasInvTweaks && !InvTweaks.getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP).equals(InvTweaksConfig.VALUE_FALSE);
         InvTweaks.log.info("Server has support: " + hasInvTweaks + " support enabled: " + serverSupportEnabled);
     }

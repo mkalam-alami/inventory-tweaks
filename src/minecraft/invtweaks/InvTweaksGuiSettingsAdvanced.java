@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
+import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -26,12 +27,14 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     private final static int ID_AUTO_EQUIP_ARMOR = 2;
     private final static int ID_ENABLE_SOUNDS = 3;
     private final static int ID_CHESTS_BUTTONS = 4;
+    private final static int ID_SERVER_ASSIST = 5;
     private final static int ID_EDITSHORTCUTS = 100;
 
     private static String labelChestButtons;
     private static String labelSortOnPickup;
     private static String labelEquipArmor;
     private static String labelEnableSounds;
+    private static String labelServerAssist;
 
     public InvTweaksGuiSettingsAdvanced(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
@@ -40,6 +43,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 		labelEquipArmor = InvTweaksLocalization.get("invtweaks.settings.advanced.autoequip");
 		labelEnableSounds = InvTweaksLocalization.get("invtweaks.settings.advanced.sounds");
 	    labelChestButtons = InvTweaksLocalization.get("invtweaks.settings.chestbuttons");
+        labelServerAssist = InvTweaksLocalization.get("invtweaks.settings.advanced.serverassist");
     }
 
     public void initGui() {
@@ -76,6 +80,11 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(), p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor), InvTweaksLocalization.get("invtweaks.settings.advanced.autoequip.tooltip"));
         controlList.add(autoEquipArmorBtn);
+
+        moveToButtonCoords(i++, p);
+        InvTweaksGuiTooltipButton serverAssistBtn = new InvTweaksGuiTooltipButton(ID_SERVER_ASSIST, p.getX(), p.getY(), computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP, labelServerAssist), InvTweaksLocalization.get("invtweaks.settings.advanced.serverassist.tooltip"));
+        controlList.add(serverAssistBtn);
 
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
@@ -124,6 +133,12 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         // Toggle chest buttons
         case ID_CHESTS_BUTTONS:
             toggleBooleanButton(guibutton, InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons);
+            break;
+
+        // Toggle server assistance
+        case ID_SERVER_ASSIST:
+            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP, labelServerAssist);
+            InvTweaksMod.proxy.setServerAssistEnabled(!InvTweaks.getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP).equals(InvTweaksConfig.VALUE_FALSE));
             break;
 
 

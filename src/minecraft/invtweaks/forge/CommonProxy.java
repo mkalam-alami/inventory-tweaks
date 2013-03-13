@@ -16,6 +16,9 @@ public class CommonProxy {
     public void postInit(FMLPostInitializationEvent e) {
     }
 
+    public void setServerAssistEnabled(boolean enabled) {
+    }
+
     public void setServerHasInvTweaks(boolean hasInvTweaks) {
     }
 

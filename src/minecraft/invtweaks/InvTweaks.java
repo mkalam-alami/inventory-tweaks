@@ -740,11 +740,6 @@ public class InvTweaks extends InvTweaksObfuscation {
             return;
         }
 
-        // FIXME Shortcuts are currently buggy within creative inventory
-        if (isGuiInventoryCreative(guiScreen)) {
-            return;
-        }
-
         // Configurable shortcuts
         if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1)) {
             if (!mouseWasDown) {

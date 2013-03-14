@@ -12,7 +12,7 @@ public class InvTweaksConst {
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs
-    public static final String TREE_VERSION = "1.4.0";
+    public static final String TREE_VERSION = "1.5.0";
     
     // Timing constants
     public static final int RULESET_SWAP_DELAY = 1000;

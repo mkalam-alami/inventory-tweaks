@@ -23,668 +23,686 @@
 # Thanks to Larandar & Lunaqua for their contributions.
 -->
 <!-- Note: 'stuff' matches everything, even items that don't appear here -->
-<stuff treeVersion="1.4.0">
-  <equipment>
-    <weapon>
-      <sword>
-        <ironSword id="267" />
-        <diamondSword id="276" />
-        <stoneSword id="272" />
-        <goldSword id="283" />
-        <woodSword id="268" />
-      </sword>
-      <munition>
-        <bow id="261" />
-        <arrow id="262" />
-        <snowball id="332" />
-      </munition>
-    </weapon>
-    <tool>
-      <pickaxe>
-        <diamondPickaxe id="278" />
-        <goldPickaxe id="285" />
-        <ironPickaxe id="257" />
-        <stonePickaxe id="274" />
-        <woodPickaxe id="270" />
-      </pickaxe>
-      <shovel>
-        <goldShovel id="284" />
-        <diamondShovel id="277" />
-        <ironShovel id="256" />
-        <stoneShovel id="273" />
-        <woodShovel id="269" />
-      </shovel>
-      <axe>
-        <goldAxe id="286" />
-        <diamondAxe id="279" />
-        <ironAxe id="258" />
-        <stoneAxe id="275" />
-        <woodAxe id="271" />
-      </axe>
-      <hoe>
-        <goldHoe id="294" />
-        <diamondHoe id="293" />
-        <ironHoe id="291" />
-        <stoneHoe id="292" />
-        <woodHoe id="290" />
-      </hoe>
-      <shears id="359" />
-      <fishingRod id="346" />
-      <carrotOnAStick id="398" />
-    </tool>
-    <armor>
-      <helmet>
-        <diamondHelmet id="310" />
-        <chainHelmet id="302" />
-        <ironHelmet id="306" />
-        <goldHelmet id="314" />
-        <leatherHelmet id="298" />
-      </helmet>
-      <chestplate>
-        <diamondChestplate id="311" />
-        <chainChestplate id="303" />
-        <ironChestplate id="307" />
-        <goldChestplate id="315" />
-        <leatherChestplate id="299" />
-      </chestplate>
-      <leggings>
-        <diamondLeggings id="312" />
-        <chainLeggings id="304" />
-        <ironLeggings id="308" />
-        <goldLeggings id="316" />
-        <leatherLeggings id="300" />
-      </leggings>
-      <boots>
-        <diamondBoots id="313" />
-        <chainBoots id="305" />
-        <ironBoots id="309" />
-        <goldBoots id="317" />
-        <leatherBoots id="301" />
-      </boots>
-    </armor>
-  </equipment>
-  <block>
-    <naturalBlock>
-      <stones>
-        <stone id="1" />
-        <cobblestone id="4" />
-        <mossStone id="48" />
-        <endStone id="121" />
-        <whiteStone id="121" />
-      </stones>
-      <oreBlock>
-        <coalOreBlock id="16" />
-        <redstoneOreBlock min="73" max="74" />
-        <lapisLazuliOreBlock id="21" />
-        <diamondOreBlock id="56" />
-        <emeraldOreBlock id="129" />
-      </oreBlock>
-      <dirt id="3" />
-      <wood>
-        <oakWood id="17" damage="0" />
-        <birchWood id="17" damage="1" />
-        <spruceWood id="17" damage="2" />
-        <jungleWood id="17" damage="3" />
-      </wood>
-      <sands>
-        <sand id="12" />
-        <sandstone>
-        	<classicSandstone id="24" damage="0" />
-        	<creeperSandstone id="24" damage="1" />
-        	<smoothSandstone id="24" damage="2" />
-        </sandstone>
-      </sands>
-      <gravel id="13" />
-      <clayBlock id="82" />
-      <netherBlock>
-        <glowstoneBlock id="89" />
-        <netherrack id="87" />
-        <soulSand id="88" />
-      </netherBlock>
-      <web id="30" />
-      <cobweb id="30" />
-      <monsterSpawner id="52" />
-      <bedrock id="7" />
-      <sponge id="19" />
-      <grass id="2" />
-      <mycelium id="110" />
-      <mushroomGrass id="110" />
-      <farmland id="60" />
-      <snow id="80" />
-      <ice id="79" />
-      <liquid>
-        <water id="8" />
-        <water id="9" />
-        <lava id="10" />
-        <lava id="11" />
-      </liquid>
-      <portal id="90" />
-      <airPortal id="120" />
-      <endPortal id="119" />
-      <endPortalFrame id="120" />
-      <air id="0" />
-      <fire id="51" />
-      <obsidian id="49" />
-      <mushroomBlock>
-        <hugeBrownMushroom id="99" />
-        <hugeRedMushroom id="100" />
-      </mushroomBlock>
-      <dragonEgg id="122" />
-      <hiddenSilverfish id="97" />
-    </naturalBlock>
-    <wool>
-      <whiteWool id="35" damage="0" />
-      <orangeWool id="35" damage="1" />
-      <magentaWool id="35" damage="2" />
-      <lightBlueWool id="35" damage="3" />
-      <yellowWool id="35" damage="4" />
-      <lightGreenWool id="35" damage="5" />
-      <limeWool id="35" damage="5" />
-      <pinkWool id="35" damage="6" />
-      <grayWool id="35" damage="7" />
-      <lightGrayWool id="35" damage="8" />
-      <cyanWool id="35" damage="9" />
-      <purpleWool id="35" damage="10" />
-      <blueWool id="35" damage="11" />
-      <brownWool id="35" damage="12" />
-      <greenWool id="35" damage="13" />
-      <darkGreenWool id="35" damage="13" />
-      <redWool id="35" damage="14" />
-      <blackWool id="35" damage="15" />
-    </wool>
-    <manufacturedBlock>
-      <ladder id="65" />
-      <fence>
-        <woodenFence id="85" />
-        <netherFence id="113" />
-        <netherBrickFence id="113" />
-        <fenceGate id="107" />
-      </fence>
-      <stoneWall>
-        <cobblestoneWall id="139" damage="0" />
-        <mossyCobblestoneWall id="139" damage="1" />
-      </stoneWall>
-      <sign id="63" />
-      <jackOLantern id="91" />
-      <constructionBlock>
-        <woodenPlank>
-          <oakPlank id="5" damage="0" />
-          <sprucePlank id="5" damage="1" />
-          <birchPlank id="5" damage="2" />
-          <junglePlank id="5" damage="3" />
-        </woodenPlank>
-        <bricks>
-          <brick id="45" />
-          <brickBlock id="45" />
-          <stoneBricks>
-            <normalStoneBrick id="98" damage="0" />
-            <mossyStoneBrick id="98" damage="1" />
-            <crackedStoneBrick id="98" damage="2" />
-            <circleStoneBrick id="98" damage="3" />
-            <chiseledStoneBrick id="98" damage="3" />
-          </stoneBricks>
-          <netherBrick id="112" />
-        </bricks>
-        <glass>
-          <glassBlock id="20" />
-          <glassPane id="102" />
-        </glass>
-        <ironBars id="101" />
-        <stairs>
-          <woodenStairs>
-  	        <oakWoodStairs id="53" />
-  	        <spruceWoodStairs id="134" />
-  	        <birchWoodStairs id="135" />
-  	        <jungleWoodStairs id="136" />
-          </woodenStairs>
-          <cobblestoneStairs id="67" />
-          <stoneStairs id="109" />
-          <brickStairs id="108" />
-          <netherStairs id="114" />
-          <netherBrickStairs id="114" />
-          <sandstoneStairs id="128" />
-        </stairs>
-        <slabs>
-          <woodenSlabs>
-          	<woodenStoneSlab id="44" damage="2" />
-          	<oakWoodSlab id="126" damage="0" />
-          	<spruceWoodSlab id="126" damage="1" />
-          	<birchWoodSlab id="126" damage="2" />
-          	<jungleWoodSlab id="126" damage="3" />
-          </woodenSlabs>
-          <stoneSlab id="44" damage="0" />
-          <sandstoneSlab id="44" damage="1" />
-          <cobblestoneSlab id="44" damage="3" />
-          <stonebrickSlab id="44" damage="4" />
-          <brickSlab id="44" damage="5" />
-          <doubleSlab>
-            <woodenDoubleSlabs>
-            	<woodenStoneDoubleSlab id="43" damage="2" />
-            	<oakWoodDoubleSlab id="125" damage="0" />
-            	<spruceWoodDoubleSlab id="125" damage="1" />
-            	<birchWoodDoubleSlab id="125" damage="2" />
-            	<jungleWoodDoubleSlab id="125" damage="3" />
-            </woodenDoubleSlabs>
-            <stoneDoubleSlab id="43" damage="0" />
-            <sandstoneDoubleSlab id="43" damage="1" />
-            <cobblestoneDoubleSlab id="43" damage="3" />
-            <stonebrickDoubleSlab id="43" damage="4" />
-            <brickDoubleSlab id="43" damage="5" />
-          </doubleSlab>
-        </slabs>
-        <oreBlock>
-          <ironBlock id="42" />
-          <goldBlock id="41" />
-          <lapisLazuliBlock id="22" />
-          <diamondBlock id="57" />
-          <emeraldBlock id="133" />
-        </oreBlock>
-        <stick id="280" />
-      </constructionBlock>
-      <itemBlock>
-        <cauldronBlock id="118" />
-        <brewingStandBlock id="117" />
-      </itemBlock>
-    </manufacturedBlock>
-    <mechanism>
-      <rails>
-        <simpleRails id="66" />
-        <poweredRails id="27" />
-        <detectorRails id="28" />
-      </rails>
-      <lighting>
-      	<torch id="50" />
-      	<lamp id="123" />
-      	<redstoneLamp id="123" />
-      	<lamp id="124" />
-      	<redstoneLamp id="124" />
-      </lighting>
-      <pistons>
-        <piston id="33" />
-        <stickyPiston id="29" />
-        <pistonHead id="34" />
-      </pistons>
-      <lever id="69" />
-      <pressurePlates>
-        <pressurePlateWood id="72" />
-        <pressurePlateStone id="70" />
-      </pressurePlates>
-		  <buttons>
-				<stoneButton id="77" />
-				<woodenButton id="143" />
-		  </buttons>
-      <doors>
-        <doorWood id="324" />
-        <woodenDoor id="324" />
-        <doorIron id="330" />
-        <ironDoor id="330" />
-        <trapdoor id="96" />
-        <woodenDoorBlock id="64" />
-        <ironDoorBlock id="64" />
-      </doors>
-      <redstoneWire id="55" />
-      <redstoneTorch id="75" />
-      <redstoneTorch id="76" />
-      <redstoneRepeater id="356" />
-      <redstoneRepeater id="93" />
-      <redstoneRepeater id="94" />
-      <dispenser id="23" />
-      <noteBlock id="25" />
-      <commandBlock id="137" />
-    </mechanism>
-  </block>
-  <resources>
-    <miningResources>
-      <ironOreBlock id="15" />
-      <goldOreBlock id="14" />
-      <coal id="263" damage="0" />
-      <charcoal id="263" damage="1" />
-      <gold id="266" />
-      <iron id="265" />
-      <diamond id="264" />
-      <emerald id="388" />
-      <redstone id="331" />
-      <glowstoneDust id="348" />
-      <clayBrick id="336" />
-      <clay id="337" />
-      <flint id="318" />
-    </miningResources>
-    <huntingResources>
-      <egg id="344" />
-      <bone id="352" />
-      <leather id="334" />
-      <string id="287" />
-      <feather id="288" />
-      <gunpowder id="289" />
-      <slimeball id="341" />
-      <enderPearl id="368" />
-      <blazeRod id="369" />
-      <ghastTear id="370" />
-      <goldNugget id="371" />
-      <netherStar id="399" />
-    </huntingResources>
-    <farmingResources>
-      <milk id="335" />
-      <wheat id="296" />
-      <paper id="339" />
-      <book id="340" />
-      <sugarCane id="338" />
-    </farmingResources>
-    <dye>
-      <boneMeal id="351" damage="15" />
-      <inkSac id="351" damage="0" />
-      <blackDye id="351" damage="0" />
-      <roseRed id="351" damage="1" />
-      <redDye id="351" damage="1" />
-      <cactusGreen id="351" damage="2" />
-      <greenDye id="351" damage="2" />
-      <cocoaBeans id="351" damage="3" />
-      <brownDye id="351" damage="3" />
-      <lapisLazuli id="351" damage="4" />
-      <lapisLazuliDye id="351" damage="4" />
-      <blueDye id="351" damage="4" />
-      <purpleDye id="351" damage="5" />
-      <cyanDye id="351" damage="6" />
-      <lightGrayDye id="351" damage="7" />
-      <grayDye id="351" damage="8" />
-      <pinkDye id="351" damage="9" />
-      <limeDye id="351" damage="10" />
-      <dandelionYellow id="351" damage="11" />
-      <yellowDye id="351" damage="11" />
-      <lightBlueDye id="351" damage="12" />
-      <magentaDye id="351" damage="13" />
-      <orangeDye id="351" damage="14" />
-    </dye>
-  </resources>
-  <item>
-    <utility>
-      <torch id="50" />
-      <flintAndSteel id="259" />
-      <craftingTable id="58" />
-      <furnace id="61" />
-      <furnaceBurning id="62" />
-      <chests>
-	      <chest id="54" />
-	      <enderChest id="130" />
-      </chests>
-      <beacon id="138" />
-      <anvil id="145" />
-      <jukebox id="84" />
-      <bed id="26" />
-      <readableBooks>
-        <bookAndQuill id="386" />
-        <writtenBook id="387" />
-      </readableBooks>
-      <tnt id="46" />
-      <tripwireHook id="131" />
-      <bowl id="281" />
-      <cauldron id="380" />
-      <brewingStand id="379" />
-      <enchantmentTable id="116" />
-      <eyeOfEnder id="381" />
-      <enderEye id="381" />
-      <spawnerEgg id="383" />
-      <tripwire id="132" />
-    </utility>
-    <bucket>
-      <emptyBucket id="325" />
-      <waterBucket id="326" />
-      <lavaBucket id="327" />
-    </bucket>
-    <instrument>
-      <clock id="347" />
-      <compass id="345" />
-      <emptyMap id="395" />
-      <map id="358" />
-    </instrument>
-    <vehicle>
-      <boat id="333" />
-      <minecarts>
-        <minecart id="328" />
-        <poweredMinecart id="343" />
-        <storageMinecart id="342" />
-      </minecarts>
-      <saddle id="329" />
-    </vehicle>
-    <decoration>
-      <bed id="355" />
-      <door>
-        <doorIron id="71" />
-        <doorWood id="64" />
-      </door>
-      <painting id="321" />
-      <sign id="323" />
-      <bookShelf id="47" />
-      <flowerPot id="390" />
-      <itemFrame id="389" />
-      <frame id="389" />
-      <head id="397" />
-      <musicDisc min="2256" max="2266" />
-      <flowerPotBlock id="140" />
-      <headBlock id="144" />
-    </decoration>
-    <food>
-      <edibleFood>
-        <mushroomStew id="282" />
-        <cookedFood>
-          <cookedPorkchop id="320" />
-          <cookedFish id="350" />
-          <steak id="364" />
-          <cookedChicken id="366" />
-          <bakedPotato id="393" />
-        </cookedFood>
-        <bread id="297" />
-        <pumpkinPie id="400" />
-        <melonSlice id="360" />
-		<carrot>
-			<carrot id="391" />
-			<goldenCarrot id="396" />
-		</carrot>
-        <apple>
-          <appleRed id="260" />
-          <appleGolden id="322" />
-        </apple>
-        <cookie id="357" />
-        <rawFood>
-          <rawPorkchop id="319" />
-          <rawFish id="349" />
-          <rawBeef id="363" />
-          <rawChicken id="365" />
-          <potato id="392" />
-        </rawFood>
-      </edibleFood>
-      <poisonedFood>
-        <rottenFlesh id="367" />
-        <spiderEye id="375" />
-        <poisonedPotato id="394" />
-        <poisonousPotato id="394" />
-      </poisonedFood>
-      <unedibleFood>
-        <cake id="354" />
-        <sugar id="353" />
-        <cakeBlock id="92" />
-      </unedibleFood>
-    </food>
-    <plant>
-      <flower>
-        <flowerYellow id="37" />
-        <dandelion id="37" />
-        <flowerRed id="38" />
-        <rose id="38" />
-        <dandelionBlock id="27" />
-        <flowerYellowBlock id="27" />
-        <roseBlock id="28" />
-        <flowerRedBlock id="28" />
-      </flower>
-      <mushroom>
-        <mushroomBrown id="39" />
-        <mushroomRed id="40" />
-      </mushroom>
-      <sapling>
-        <oakSapling id="6" damage="0" />
-        <spruceSapling id="6" damage="1" />
-        <birchSapling id="6" damage="2" />
-        <jungleSapling id="6" damage="3" />
-      </sapling>
-      <leaves id="18">
-        <oakLeaves id="18" damage="0" />
-        <spruceLeaves id="18" damage="1" />
-        <birchLeaves id="18" damage="2" />
-        <jungleLeaves id="18" damage="3" />
-      </leaves>
-      <seed>
-        <wheatSeed id="295" />
-        <pumpkinSeed id="361" />
-        <melonSeed id="362" />
-      </seed>
-      <netherWart id="115" />
-      <netherWart id="372" />
-      <sugarCane id="83" />
-      <sugarCane id="338" />
-      <vines id="106" />
-      <cactus id="81" />
-      <reed id="83" />
-      <melon id="103" />
-      <pumpkin id="86" />
-      <cocoaPod id="127" />
-      <cocoaPlant id="127" />
-      <tallGrass id="31" />
-      <deadShrub id="32" />
-      <deadBush id="32" />
-      <seedBlock id="59" />
-      <pumpkinStem id="104" />
-      <melonStem id="105" />
-      <carrotBlock id="141" />
-      <potatoBlock id="142" />
-      <potatoesBlock id="142" />
-      <lilyPad id="111" />
-    </plant>
-    <potion>
-      <drinkablePotion>
-        <neutralPotion>
-          <waterBottle id="373" damage="0" />
-          <awkwardPotion id="373" damage="16" />
-          <thickPotion id="373" damage="32" />
-          <mundanePotionExtended id="373" damage="64" />
-          <mundanePotion id="373" damage="8192" />
-        </neutralPotion>
-        <positivePotion>
-          <regenerationPotion>
-            <potionRegeneration id="373" damage="8193" />
-            <potionRegenerationEx id="373" damage="8257" />
-            <potionRegenerationII id="373" damage="8225" />
-          </regenerationPotion>
-          <swiftnessPotion>
-            <potionSwiftness id="373" damage="8194" />
-            <potionSwiftnessEx id="373" damage="8258" />
-            <potionSwiftnessII id="373" damage="8226" />
-          </swiftnessPotion>
-          <fireResistancePotion>
-            <potionFireResistance id="373" damage="8195" />
-            <potionFireResistanceEx id="373" damage="8259" />
-            <potionFireResistanceII id="373" damage="8227" />
-          </fireResistancePotion>
-          <healingPotion>
-            <potionHealing id="373" damage="8197" />
-            <potionHealingEx id="373" damage="8261" />
-            <potionHealingII id="373" damage="8229" />
-          </healingPotion>
-          <strengthPotion>
-            <potionStrength id="373" damage="8201" />
-            <potionStrengthEx id="373" damage="8265" />
-            <potionStrengthII id="373" damage="8233" />
-          </strengthPotion>
-        </positivePotion>
-        <negativePotion>
-          <poisonPotion>
-            <potionPoison id="373" damage="8196" />
-            <potionPoisonEx id="373" damage="8260" />
-            <potionPoisonII id="373" damage="8228" />
-          </poisonPotion>
-          <weaknessPotion>
-            <potionWeakness id="373" damage="8200" />
-            <potionWeaknessEx id="373" damage="8264" />
-            <potionWeaknessII id="373" damage="8232" />
-          </weaknessPotion>
-          <slownessPotion>
-            <potionSlowness id="373" damage="8202" />
-            <potionSlownessEx id="373" damage="8266" />
-            <potionSlownessII id="373" damage="8234" />
-          </slownessPotion>
-          <harmingPotion>
-            <potionHarming id="373" damage="8204" />
-            <potionHarmingEx id="373" damage="8268" />
-            <potionHarmingII id="373" damage="8236" />
-          </harmingPotion>
-        </negativePotion>
-      </drinkablePotion>
-      <splashPotion>
-        <splashMundanePotion id="373" damage="16384" />
-        <positiveSplashPotion>
-          <regenerationSplashPotion>
-            <splashPotionRegeneration id="373" damage="16385" />
-            <splashPotionRegenerationEx id="373" damage="16449" />
-            <splashPotionRegenerationII id="373" damage="16417" />
-          </regenerationSplashPotion>
-          <swiftnessSplashPotion>
-            <splashPotionSwiftness id="373" damage="16386" />
-            <splashPotionSwiftnessEx id="373" damage="16450" />
-            <splashPotionSwiftnessII id="373" damage="16418" />
-          </swiftnessSplashPotion>
-          <fireResistanceSplashPotion>
-            <splashPotionFireResistance id="373" damage="16387" />
-            <splashPotionFireResistanceEx id="373" damage="16451" />
-            <splashPotionFireResistanceII id="373" damage="16419" />
-          </fireResistanceSplashPotion>
-          <healingSplashPotion>
-            <splashPotionHealing id="373" damage="16389" />
-            <splashPotionHealingEx id="373" damage="16453" />
-            <splashPotionHealingII id="373" damage="16421" />
-          </healingSplashPotion>
-          <strengthSplashPotion>
-            <splashPotionStrength id="373" damage="16393" />
-            <splashPotionStrengthEx id="373" damage="16457" />
-            <splashPotionStrengthII id="373" damage="16425" />
-          </strengthSplashPotion>
-        </positiveSplashPotion>
-        <negativeSplashPotion>
-          <poisonSplashPotion>
-            <splashPotionPoison id="373" damage="16388" />
-            <splashPotionPoisonEx id="373" damage="16452" />
-            <splashPotionPoisonII id="373" damage="16420" />
-          </poisonSplashPotion>
-          <weaknessSplashPotion>
-            <splashPotionWeakness id="373" damage="16392" />
-            <splashPotionWeaknessEx id="373" damage="16456" />
-            <splashPotionWeaknessII id="373" damage="16424" />
-          </weaknessSplashPotion>
-          <slownessSplashPotion>
-            <splashPotionSlowness id="373" damage="16394" />
-            <splashPotionSlownessEx id="373" damage="16458" />
-            <splashPotionSlownessII id="373" damage="16426" />
-          </slownessSplashPotion>
-          <harmingSplashPotion>
-            <splashPotionHarming id="373" damage="16396" />
-            <splashPotionHarmingEx id="373" damage="16460" />
-            <splashPotionHarmingII id="373" damage="16428" />
-          </harmingSplashPotion>
-        </negativeSplashPotion>
-      </splashPotion>
-      <bottleOEnchanting id="384" />
-      <bottleEnchanting id="384" />
-    </potion>
-    <glassBottle id="374" />
-    <potionIngredient>
-      <netherWart id="372" />
-      <redstone id="331" />
-      <glowstoneDust id="348" />
-      <sugar id="353" />
-      <ghastTear id="370" />
-      <spiderEye id="375" />
-      <fermentedSpiderEye id="376" />
-      <blazePowder id="377" />
-      <magmaCream id="378" />
-      <glisteringMelon id="382" />
-    </potionIngredient>
-  </item>
+<stuff treeVersion="1.5.0">
+    <equipment>
+        <weapon>
+            <sword>
+                <ironSword id="267"/>
+                <diamondSword id="276"/>
+                <stoneSword id="272"/>
+                <goldSword id="283"/>
+                <woodSword id="268"/>
+            </sword>
+            <munition>
+                <bow id="261"/>
+                <arrow id="262"/>
+                <snowball id="332"/>
+            </munition>
+        </weapon>
+        <tool>
+            <pickaxe>
+                <diamondPickaxe id="278"/>
+                <goldPickaxe id="285"/>
+                <ironPickaxe id="257"/>
+                <stonePickaxe id="274"/>
+                <woodPickaxe id="270"/>
+            </pickaxe>
+            <shovel>
+                <goldShovel id="284"/>
+                <diamondShovel id="277"/>
+                <ironShovel id="256"/>
+                <stoneShovel id="273"/>
+                <woodShovel id="269"/>
+            </shovel>
+            <axe>
+                <goldAxe id="286"/>
+                <diamondAxe id="279"/>
+                <ironAxe id="258"/>
+                <stoneAxe id="275"/>
+                <woodAxe id="271"/>
+            </axe>
+            <hoe>
+                <goldHoe id="294"/>
+                <diamondHoe id="293"/>
+                <ironHoe id="291"/>
+                <stoneHoe id="292"/>
+                <woodHoe id="290"/>
+            </hoe>
+            <shears id="359"/>
+            <fishingRod id="346"/>
+            <carrotOnAStick id="398"/>
+        </tool>
+        <armor>
+            <helmet>
+                <diamondHelmet id="310"/>
+                <chainHelmet id="302"/>
+                <ironHelmet id="306"/>
+                <goldHelmet id="314"/>
+                <leatherHelmet id="298"/>
+            </helmet>
+            <chestplate>
+                <diamondChestplate id="311"/>
+                <chainChestplate id="303"/>
+                <ironChestplate id="307"/>
+                <goldChestplate id="315"/>
+                <leatherChestplate id="299"/>
+            </chestplate>
+            <leggings>
+                <diamondLeggings id="312"/>
+                <chainLeggings id="304"/>
+                <ironLeggings id="308"/>
+                <goldLeggings id="316"/>
+                <leatherLeggings id="300"/>
+            </leggings>
+            <boots>
+                <diamondBoots id="313"/>
+                <chainBoots id="305"/>
+                <ironBoots id="309"/>
+                <goldBoots id="317"/>
+                <leatherBoots id="301"/>
+            </boots>
+        </armor>
+    </equipment>
+    <block>
+        <naturalBlock>
+            <stones>
+                <stone id="1"/>
+                <cobblestone id="4"/>
+                <mossStone id="48"/>
+                <endStone id="121"/>
+                <whiteStone id="121"/>
+            </stones>
+            <oreBlock>
+                <coalOreBlock id="16"/>
+                <redstoneOreBlock min="73" max="74"/>
+                <lapisLazuliOreBlock id="21"/>
+                <diamondOreBlock id="56"/>
+                <emeraldOreBlock id="129"/>
+            </oreBlock>
+            <dirt id="3"/>
+            <wood>
+                <oakWood id="17" damage="0"/>
+                <birchWood id="17" damage="1"/>
+                <spruceWood id="17" damage="2"/>
+                <jungleWood id="17" damage="3"/>
+            </wood>
+            <sands>
+                <sand id="12"/>
+                <sandstone>
+                    <classicSandstone id="24" damage="0"/>
+                    <creeperSandstone id="24" damage="1"/>
+                    <smoothSandstone id="24" damage="2"/>
+                </sandstone>
+            </sands>
+            <gravel id="13"/>
+            <clayBlock id="82"/>
+            <netherBlock>
+                <glowstoneBlock id="89"/>
+                <netherrack id="87"/>
+                <soulSand id="88"/>
+                <quartzOreBlock id="153"/>
+            </netherBlock>
+            <web id="30"/>
+            <cobweb id="30"/>
+            <monsterSpawner id="52"/>
+            <bedrock id="7"/>
+            <sponge id="19"/>
+            <grass id="2"/>
+            <mycelium id="110"/>
+            <mushroomGrass id="110"/>
+            <farmland id="60"/>
+            <snow id="80"/>
+            <ice id="79"/>
+            <liquid>
+                <water id="8"/>
+                <water id="9"/>
+                <lava id="10"/>
+                <lava id="11"/>
+            </liquid>
+            <portal id="90"/>
+            <airPortal id="120"/>
+            <endPortal id="119"/>
+            <endPortalFrame id="120"/>
+            <air id="0"/>
+            <fire id="51"/>
+            <obsidian id="49"/>
+            <mushroomBlock>
+                <hugeBrownMushroom id="99"/>
+                <hugeRedMushroom id="100"/>
+            </mushroomBlock>
+            <dragonEgg id="122"/>
+            <hiddenSilverfish id="97"/>
+        </naturalBlock>
+        <wool>
+            <whiteWool id="35" damage="0"/>
+            <orangeWool id="35" damage="1"/>
+            <magentaWool id="35" damage="2"/>
+            <lightBlueWool id="35" damage="3"/>
+            <yellowWool id="35" damage="4"/>
+            <lightGreenWool id="35" damage="5"/>
+            <limeWool id="35" damage="5"/>
+            <pinkWool id="35" damage="6"/>
+            <grayWool id="35" damage="7"/>
+            <lightGrayWool id="35" damage="8"/>
+            <cyanWool id="35" damage="9"/>
+            <purpleWool id="35" damage="10"/>
+            <blueWool id="35" damage="11"/>
+            <brownWool id="35" damage="12"/>
+            <greenWool id="35" damage="13"/>
+            <darkGreenWool id="35" damage="13"/>
+            <redWool id="35" damage="14"/>
+            <blackWool id="35" damage="15"/>
+        </wool>
+        <manufacturedBlock>
+            <ladder id="65"/>
+            <fence>
+                <woodenFence id="85"/>
+                <netherFence id="113"/>
+                <netherBrickFence id="113"/>
+                <fenceGate id="107"/>
+            </fence>
+            <stoneWall>
+                <cobblestoneWall id="139" damage="0"/>
+                <mossyCobblestoneWall id="139" damage="1"/>
+            </stoneWall>
+            <sign id="63"/>
+            <jackOLantern id="91"/>
+            <constructionBlock>
+                <woodenPlank>
+                    <oakPlank id="5" damage="0"/>
+                    <sprucePlank id="5" damage="1"/>
+                    <birchPlank id="5" damage="2"/>
+                    <junglePlank id="5" damage="3"/>
+                </woodenPlank>
+                <bricks>
+                    <brick id="45"/>
+                    <brickBlock id="45"/>
+                    <stoneBricks>
+                        <normalStoneBrick id="98" damage="0"/>
+                        <mossyStoneBrick id="98" damage="1"/>
+                        <crackedStoneBrick id="98" damage="2"/>
+                        <circleStoneBrick id="98" damage="3"/>
+                        <chiseledStoneBrick id="98" damage="3"/>
+                    </stoneBricks>
+                    <netherBrick id="112"/>
+                </bricks>
+                <glass>
+                    <glassBlock id="20"/>
+                    <glassPane id="102"/>
+                </glass>
+                <ironBars id="101"/>
+                <stairs>
+                    <woodenStairs>
+                        <oakWoodStairs id="53"/>
+                        <spruceWoodStairs id="134"/>
+                        <birchWoodStairs id="135"/>
+                        <jungleWoodStairs id="136"/>
+                    </woodenStairs>
+                    <cobblestoneStairs id="67"/>
+                    <stoneStairs id="109"/>
+                    <brickStairs id="108"/>
+                    <netherStairs id="114"/>
+                    <netherBrickStairs id="114"/>
+                    <sandstoneStairs id="128"/>
+                    <quartzStairs id="156"/>
+                </stairs>
+                <slabs>
+                    <woodenSlabs>
+                        <woodenStoneSlab id="44" damage="2"/>
+                        <oakWoodSlab id="126" damage="0"/>
+                        <spruceWoodSlab id="126" damage="1"/>
+                        <birchWoodSlab id="126" damage="2"/>
+                        <jungleWoodSlab id="126" damage="3"/>
+                    </woodenSlabs>
+                    <stoneSlab id="44" damage="0"/>
+                    <sandstoneSlab id="44" damage="1"/>
+                    <cobblestoneSlab id="44" damage="3"/>
+                    <stonebrickSlab id="44" damage="4"/>
+                    <brickSlab id="44" damage="5"/>
+                    <doubleSlab>
+                        <woodenDoubleSlabs>
+                            <woodenStoneDoubleSlab id="43" damage="2"/>
+                            <oakWoodDoubleSlab id="125" damage="0"/>
+                            <spruceWoodDoubleSlab id="125" damage="1"/>
+                            <birchWoodDoubleSlab id="125" damage="2"/>
+                            <jungleWoodDoubleSlab id="125" damage="3"/>
+                        </woodenDoubleSlabs>
+                        <stoneDoubleSlab id="43" damage="0"/>
+                        <sandstoneDoubleSlab id="43" damage="1"/>
+                        <cobblestoneDoubleSlab id="43" damage="3"/>
+                        <stonebrickDoubleSlab id="43" damage="4"/>
+                        <brickDoubleSlab id="43" damage="5"/>
+                    </doubleSlab>
+                </slabs>
+                <oreBlock>
+                    <ironBlock id="42"/>
+                    <goldBlock id="41"/>
+                    <lapisLazuliBlock id="22"/>
+                    <diamondBlock id="57"/>
+                    <emeraldBlock id="133"/>
+                    <quartzBlock id="155"/>
+                </oreBlock>
+                <stick id="280"/>
+            </constructionBlock>
+            <itemBlock>
+                <cauldronBlock id="118"/>
+                <brewingStandBlock id="117"/>
+            </itemBlock>
+        </manufacturedBlock>
+        <mechanism>
+            <rails>
+                <simpleRails id="66"/>
+                <poweredRails id="27"/>
+                <detectorRails id="28"/>
+                <activatorRails id="157"/>
+            </rails>
+            <lighting>
+                <torch id="50"/>
+                <lamp id="123"/>
+                <redstoneLamp id="123"/>
+                <lamp id="124"/>
+                <redstoneLamp id="124"/>
+            </lighting>
+            <pistons>
+                <piston id="33"/>
+                <stickyPiston id="29"/>
+                <pistonHead id="34"/>
+            </pistons>
+            <lever id="69"/>
+            <pressurePlates>
+                <pressurePlateWood id="72"/>
+                <pressurePlateStone id="70"/>
+                <weightedPressurePlates>
+                    <weightedPressurePlateLight id="147"/>
+                    <weightedPressurePlateHeavy id="148"/>
+                </weightedPressurePlates>
+            </pressurePlates>
+            <buttons>
+                <stoneButton id="77"/>
+                <woodenButton id="143"/>
+            </buttons>
+            <doors>
+                <doorWood id="324"/>
+                <woodenDoor id="324"/>
+                <doorIron id="330"/>
+                <ironDoor id="330"/>
+                <trapdoor id="96"/>
+                <woodenDoorBlock id="64"/>
+                <ironDoorBlock id="64"/>
+            </doors>
+            <redstoneWire id="55"/>
+            <redstoneTorch id="75"/>
+            <redstoneTorch id="76"/>
+            <redstoneRepeater id="356"/>
+            <redstoneRepeater id="93"/>
+            <redstoneRepeater id="94"/>
+            <dispenser id="23"/>
+            <noteBlock id="25"/>
+            <commandBlock id="137"/>
+            <daylightSensor id="151"/>
+            <redstoneBlock id="152"/>
+            <hopper id="154"/>
+            <dropper id="158"/>
+            <redstoneComparator id="404"/>
+            <redstoneComparator id="149"/>
+            <redstoneComparator id="150"/>
+        </mechanism>
+    </block>
+    <resources>
+        <miningResources>
+            <ironOreBlock id="15"/>
+            <goldOreBlock id="14"/>
+            <coal id="263" damage="0"/>
+            <charcoal id="263" damage="1"/>
+            <gold id="266"/>
+            <iron id="265"/>
+            <diamond id="264"/>
+            <emerald id="388"/>
+            <redstone id="331"/>
+            <glowstoneDust id="348"/>
+            <clayBrick id="336"/>
+            <clay id="337"/>
+            <flint id="318"/>
+            <netherQuartz id="406"/>
+        </miningResources>
+        <huntingResources>
+            <egg id="344"/>
+            <bone id="352"/>
+            <leather id="334"/>
+            <string id="287"/>
+            <feather id="288"/>
+            <gunpowder id="289"/>
+            <slimeball id="341"/>
+            <enderPearl id="368"/>
+            <blazeRod id="369"/>
+            <ghastTear id="370"/>
+            <goldNugget id="371"/>
+            <netherStar id="399"/>
+        </huntingResources>
+        <farmingResources>
+            <milk id="335"/>
+            <wheat id="296"/>
+            <paper id="339"/>
+            <book id="340"/>
+            <sugarCane id="338"/>
+        </farmingResources>
+        <dye>
+            <boneMeal id="351" damage="15"/>
+            <inkSac id="351" damage="0"/>
+            <blackDye id="351" damage="0"/>
+            <roseRed id="351" damage="1"/>
+            <redDye id="351" damage="1"/>
+            <cactusGreen id="351" damage="2"/>
+            <greenDye id="351" damage="2"/>
+            <cocoaBeans id="351" damage="3"/>
+            <brownDye id="351" damage="3"/>
+            <lapisLazuli id="351" damage="4"/>
+            <lapisLazuliDye id="351" damage="4"/>
+            <blueDye id="351" damage="4"/>
+            <purpleDye id="351" damage="5"/>
+            <cyanDye id="351" damage="6"/>
+            <lightGrayDye id="351" damage="7"/>
+            <grayDye id="351" damage="8"/>
+            <pinkDye id="351" damage="9"/>
+            <limeDye id="351" damage="10"/>
+            <dandelionYellow id="351" damage="11"/>
+            <yellowDye id="351" damage="11"/>
+            <lightBlueDye id="351" damage="12"/>
+            <magentaDye id="351" damage="13"/>
+            <orangeDye id="351" damage="14"/>
+        </dye>
+    </resources>
+    <item>
+        <utility>
+            <torch id="50"/>
+            <flintAndSteel id="259"/>
+            <craftingTable id="58"/>
+            <furnace id="61"/>
+            <furnaceBurning id="62"/>
+            <chests>
+                <chest id="54"/>
+                <enderChest id="130"/>
+            </chests>
+            <beacon id="138"/>
+            <anvil id="145"/>
+            <jukebox id="84"/>
+            <bed id="26"/>
+            <readableBooks>
+                <bookAndQuill id="386"/>
+                <writtenBook id="387"/>
+            </readableBooks>
+            <tnt id="46"/>
+            <tripwireHook id="131"/>
+            <bowl id="281"/>
+            <cauldron id="380"/>
+            <brewingStand id="379"/>
+            <enchantmentTable id="116"/>
+            <eyeOfEnder id="381"/>
+            <enderEye id="381"/>
+            <spawnerEgg id="383"/>
+            <tripwire id="132"/>
+        </utility>
+        <bucket>
+            <emptyBucket id="325"/>
+            <waterBucket id="326"/>
+            <lavaBucket id="327"/>
+        </bucket>
+        <instrument>
+            <clock id="347"/>
+            <compass id="345"/>
+            <emptyMap id="395"/>
+            <map id="358"/>
+        </instrument>
+        <vehicle>
+            <boat id="333"/>
+            <minecarts>
+                <minecart id="328"/>
+                <poweredMinecart id="343"/>
+                <storageMinecart id="342"/>
+                <tntMinecart id="407"/>
+                <hopperMinecart id="408"/>
+            </minecarts>
+            <saddle id="329"/>
+        </vehicle>
+        <decoration>
+            <bed id="355"/>
+            <door>
+                <doorIron id="71"/>
+                <doorWood id="64"/>
+            </door>
+            <painting id="321"/>
+            <sign id="323"/>
+            <bookShelf id="47"/>
+            <flowerPot id="390"/>
+            <itemFrame id="389"/>
+            <frame id="389"/>
+            <head id="397"/>
+            <musicDisc min="2256" max="2266"/>
+            <flowerPotBlock id="140"/>
+            <headBlock id="144"/>
+        </decoration>
+        <food>
+            <edibleFood>
+                <mushroomStew id="282"/>
+                <cookedFood>
+                    <cookedPorkchop id="320"/>
+                    <cookedFish id="350"/>
+                    <steak id="364"/>
+                    <cookedChicken id="366"/>
+                    <bakedPotato id="393"/>
+                </cookedFood>
+                <bread id="297"/>
+                <pumpkinPie id="400"/>
+                <melonSlice id="360"/>
+                <carrot>
+                    <carrot id="391"/>
+                    <goldenCarrot id="396"/>
+                </carrot>
+                <apple>
+                    <appleRed id="260"/>
+                    <appleGolden id="322"/>
+                </apple>
+                <cookie id="357"/>
+                <rawFood>
+                    <rawPorkchop id="319"/>
+                    <rawFish id="349"/>
+                    <rawBeef id="363"/>
+                    <rawChicken id="365"/>
+                    <potato id="392"/>
+                </rawFood>
+            </edibleFood>
+            <poisonedFood>
+                <rottenFlesh id="367"/>
+                <spiderEye id="375"/>
+                <poisonedPotato id="394"/>
+                <poisonousPotato id="394"/>
+            </poisonedFood>
+            <unedibleFood>
+                <cake id="354"/>
+                <sugar id="353"/>
+                <cakeBlock id="92"/>
+            </unedibleFood>
+        </food>
+        <plant>
+            <flower>
+                <flowerYellow id="37"/>
+                <dandelion id="37"/>
+                <flowerRed id="38"/>
+                <rose id="38"/>
+                <dandelionBlock id="27"/>
+                <flowerYellowBlock id="27"/>
+                <roseBlock id="28"/>
+                <flowerRedBlock id="28"/>
+            </flower>
+            <mushroom>
+                <mushroomBrown id="39"/>
+                <mushroomRed id="40"/>
+            </mushroom>
+            <sapling>
+                <oakSapling id="6" damage="0"/>
+                <spruceSapling id="6" damage="1"/>
+                <birchSapling id="6" damage="2"/>
+                <jungleSapling id="6" damage="3"/>
+            </sapling>
+            <leaves id="18">
+                <oakLeaves id="18" damage="0"/>
+                <spruceLeaves id="18" damage="1"/>
+                <birchLeaves id="18" damage="2"/>
+                <jungleLeaves id="18" damage="3"/>
+            </leaves>
+            <seed>
+                <wheatSeed id="295"/>
+                <pumpkinSeed id="361"/>
+                <melonSeed id="362"/>
+            </seed>
+            <netherWart id="115"/>
+            <netherWart id="372"/>
+            <sugarCane id="83"/>
+            <sugarCane id="338"/>
+            <vines id="106"/>
+            <cactus id="81"/>
+            <reed id="83"/>
+            <melon id="103"/>
+            <pumpkin id="86"/>
+            <cocoaPod id="127"/>
+            <cocoaPlant id="127"/>
+            <tallGrass id="31"/>
+            <deadShrub id="32"/>
+            <deadBush id="32"/>
+            <seedBlock id="59"/>
+            <pumpkinStem id="104"/>
+            <melonStem id="105"/>
+            <carrotBlock id="141"/>
+            <potatoBlock id="142"/>
+            <potatoesBlock id="142"/>
+            <lilyPad id="111"/>
+        </plant>
+        <potion>
+            <drinkablePotion>
+                <neutralPotion>
+                    <waterBottle id="373" damage="0"/>
+                    <awkwardPotion id="373" damage="16"/>
+                    <thickPotion id="373" damage="32"/>
+                    <mundanePotionExtended id="373" damage="64"/>
+                    <mundanePotion id="373" damage="8192"/>
+                </neutralPotion>
+                <positivePotion>
+                    <regenerationPotion>
+                        <potionRegeneration id="373" damage="8193"/>
+                        <potionRegenerationEx id="373" damage="8257"/>
+                        <potionRegenerationII id="373" damage="8225"/>
+                    </regenerationPotion>
+                    <swiftnessPotion>
+                        <potionSwiftness id="373" damage="8194"/>
+                        <potionSwiftnessEx id="373" damage="8258"/>
+                        <potionSwiftnessII id="373" damage="8226"/>
+                    </swiftnessPotion>
+                    <fireResistancePotion>
+                        <potionFireResistance id="373" damage="8195"/>
+                        <potionFireResistanceEx id="373" damage="8259"/>
+                        <potionFireResistanceII id="373" damage="8227"/>
+                    </fireResistancePotion>
+                    <healingPotion>
+                        <potionHealing id="373" damage="8197"/>
+                        <potionHealingEx id="373" damage="8261"/>
+                        <potionHealingII id="373" damage="8229"/>
+                    </healingPotion>
+                    <strengthPotion>
+                        <potionStrength id="373" damage="8201"/>
+                        <potionStrengthEx id="373" damage="8265"/>
+                        <potionStrengthII id="373" damage="8233"/>
+                    </strengthPotion>
+                </positivePotion>
+                <negativePotion>
+                    <poisonPotion>
+                        <potionPoison id="373" damage="8196"/>
+                        <potionPoisonEx id="373" damage="8260"/>
+                        <potionPoisonII id="373" damage="8228"/>
+                    </poisonPotion>
+                    <weaknessPotion>
+                        <potionWeakness id="373" damage="8200"/>
+                        <potionWeaknessEx id="373" damage="8264"/>
+                        <potionWeaknessII id="373" damage="8232"/>
+                    </weaknessPotion>
+                    <slownessPotion>
+                        <potionSlowness id="373" damage="8202"/>
+                        <potionSlownessEx id="373" damage="8266"/>
+                        <potionSlownessII id="373" damage="8234"/>
+                    </slownessPotion>
+                    <harmingPotion>
+                        <potionHarming id="373" damage="8204"/>
+                        <potionHarmingEx id="373" damage="8268"/>
+                        <potionHarmingII id="373" damage="8236"/>
+                    </harmingPotion>
+                </negativePotion>
+            </drinkablePotion>
+            <splashPotion>
+                <splashMundanePotion id="373" damage="16384"/>
+                <positiveSplashPotion>
+                    <regenerationSplashPotion>
+                        <splashPotionRegeneration id="373" damage="16385"/>
+                        <splashPotionRegenerationEx id="373" damage="16449"/>
+                        <splashPotionRegenerationII id="373" damage="16417"/>
+                    </regenerationSplashPotion>
+                    <swiftnessSplashPotion>
+                        <splashPotionSwiftness id="373" damage="16386"/>
+                        <splashPotionSwiftnessEx id="373" damage="16450"/>
+                        <splashPotionSwiftnessII id="373" damage="16418"/>
+                    </swiftnessSplashPotion>
+                    <fireResistanceSplashPotion>
+                        <splashPotionFireResistance id="373" damage="16387"/>
+                        <splashPotionFireResistanceEx id="373" damage="16451"/>
+                        <splashPotionFireResistanceII id="373" damage="16419"/>
+                    </fireResistanceSplashPotion>
+                    <healingSplashPotion>
+                        <splashPotionHealing id="373" damage="16389"/>
+                        <splashPotionHealingEx id="373" damage="16453"/>
+                        <splashPotionHealingII id="373" damage="16421"/>
+                    </healingSplashPotion>
+                    <strengthSplashPotion>
+                        <splashPotionStrength id="373" damage="16393"/>
+                        <splashPotionStrengthEx id="373" damage="16457"/>
+                        <splashPotionStrengthII id="373" damage="16425"/>
+                    </strengthSplashPotion>
+                </positiveSplashPotion>
+                <negativeSplashPotion>
+                    <poisonSplashPotion>
+                        <splashPotionPoison id="373" damage="16388"/>
+                        <splashPotionPoisonEx id="373" damage="16452"/>
+                        <splashPotionPoisonII id="373" damage="16420"/>
+                    </poisonSplashPotion>
+                    <weaknessSplashPotion>
+                        <splashPotionWeakness id="373" damage="16392"/>
+                        <splashPotionWeaknessEx id="373" damage="16456"/>
+                        <splashPotionWeaknessII id="373" damage="16424"/>
+                    </weaknessSplashPotion>
+                    <slownessSplashPotion>
+                        <splashPotionSlowness id="373" damage="16394"/>
+                        <splashPotionSlownessEx id="373" damage="16458"/>
+                        <splashPotionSlownessII id="373" damage="16426"/>
+                    </slownessSplashPotion>
+                    <harmingSplashPotion>
+                        <splashPotionHarming id="373" damage="16396"/>
+                        <splashPotionHarmingEx id="373" damage="16460"/>
+                        <splashPotionHarmingII id="373" damage="16428"/>
+                    </harmingSplashPotion>
+                </negativeSplashPotion>
+            </splashPotion>
+            <bottleOEnchanting id="384"/>
+            <bottleEnchanting id="384"/>
+        </potion>
+        <glassBottle id="374"/>
+        <potionIngredient>
+            <netherWart id="372"/>
+            <redstone id="331"/>
+            <glowstoneDust id="348"/>
+            <sugar id="353"/>
+            <ghastTear id="370"/>
+            <spiderEye id="375"/>
+            <fermentedSpiderEye id="376"/>
+            <blazePowder id="377"/>
+            <magmaCream id="378"/>
+            <glisteringMelon id="382"/>
+        </potionIngredient>
+    </item>
 </stuff>

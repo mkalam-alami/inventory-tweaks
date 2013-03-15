@@ -3,6 +3,12 @@
 Latest changes
 ==============
 
+`[03.15.2013] 1.52 (1.5) <http://www.mediafire.com/?x5yxgcnx2501fty>`_
+ * Fixed NEI detection for larger than vanilla chests (ex. IronChests)
+ * Implemented an optional server module to potentially help with mod items that cuse glitches with the normal mode
+ * Updated tree file for MC1.5
+ * Enabled shortcuts in creative mode (may by somewhat buggy)
+ 
 `[03.10.2013] 1.51b (1.5) <http://www.mediafire.com/?y1u2jfj3smmmr1q>`_
  * Added support for Hopper GUI
  * Fixed crash when viewing mod list

@@ -1,6 +1,11 @@
 .. image:: _static/img/dl.png
   :align: left
   
+`Inventory Tweaks 1.52 <http://www.mediafire.com/?x5yxgcnx2501fty>`_ (`API <http://www.mediafire.com/?2vpippqz72dyjyv>`_) for **Minecraft 1.5** (requires `Forge <http://files.minecraftforge.net>`_)
+
+.. image:: _static/img/dl.png
+  :align: left
+  
 `Inventory Tweaks 1.51b <http://www.mediafire.com/?y1u2jfj3smmmr1q>`_ (`API <http://www.mediafire.com/?f1dn6y5el98k5g1>`_) for **Minecraft 1.5** (requires `Forge <http://files.minecraftforge.net>`_)
 
 .. image:: _static/img/dl.png

@@ -4,12 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import cpw.mods.fml.common.Loader;
 import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -577,6 +579,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
     }
 
+    private boolean wasNEIEnabled = false;
     private void handleGUILayout(GuiScreen guiScreen) {
 
         InvTweaksConfig config = cfgManager.getConfig();
@@ -587,18 +590,30 @@ public class InvTweaks extends InvTweaksObfuscation {
         	GuiContainer guiContainer = asGuiContainer(guiScreen);
             int w = 10, h = 10;
 
+            // Re-layout when NEI changes states.
+            boolean relayout = wasNEIEnabled != isNotEnoughItemsEnabled();
+            wasNEIEnabled = isNotEnoughItemsEnabled();
+
             // Look for the mods buttons
             boolean customButtonsAdded = false;
+
             List<Object> controlList = getControlList(guiScreen);
+            List<Object> toRemove = new ArrayList<Object>();
             for (Object o : controlList) {
                 if (isGuiButton(o)) {
                 	GuiButton button = asGuiButton(o);
-                    if (getId(button) == InvTweaksConst.JIMEOWAN_ID) {
-                        customButtonsAdded = true;
-                        break;
+                    if (button.id >= InvTweaksConst.JIMEOWAN_ID && button.id < (InvTweaksConst.JIMEOWAN_ID + 4)) {
+                        if(relayout) {
+                            toRemove.add(button);
+                        } else {
+                            customButtonsAdded = true;
+                            break;
+                        }
                     }
                 }
             }
+            controlList.removeAll(toRemove);
+            setControlList(guiScreen, controlList);
 
             if (!customButtonsAdded) {
 
@@ -627,11 +642,9 @@ public class InvTweaks extends InvTweaksObfuscation {
                     boolean isChestWayTooBig = mods.isChestWayTooBig(guiScreen);
 
                     // NotEnoughItems compatibility
-                    if (isChestWayTooBig && classExists("mod_NotEnoughItems")) {
-                    	if (isNotEnoughItemsEnabled()) {
-                        	x = getGuiX(guiContainer) + getGuiWidth(guiContainer) - 35;
-                        	y += 50;
-                    	}
+                    if (isChestWayTooBig && isNotEnoughItemsEnabled()) {
+                        x = getGuiX(guiContainer) + getGuiWidth(guiContainer) - 35;
+                        y += 50;
                     }
 
                     // Settings button
@@ -705,32 +718,32 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     }
 
-    /**
-     * Hacky parsing of the NEI configuration file to see if the mod is enabled or not.
-     */
+    private Class neiClientConfig;
+    private Method neiHidden;
+
     private boolean isNotEnoughItemsEnabled() {
-    	BufferedReader neiCfgFile = null;
-		try {
-			neiCfgFile = new BufferedReader(new FileReader(new File(InvTweaksConst.MINECRAFT_CONFIG_DIR + "NEI.cfg")));
-	    	String line;
-	    	while ((line = neiCfgFile.readLine()) != null) {
-	    		if (line.contains("enable=true")) {
-	    			return true;
-	    		}
-	    	}
-	    	return false;
-		} catch (IOException e) {
-			return false;
-		}
-		finally {
-            if (neiCfgFile != null) {
+        if(Loader.isModLoaded("NotEnoughItems")) {
+            if(neiClientConfig == null) {
                 try {
-                    neiCfgFile.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    neiClientConfig = Class.forName("codechicken.nei.NEIClientConfig");
+                    neiHidden = neiClientConfig.getMethod("isHidden");
+                } catch (ClassNotFoundException e) {
+                    return false;
+                } catch (NoSuchMethodException e) {
+                    return false;
                 }
             }
-		}
+
+            try {
+                return !(Boolean)neiHidden.invoke(null);
+            } catch (IllegalAccessException e) {
+                return false;
+            } catch (InvocationTargetException e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
 	}
 
 	private void handleShortcuts(GuiScreen guiScreen) {

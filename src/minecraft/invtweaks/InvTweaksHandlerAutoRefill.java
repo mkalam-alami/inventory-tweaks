@@ -89,7 +89,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 						    if (getMaxStackSize(candidateStack) == 1) {
 						        if ((replacementStack == null || getItemDamage(candidateStack) > getItemDamage(replacementStack)) &&
 						                (!refillBeforeBreak || getMaxDamage(getItem(candidateStack)) - getItemDamage(candidateStack)
-						                        > InvTweaksConst.AUTO_REFILL_DAMAGE_TRESHOLD)) {
+						                        > config.getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD))) {
 						            replacementStack = candidateStack;
 	                                replacementStackSlot = i;
 						        }

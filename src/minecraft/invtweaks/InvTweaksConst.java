@@ -17,7 +17,6 @@ public class InvTweaksConst {
     // Timing constants
     public static final int RULESET_SWAP_DELAY = 1000;
     public static final int AUTO_REFILL_DELAY = 200;
-    public static final int AUTO_REFILL_DAMAGE_TRESHOLD = 5;
     public static final int POLLING_DELAY = 3;
     public static final int POLLING_TIMEOUT = 1500;
     public static final int CHEST_ALGORITHM_SWAP_MAX_INTERVAL = 2000;

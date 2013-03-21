@@ -69,22 +69,22 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
 
     @Override
     public void slotClick(PlayerControllerMP playerController,
-                          int windowId, int slot, int clickButton,
-                          boolean shiftHold, EntityPlayer player) {
-        int modiferKeys = (shiftHold) ? 1 : 0 /* XXX Placeholder */;
+                          int windowId, int slot, int data,
+                          int action, EntityPlayer player) {
+        //int modiferKeys = (shiftHold) ? 1 : 0 /* XXX Placeholder */;
         if (serverSupportEnabled) {
-            player.openContainer.slotClick(slot, clickButton, modiferKeys, player);
+            player.openContainer.slotClick(slot, data, action, player);
 
             ByteArrayDataOutput packetData = ByteStreams.newDataOutput();
             packetData.writeByte(InvTweaksConst.PACKET_CLICK);
             packetData.writeInt(slot);
-            packetData.writeInt(clickButton);
+            packetData.writeInt(data);
             packetData.writeInt(modiferKeys);
 
             Packet250CustomPayload packet = PacketDispatcher.getPacket("InventoryTweaks", packetData.toByteArray());
             PacketDispatcher.sendPacketToServer(packet);
         } else {
-            playerController.windowClick(windowId, slot, clickButton, modiferKeys, player);
+            playerController.windowClick(windowId, slot, data, action, player);
         }
     }
 }

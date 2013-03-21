@@ -239,9 +239,9 @@ public class InvTweaksObfuscation {
 	// PlayerController members
 
 	public ItemStack clickInventory(PlayerControllerMP playerController,
-			int windowId, int slot, int clickButton,
-			boolean shiftHold, EntityPlayer entityPlayer) {
-        InvTweaksMod.proxy.slotClick(playerController, windowId, slot, clickButton, shiftHold, entityPlayer);
+			int windowId, int slot, int data,
+            int action, EntityPlayer entityPlayer) {
+        InvTweaksMod.proxy.slotClick(playerController, windowId, slot, data, action, entityPlayer);
         return null;
     }
 

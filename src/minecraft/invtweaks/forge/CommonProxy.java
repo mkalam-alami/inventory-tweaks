@@ -23,7 +23,7 @@ public class CommonProxy {
     }
 
     public void slotClick(PlayerControllerMP playerController,
-                          int windowId, int slot, int buttonPressed,
-                          boolean shiftHold, EntityPlayer player) {
+                          int windowId, int slot, int data,
+                          int action, EntityPlayer player) {
     }
 }

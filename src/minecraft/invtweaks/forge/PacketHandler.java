@@ -37,10 +37,10 @@ public class PacketHandler implements IPacketHandler {
         ByteArrayDataInput packetData = ByteStreams.newDataInput(data);
         packetData.skipBytes(1);
         int slot = packetData.readInt();
-        int buttonPressed = packetData.readInt();
-        int modiferKeys = packetData.readInt();
+        int clickData = packetData.readInt();
+        int action = packetData.readInt();
 
-        realPlayer.openContainer.slotClick(slot, buttonPressed, modiferKeys, realPlayer);
+        realPlayer.openContainer.slotClick(slot, clickData, action, realPlayer);
 
         ArrayList arraylist = new ArrayList();
 

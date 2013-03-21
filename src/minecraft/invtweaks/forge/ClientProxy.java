@@ -13,6 +13,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import invtweaks.InvTweaks;
 import invtweaks.InvTweaksConfig;
+import invtweaks.InvTweaksConst;
 import invtweaks.InvTweaksItemTreeLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
@@ -75,7 +76,7 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
             player.openContainer.slotClick(slot, clickButton, modiferKeys, player);
 
             ByteArrayDataOutput packetData = ByteStreams.newDataOutput();
-            packetData.writeByte(0x01);
+            packetData.writeByte(InvTweaksConst.PACKET_CLICK);
             packetData.writeInt(slot);
             packetData.writeInt(clickButton);
             packetData.writeInt(modiferKeys);

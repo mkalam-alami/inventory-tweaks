@@ -2,6 +2,7 @@ package invtweaks.forge;
 
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
+import invtweaks.InvTweaksConst;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
 import net.minecraft.network.packet.NetHandler;
@@ -12,7 +13,7 @@ import net.minecraft.server.MinecraftServer;
 public class ConnectionHandler implements IConnectionHandler {
     @Override
     public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) {
-        Packet250CustomPayload pkt = new Packet250CustomPayload("InventoryTweaks", new byte[] { 0x55 });
+        Packet250CustomPayload pkt = new Packet250CustomPayload("InventoryTweaks", new byte[] { InvTweaksConst.PACKET_LOGIN, InvTweaksConst.PROTOCOL_VERSION });
         manager.addToSendQueue(pkt);
     }
 

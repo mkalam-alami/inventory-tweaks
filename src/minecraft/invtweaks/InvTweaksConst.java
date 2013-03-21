@@ -14,6 +14,11 @@ public class InvTweaksConst {
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs
     public static final String TREE_VERSION = "1.5.0";
+
+    // Network Protocol version
+    public static final byte PROTOCOL_VERSION = 1;
+    public static final byte PACKET_LOGIN = 0x55;
+    public static final byte PACKET_CLICK = 0x01;
     
     // Timing constants
     public static final int RULESET_SWAP_DELAY = 1000;

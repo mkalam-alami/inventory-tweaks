@@ -43,7 +43,7 @@ public class ForgeItemTreeListener implements InvTweaksItemTreeListener {
                 Collections.sort(itemList, new ItemPriorityComparator(itemsByPriority));
 
                 for(Item i : itemList) {
-                    tree.addItem("forge_toolClasses_" + name, new InvTweaksItemTreeItem(Integer.toString(i.itemID), i.itemID, -1, (Integer)itemsByPriority.get(i)));
+                    tree.addItem("forge_toolClasses_" + name, new InvTweaksItemTreeItem(Integer.toString(i.itemID), i.itemID, InvTweaksConst.DAMAGE_WILDCARD, (Integer)itemsByPriority.get(i)));
                 }
             }
 

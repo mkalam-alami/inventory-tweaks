@@ -61,7 +61,7 @@ public class InvTweaks extends InvTweaksObfuscation {
      * each tick to allow for certain features (auto-refill,
      * sorting on pick up...)
      */
-    private int storedStackId = 0, storedStackDamage = -1, storedFocusedSlot = -1;
+    private int storedStackId = 0, storedStackDamage = InvTweaksConst.DAMAGE_WILDCARD, storedFocusedSlot = -1;
     private ItemStack[] hotbarClone = new ItemStack[InvTweaksConst.INVENTORY_HOTBAR_SIZE];
     private boolean hadFocus = true, mouseWasDown = false;;
 

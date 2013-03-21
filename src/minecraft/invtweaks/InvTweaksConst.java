@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class InvTweaksConst {
 
@@ -50,6 +51,7 @@ public class InvTweaksConst {
     public static final int INVENTORY_HOTBAR_SIZE = INVENTORY_ROW_SIZE;
     public static final int PLAYER_INVENTORY_WINDOW_ID = 0;
 	public static final int SLOW_SORTING_DELAY = 30;
+    public static final int DAMAGE_WILDCARD = OreDictionary.WILDCARD_VALUE;
 
     /**
      * Returns the Minecraft folder ensuring:

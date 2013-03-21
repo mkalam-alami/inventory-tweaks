@@ -41,7 +41,7 @@ public class InvTweaksItemTree {
 
         if (defaultItems == null) {
             defaultItems = new Vector<InvTweaksItemTreeItem>();
-            defaultItems.add(new InvTweaksItemTreeItem(UNKNOWN_ITEM, -1, -1, Integer.MAX_VALUE));
+            defaultItems.add(new InvTweaksItemTreeItem(UNKNOWN_ITEM, -1, InvTweaksConst.DAMAGE_WILDCARD, Integer.MAX_VALUE));
         }
 
         // Reset tree
@@ -162,7 +162,7 @@ public class InvTweaksItemTree {
         // Filter items of same ID, but different damage value
         if (items != null && !items.isEmpty()) {
             for (InvTweaksItemTreeItem item : items) {
-                if (item.getDamage() != -1 && item.getDamage() != damage) {
+                if (item.getDamage() != InvTweaksConst.DAMAGE_WILDCARD && item.getDamage() != damage) {
                     filteredItems.remove(item);
                 }
             }
@@ -175,7 +175,7 @@ public class InvTweaksItemTree {
 					id, damage, 5000 + id * 16 + damage);
         	InvTweaksItemTreeItem newItemDamage = new InvTweaksItemTreeItem(
 					Integer.toString(id),
-					id, -1, 5000 + id * 16);
+					id, InvTweaksConst.DAMAGE_WILDCARD, 5000 + id * 16);
 			addItem(getRootCategory().getName(), newItemId);
 			addItem(getRootCategory().getName(), newItemDamage);
 			filteredItems.add(newItemId);

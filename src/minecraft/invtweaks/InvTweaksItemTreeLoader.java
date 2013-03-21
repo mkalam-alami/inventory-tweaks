@@ -121,7 +121,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
                 int rangeMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_MAX));
                 for (int id = rangeMin; id <= rangeMax; id++) {
                     tree.addItem(name, new InvTweaksItemTreeItem((name + id).toLowerCase(),
-                            id, -1, itemOrder++));
+                            id, InvTweaksConst.DAMAGE_WILDCARD, itemOrder++));
                 }
             }
             else if (rangeDMinAttr != null) {
@@ -141,7 +141,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         // Item
         else if (attributes.getValue(ATTR_ID) != null) {
             int id = Integer.parseInt(attributes.getValue(ATTR_ID));
-            int damage = -1;
+            int damage = InvTweaksConst.DAMAGE_WILDCARD;
             if (attributes.getValue(ATTR_DAMAGE) != null) {
                 damage = Integer.parseInt(attributes.getValue(ATTR_DAMAGE));
             }

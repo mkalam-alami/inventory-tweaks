@@ -15,7 +15,7 @@ public class InvTweaksItemTreeItem implements Comparable<InvTweaksItemTreeItem> 
     /**
      * @param name The item name
      * @param id The item ID
-     * @param damage The item variant or -1
+     * @param damage The item variant or InvTweaksConst.DAMAGE_WILDCARD
      * @param order The item order while sorting
      */
     public InvTweaksItemTreeItem(String name, int id, int damage, int order) {
@@ -49,7 +49,7 @@ public class InvTweaksItemTreeItem implements Comparable<InvTweaksItemTreeItem> 
         if (o == null || !(o instanceof InvTweaksItemTreeItem))
             return false;
         InvTweaksItemTreeItem item = (InvTweaksItemTreeItem) o;
-        return id == item.getId() && (damage == -1 || damage == item.getDamage());
+        return id == item.getId() && (damage == InvTweaksConst.DAMAGE_WILDCARD || damage == item.getDamage());
     }
 
     public String toString() {

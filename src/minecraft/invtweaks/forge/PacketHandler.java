@@ -16,29 +16,38 @@ import java.util.ArrayList;
 public class PacketHandler implements IPacketHandler {
     @Override
     public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) {
-        if(packet.data[0] == InvTweaksConst.PACKET_LOGIN) {
-            if(packet.data.length == 2 && packet.data[1] == InvTweaksConst.PROTOCOL_VERSION) {
-                InvTweaksMod.proxy.setServerHasInvTweaks(true);
-            }
-        } else {
-            EntityPlayerMP realPlayer = (EntityPlayerMP) player;
-            ByteArrayDataInput packetData = ByteStreams.newDataInput(packet.data);
-            byte packetId = packetData.readByte();
-            if (packetId == InvTweaksConst.PACKET_CLICK) {
-                int slot = packetData.readInt();
-                int buttonPressed = packetData.readInt();
-                int modiferKeys = packetData.readInt();
-
-                realPlayer.openContainer.slotClick(slot, buttonPressed, modiferKeys, realPlayer);
-
-                ArrayList arraylist = new ArrayList();
-
-                for (int i = 0; i < realPlayer.openContainer.inventorySlots.size(); ++i) {
-                    arraylist.add(((Slot) realPlayer.openContainer.inventorySlots.get(i)).getStack());
-                }
-
-                realPlayer.sendContainerAndContentsToPlayer(realPlayer.openContainer, arraylist);
-            }
+        switch(packet.data[0]) {
+            case InvTweaksConst.PACKET_LOGIN:
+                onLoginPacket(manager, packet.data, player);
+                break;
+            case InvTweaksConst.PACKET_CLICK:
+                onClickPacket(manager, packet.data, player);
+                break;
         }
+    }
+
+    private void onLoginPacket(INetworkManager manager, byte[] data, Player player) {
+        if(data.length == 2 && data[1] == InvTweaksConst.PROTOCOL_VERSION) {
+            InvTweaksMod.proxy.setServerHasInvTweaks(true);
+        }
+    }
+
+    private void onClickPacket(INetworkManager manager, byte[] data, Player player) {
+        EntityPlayerMP realPlayer = (EntityPlayerMP) player;
+        ByteArrayDataInput packetData = ByteStreams.newDataInput(data);
+        packetData.skipBytes(1);
+        int slot = packetData.readInt();
+        int buttonPressed = packetData.readInt();
+        int modiferKeys = packetData.readInt();
+
+        realPlayer.openContainer.slotClick(slot, buttonPressed, modiferKeys, realPlayer);
+
+        ArrayList arraylist = new ArrayList();
+
+        for (int i = 0; i < realPlayer.openContainer.inventorySlots.size(); ++i) {
+            arraylist.add(((Slot) realPlayer.openContainer.inventorySlots.get(i)).getStack());
+        }
+
+        realPlayer.sendContainerAndContentsToPlayer(realPlayer.openContainer, arraylist);
     }
 }

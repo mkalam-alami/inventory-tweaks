@@ -79,7 +79,7 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
             packetData.writeByte(InvTweaksConst.PACKET_CLICK);
             packetData.writeInt(slot);
             packetData.writeInt(data);
-            packetData.writeInt(modiferKeys);
+            packetData.writeInt(action);
 
             Packet250CustomPayload packet = PacketDispatcher.getPacket("InventoryTweaks", packetData.toByteArray());
             PacketDispatcher.sendPacketToServer(packet);

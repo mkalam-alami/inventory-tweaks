@@ -315,7 +315,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
                     getWindowId(container), // Select container
                     slot, // Targeted slot
                     (rightClick) ? 1 : 0, // Click #
-                    false, // Shift not held
+                    0, // Normal click
                     getThePlayer());
         }
 

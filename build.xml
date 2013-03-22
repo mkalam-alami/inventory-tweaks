@@ -4,9 +4,9 @@
 
     <property name="invtweaks.version" value="UNKNOWN"/>
 
-    <property name="minecraft.version" value="1.5"/>
+    <property name="minecraft.version" value="1.5.1"/>
 
-    <property name="forge.build" value="583"/>
+    <property name="forge.build" value="604"/>
     <property name="forge.version" value="7.7.0"/>
     <property name="forge.filename" value="minecraftforge-src-${minecraft.version}-${forge.version}.${forge.build}.zip"/>
 
@@ -23,11 +23,22 @@
     <property name="temp.dir" value="${build.dir}/temp"/>
     <property name="src.dir" value="src/minecraft"/>
     <property name="mcp.dir" value="${forge.dir}/mcp"/>
-    <property name="class.dir" value="${mcp.dir}/bin/minecraft"/>
-    <property name="reobf.dir" value="${mcp.dir}/reobf/minecraft"/>
+    <property name="mcp.mappings.dir" value="${forge.dir}/mcp/conf"/>
+    <property name="class.dir" value="${build.dir}/classes"/>
+
+    <property name="specialsource.jar" value="SpecialSource-1.5-SNAPSHOT-shaded.jar"/>
+
+    <property name="minecraft.inheritance" value="${temp.dir}/Minecraft-${minecraft.version}-mcp.inheritance"/>
+
+    <property name="minecraft.mcp.jar" value="${temp.dir}/Minecraft-${minecraft.version}-mcp.jar"/>
+    <property name="invtweaks.mcp.jar" value="${temp.dir}/InventoryTweaks-${invtweaks.version}.mcp.jar"/>
 
     <property name="invtweaks.jar" value="${build.dir}/out/InventoryTweaks-${invtweaks.version}.jar"/>
     <property name="invtweaks.api.jar" value="${build.dir}/out/InventoryTweaks-api-${invtweaks.version}.jar"/>
+
+    <condition property="minecraft.inheritance.exists">
+        <available file="${minecraft.inheritance}"/>
+    </condition>
 
     <path id="invtweaks.classpath">
         <pathelement location="${mcp.dir}/bin/minecraft"/>
@@ -40,46 +51,81 @@
         <pathelement location="${mcp.dir}/jars/bin/lwjgl_util.jar"/>
     </path>
 
-    <target name="dist" depends="package-invtweaks, sign-invtweaks"/>
+    <target name="dist" depends="reobf-invtweaks, package-invtweaks-api, sign-invtweaks"/>
 
-    <target name="sign-invtweaks" depends="package-invtweaks" if="${signature.enable}">
+    <target name="sign-invtweaks" depends="reobf-invtweaks, package-invtweaks-api" if="${signature.enable}">
         <signjar jar="${invtweaks.jar}" alias="${signature.alias}" storepass="${signature.storepass}"
+                 keypass="${signature.keypass}"/>
+        <signjar jar="${invtweaks.api.jar}" alias="${signature.alias}" storepass="${signature.storepass}"
                  keypass="${signature.keypass}"/>
     </target>
 
-    <target name="package-invtweaks" depends="reobf-invtweaks">
-        <propertyfile file="${temp.dir}/version.properties">
-            <entry key="inventorytweaks.version" value="${invtweaks.version}"/>
-        </propertyfile>
-        <delete file="${invtweaks.jar}" failonerror="no"/>
-        <jar destfile="${invtweaks.jar}">
-            <fileset dir="${reobf.dir}"/>
-            <fileset dir="${src.dir}" excludes="**/*.java"/>
-            <file file="${temp.dir}/version.properties"/>
-        </jar>
+    <target name="package-invtweaks-api">
+        <delete file="${invtweaks.api.jar}" failonerror="no"/>
         <jar destfile="${invtweaks.api.jar}">
             <fileset dir="${src.dir}" includes="invtweaks/api/*.java"/>
         </jar>
     </target>
 
-    <target name="reobf-invtweaks" depends="build-invtweaks">
-        <exec dir="${mcp.dir}" executable="${mcp.dir}/runtime/bin/python/python_mcp" osfamily="windows">
-            <arg value="runtime\reobfuscate.py"/>
-            <arg value="--srgnames"/>
-        </exec>
-        <exec dir="${mcp.dir}" executable="python" osfamily="unix">
-            <arg value="runtime\reobfuscate.py"/>
-            <arg value="--srgnames"/>
-        </exec>
+    <target name="reobf-invtweaks" depends="jar-invtweaks, build-minecraft-inheritance">
+        <java jar="${specialsource.jar}" fork="true">
+            <arg value="--srg-in"/>
+            <arg value="${mcp.mappings.dir}"/>
+            <arg value="--in-jar"/>
+            <arg value="${invtweaks.mcp.jar}"/>
+            <arg value="--out-jar"/>
+            <arg value="${invtweaks.jar}"/>
+            <arg value="--numeric-srg"/>
+            <arg value="--read-inheritance"/>
+            <arg value="${minecraft.inheritance}"/>
+            <arg value="--live"/>
+            <arg value="--quiet"/>
+        </java>
+    </target>
+
+    <target name="jar-invtweaks" depends="build-invtweaks">
+        <propertyfile file="${temp.dir}/version.properties">
+            <entry key="inventorytweaks.version" value="${invtweaks.version}"/>
+        </propertyfile>
+        <delete file="${invtweaks.mcp.jar}" failonerror="no"/>
+        <jar destfile="${invtweaks.mcp.jar}">
+            <fileset dir="${class.dir}"/>
+            <fileset dir="${src.dir}" excludes="**/*.java"/>
+            <file file="${temp.dir}/version.properties"/>
+        </jar>
     </target>
 
     <target name="build-invtweaks" depends="install-forge">
+        <mkdir dir="${class.dir}"/>
         <javac srcdir="${src.dir}" destdir="${class.dir}" target="1.6" source="1.6"
                 classpathref="invtweaks.classpath" debug="true" debuglevel="lines,source" includeAntRuntime="false"/>
     </target>
 
+    <target name="build-minecraft-inheritance" depends="jar-minecraft" unless="minecraft.inheritance.exists">
+        <java jar="${specialsource.jar}" fork="true" classpath="">
+            <arg value="--srg-in"/>
+            <arg value="${mcp.mappings.dir}"/>
+            <arg value="--write-inheritance"/>
+            <arg value="${minecraft.inheritance}"/>
+            <arg value="--in-jar"/>
+            <arg value="${minecraft.mcp.jar}"/>
+            <arg value="--out-jar"/>
+            <arg value="${minecraft.mcp.jar}.temp"/>
+            <arg value="--numeric-srg"/>
+            <arg value="--live"/>
+            <arg value="--quiet"/>
+        </java>
+    </target>
+
+    <target name="jar-minecraft" depends="install-forge">
+        <jar destfile="${minecraft.mcp.jar}">
+            <fileset dir="${mcp.dir}/bin/minecraft"/>
+        </jar>
+    </target>
+
     <target name="install-forge" depends="download-forge" unless="forge.installed">
         <delete dir="${forge.dir}" failonerror="no"/>
+        <delete file="${minecraft.inheritance}" failonerror="no"/>
 
         <unzip src="${temp.dir}/${forge.filename}" dest="${forge.dir}">
             <cutdirsmapper dirs="1"/>

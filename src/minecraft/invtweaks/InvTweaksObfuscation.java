@@ -145,23 +145,23 @@ public class InvTweaksObfuscation {
         return guiScreen.height;
     }
     public int getGuiX(GuiContainer guiContainer) {
-        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "n", "field_74198_m", "guiLeft");
+        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "field_74198_m", "guiLeft");
     }
     public int getGuiY(GuiContainer guiContainer) {
-        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "o", "field_74197_n", "guiTop");
+        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "field_74197_n", "guiTop");
     }
     public int getGuiWidth(GuiContainer guiContainer) {
-        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "b", "field_74194_b", "xSize");
+        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "field_74194_b", "xSize");
     }
     public int getGuiHeight(GuiContainer guiContainer) {
-        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "c", "field_74195_c", "ySize");
+        return (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "field_74195_c", "ySize");
     }
     @SuppressWarnings("unchecked")
     public List<Object> getControlList(GuiScreen guiScreen) {
-        return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, guiScreen, "i", "field_73887_h", "buttonList");
+        return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, guiScreen, "field_73887_h", "buttonList");
     }
     public void setControlList(GuiScreen guiScreen, List<?> controlList) {
-        ObfuscationReflectionHelper.setPrivateValue(GuiScreen.class, guiScreen, controlList, "i", "field_73887_h", "buttonList");
+        ObfuscationReflectionHelper.setPrivateValue(GuiScreen.class, guiScreen, controlList, "field_73887_h", "buttonList");
     }
     public GuiContainer asGuiContainer(GuiScreen guiScreen) {
         return (GuiContainer) guiScreen;
@@ -276,7 +276,7 @@ public class InvTweaksObfuscation {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots
             if (slotCreativeInventory.isInstance(slot)) {
             	//Slot underlyingSlot = SlotCreativeInventory.func_75240_a((SlotCreativeInventory) slot);
-            	Slot underlyingSlot = (Slot)ObfuscationReflectionHelper.getPrivateValue(slotCreativeInventory, slot, "b", "field_75241_b", "theSlot");
+            	Slot underlyingSlot = (Slot)ObfuscationReflectionHelper.getPrivateValue(slotCreativeInventory, slot, "field_75241_b", "theSlot");
                 if (underlyingSlot != null) {
                     return underlyingSlot.slotNumber;
                 } else {

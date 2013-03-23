@@ -40,6 +40,11 @@
         <available file="${minecraft.inheritance}"/>
     </condition>
 
+    <condition property="minecraft.jar.exists">
+        <available file="${minecraft.mcp.jar}"/>
+    </condition>
+
+
     <path id="invtweaks.classpath">
         <pathelement location="${mcp.dir}/bin/minecraft"/>
         <pathelement location="${mcp.dir}/lib/argo-3.2.jar"/>
@@ -117,7 +122,7 @@
         </java>
     </target>
 
-    <target name="jar-minecraft" depends="install-forge">
+    <target name="jar-minecraft" depends="install-forge" unless="minecraft.jar.exists">
         <jar destfile="${minecraft.mcp.jar}">
             <fileset dir="${mcp.dir}/bin/minecraft"/>
         </jar>
@@ -126,6 +131,7 @@
     <target name="install-forge" depends="download-forge" unless="forge.installed">
         <delete dir="${forge.dir}" failonerror="no"/>
         <delete file="${minecraft.inheritance}" failonerror="no"/>
+        <delete file="${minecraft.mcp.jar}" failonerror="no"/>
 
         <unzip src="${temp.dir}/${forge.filename}" dest="${forge.dir}">
             <cutdirsmapper dirs="1"/>

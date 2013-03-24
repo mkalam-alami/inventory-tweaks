@@ -103,11 +103,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     }
 
     public void sort() throws TimeoutException {
-
-        // Do nothing if the inventory is closed
-        // if (!mc.hrrentScreen instanceof GuiContainer)
-        //      return;
-
         long timer = System.nanoTime();
         InvTweaksContainerManager globalContainer = new InvTweaksContainerManager(mc);
 
@@ -122,228 +117,12 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
 
         if (algorithm != ALGORITHM_DEFAULT) {
-
             if (algorithm == ALGORITHM_EVEN_STACKS) {
-                log.info("Distributing items.");
-
-                //item and slot counts for each unique item
-                HashMap<List<Integer>, int[]> itemCounts = new HashMap<List<Integer>, int[]>();
-                for (int i = 0; i < size; i++) {
-                    ItemStack stack = containerMgr.getItemStack(i);
-                    if (stack != null) {
-                        List<Integer> item = Arrays.asList(getItemID(stack), getItemDamage(stack));
-                        int[] count = itemCounts.get(item);
-                        if (count == null) {
-                            int[] newCount = {getStackSize(stack), 1};
-                            itemCounts.put(item, newCount);
-                        } else {
-                            count[0] += getStackSize(stack); //amount of item
-                            count[1]++;                      //slots with item
-                        }
-                    }
-                }
-
-                //handle each unique item separately
-                for (Entry<List<Integer>, int[]> entry : itemCounts.entrySet()) {
-                    List<Integer> item = entry.getKey();
-                    int[] count = entry.getValue();
-                    int numPerSlot = count[0] / count[1];  //totalNumber/numberOfSlots
-
-                    //skip hacked itemstacks that are larger than their max size
-                    //no idea why they would be here, but may as well account for them anyway
-                    if (numPerSlot <= getMaxStackSize(new ItemStack(item.get(0), 1, 0))) {
-
-                        //linkedlists to store which stacks have too many/few items
-                        LinkedList<Integer> smallStacks = new LinkedList<Integer>();
-                        LinkedList<Integer> largeStacks = new LinkedList<Integer>();
-                        for (int i = 0; i < size; i++) {
-                            ItemStack stack = containerMgr.getItemStack(i);
-                            if (stack != null && Arrays.asList(getItemID(stack), getItemDamage(stack)).equals(item)) {
-                                int stackSize = getStackSize(stack);
-                                if (stackSize > numPerSlot)
-                                    largeStacks.offer(i);
-                                else if (stackSize < numPerSlot)
-                                    smallStacks.offer(i);
-                            }
-                        }
-
-                        //move items from stacks with too many to those with too little
-                        while ((!smallStacks.isEmpty())) {
-                            int largeIndex = largeStacks.peek();
-                            int largeSize = getStackSize(containerMgr.getItemStack(largeIndex));
-                            int smallIndex = smallStacks.peek();
-                            int smallSize = getStackSize(containerMgr.getItemStack(smallIndex));
-                            containerMgr.moveSome(largeIndex, smallIndex, Math.min(numPerSlot - smallSize, largeSize - numPerSlot));
-
-                            //update stack lists
-                            largeSize = getStackSize(containerMgr.getItemStack(largeIndex));
-                            smallSize = getStackSize(containerMgr.getItemStack(smallIndex));
-                            if (largeSize == numPerSlot)
-                                largeStacks.remove();
-                            if (smallSize == numPerSlot)
-                                smallStacks.remove();
-                        }
-
-                        //put all leftover into one stack for easy removal
-                        while (largeStacks.size() > 1) {
-                            int largeIndex = largeStacks.poll();
-                            int largeSize = getStackSize(containerMgr.getItemStack(largeIndex));
-                            containerMgr.moveSome(largeIndex, largeStacks.peek(), largeSize - numPerSlot);
-                        }
-                    }
-                }
-
-                //mark all items as moved. (is there a better way?)
-                for (int i = 0; i < size; i++)
-                    markAsMoved(i, 1);
-
+                sortEvenStacks();
             } else if (algorithm == ALGORITHM_INVENTORY) {
-                //// Move items out of the crafting slots
-                log.info("Handling crafting slots.");
-                if (globalContainer.hasSection(ContainerSection.CRAFTING_IN)) {
-                    List<Slot> craftingSlots = globalContainer.getSlots(ContainerSection.CRAFTING_IN);
-                    int emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
-                    if (emptyIndex != -1) {
-                        for (Slot craftingSlot : craftingSlots) {
-                            if (hasStack(craftingSlot)) {
-                                globalContainer.move(
-                                        ContainerSection.CRAFTING_IN,
-                                        globalContainer.getSlotIndex(getSlotNumber(craftingSlot)),
-                                        ContainerSection.INVENTORY,
-                                        emptyIndex);
-                                emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
-                                if (emptyIndex == -1) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                //// Merge stacks to fill the ones in locked slots
-                //// + Move armor parts to the armor slots
-
-                log.info("Merging stacks.");
-                for (int i = size - 1; i >= 0; i--) {
-                    ItemStack from = containerMgr.getItemStack(i);
-                    if (from != null) {
-
-                        // Move armor parts
-                        Item fromItem = getItem(from);
-                        if (isDamageable(fromItem)) {
-                            if (sortArmorParts) {
-                                if (isItemArmor(fromItem)) {
-                                    ItemArmor fromItemArmor = asItemArmor(fromItem);
-                                    if (globalContainer.hasSection(ContainerSection.ARMOR)) {
-                                        List<Slot> armorSlots = globalContainer.getSlots(ContainerSection.ARMOR);
-                                        for (Slot slot : armorSlots) {
-                                            boolean move = false;
-                                            if (!hasStack(slot)) {
-                                                move = true;
-                                            } else {
-                                                Item currentArmor = getItem(getStack(slot));
-                                                if (isItemArmor(currentArmor)) {
-                                                    int armorLevel = getArmorLevel(asItemArmor(currentArmor));
-                                                    if (armorLevel < getArmorLevel(fromItemArmor)
-                                                            || (armorLevel == getArmorLevel(fromItemArmor)
-                                                            && getItemDamage(getStack(slot)) < getItemDamage(from))) {
-                                                        move = true;
-                                                    }
-                                                } else {
-                                                    move = true;
-                                                }
-                                            }
-                                            if (areSlotAndStackCompatible(slot, from) && move) {
-                                                globalContainer.move(ContainerSection.INVENTORY, i, ContainerSection.ARMOR,
-                                                        globalContainer.getSlotIndex(getSlotNumber(slot)));
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // Stackable objects are never damageable
-                        else {
-                            int j = 0;
-                            for (Integer lockPriority : lockPriorities) {
-                                if (lockPriority > 0) {
-                                    ItemStack to = containerMgr.getItemStack(j);
-                                    if (to != null && areItemsEqual(from, to)) {
-                                        move(i, j, Integer.MAX_VALUE);
-                                        markAsNotMoved(j);
-                                        if (containerMgr.getItemStack(i) == null) {
-                                            break;
-                                        }
-                                    }
-                                }
-                                j++;
-                            }
-                        }
-                    }
-                }
-
+                sortInventory(globalContainer);
             }
-
-            //// Apply rules
-            log.info("Applying rules.");
-
-            // Sorts rule by rule, themselves being already sorted by decreasing priority
-            for (InvTweaksConfigSortingRule rule : rules) {
-
-                int rulePriority = rule.getPriority();
-
-                if (log.getLevel() == InvTweaksConst.DEBUG)
-                    log.info("Rule : " + rule.getKeyword() + "(" + rulePriority + ")");
-
-                // For every item in the inventory
-                for (int i = 0; i < size; i++) {
-                    ItemStack from = containerMgr.getItemStack(i);
-
-                    // If the rule is strong enough to move the item and it matches the item, move it
-                    if (hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
-                        List<InvTweaksItemTreeItem> fromItems = tree.getItems(
-                                getItemID(from), getItemDamage(from));
-                        if (tree.matches(fromItems, rule.getKeyword())) {
-
-                            // Test preffered slots
-                            int[] preferredSlots = rule.getPreferredSlots();
-                            int stackToMove = i;
-                            for (int j = 0; j < preferredSlots.length; j++) {
-                                int k = preferredSlots[j];
-
-                                // Move the stack!
-                                int moveResult = move(stackToMove, k, rulePriority);
-                                if (moveResult != -1) {
-                                    if (moveResult == k) {
-                                        break;
-                                    } else {
-                                        from = containerMgr.getItemStack(moveResult);
-                                        fromItems = tree.getItems(getItemID(from), getItemDamage(from));
-                                        if (!tree.matches(fromItems, rule.getKeyword())) {
-                                            break;
-                                        } else {
-                                            stackToMove = moveResult;
-                                            j = -1;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            //// Don't move locked stacks
-            log.info("Locking stacks.");
-
-            for (int i = 0; i < size; i++) {
-                if (hasToBeMoved(i) && lockPriorities[i] > 0) {
-                    markAsMoved(i, 1);
-                }
-            }
-
+            sortWithRules();
         }
 
         //// Sort remaining
@@ -363,8 +142,227 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    private void defaultSorting() throws TimeoutException {
+    private void sortWithRules() throws TimeoutException {
+        //// Apply rules
+        log.info("Applying rules.");
 
+        // Sorts rule by rule, themselves being already sorted by decreasing priority
+        for (InvTweaksConfigSortingRule rule : rules) {
+            int rulePriority = rule.getPriority();
+
+            if (log.getLevel() == InvTweaksConst.DEBUG)
+                log.info("Rule : " + rule.getKeyword() + "(" + rulePriority + ")");
+
+            // For every item in the inventory
+            for (int i = 0; i < size; i++) {
+                ItemStack from = containerMgr.getItemStack(i);
+
+                // If the rule is strong enough to move the item and it matches the item, move it
+                if (hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
+                    List<InvTweaksItemTreeItem> fromItems = tree.getItems(
+                            getItemID(from), getItemDamage(from));
+                    if (tree.matches(fromItems, rule.getKeyword())) {
+
+                        // Test preffered slots
+                        int[] preferredSlots = rule.getPreferredSlots();
+                        int stackToMove = i;
+                        for (int j = 0; j < preferredSlots.length; j++) {
+                            int k = preferredSlots[j];
+
+                            // Move the stack!
+                            int moveResult = move(stackToMove, k, rulePriority);
+                            if (moveResult != -1) {
+                                if (moveResult == k) {
+                                    break;
+                                } else {
+                                    from = containerMgr.getItemStack(moveResult);
+                                    fromItems = tree.getItems(getItemID(from), getItemDamage(from));
+                                    if (!tree.matches(fromItems, rule.getKeyword())) {
+                                        break;
+                                    } else {
+                                        stackToMove = moveResult;
+                                        j = -1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //// Don't move locked stacks
+        log.info("Locking stacks.");
+
+        for (int i = 0; i < size; i++) {
+            if (hasToBeMoved(i) && lockPriorities[i] > 0) {
+                markAsMoved(i, 1);
+            }
+        }
+    }
+
+    private void sortInventory(InvTweaksContainerManager globalContainer) throws TimeoutException {
+        //// Move items out of the crafting slots
+        log.info("Handling crafting slots.");
+        if (globalContainer.hasSection(ContainerSection.CRAFTING_IN)) {
+            List<Slot> craftingSlots = globalContainer.getSlots(ContainerSection.CRAFTING_IN);
+            int emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
+            if (emptyIndex != -1) {
+                for (Slot craftingSlot : craftingSlots) {
+                    if (hasStack(craftingSlot)) {
+                        globalContainer.move(
+                                ContainerSection.CRAFTING_IN,
+                                globalContainer.getSlotIndex(getSlotNumber(craftingSlot)),
+                                ContainerSection.INVENTORY,
+                                emptyIndex);
+                        emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
+                        if (emptyIndex == -1) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        //// Merge stacks to fill the ones in locked slots
+        //// + Move armor parts to the armor slots
+        log.info("Merging stacks.");
+        for (int i = size - 1; i >= 0; i--) {
+            ItemStack from = containerMgr.getItemStack(i);
+            if (from != null) {
+
+                // Move armor parts
+                Item fromItem = getItem(from);
+                if (isDamageable(fromItem)) {
+                    if (sortArmorParts) {
+                        if (isItemArmor(fromItem)) {
+                            ItemArmor fromItemArmor = asItemArmor(fromItem);
+                            if (globalContainer.hasSection(ContainerSection.ARMOR)) {
+                                List<Slot> armorSlots = globalContainer.getSlots(ContainerSection.ARMOR);
+                                for (Slot slot : armorSlots) {
+                                    boolean move = false;
+                                    if (!hasStack(slot)) {
+                                        move = true;
+                                    } else {
+                                        Item currentArmor = getItem(getStack(slot));
+                                        if (isItemArmor(currentArmor)) {
+                                            int armorLevel = getArmorLevel(asItemArmor(currentArmor));
+                                            if (armorLevel < getArmorLevel(fromItemArmor)
+                                                    || (armorLevel == getArmorLevel(fromItemArmor)
+                                                    && getItemDamage(getStack(slot)) < getItemDamage(from))) {
+                                                move = true;
+                                            }
+                                        } else {
+                                            move = true;
+                                        }
+                                    }
+                                    if (areSlotAndStackCompatible(slot, from) && move) {
+                                        globalContainer.move(ContainerSection.INVENTORY, i, ContainerSection.ARMOR,
+                                                globalContainer.getSlotIndex(getSlotNumber(slot)));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Stackable objects are never damageable
+                else {
+                    int j = 0;
+                    for (Integer lockPriority : lockPriorities) {
+                        if (lockPriority > 0) {
+                            ItemStack to = containerMgr.getItemStack(j);
+                            if (to != null && areItemsEqual(from, to)) {
+                                move(i, j, Integer.MAX_VALUE);
+                                markAsNotMoved(j);
+                                if (containerMgr.getItemStack(i) == null) {
+                                    break;
+                                }
+                            }
+                        }
+                        j++;
+                    }
+                }
+            }
+        }
+    }
+
+    private void sortEvenStacks() throws TimeoutException {
+        log.info("Distributing items.");
+
+        //item and slot counts for each unique item
+        HashMap<List<Integer>, int[]> itemCounts = new HashMap<List<Integer>, int[]>();
+        for (int i = 0; i < size; i++) {
+            ItemStack stack = containerMgr.getItemStack(i);
+            if (stack != null) {
+                List<Integer> item = Arrays.asList(getItemID(stack), getItemDamage(stack));
+                int[] count = itemCounts.get(item);
+                if (count == null) {
+                    int[] newCount = {getStackSize(stack), 1};
+                    itemCounts.put(item, newCount);
+                } else {
+                    count[0] += getStackSize(stack); //amount of item
+                    count[1]++;                      //slots with item
+                }
+            }
+        }
+
+        //handle each unique item separately
+        for (Entry<List<Integer>, int[]> entry : itemCounts.entrySet()) {
+            List<Integer> item = entry.getKey();
+            int[] count = entry.getValue();
+            int numPerSlot = count[0] / count[1];  //totalNumber/numberOfSlots
+
+            //skip hacked itemstacks that are larger than their max size
+            //no idea why they would be here, but may as well account for them anyway
+            if (numPerSlot <= getMaxStackSize(new ItemStack(item.get(0), 1, 0))) {
+
+                //linkedlists to store which stacks have too many/few items
+                LinkedList<Integer> smallStacks = new LinkedList<Integer>();
+                LinkedList<Integer> largeStacks = new LinkedList<Integer>();
+                for (int i = 0; i < size; i++) {
+                    ItemStack stack = containerMgr.getItemStack(i);
+                    if (stack != null && Arrays.asList(getItemID(stack), getItemDamage(stack)).equals(item)) {
+                        int stackSize = getStackSize(stack);
+                        if (stackSize > numPerSlot)
+                            largeStacks.offer(i);
+                        else if (stackSize < numPerSlot)
+                            smallStacks.offer(i);
+                    }
+                }
+
+                //move items from stacks with too many to those with too little
+                while ((!smallStacks.isEmpty())) {
+                    int largeIndex = largeStacks.peek();
+                    int largeSize = getStackSize(containerMgr.getItemStack(largeIndex));
+                    int smallIndex = smallStacks.peek();
+                    int smallSize = getStackSize(containerMgr.getItemStack(smallIndex));
+                    containerMgr.moveSome(largeIndex, smallIndex, Math.min(numPerSlot - smallSize, largeSize - numPerSlot));
+
+                    //update stack lists
+                    largeSize = getStackSize(containerMgr.getItemStack(largeIndex));
+                    smallSize = getStackSize(containerMgr.getItemStack(smallIndex));
+                    if (largeSize == numPerSlot)
+                        largeStacks.remove();
+                    if (smallSize == numPerSlot)
+                        smallStacks.remove();
+                }
+
+                //put all leftover into one stack for easy removal
+                while (largeStacks.size() > 1) {
+                    int largeIndex = largeStacks.poll();
+                    int largeSize = getStackSize(containerMgr.getItemStack(largeIndex));
+                    containerMgr.moveSome(largeIndex, largeStacks.peek(), largeSize - numPerSlot);
+                }
+            }
+        }
+
+        //mark all items as moved. (is there a better way?)
+        for (int i = 0; i < size; i++)
+            markAsMoved(i, 1);
+    }
+
+    private void defaultSorting() throws TimeoutException {
         log.info("Default sorting.");
 
         Vector<Integer> remaining = new Vector<Integer>(), nextRemaining = new Vector<Integer>();

@@ -365,7 +365,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private void defaultSorting() throws TimeoutException {
         log.info("Default sorting.");
 
-        Vector<Integer> remaining = new Vector<Integer>(), nextRemaining = new Vector<Integer>();
+        ArrayList<Integer> remaining = new ArrayList<Integer>(), nextRemaining = new ArrayList<Integer>();
         for (int i = 0; i < size; i++) {
             if (hasToBeMoved(i)) {
                 remaining.add(i);
@@ -379,12 +379,12 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 if (hasToBeMoved(i)) {
                     for (int j = 0; j < size; j++) {
                         if (move(i, j, 1) != -1) {
-                            nextRemaining.remove((Object) j);
+                            nextRemaining.remove(j);
                             break;
                         }
                     }
                 } else {
-                    nextRemaining.remove((Object) i);
+                    nextRemaining.remove(i);
                 }
             }
             remaining.clear();

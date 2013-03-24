@@ -6,8 +6,8 @@ import net.minecraft.client.gui.GuiButton;
 
 /**
  * Icon-size button, which get drawns in a specific way to fit its small size.
- * @author Jimeo Wan
  *
+ * @author Jimeo Wan
  */
 public class InvTweaksGuiTooltipButton extends GuiButton {
 
@@ -23,7 +23,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     private boolean drawBackground = true;
 
     public InvTweaksGuiTooltipButton(int id,
-            int x, int y, String displayString) {
+                                     int x, int y, String displayString) {
         this(id, x, y, 150, 20, displayString, null);
     }
 
@@ -31,17 +31,17 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
      * Default size is 150, the common "GuiSmallButton" button size.
      */
     public InvTweaksGuiTooltipButton(int id,
-            int x, int y, String displayString, String tooltip) {
+                                     int x, int y, String displayString, String tooltip) {
         this(id, x, y, 150, 20, displayString, tooltip);
     }
 
     public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h,
-            String displayString) {
+                                     String displayString) {
         this(id, x, y, w, h, displayString, null);
     }
 
     public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h,
-            String displayString, String tooltip) {
+                                     String displayString, String tooltip) {
         super(id, x, y, w, h, displayString);
         if (tooltip != null) {
             setTooltip(tooltip);
@@ -49,21 +49,20 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     }
 
     public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h,
-            String displayString, String tooltip, boolean drawBackground) {
+                                     String displayString, String tooltip, boolean drawBackground) {
         super(id, x, y, w, h, displayString);
         if (tooltip != null) {
             setTooltip(tooltip);
         }
-		this.drawBackground = drawBackground;
+        this.drawBackground = drawBackground;
     }
 
     public void drawButton(Minecraft minecraft, int i, int j) {
-    	if (this.drawBackground) {
+        if (this.drawBackground) {
             super.drawButton(minecraft, i, j);
-    	}
-    	else {
+        } else {
             this.drawString(minecraft.fontRenderer, this.displayString, this.xPosition, this.yPosition + (this.height - 8) / 2, 0x999999);
-    	}
+        }
 
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
 
@@ -75,8 +74,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
                     hoverTime += systemTime - prevSystemTime;
                 }
                 prevSystemTime = systemTime;
-            }
-            else {
+            } else {
                 hoverTime = 0;
                 prevSystemTime = 0;
             }
@@ -87,7 +85,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
                 FontRenderer fontRenderer = obf.getFontRenderer();
 
                 // Compute tooltip params
-                int x = i + 12, y = j - LINE_HEIGHT*tooltipLines.length;
+                int x = i + 12, y = j - LINE_HEIGHT * tooltipLines.length;
                 if (tooltipWidth == -1) {
                     for (String line : tooltipLines) {
                         tooltipWidth = Math.max(
@@ -101,14 +99,14 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
 
                 // Draw background
                 drawGradientRect(x - 3, y - 3,
-                        x + tooltipWidth + 3, y + LINE_HEIGHT*tooltipLines.length,
+                        x + tooltipWidth + 3, y + LINE_HEIGHT * tooltipLines.length,
                         0xc0000000, 0xc0000000);
 
                 // Draw lines
                 int lineCount = 0;
                 for (String line : tooltipLines) {
                     obf.drawStringWithShadow(fontRenderer,
-                            line, x, y + (lineCount++)*LINE_HEIGHT, -1);
+                            line, x, y + (lineCount++) * LINE_HEIGHT, -1);
                 }
             }
         }
@@ -117,8 +115,8 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
 
     protected boolean isMouseOverButton(int i, int j) {
         return i >= xPosition && j >= yPosition
-            && i < (xPosition + width)
-            && j < (yPosition + height);
+                && i < (xPosition + width)
+                && j < (yPosition + height);
     }
 
     protected int getTextColor(int i, int j) {

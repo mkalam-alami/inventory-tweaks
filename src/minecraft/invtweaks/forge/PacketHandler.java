@@ -4,7 +4,6 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
-import invtweaks.InvTweaks;
 import invtweaks.InvTweaksConst;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 public class PacketHandler implements IPacketHandler {
     @Override
     public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) {
-        switch(packet.data[0]) {
+        switch (packet.data[0]) {
             case InvTweaksConst.PACKET_LOGIN:
                 onLoginPacket(manager, packet.data, player);
                 break;
@@ -27,7 +26,7 @@ public class PacketHandler implements IPacketHandler {
     }
 
     private void onLoginPacket(INetworkManager manager, byte[] data, Player player) {
-        if(data.length == 2 && data[1] == InvTweaksConst.PROTOCOL_VERSION) {
+        if (data.length == 2 && data[1] == InvTweaksConst.PROTOCOL_VERSION) {
             InvTweaksMod.proxy.setServerHasInvTweaks(true);
         }
     }

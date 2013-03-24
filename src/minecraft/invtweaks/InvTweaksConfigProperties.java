@@ -1,22 +1,17 @@
 package invtweaks;
 
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Extension of the default Properties class,
  * that ensures the entries are listed in alphabetical order.
- * @author MARWANE
  *
+ * @author MARWANE
  */
 public class InvTweaksConfigProperties extends Properties {
 
     private static final long serialVersionUID = 1L;
-    
+
     private final List<String> keys = new LinkedList<String>();
 
     public Enumeration<Object> keys() {
@@ -28,7 +23,7 @@ public class InvTweaksConfigProperties extends Properties {
         keys.add(key);
         return super.put(key, value);
     }
-    
+
     public void sortKeys() {
         Collections.sort(keys);
     }

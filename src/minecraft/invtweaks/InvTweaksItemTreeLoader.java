@@ -1,21 +1,20 @@
 package invtweaks;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
 /**
  * Loads the item tree by parsing the XML file.
- * @author Jimeo Wan
  *
+ * @author Jimeo Wan
  */
 public class InvTweaksItemTreeLoader extends DefaultHandler {
 
@@ -37,76 +36,75 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     private static List<InvTweaksItemTreeListener> onLoadListeners = new ArrayList<InvTweaksItemTreeListener>();
 
     private static void init() {
-    	treeVersion = null;
-    	tree = new InvTweaksItemTree();
-    	itemOrder = 0;
-    	categoryStack = new LinkedList<String>();
+        treeVersion = null;
+        tree = new InvTweaksItemTree();
+        itemOrder = 0;
+        categoryStack = new LinkedList<String>();
     }
-    
+
     public synchronized static InvTweaksItemTree load(String filePath) throws Exception {
-    	init();
-    	
+        init();
+
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         SAXParser parser = parserFactory.newSAXParser();
         parser.parse(new File(filePath), new InvTweaksItemTreeLoader());
-    
+
         // Tree loaded event
         synchronized (onLoadListeners) {
-	        treeLoaded = true;
-	        for (InvTweaksItemTreeListener onLoadListener : onLoadListeners) {
-	        	onLoadListener.onTreeLoaded(tree);
-	        }
-		}
-        
+            treeLoaded = true;
+            for (InvTweaksItemTreeListener onLoadListener : onLoadListeners) {
+                onLoadListener.onTreeLoaded(tree);
+            }
+        }
+
         return tree;
     }
-    
-    public synchronized static boolean isValidVersion(String filePath) throws Exception {
-		init();
-		
-		File file = new File(filePath);
-		if (file.exists()) {
-	        treeVersion = null;
-	        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-	        SAXParser parser = parserFactory.newSAXParser();
-	        parser.parse(file, new InvTweaksItemTreeLoader());
-		    return InvTweaksConst.TREE_VERSION.equals(treeVersion);
-		}
-		else {
-			return false;
-		}
-	}
 
-	public synchronized static void addOnLoadListener(InvTweaksItemTreeListener listener) {
-    	onLoadListeners.add(listener);
-    	if (treeLoaded) {
-    		// Late event triggering
-    		listener.onTreeLoaded(tree);
-    	}
+    public synchronized static boolean isValidVersion(String filePath) throws Exception {
+        init();
+
+        File file = new File(filePath);
+        if (file.exists()) {
+            treeVersion = null;
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            SAXParser parser = parserFactory.newSAXParser();
+            parser.parse(file, new InvTweaksItemTreeLoader());
+            return InvTweaksConst.TREE_VERSION.equals(treeVersion);
+        } else {
+            return false;
+        }
     }
-    
+
+    public synchronized static void addOnLoadListener(InvTweaksItemTreeListener listener) {
+        onLoadListeners.add(listener);
+        if (treeLoaded) {
+            // Late event triggering
+            listener.onTreeLoaded(tree);
+        }
+    }
+
     public synchronized static boolean removeOnLoadListener(InvTweaksItemTreeListener listener) {
-    		return onLoadListeners.remove(listener);
+        return onLoadListeners.remove(listener);
     }
 
 
     @Override
     public synchronized void startElement(String uri, String localName,
-            String name, Attributes attributes) throws SAXException {
+                                          String name, Attributes attributes) throws SAXException {
 
         String rangeMinAttr = attributes.getValue(ATTR_RANGE_MIN);
         String rangeDMinAttr = attributes.getValue(ATTR_RANGE_DMIN);
         String newTreeVersion = attributes.getValue(ATTR_TREE_VERSION);
-        
+
         // Category
         if (attributes.getLength() == 0 || treeVersion == null
-        		|| rangeMinAttr != null	|| rangeDMinAttr != null) {
+                || rangeMinAttr != null || rangeDMinAttr != null) {
 
             // Tree version
             if (treeVersion == null) {
                 treeVersion = newTreeVersion;
             }
-            
+
             if (categoryStack.isEmpty()) {
                 // Root category
                 tree.setRootCategory(new InvTweaksItemTreeCategory(name));
@@ -123,18 +121,17 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
                     tree.addItem(name, new InvTweaksItemTreeItem((name + id).toLowerCase(),
                             id, InvTweaksConst.DAMAGE_WILDCARD, itemOrder++));
                 }
-            }
-            else if (rangeDMinAttr != null) {
-            	int id = Integer.parseInt(attributes.getValue(ATTR_ID));
+            } else if (rangeDMinAttr != null) {
+                int id = Integer.parseInt(attributes.getValue(ATTR_ID));
                 int rangeDMin = Integer.parseInt(rangeDMinAttr);
                 int rangeDMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_DMAX));
-                    for (int damage = rangeDMin; damage <= rangeDMax; damage++) {
-	                    tree.addItem(name, new InvTweaksItemTreeItem(
-	                    		(name + id + "-" + damage).toLowerCase(),
-	                            id, damage, itemOrder++));
-                    }
+                for (int damage = rangeDMin; damage <= rangeDMax; damage++) {
+                    tree.addItem(name, new InvTweaksItemTreeItem(
+                            (name + id + "-" + damage).toLowerCase(),
+                            id, damage, itemOrder++));
+                }
             }
-            
+
             categoryStack.add(name);
         }
 

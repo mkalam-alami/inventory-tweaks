@@ -1,10 +1,10 @@
 package invtweaks;
 
-import java.io.File;
-import java.util.logging.Level;
-
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.io.File;
+import java.util.logging.Level;
 
 public class InvTweaksConst {
 
@@ -19,7 +19,7 @@ public class InvTweaksConst {
     public static final byte PROTOCOL_VERSION = 1;
     public static final byte PACKET_LOGIN = 0x55;
     public static final byte PACKET_CLICK = 0x01;
-    
+
     // Timing constants
     public static final int RULESET_SWAP_DELAY = 1000;
     public static final int AUTO_REFILL_DELAY = 200;
@@ -41,13 +41,13 @@ public class InvTweaksConst {
     public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.dat";
     public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.dat";
     public static final String HELP_URL = "http://modding.kalam-alami.net/invtweaks";
-    
+
     // Global mod constants
     public static final String INGAME_LOG_PREFIX = "InvTweaks: ";
     public static final Level DEFAULT_LOG_LEVEL = Level.WARNING;
     public static final Level DEBUG = Level.INFO;
     public static final int JIMEOWAN_ID = 54696386; // Used in GUIs
-    
+
     // Minecraft constants
     public static final int INVENTORY_SIZE = 36;
     public static final int INVENTORY_ROW_SIZE = 9;
@@ -55,7 +55,7 @@ public class InvTweaksConst {
     public static final int DISPENSER_ROW_SIZE = 3;
     public static final int INVENTORY_HOTBAR_SIZE = INVENTORY_ROW_SIZE;
     public static final int PLAYER_INVENTORY_WINDOW_ID = 0;
-	public static final int SLOW_SORTING_DELAY = 30;
+    public static final int SLOW_SORTING_DELAY = 30;
     public static final int DAMAGE_WILDCARD = OreDictionary.WILDCARD_VALUE;
 
     /**
@@ -74,5 +74,5 @@ public class InvTweaksConst {
             return absolutePath + File.separatorChar;
         }
     }
-    
+
 }

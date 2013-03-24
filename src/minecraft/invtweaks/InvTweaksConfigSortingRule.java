@@ -1,6 +1,6 @@
 package invtweaks;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.logging.Logger;
 
 
@@ -8,9 +8,8 @@ import java.util.logging.Logger;
  * Stores a sorting rule, as a target plus a keyword.
  * The target is provided as an array of preferred slots
  * (ex: target "1", i.e. first column, is stored as [0, 9, 18, 27])
- * 
- * @author Jimeo Wan
  *
+ * @author Jimeo Wan
  */
 public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSortingRule> {
 
@@ -25,13 +24,13 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     private int containerRowSize;
 
     public InvTweaksConfigSortingRule(InvTweaksItemTree tree, String constraint,
-            String keyword, int containerSize, int containerRowSize) {
+                                      String keyword, int containerSize, int containerRowSize) {
 
         this.keyword = keyword;
         this.constraint = constraint;
         this.containerSize = containerSize;
         this.containerRowSize = containerRowSize;
-        this.type = getRuleType(constraint,containerRowSize);
+        this.type = getRuleType(constraint, containerRowSize);
         this.preferredPositions = getRulePreferredPositions(constraint);
 
         // Compute priority
@@ -39,7 +38,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
         // 2st criteria : the keyword category depth
         // 3st criteria : the item order in a same category
 
-        priority = type.getLowestPriority() + 100000 + 
+        priority = type.getLowestPriority() + 100000 +
                 tree.getKeywordDepth(keyword) * 1000 - tree.getKeywordOrder(keyword);
 
     }
@@ -50,7 +49,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
     /**
      * An array of preferred positions (from the most to the less preferred).
-     * 
+     *
      * @return
      */
     public int[] getPreferredSlots() {
@@ -70,7 +69,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
     /**
      * Returns rule priority (for rule sorting)
-     * 
+     *
      * @return
      */
     public int getPriority() {
@@ -92,7 +91,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     }
 
     public static int[] getRulePreferredPositions(String constraint,
-            int containerSize, int containerRowSize) {
+                                                  int containerSize, int containerRowSize) {
 
         int[] result = null;
         int containerColumnSize = containerSize / containerRowSize;
@@ -117,15 +116,15 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
                     int slot1 = slots1[0], slot2 = slots2[0];
 
                     Point point1 = new Point(slot1 % containerRowSize, slot1 / containerRowSize),
-                          point2 = new Point(slot2 % containerRowSize, slot2 / containerRowSize);
+                            point2 = new Point(slot2 % containerRowSize, slot2 / containerRowSize);
 
-                    result = new int[(Math.abs(point2.y - point1.y) + 1) * 
-                                     (Math.abs(point2.x - point1.x) + 1)];
+                    result = new int[(Math.abs(point2.y - point1.y) + 1) *
+                            (Math.abs(point2.x - point1.x) + 1)];
                     int resultIndex = 0;
 
                     // Swap coordinates for vertical ordering
                     if (vertical) {
-                        for (Point p : new Point[] { point1, point2 }) {
+                        for (Point p : new Point[]{point1, point2}) {
                             int buffer = p.x;
                             p.x = p.y;
                             p.y = buffer;
@@ -142,16 +141,14 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
                         }
                         y += (point1.y < point2.y) ? 1 : -1;
                     }
-                    
+
                     if (constraint.contains("r")) {
                         reverseArray(result);
                     }
 
                 }
             }
-        }
-
-        else {
+        } else {
 
             // Default values
             int column = -1, row = -1;
@@ -160,10 +157,10 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
             // Extract chars
             for (int i = 0; i < constraint.length(); i++) {
                 char c = constraint.charAt(i);
-                if ( c >= '1' && c - '1'<=containerRowSize) {
+                if (c >= '1' && c - '1' <= containerRowSize) {
                     // 1 column = 0, 9 column = 8
                     column = c - '1';
-                } else if ( c >='a' && c - 'a' <=containerColumnSize ) {
+                } else if (c >= 'a' && c - 'a' <= containerColumnSize) {
                     // A row = 0, D row = 3, H row = 7
                     row = c - 'a';
                 } else if (c == 'r') {
@@ -173,7 +170,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
             // Tile case
             if (column != -1 && row != -1) {
-                result = new int[] { index(containerRowSize, row, column) };
+                result = new int[]{index(containerRowSize, row, column)};
             }
             // Row case
             else if (row != -1) {
@@ -203,7 +200,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
         if (constraint.length() == 1 || (constraint.length() == 2 && constraint.contains("r"))) {
             constraint = constraint.replace("r", "");
             // Column rule
-            if (constraint.charAt(0)-'1' <= rowSize && constraint.charAt(0)>='1') {
+            if (constraint.charAt(0) - '1' <= rowSize && constraint.charAt(0) >= '1') {
                 result = InvTweaksConfigSortingRuleType.COLUMN;
             }
             // Row rule
@@ -234,7 +231,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     public String toString() {
         return constraint + " " + keyword;
     }
-    
+
     private static int index(int rowSize, int row, int column) {
         return row * rowSize + column;
     }
@@ -242,7 +239,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     private static void reverseArray(int[] data) {
         int left = 0;
         int right = data.length - 1;
-        while( left < right ) {
+        while (left < right) {
             int temp = data[left];
             data[left] = data[right];
             data[right] = temp;

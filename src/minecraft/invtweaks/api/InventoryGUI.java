@@ -34,5 +34,6 @@ public @interface InventoryGUI {
     // Signature Map<ContainerSection, List<Slot>> func()
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public @interface ContainerSectionCallback {}
+    public @interface ContainerSectionCallback {
+    }
 }

@@ -2,8 +2,8 @@ package invtweaks;
 
 /**
  * Representation of an item in the item tree.
- * @author Jimeo Wan
  *
+ * @author Jimeo Wan
  */
 public class InvTweaksItemTreeItem implements Comparable<InvTweaksItemTreeItem> {
 
@@ -13,10 +13,10 @@ public class InvTweaksItemTreeItem implements Comparable<InvTweaksItemTreeItem> 
     private int order;
 
     /**
-     * @param name The item name
-     * @param id The item ID
+     * @param name   The item name
+     * @param id     The item ID
      * @param damage The item variant or InvTweaksConst.DAMAGE_WILDCARD
-     * @param order The item order while sorting
+     * @param order  The item order while sorting
      */
     public InvTweaksItemTreeItem(String name, int id, int damage, int order) {
         this.name = name;

@@ -1,17 +1,16 @@
 package invtweaks;
 
-import java.util.logging.Logger;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+
+import java.util.logging.Logger;
 
 
 /**
  * A help menu for the NoCheatPlus conflict.
  *
  * @author Jimeo Wan
- *
  */
 public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
 
@@ -21,7 +20,7 @@ public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
         super(mc, parentScreen, config);
     }
 
-	public void drawScreen(int i, int j, float f) {
+    public void drawScreen(int i, int j, float f) {
         super.drawScreen(i, j, f);
 
         int x = obf.getWindowWidth(this) / 2;
@@ -33,9 +32,9 @@ public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
 
     protected void actionPerformed(GuiButton guibutton) {
         switch (obf.getId(guibutton)) {
-	        // Back to main settings screen
-	        case ID_DONE:
-	                obf.displayGuiScreen(new InvTweaksGuiSettings(mc, parentScreen, config));
+            // Back to main settings screen
+            case ID_DONE:
+                obf.displayGuiScreen(new InvTweaksGuiSettings(mc, parentScreen, config));
         }
     }
 

@@ -37,11 +37,13 @@ public @interface ContainerGUI {
     // Signature int func()
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public @interface RowSizeCallback {}
+    public @interface RowSizeCallback {
+    }
 
     // Annotation for method to get special inventory slots
     // Signature Map<ContainerSection, List<Slot>> func()
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public @interface ContainerSectionCallback {}
+    public @interface ContainerSectionCallback {
+    }
 }

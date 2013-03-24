@@ -1,28 +1,28 @@
 package invtweaks;
 
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
-
 import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
 
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
+
 /**
  * Button that opens the inventory & chest settings screen.
- * @author Jimeo Wan
  *
+ * @author Jimeo Wan
  */
 public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
 
     private static final Logger log = InvTweaks.log;
 
     public InvTweaksGuiSettingsButton(InvTweaksConfigManager cfgManager,
-            int id, int x, int y, int w, int h,
-            String displayString, String tooltip, boolean useCustomTexture) {
+                                      int id, int x, int y, int w, int h,
+                                      String displayString, String tooltip, boolean useCustomTexture) {
         super(cfgManager, id, x, y, w, h, displayString, tooltip, useCustomTexture);
     }
 
     public void drawButton(Minecraft minecraft, int i, int j) {
-    	super.drawButton(minecraft, i, j);
+        super.drawButton(minecraft, i, j);
 
         // Display string
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
@@ -62,7 +62,7 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
                     }
                 }
             } catch (Exception e) {
-            	log.severe(e.getMessage());
+                log.severe(e.getMessage());
             }
 
             // Refresh config

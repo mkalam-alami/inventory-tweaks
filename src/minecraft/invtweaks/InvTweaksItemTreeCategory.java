@@ -1,30 +1,23 @@
 package invtweaks;
 
 
-
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
  * Representation of a category in the item tree, i.e. a group of items.
- * @author Jimeo Wan
  *
+ * @author Jimeo Wan
  */
 public class InvTweaksItemTreeCategory {
 
     private static final Logger log = InvTweaks.log;
 
-    private final Map<Integer, List<InvTweaksItemTreeItem>> items = 
-        new HashMap<Integer, List<InvTweaksItemTreeItem>>();
+    private final Map<Integer, List<InvTweaksItemTreeItem>> items =
+            new HashMap<Integer, List<InvTweaksItemTreeItem>>();
     private final Vector<String> matchingItems = new Vector<String>();
-    private final Vector<InvTweaksItemTreeCategory> subCategories = 
-        new Vector<InvTweaksItemTreeCategory>();
+    private final Vector<InvTweaksItemTreeCategory> subCategories =
+            new Vector<InvTweaksItemTreeCategory>();
     private String name;
     private int order = -1;
 
@@ -118,7 +111,7 @@ public class InvTweaksItemTreeCategory {
 
     /**
      * Returns a references to all categories contained in this one.
-     * 
+     *
      * @return
      */
     public Collection<InvTweaksItemTreeCategory> getSubCategories() {
@@ -134,7 +127,7 @@ public class InvTweaksItemTreeCategory {
     }
 
     public String toString() {
-        return name + " (" + subCategories.size() + 
+        return name + " (" + subCategories.size() +
                 " cats, " + items.size() + " items)";
     }
 

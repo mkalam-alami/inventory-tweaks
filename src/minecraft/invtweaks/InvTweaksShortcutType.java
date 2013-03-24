@@ -1,9 +1,7 @@
 package invtweaks;
 
 /**
- * 
  * @author Jimeo Wan
- * 
  */
 public enum InvTweaksShortcutType {
 

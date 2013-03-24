@@ -1,25 +1,23 @@
 package invtweaks;
 
-import java.util.List;
-import java.util.logging.Logger;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.Point;
+
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
  * The inventory and chest settings menu.
  *
  * @author Jimeo Wan
- *
  */
 public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
-	protected static final Logger log = InvTweaks.log;
+    protected static final Logger log = InvTweaks.log;
 
     protected static String ON;
     protected static String OFF;
@@ -34,12 +32,12 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     protected final static int ID_DONE = 200;
 
     public InvTweaksGuiSettingsAbstract(Minecraft mc, GuiScreen parentScreen,
-            InvTweaksConfig config) {
+                                        InvTweaksConfig config) {
 
-    	LABEL_DONE = InvTweaksLocalization.get("invtweaks.settings.exit");
-    	ON = ": " + InvTweaksLocalization.get("invtweaks.settings.on");
-    	OFF = ": " + InvTweaksLocalization.get("invtweaks.settings.off");
-    	DISABLE_CI = ": " + InvTweaksLocalization.get("invtweaks.settings.disableci");
+        LABEL_DONE = InvTweaksLocalization.get("invtweaks.settings.exit");
+        ON = ": " + InvTweaksLocalization.get("invtweaks.settings.on");
+        OFF = ": " + InvTweaksLocalization.get("invtweaks.settings.off");
+        DISABLE_CI = ": " + InvTweaksLocalization.get("invtweaks.settings.disableci");
 
         this.mc = mc;
         this.obf = new InvTweaksObfuscation(mc);
@@ -60,8 +58,8 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     }
 
     public void drawScreen(int i, int j, float f) {
-    	drawDefaultBackground();
-    	drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.title"), obf.getWindowWidth(this) / 2, 20, 0xffffff);
+        drawDefaultBackground();
+        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.title"), obf.getWindowWidth(this) / 2, 20, 0xffffff);
         super.drawScreen(i, j, f);
     }
 
@@ -70,15 +68,15 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
             obf.displayGuiScreen(parentScreen);
         }
     }
-    
+
     protected void keyTyped(char c, int keyCode) {
-    	if (keyCode == Keyboard.KEY_ESCAPE) {
+        if (keyCode == Keyboard.KEY_ESCAPE) {
             obf.displayGuiScreen(parentScreen);
-    	}
+        }
     }
 
     protected void moveToButtonCoords(int buttonOrder, Point p) {
-        p.setX(obf.getWindowWidth(this) / 2 - 155 + ((buttonOrder+1) % 2) * 160);
+        p.setX(obf.getWindowWidth(this) / 2 - 155 + ((buttonOrder + 1) % 2) * 160);
         p.setY(obf.getWindowHeight(this) / 6 + (buttonOrder / 2) * 24);
     }
 

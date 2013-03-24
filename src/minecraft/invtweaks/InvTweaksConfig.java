@@ -1,15 +1,8 @@
 package invtweaks;
 
-import invtweaks.InvTweaksConst;
-import invtweaks.InvTweaksItemTree;
-import invtweaks.InvTweaksItemTreeItem;
-import invtweaks.InvTweaksItemTreeLoader;
+import org.lwjgl.input.Keyboard;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
@@ -21,27 +14,24 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.lwjgl.input.Keyboard;
-
 
 /**
  * The global mod's configuration.
- * 
- * @author Jimeo Wan
  *
+ * @author Jimeo Wan
  */
 public class InvTweaksConfig {
 
     private static final Logger log = Logger.getLogger("InvTweaks");
 
     public static final String PROP_VERSION = "version";
-    
+
     // Sorting settings
     public static final String PROP_ENABLE_MIDDLE_CLICK = "enableMiddleClick";
     public static final String PROP_SHOW_CHEST_BUTTONS = "showChestButtons";
     public static final String PROP_ENABLE_SORTING_ON_PICKUP = "enableSortingOnPickup";
-	public static final String PROP_ENABLE_AUTO_EQUIP_ARMOR = "enableAutoEquipArmor";
-	public static final String PROP_ENABLE_AUTO_REFILL = "enableAutoRefill";
+    public static final String PROP_ENABLE_AUTO_EQUIP_ARMOR = "enableAutoEquipArmor";
+    public static final String PROP_ENABLE_AUTO_REFILL = "enableAutoRefill";
     public static final String PROP_AUTO_REFILL_BEFORE_BREAK = "autoRefillBeforeBreak";
     public static final String PROP_AUTO_REFILL_DAMAGE_THRESHHOLD = "autoRefillDamageThreshhold";
     public static final String PROP_KEY_SORT_INVENTORY = "keySortInventory";
@@ -56,7 +46,7 @@ public class InvTweaksConfig {
     public static final String PROP_SHORTCUT_DROP = "shortcutKeyDrop";
     public static final String PROP_SHORTCUT_UP = "shortcutKeyToUpperSection";
     public static final String PROP_SHORTCUT_DOWN = "shortcutKeyToLowerSection";
-    
+
     // Other
     public static final String PROP_ENABLE_SOUNDS = "enableSounds";
     public static final String PROP_OBSOLETE_ENABLE_SORTING_SOUND = "enableSortingSound";
@@ -67,14 +57,13 @@ public class InvTweaksConfig {
     public static final String VALUE_TRUE = "true";
     public static final String VALUE_FALSE = "false";
     public static final String VALUE_CI_COMPATIBILITY = "convenientInventoryCompatibility";
-    
+
     public static final String LOCKED = "locked";
     public static final String FROZEN = "frozen";
     public static final String AUTOREFILL = "autorefill";
     public static final String AUTOREFILL_NOTHING = "nothing";
     public static final String DEBUG = "debug";
     public static final boolean DEFAULT_AUTO_REFILL_BEHAVIOUR = true;
-
 
 
     private String rulesFile;
@@ -101,7 +90,7 @@ public class InvTweaksConfig {
     }
 
     public void load() throws Exception {
-        
+
         synchronized (this) {
 
             // Reset all
@@ -121,8 +110,7 @@ public class InvTweaksConfig {
             try {
                 reader = new FileReader(f);
                 reader.read(bytes);
-            }
-            finally {
+            } finally {
                 if (reader != null) {
                     reader.close();
                 }
@@ -147,10 +135,10 @@ public class InvTweaksConfig {
                             activeRuleset.finalize();
                             rulesets.add(activeRuleset);
                         }
-                        activeRuleset = new InvTweaksConfigInventoryRuleset(tree, 
+                        activeRuleset = new InvTweaksConfigInventoryRuleset(tree,
                                 trimmedLine.substring(0, trimmedLine.length() - 1));
                     }
-    
+
                     // Register line
                     else {
                         try {
@@ -171,7 +159,7 @@ public class InvTweaksConfig {
             // Finalize
             activeRuleset.finalize();
             rulesets.add(activeRuleset);
-            
+
             // If a specific ruleset was loaded, 
             // try to choose the same again, else load the first one
             currentRuleset = 0;
@@ -188,8 +176,7 @@ public class InvTweaksConfig {
             if (currentRuleset == 0) {
                 if (!rulesets.isEmpty()) {
                     currentRulesetName = rulesets.get(currentRuleset).getName();
-                }
-                else {
+                } else {
                     currentRulesetName = null;
                 }
             }
@@ -218,16 +205,16 @@ public class InvTweaksConfig {
         if (configPropsFile.exists()) {
             try {
                 FileOutputStream fos = new FileOutputStream(configPropsFile);
-                properties.store(fos, "Inventory Tweaks Configuration\n"+
+                properties.store(fos, "Inventory Tweaks Configuration\n" +
                         "(Regarding shortcuts, all key names can be found at: http://www.lwjgl.org/javadoc/org/lwjgl/input/Keyboard.html)");
                 fos.flush();
                 fos.close();
                 storedConfigLastModified = new File(InvTweaksConst.CONFIG_PROPS_FILE).lastModified();
             } catch (IOException e) {
-                InvTweaks.logInGameStatic("Failed to save config file " + 
+                InvTweaks.logInGameStatic("Failed to save config file " +
                         InvTweaksConst.CONFIG_PROPS_FILE);
             }
-            
+
             // Update sort key
             sortKeyCode = Keyboard.getKeyIndex(getProperty(PROP_KEY_SORT_INVENTORY));
         }
@@ -236,26 +223,27 @@ public class InvTweaksConfig {
     public Map<String, String> getProperties(String prefix) {
         Map<String, String> result = new HashMap<String, String>();
         for (Object o : properties.keySet()) {
-            String key = (String) o; 
+            String key = (String) o;
             if (key.startsWith(prefix)) {
                 result.put(key, properties.getProperty(key));
             }
         }
         return result;
     }
-    
+
     /**
      * Get a configuration property value
+     *
      * @param key
      * @return The value or "" (never null)
      */
     public String getProperty(String key) {
-    	String value =  properties.getProperty(key);
-    	return (value != null) ? value : "";
+        String value = properties.getProperty(key);
+        return (value != null) ? value : "";
     }
 
     public int getIntProperty(String key) {
-       return Integer.parseInt(getProperty(key));
+        return Integer.parseInt(getProperty(key));
     }
 
     public void setProperty(String key, String value) {
@@ -275,7 +263,6 @@ public class InvTweaksConfig {
     }
 
     /**
-     * 
      * @param i from 0 to n-1, n being the number of available configurations.
      * @return null if the given ID is invalid or the config is already enabled
      */
@@ -288,7 +275,7 @@ public class InvTweaksConfig {
             return null;
         }
     }
-    
+
     public String switchConfig() {
         if (currentRuleset == -1) {
             return switchConfig(0);
@@ -299,7 +286,7 @@ public class InvTweaksConfig {
 
     /**
      * Returns all sorting rules, themselves sorted by decreasing priority.
-     * 
+     *
      * @return
      */
     public Vector<InvTweaksConfigSortingRule> getRules() {
@@ -342,29 +329,28 @@ public class InvTweaksConfig {
     }
 
     public boolean isAutoRefillEnabled(int itemID, int itemDamage) {
-    	if (!getProperty(PROP_ENABLE_AUTO_REFILL).equals(VALUE_FALSE)) {
-	        List<InvTweaksItemTreeItem> items = tree.getItems(itemID, itemDamage);
-	        Vector<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();
-	        boolean found = false;
-	        for (String keyword : autoReplaceRules) {
-	            if (keyword.equals(AUTOREFILL_NOTHING))
-	                return false;
-	            if (tree.matches(items, keyword))
-	                found = true;
-	        }
-	        if (found)
-	            return true;
-	        else {
-	            if (autoReplaceRules.isEmpty()) {
-	                return DEFAULT_AUTO_REFILL_BEHAVIOUR;
-	            } else {
-	                return false;
-	            }
-	        }
-    	}
-    	else {
-    		return false;
-    	}
+        if (!getProperty(PROP_ENABLE_AUTO_REFILL).equals(VALUE_FALSE)) {
+            List<InvTweaksItemTreeItem> items = tree.getItems(itemID, itemDamage);
+            Vector<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();
+            boolean found = false;
+            for (String keyword : autoReplaceRules) {
+                if (keyword.equals(AUTOREFILL_NOTHING))
+                    return false;
+                if (tree.matches(items, keyword))
+                    found = true;
+            }
+            if (found)
+                return true;
+            else {
+                if (autoReplaceRules.isEmpty()) {
+                    return DEFAULT_AUTO_REFILL_BEHAVIOUR;
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -373,17 +359,17 @@ public class InvTweaksConfig {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void resolveConvenientInventoryConflicts() {
-        
+
         boolean convenientInventoryInstalled = false;
         boolean defaultCISortingShortcutEnabled = false;
-        
+
         //// Analyze environment
-        
+
         try {
             // Find CI class
             Class convenientInventory = Class.forName("ConvenientInventory");
             convenientInventoryInstalled = true;
-            
+
             // Latest versions of CI: disable CI sorting thanks to 
             // the specific field provided for InvTweaks
             Field middleClickField = null;
@@ -398,13 +384,13 @@ public class InvTweaksConfig {
                 middleClickField.setAccessible(true);
                 middleClickField.setBoolean(null, !middleClickSorting);
             }
-            
+
             // Older versions of CI: disable InvTweaks middle click
             else {
-                
+
                 // Force mod's initialization if necessary
                 // (some tweaks are needed here and below because nothing is publicly visible)
-                Field initializedField =  convenientInventory.getDeclaredField("initialized");
+                Field initializedField = convenientInventory.getDeclaredField("initialized");
                 initializedField.setAccessible(true);
                 Boolean initialized = (Boolean) initializedField.get(null);
                 if (!initialized) {
@@ -412,9 +398,9 @@ public class InvTweaksConfig {
                     initializeMethod.setAccessible(true);
                     initializeMethod.invoke(null);
                 }
-                
+
                 // Look for the default sorting shortcut (middle click) in CI settings.
-                Field actionMapField =  convenientInventory.getDeclaredField("actionMap");
+                Field actionMapField = convenientInventory.getDeclaredField("actionMap");
                 actionMapField.setAccessible(true);
                 List<Integer> actionMap[][] = (List[][]) actionMapField.get(null);
                 if (actionMap != null && actionMap[7] != null) { // 7 = SORT
@@ -427,34 +413,31 @@ public class InvTweaksConfig {
                     }
                 }
             }
-            
-        }
-        catch (ClassNotFoundException e) {
+
+        } catch (ClassNotFoundException e) {
             // Failed to find Convenient Inventory class, not a problem
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             InvTweaks.logInGameErrorStatic("invtweaks.modcompat.ci.error", e);
         }
-        
+
         //// Shortcuts
-        
+
         String shortcutsProp = getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
         if (convenientInventoryInstalled
                 && !shortcutsProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             setProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS,
                     InvTweaksConfig.VALUE_CI_COMPATIBILITY);
-        }
-        else if (!convenientInventoryInstalled
+        } else if (!convenientInventoryInstalled
                 && shortcutsProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             setProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS,
                     InvTweaksConfig.VALUE_TRUE);
         }
-        
+
         //// Middle click
-        
+
         // If CI's middle click is enabled, disable InvTweaks shortcut
         String middleClickProp = getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
-        if (defaultCISortingShortcutEnabled && 
+        if (defaultCISortingShortcutEnabled &&
                 !middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
                     InvTweaksConfig.VALUE_CI_COMPATIBILITY);
@@ -473,7 +456,7 @@ public class InvTweaksConfig {
 
         // Default property values
         properties = new InvTweaksConfigProperties();
-        
+
         properties.put(PROP_ENABLE_MIDDLE_CLICK, VALUE_TRUE);
         properties.put(PROP_SHOW_CHEST_BUTTONS, VALUE_TRUE);
         properties.put(PROP_ENABLE_SORTING_ON_PICKUP, VALUE_FALSE);
@@ -486,14 +469,14 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_FORGE_ITEMTREE, VALUE_TRUE);
         properties.put(PROP_ENABLE_SERVER_ITEMSWAP, VALUE_TRUE);
         properties.put(PROP_KEY_SORT_INVENTORY, "R");
-        
+
         properties.put(PROP_SHORTCUT_ALL_ITEMS, "LCONTROL+LSHIFT, RCONTROL+RSHIFT");
         properties.put(PROP_SHORTCUT_EVERYTHING, "SPACE");
         properties.put(PROP_SHORTCUT_ONE_ITEM, "LCONTROL, RCONTROL");
         properties.put(PROP_SHORTCUT_UP, "UP");
         properties.put(PROP_SHORTCUT_DOWN, "DOWN");
         properties.put(PROP_SHORTCUT_DROP, "LALT, RALT");
-        
+
         properties.put(PROP_VERSION, InvTweaksConst.MOD_VERSION.split(" ")[0]);
 
         invalidKeywords = new Vector<String>();
@@ -509,23 +492,23 @@ public class InvTweaksConfig {
             resolveConvenientInventoryConflicts();
         }
         newProperties.sortKeys();
-        
+
         // XXX 1.35 Obsolete properties removal
         newProperties.remove(PROP_OBSOLETE_ENABLE_SORTING_SOUND);
         newProperties.remove(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND);
         newProperties.remove(PROP_OBSOLETE_SHORTCUT_ONE_STACK);
-        
+
         // XXX 1.34 update: force shortcuts reset
         if (newProperties.get(PROP_VERSION) != null) {
-        
+
             // Override default values
             for (Entry<Object, Object> entry : newProperties.entrySet()) {
                 properties.put(entry.getKey(), entry.getValue());
             }
-            
+
             // Retro-compatibility: rename autoreplace
             if (properties.contains("enableAutoreplaceSound")) {
-                properties.put(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND, 
+                properties.put(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND,
                         (String) properties.get("enableAutoreplaceSound"));
                 properties.remove("enableAutoreplaceSound");
             }
@@ -535,7 +518,7 @@ public class InvTweaksConfig {
     /**
      * Returns the file when the properties are stored, after making sure the
      * file exists.
-     * 
+     *
      * @return May return null in case of failure while creating the file.
      */
     private File getPropertyFile() {
@@ -554,5 +537,5 @@ public class InvTweaksConfig {
     public int getSortKeyCode() {
         return sortKeyCode;
     }
-    
+
 }

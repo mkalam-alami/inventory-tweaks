@@ -1,23 +1,21 @@
 package invtweaks;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.util.List;
-import java.util.logging.Logger;
-
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-
 import org.lwjgl.util.Point;
+
+import java.awt.*;
+import java.io.File;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
  * The inventory and chest advanced settings menu.
  *
  * @author Jimeo Wan
- *
  */
 public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
@@ -40,14 +38,14 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         super(mc, parentScreen, config);
 
         labelSortOnPickup = InvTweaksLocalization.get("invtweaks.settings.advanced.sortonpickup");
-		labelEquipArmor = InvTweaksLocalization.get("invtweaks.settings.advanced.autoequip");
-		labelEnableSounds = InvTweaksLocalization.get("invtweaks.settings.advanced.sounds");
-	    labelChestButtons = InvTweaksLocalization.get("invtweaks.settings.chestbuttons");
+        labelEquipArmor = InvTweaksLocalization.get("invtweaks.settings.advanced.autoequip");
+        labelEnableSounds = InvTweaksLocalization.get("invtweaks.settings.advanced.sounds");
+        labelChestButtons = InvTweaksLocalization.get("invtweaks.settings.chestbuttons");
         labelServerAssist = InvTweaksLocalization.get("invtweaks.settings.advanced.serverassist");
     }
 
     public void initGui() {
-    	super.initGui();
+        super.initGui();
 
         List<Object> controlList = obf.getControlList(this);
         Point p = new Point();
@@ -89,12 +87,12 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         // Check if links to files are supported, if not disable the buttons
         if (!Desktop.isDesktopSupported()) {
             for (Object o : controlList) {
-            	if (obf.isGuiButton(o)) {
-            	    GuiButton button = obf.asGuiButton(o);
-	                if (obf.getId(button) == ID_EDITSHORTCUTS) {
-	                    obf.setEnabled(button, false);
-	                }
-            	}
+                if (obf.isGuiButton(o)) {
+                    GuiButton button = obf.asGuiButton(o);
+                    if (obf.getId(button) == ID_EDITSHORTCUTS) {
+                        obf.setEnabled(button, false);
+                    }
+                }
             }
         }
 
@@ -103,7 +101,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
     }
 
-	public void drawScreen(int i, int j, float f) {
+    public void drawScreen(int i, int j, float f) {
         super.drawScreen(i, j, f);
 
         int x = obf.getWindowWidth(this) / 2;
@@ -115,44 +113,44 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
         switch (obf.getId(guibutton)) {
 
-        // Toggle auto-refill sound
-        case ID_SORT_ON_PICKUP:
-            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, labelSortOnPickup);
-            break;
+            // Toggle auto-refill sound
+            case ID_SORT_ON_PICKUP:
+                toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, labelSortOnPickup);
+                break;
 
-        // Toggle shortcuts
-        case ID_AUTO_EQUIP_ARMOR:
-            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor);
-            break;
+            // Toggle shortcuts
+            case ID_AUTO_EQUIP_ARMOR:
+                toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor);
+                break;
 
-        // Toggle sounds
-        case ID_ENABLE_SOUNDS:
-            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SOUNDS, labelEnableSounds);
-            break;
+            // Toggle sounds
+            case ID_ENABLE_SOUNDS:
+                toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SOUNDS, labelEnableSounds);
+                break;
 
-        // Toggle chest buttons
-        case ID_CHESTS_BUTTONS:
-            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons);
-            break;
+            // Toggle chest buttons
+            case ID_CHESTS_BUTTONS:
+                toggleBooleanButton(guibutton, InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons);
+                break;
 
-        // Toggle server assistance
-        case ID_SERVER_ASSIST:
-            toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP, labelServerAssist);
-            InvTweaksMod.proxy.setServerAssistEnabled(!InvTweaks.getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP).equals(InvTweaksConfig.VALUE_FALSE));
-            break;
+            // Toggle server assistance
+            case ID_SERVER_ASSIST:
+                toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP, labelServerAssist);
+                InvTweaksMod.proxy.setServerAssistEnabled(!InvTweaks.getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP).equals(InvTweaksConfig.VALUE_FALSE));
+                break;
 
 
-        // Open shortcuts mappings in external editor
-        case ID_EDITSHORTCUTS:
-            try {
-                Desktop.getDesktop().open(new File(InvTweaksConst.CONFIG_PROPS_FILE));
-            } catch (Exception e) {
-                InvTweaks.logInGameErrorStatic("invtweaks.settings.advanced.mappingsfile.error", e);
-            }
-            break;
+            // Open shortcuts mappings in external editor
+            case ID_EDITSHORTCUTS:
+                try {
+                    Desktop.getDesktop().open(new File(InvTweaksConst.CONFIG_PROPS_FILE));
+                } catch (Exception e) {
+                    InvTweaks.logInGameErrorStatic("invtweaks.settings.advanced.mappingsfile.error", e);
+                }
+                break;
 
-        // Back to main settings screen
-        case ID_DONE:
+            // Back to main settings screen
+            case ID_DONE:
                 obf.displayGuiScreen(new InvTweaksGuiSettings(mc, parentScreen, config));
 
         }

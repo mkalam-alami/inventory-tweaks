@@ -5,8 +5,8 @@ import net.minecraft.client.Minecraft;
 
 /**
  * Chest sorting button
- * @author Jimeo Wan
  *
+ * @author Jimeo Wan
  */
 public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
 
@@ -16,9 +16,9 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
     private int rowSize;
 
     public InvTweaksGuiSortingButton(InvTweaksConfigManager cfgManager,
-            int id, int x, int y, int w, int h,
-            String displayString, String tooltip,
-            int algorithm, int rowSize, boolean useCustomTexture) {
+                                     int id, int x, int y, int w, int h,
+                                     String displayString, String tooltip,
+                                     int algorithm, int rowSize, boolean useCustomTexture) {
         super(cfgManager, id, x, y, w, h, displayString, tooltip, useCustomTexture);
         this.algorithm = algorithm;
         this.rowSize = rowSize;

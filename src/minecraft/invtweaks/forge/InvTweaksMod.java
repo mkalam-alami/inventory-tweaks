@@ -19,9 +19,9 @@ import cpw.mods.fml.common.network.NetworkMod;
  */
 @Mod(modid = "inventorytweaks",
         dependencies = "required-after:FML@[5.0.0,);required-after:Forge@[7.7.0,)")
-@NetworkMod(channels={"InventoryTweaks"}, packetHandler=PacketHandler.class, connectionHandler=ConnectionHandler.class)
+@NetworkMod(channels = {"InventoryTweaks"}, packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class)
 public class InvTweaksMod {
-    @SidedProxy(clientSide="invtweaks.forge.ClientProxy", serverSide="invtweaks.forge.CommonProxy")
+    @SidedProxy(clientSide = "invtweaks.forge.ClientProxy", serverSide = "invtweaks.forge.CommonProxy")
     public static CommonProxy proxy;
 
     @Mod.PreInit

@@ -81,7 +81,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     }
 
     protected void toggleBooleanButton(GuiButton guibutton, String property, String label) {
-        Boolean enabled = !new Boolean(config.getProperty(property));
+        Boolean enabled = !Boolean.valueOf(config.getProperty(property));
         config.setProperty(property, enabled.toString());
         obf.setDisplayString(guibutton, computeBooleanButtonLabel(property, label));
     }
@@ -91,7 +91,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
         if (propertyValue.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             return label + DISABLE_CI;
         } else {
-            Boolean enabled = new Boolean(propertyValue);
+            Boolean enabled = Boolean.valueOf(propertyValue);
             return label + ((enabled) ? ON : OFF);
         }
     }

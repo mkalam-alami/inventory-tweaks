@@ -249,8 +249,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         int sourceSize = getStackSize(source);
         int movedAmount = Math.min(amount, sourceSize);
 
-        if (source != null && (destination == null
-                || areItemStacksEqual(source, destination))) {
+        if (destination == null || areItemStacksEqual(source, destination)) {
 
             leftClick(srcSection, srcIndex);
             for (int i = 0; i < movedAmount; i++) {

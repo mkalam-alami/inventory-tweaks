@@ -88,11 +88,8 @@ public class InvTweaksItemTree {
         }
 
         // Everything is stuff
-        if (keyword.equals(rootCategory)) {
-            return true;
-        }
+        return keyword.equals(rootCategory);
 
-        return false;
     }
 
     public int getKeywordDepth(String keyword) {

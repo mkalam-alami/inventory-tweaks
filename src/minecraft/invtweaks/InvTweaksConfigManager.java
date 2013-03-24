@@ -59,11 +59,7 @@ public class InvTweaksConfigManager {
             }
         } else {
             storedConfigLastModified = configLastModified;
-            if (loadConfig()) { // Reload
-                return true;
-            } else {
-                return false;
-            }
+            return loadConfig();
         }
     }
 

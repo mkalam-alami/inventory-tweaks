@@ -57,7 +57,7 @@ public class InvTweaksConfigInventoryRuleset {
      */
     public String registerLine(String rawLine) throws InvalidParameterException {
 
-        InvTweaksConfigSortingRule newRule = null;
+        InvTweaksConfigSortingRule newRule;
         String lineText = rawLine.replaceAll("[\\s]+", " ").toLowerCase();
         String[] words = lineText.split(" ");
 
@@ -156,7 +156,7 @@ public class InvTweaksConfigInventoryRuleset {
 
     }
 
-    public void finalize() {
+    public void finalizeRules() {
 
         // Default Autoreplace behavior
         if (autoReplaceRules.isEmpty()) {

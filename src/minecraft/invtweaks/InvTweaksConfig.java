@@ -132,7 +132,7 @@ public class InvTweaksConfig {
                     if (trimmedLine.matches("^[\\w]*[\\s]*\\:$")) {
                         // Make sure not to add an empty default config to the rulesets
                         if (!defaultRuleset || !defaultRulesetEmpty) {
-                            activeRuleset.finalize();
+                            activeRuleset.finalizeRules();
                             rulesets.add(activeRuleset);
                         }
                         activeRuleset = new InvTweaksConfigInventoryRuleset(tree,
@@ -157,7 +157,7 @@ public class InvTweaksConfig {
             }
 
             // Finalize
-            activeRuleset.finalize();
+            activeRuleset.finalizeRules();
             rulesets.add(activeRuleset);
 
             // If a specific ruleset was loaded, 
@@ -509,7 +509,7 @@ public class InvTweaksConfig {
             // Retro-compatibility: rename autoreplace
             if (properties.contains("enableAutoreplaceSound")) {
                 properties.put(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND,
-                        (String) properties.get("enableAutoreplaceSound"));
+                        properties.get("enableAutoreplaceSound"));
                 properties.remove("enableAutoreplaceSound");
             }
         }

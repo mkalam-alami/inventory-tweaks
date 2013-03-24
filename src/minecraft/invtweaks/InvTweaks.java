@@ -60,7 +60,6 @@ public class InvTweaks extends InvTweaksObfuscation {
     private int storedStackId = 0, storedStackDamage = InvTweaksConst.DAMAGE_WILDCARD, storedFocusedSlot = -1;
     private ItemStack[] hotbarClone = new ItemStack[InvTweaksConst.INVENTORY_HOTBAR_SIZE];
     private boolean hadFocus = true, mouseWasDown = false;
-    ;
 
     private boolean wasInGUI = false;
     /**
@@ -221,24 +220,22 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                 // Find best slot for stack
                 boolean hasToBeMoved = true;
-                if (prefferedPositions != null) {
-                    for (int newSlot : prefferedPositions) {
-                        try {
-                            // Already in the best slot!
-                            if (newSlot == currentSlot) {
-                                hasToBeMoved = false;
+                for (int newSlot : prefferedPositions) {
+                    try {
+                        // Already in the best slot!
+                        if (newSlot == currentSlot) {
+                            hasToBeMoved = false;
+                            break;
+                        }
+                        // Is the slot available?
+                        else if (containerMgr.getItemStack(newSlot) == null) {
+                            // TODO: Check rule level before to move
+                            if (containerMgr.move(currentSlot, newSlot)) {
                                 break;
                             }
-                            // Is the slot available?
-                            else if (containerMgr.getItemStack(newSlot) == null) {
-                                // TODO: Check rule level before to move
-                                if (containerMgr.move(currentSlot, newSlot)) {
-                                    break;
-                                }
-                            }
-                        } catch (TimeoutException e) {
-                            logInGameError("Failed to move picked up stack", e);
                         }
+                    } catch (TimeoutException e) {
+                        logInGameError("Failed to move picked up stack", e);
                     }
                 }
 
@@ -733,6 +730,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private Class neiClientConfig;
     private Method neiHidden;
 
+    @SuppressWarnings("unchecked")
     private boolean isNotEnoughItemsEnabled() {
         if (Loader.isModLoaded("NotEnoughItems")) {
             if (neiClientConfig == null) {

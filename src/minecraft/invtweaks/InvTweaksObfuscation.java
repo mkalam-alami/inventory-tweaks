@@ -284,11 +284,10 @@ public class InvTweaksObfuscation {
 
     // PlayerController members
 
-    public ItemStack clickInventory(PlayerControllerMP playerController,
+    public void clickInventory(PlayerControllerMP playerController,
                                     int windowId, int slot, int data,
                                     int action, EntityPlayer entityPlayer) {
         InvTweaksMod.proxy.slotClick(playerController, windowId, slot, data, action, entityPlayer);
-        return null;
     }
 
     // Container members
@@ -320,6 +319,7 @@ public class InvTweaksObfuscation {
         return slot.getHasStack();
     }
 
+    @SuppressWarnings("unchecked")
     public int getSlotNumber(Slot slot) {
         try {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots

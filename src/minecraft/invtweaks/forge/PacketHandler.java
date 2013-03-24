@@ -31,6 +31,7 @@ public class PacketHandler implements IPacketHandler {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void onClickPacket(INetworkManager manager, byte[] data, Player player) {
         EntityPlayerMP realPlayer = (EntityPlayerMP) player;
         ByteArrayDataInput packetData = ByteStreams.newDataInput(data);

@@ -169,9 +169,9 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
                         //move items from stacks with too many to those with too little
                         while ((!smallStacks.isEmpty())) {
-                            int largeIndex = (Integer) largeStacks.peek();
+                            int largeIndex = largeStacks.peek();
                             int largeSize = getStackSize(containerMgr.getItemStack(largeIndex));
-                            int smallIndex = (Integer) smallStacks.peek();
+                            int smallIndex = smallStacks.peek();
                             int smallSize = getStackSize(containerMgr.getItemStack(smallIndex));
                             containerMgr.moveSome(largeIndex, smallIndex, Math.min(numPerSlot - smallSize, largeSize - numPerSlot));
 
@@ -186,9 +186,9 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
                         //put all leftover into one stack for easy removal
                         while (largeStacks.size() > 1) {
-                            int largeIndex = (Integer) largeStacks.poll();
+                            int largeIndex = largeStacks.poll();
                             int largeSize = getStackSize(containerMgr.getItemStack(largeIndex));
-                            containerMgr.moveSome(largeIndex, (Integer) largeStacks.peek(), largeSize - numPerSlot);
+                            containerMgr.moveSome(largeIndex, largeStacks.peek(), largeSize - numPerSlot);
                         }
                     }
                 }
@@ -290,10 +290,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             log.info("Applying rules.");
 
             // Sorts rule by rule, themselves being already sorted by decreasing priority
-            Iterator<InvTweaksConfigSortingRule> rulesIt = rules.iterator();
-            while (rulesIt.hasNext()) {
+            for (InvTweaksConfigSortingRule rule : rules) {
 
-                InvTweaksConfigSortingRule rule = rulesIt.next();
                 int rulePriority = rule.getPriority();
 
                 if (log.getLevel() == InvTweaksConst.DEBUG)
@@ -609,10 +607,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         char column = '1', maxColumn = (char) (column - 1 + rowSize);
 
         // Create rules
-        Iterator<InvTweaksItemTreeItem> it = itemOrder.iterator();
-        while (it.hasNext()) {
-
-            InvTweaksItemTreeItem item = it.next();
+        for (InvTweaksItemTreeItem item : itemOrder) {
 
             // Adapt rule dimensions to fit the amount
             int thisSpaceWidth = spaceWidth,

@@ -451,7 +451,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     }
                 }
 
-                if (!hasDataTags(from) && !hasDataTags(to) && areItemsEqual(from, to)) {
+                if (to.isItemEqual(from) && to.isStackable() && (!to.getHasSubtypes() || to.getItemDamage() == from.getItemDamage()) && ItemStack.areItemStackTagsEqual(from, to)) {
                     // Can be merged?
                     if (getStackSize(to) < getMaxStackSize(to)) {
                         canBeSwappedOrMerged = true;

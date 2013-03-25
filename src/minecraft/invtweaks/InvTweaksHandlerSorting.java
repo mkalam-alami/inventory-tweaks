@@ -272,7 +272,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     for (Integer lockPriority : lockPriorities) {
                         if (lockPriority > 0) {
                             ItemStack to = containerMgr.getItemStack(j);
-                            if (to != null && areItemsEqual(from, to)) {
+                            if (to != null && areItemsStackable(from, to)) {
                                 move(i, j, Integer.MAX_VALUE);
                                 markAsNotMoved(j);
                                 if (containerMgr.getItemStack(i) == null) {
@@ -451,7 +451,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     }
                 }
 
-                if (to.isItemEqual(from) && to.isStackable() && (!to.getHasSubtypes() || to.getItemDamage() == from.getItemDamage()) && ItemStack.areItemStackTagsEqual(from, to)) {
+                if (areItemsStackable(from, to)) {
                     // Can be merged?
                     if (getStackSize(to) < getMaxStackSize(to)) {
                         canBeSwappedOrMerged = true;

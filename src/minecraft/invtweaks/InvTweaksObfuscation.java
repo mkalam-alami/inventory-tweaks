@@ -256,6 +256,11 @@ public class InvTweaksObfuscation {
         return itemStack1.isItemEqual(itemStack2);
     }
 
+    public boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
+        return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) && itemStack1.isStackable() && (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
+    }
+
+
     public int getAnimationsToGo(ItemStack itemStack) {
         return itemStack.animationsToGo;
     }

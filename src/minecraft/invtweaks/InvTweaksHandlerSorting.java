@@ -224,63 +224,73 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             }
         }
 
+        sortMergeArmor(globalContainer);
+    }
+
+    private void sortMergeArmor(InvTweaksContainerManager globalContainer) throws TimeoutException {
         //// Merge stacks to fill the ones in locked slots
         //// + Move armor parts to the armor slots
         log.info("Merging stacks.");
         for (int i = size - 1; i >= 0; i--) {
             ItemStack from = containerMgr.getItemStack(i);
             if (from != null) {
-
                 // Move armor parts
                 Item fromItem = getItem(from);
                 if (isDamageable(fromItem)) {
-                    if (sortArmorParts) {
-                        if (isItemArmor(fromItem)) {
-                            ItemArmor fromItemArmor = asItemArmor(fromItem);
-                            if (globalContainer.hasSection(ContainerSection.ARMOR)) {
-                                List<Slot> armorSlots = globalContainer.getSlots(ContainerSection.ARMOR);
-                                for (Slot slot : armorSlots) {
-                                    boolean move = false;
-                                    if (!hasStack(slot)) {
-                                        move = true;
-                                    } else {
-                                        Item currentArmor = getItem(getStack(slot));
-                                        if (isItemArmor(currentArmor)) {
-                                            int armorLevel = getArmorLevel(asItemArmor(currentArmor));
-                                            if (armorLevel < getArmorLevel(fromItemArmor)
-                                                    || (armorLevel == getArmorLevel(fromItemArmor)
-                                                    && getItemDamage(getStack(slot)) < getItemDamage(from))) {
-                                                move = true;
-                                            }
-                                        } else {
-                                            move = true;
-                                        }
-                                    }
-                                    if (areSlotAndStackCompatible(slot, from) && move) {
-                                        globalContainer.move(ContainerSection.INVENTORY, i, ContainerSection.ARMOR,
-                                                globalContainer.getSlotIndex(getSlotNumber(slot)));
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    moveArmor(globalContainer, i, from, fromItem);
                 }
-
                 // Stackable objects are never damageable
                 else {
-                    int j = 0;
-                    for (Integer lockPriority : lockPriorities) {
-                        if (lockPriority > 0) {
-                            ItemStack to = containerMgr.getItemStack(j);
-                            if (to != null && areItemsStackable(from, to)) {
-                                move(i, j, Integer.MAX_VALUE);
-                                markAsNotMoved(j);
-                                if (containerMgr.getItemStack(i) == null) {
-                                    break;
+                    mergeItem(i, from);
+                }
+            }
+        }
+    }
+
+    private void mergeItem(int i, ItemStack from) throws TimeoutException {
+        int j = 0;
+        for (Integer lockPriority : lockPriorities) {
+            if (lockPriority > 0) {
+                ItemStack to = containerMgr.getItemStack(j);
+                if (to != null && areItemsStackable(from, to)) {
+                    move(i, j, Integer.MAX_VALUE);
+                    markAsNotMoved(j);
+                    if (containerMgr.getItemStack(i) == null) {
+                        break;
+                    }
+                }
+            }
+            j++;
+        }
+    }
+
+    private void moveArmor(InvTweaksContainerManager globalContainer, int i, ItemStack from, Item fromItem) {
+        if (sortArmorParts) {
+            if (isItemArmor(fromItem)) {
+                ItemArmor fromItemArmor = asItemArmor(fromItem);
+                if (globalContainer.hasSection(ContainerSection.ARMOR)) {
+                    List<Slot> armorSlots = globalContainer.getSlots(ContainerSection.ARMOR);
+                    for (Slot slot : armorSlots) {
+                        boolean move = false;
+                        if (!hasStack(slot)) {
+                            move = true;
+                        } else {
+                            Item currentArmor = getItem(getStack(slot));
+                            if (isItemArmor(currentArmor)) {
+                                int armorLevel = getArmorLevel(asItemArmor(currentArmor));
+                                if (armorLevel < getArmorLevel(fromItemArmor)
+                                        || (armorLevel == getArmorLevel(fromItemArmor)
+                                        && getItemDamage(getStack(slot)) < getItemDamage(from))) {
+                                    move = true;
                                 }
+                            } else {
+                                move = true;
                             }
                         }
-                        j++;
+                        if (areSlotAndStackCompatible(slot, from) && move) {
+                            globalContainer.move(ContainerSection.INVENTORY, i, ContainerSection.ARMOR,
+                                    globalContainer.getSlotIndex(getSlotNumber(slot)));
+                        }
                     }
                 }
             }
@@ -316,7 +326,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             //skip hacked itemstacks that are larger than their max size
             //no idea why they would be here, but may as well account for them anyway
             if (numPerSlot <= getMaxStackSize(new ItemStack(item.get(0), 1, 0))) {
-
                 //linkedlists to store which stacks have too many/few items
                 LinkedList<Integer> smallStacks = new LinkedList<Integer>();
                 LinkedList<Integer> largeStacks = new LinkedList<Integer>();

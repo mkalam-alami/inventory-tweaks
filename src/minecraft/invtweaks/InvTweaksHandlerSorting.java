@@ -2,6 +2,7 @@ package invtweaks;
 
 import invtweaks.api.ContainerSection;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -543,14 +544,70 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 // Items of same keyword orders can have different IDs,
                 // in the case of categories defined by a range of IDs
                 if (getItemID(iStack) == getItemID(jStack)) {
-                    if (getItemDamage(iStack) != getItemDamage(jStack)) {
-                        if (isItemStackDamageable(iStack)) {
-                            return getItemDamage(iStack) > getItemDamage(jStack);
+                    boolean iHasName = iStack.hasDisplayName();
+                    boolean jHasName = jStack.hasDisplayName();
+                    if (iHasName || jHasName) {
+                        if (!iHasName) {
+                            return false;
+                        } else if (!jHasName) {
+                            return true;
                         } else {
-                            return getItemDamage(iStack) < getItemDamage(jStack);
+                            String iDisplayName = iStack.getDisplayName();
+                            String jDisplayName = jStack.getDisplayName();
+
+                            if (!iDisplayName.equals(jDisplayName)) {
+                                return iDisplayName.compareTo(jDisplayName) < 0;
+                            }
+                        }
+                    }
+
+                    @SuppressWarnings("unchecked")
+                    Map<Integer, Integer> iEnchs = EnchantmentHelper.getEnchantments(iStack);
+                    @SuppressWarnings("unchecked")
+                    Map<Integer, Integer> jEnchs = EnchantmentHelper.getEnchantments(jStack);
+                    if (iEnchs.size() == jEnchs.size()) {
+                        int iEnchMaxId = 0, iEnchMaxLvl = 0;
+                        int jEnchMaxId = 0, jEnchMaxLvl = 0;
+
+                        for (Map.Entry<Integer, Integer> ench : iEnchs.entrySet()) {
+                            if (ench.getValue() > iEnchMaxLvl) {
+                                iEnchMaxId = ench.getKey();
+                                iEnchMaxLvl = ench.getValue();
+                            } else if (ench.getValue() == iEnchMaxLvl && ench.getKey() > iEnchMaxId) {
+                                iEnchMaxId = ench.getKey();
+                                iEnchMaxLvl = ench.getValue();
+                            }
+                        }
+
+                        for (Map.Entry<Integer, Integer> ench : jEnchs.entrySet()) {
+                            if (ench.getValue() > jEnchMaxLvl) {
+                                jEnchMaxId = ench.getKey();
+                                jEnchMaxLvl = ench.getValue();
+                            } else if (ench.getValue() == jEnchMaxLvl && ench.getKey() > jEnchMaxId) {
+                                jEnchMaxId = ench.getKey();
+                                jEnchMaxLvl = ench.getValue();
+                            }
+                        }
+
+                        if (iEnchMaxId == jEnchMaxId) {
+                            if (iEnchMaxLvl == jEnchMaxLvl) {
+                                if (getItemDamage(iStack) != getItemDamage(jStack)) {
+                                    if (isItemStackDamageable(iStack)) {
+                                        return getItemDamage(iStack) > getItemDamage(jStack);
+                                    } else {
+                                        return getItemDamage(iStack) < getItemDamage(jStack);
+                                    }
+                                } else {
+                                    return getStackSize(iStack) > getStackSize(jStack);
+                                }
+                            } else {
+                                return iEnchMaxLvl > jEnchMaxLvl;
+                            }
+                        } else {
+                            return iEnchMaxId > jEnchMaxId;
                         }
                     } else {
-                        return getStackSize(iStack) > getStackSize(jStack);
+                        return iEnchs.size() > jEnchs.size();
                     }
                 } else {
                     return getItemID(iStack) > getItemID(jStack);

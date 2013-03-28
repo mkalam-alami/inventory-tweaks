@@ -575,7 +575,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                 iEnchMaxLvl = ench.getValue();
                             } else if (ench.getValue() == iEnchMaxLvl && ench.getKey() > iEnchMaxId) {
                                 iEnchMaxId = ench.getKey();
-                                iEnchMaxLvl = ench.getValue();
                             }
                         }
 
@@ -585,7 +584,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                 jEnchMaxLvl = ench.getValue();
                             } else if (ench.getValue() == jEnchMaxLvl && ench.getKey() > jEnchMaxId) {
                                 jEnchMaxId = ench.getKey();
-                                jEnchMaxLvl = ench.getValue();
                             }
                         }
 

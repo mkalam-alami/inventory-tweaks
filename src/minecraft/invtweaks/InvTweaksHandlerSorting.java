@@ -405,6 +405,42 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     }
 
+    private boolean canMove(int i, int j, int priority) {
+        ItemStack from = containerMgr.getItemStack(i), to = containerMgr.getItemStack(j);
+
+        if (from == null || frozenSlots[j] || frozenSlots[i] || lockPriorities[i] > priority) {
+            return false;
+        } else {
+            if (i == j) {
+                return true;
+            }
+
+            if (to == null) {
+                return lockPriorities[j] <= priority && !frozenSlots[j];
+            }
+
+            return canSwapSlots(i, j, priority) || canMergeStacks(from, to);
+        }
+    }
+
+    private boolean canMergeStacks(ItemStack from, ItemStack to) {
+        if (areItemsStackable(from, to)) {
+            if (getStackSize(from) > getMaxStackSize(from)) {
+                return false;
+            }
+            if (getStackSize(to) < getMaxStackSize(to)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean canSwapSlots(int i, int j, int priority) {
+        return lockPriorities[j] <= priority
+                && (rulePriority[j] < priority
+                || (rulePriority[j] == priority && isOrderedBefore(i, j)));
+    }
+
     /**
      * Tries to move a stack from i to j, and swaps them if j is already
      * occupied but i is of greater priority (even if they are of same ID).
@@ -418,7 +454,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
      * @throws TimeoutException
      */
     private int move(int i, int j, int priority) throws TimeoutException {
-
         ItemStack from = containerMgr.getItemStack(i), to = containerMgr.getItemStack(j);
 
         if (from == null || frozenSlots[j] || frozenSlots[i]) {
@@ -446,33 +481,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
             // Try to swap/merge
             else if (to != null) {
-
-                boolean canBeSwappedOrMerged = false;
-
-                // Can be swapped?
-                if (lockPriorities[j] <= priority) {
-                    if (rulePriority[j] < priority) {
-                        canBeSwappedOrMerged = true;
-                    } else if (rulePriority[j] == priority) {
-                        if (isOrderedBefore(i, j)) {
-                            canBeSwappedOrMerged = true;
-                        }
-                    }
-                }
-
-                if (areItemsStackable(from, to)) {
-                    // Can be merged?
-                    if (getStackSize(to) < getMaxStackSize(to)) {
-                        canBeSwappedOrMerged = true;
-                    }
-                    // Safety check (for TooManyItems)
-                    else if (getStackSize(from) > getMaxStackSize(from)) {
-                        canBeSwappedOrMerged = false;
-                    }
-                }
-
-                if (canBeSwappedOrMerged) {
-
+                if (canSwapSlots(i, j, priority) || canMergeStacks(from, to)) {
                     keywordOrder[j] = keywordOrder[i];
                     rulePriority[j] = priority;
                     rulePriority[i] = -1;

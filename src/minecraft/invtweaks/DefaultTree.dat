@@ -125,6 +125,7 @@
                 <birchWood id="17" damage="1"/>
                 <spruceWood id="17" damage="2"/>
                 <jungleWood id="17" damage="3"/>
+                <woodDict oreDictName="logWood"/>
             </wood>
             <sands>
                 <sand id="12"/>
@@ -213,6 +214,7 @@
                     <sprucePlank id="5" damage="1"/>
                     <birchPlank id="5" damage="2"/>
                     <junglePlank id="5" damage="3"/>
+                    <woodenPlankDict oreDictName="plankWood"/>
                 </woodenPlank>
                 <bricks>
                     <brick id="45"/>
@@ -237,6 +239,7 @@
                         <spruceWoodStairs id="134"/>
                         <birchWoodStairs id="135"/>
                         <jungleWoodStairs id="136"/>
+                        <woodenStairsDict oreDictName="stairWood"/>
                     </woodenStairs>
                     <cobblestoneStairs id="67"/>
                     <stoneStairs id="109"/>
@@ -253,6 +256,7 @@
                         <spruceWoodSlab id="126" damage="1"/>
                         <birchWoodSlab id="126" damage="2"/>
                         <jungleWoodSlab id="126" damage="3"/>
+                        <woodenSlabsDict oreDictName="slabWood"/>
                     </woodenSlabs>
                     <stoneSlab id="44" damage="0"/>
                     <sandstoneSlab id="44" damage="1"/>
@@ -283,6 +287,7 @@
                     <quartzBlock id="155"/>
                 </oreBlock>
                 <stick id="280"/>
+                <stickDict oreDictName="stickWood"/>
             </constructionBlock>
             <itemBlock>
                 <cauldronBlock id="118"/>
@@ -350,12 +355,34 @@
     </block>
     <resources>
         <miningResources>
-            <ironOreBlock id="15"/>
             <goldOreBlock id="14"/>
+            <goldOreBlockDict oreDictName="oreGold"/>
+            <silverOreBlockDict oreDictName="oreSilver"/>
+            <leadOreBlockDict oreDictName="oreLead"/>
+            <ironOreBlock id="15"/>
+            <ironOreBlockDict oreDictName="oreIron"/>
+            <copperOreBlockDict oreDictName="oreCopper"/>
+            <tinOreBlockDict oreDictName="oreTin"/>
+            <goldDustDict oreDictName="dustGold"/>
+            <silverDustDict oreDictName="dustSilver"/>
+            <leadDustDict oreDictName="dustLead"/>
+            <bronzeDustDict oreDictName="dustBronze"/>
+            <brassDustDict oreDictName="dustBrass"/>
+            <ironDustDict oreDictName="dustIron"/>
+            <tinDustDict oreDictName="dustTin"/>
+            <copperDustDict oreDictName="dustCopper"/>
             <coal id="263" damage="0"/>
             <charcoal id="263" damage="1"/>
             <gold id="266"/>
+            <goldDict oreDictName="ingotGold"/>
+            <silverDict oreDictName="ingotSilver"/>
+            <leadDict oreDictName="ingotLead"/>
+            <bronzeDict oreDictName="ingotBronze"/>
+            <brassDict oreDictName="ingotBrass"/>
             <iron id="265"/>
+            <ironDict oreDictName="ingotIron"/>
+            <tinDict oreDictName="ingotTin"/>
+            <copperDict oreDictName="ingotCopper"/>
             <diamond id="264"/>
             <emerald id="388"/>
             <redstone id="331"/>
@@ -388,28 +415,29 @@
         </farmingResources>
         <dye>
             <boneMeal id="351" damage="15"/>
+            <whiteDye oreDictName="dyeWhite"/>
             <inkSac id="351" damage="0"/>
-            <blackDye id="351" damage="0"/>
+            <blackDye oreDictName="dyeBlack"/>
             <roseRed id="351" damage="1"/>
-            <redDye id="351" damage="1"/>
+            <redDye oreDictName="dyeRed"/>
             <cactusGreen id="351" damage="2"/>
-            <greenDye id="351" damage="2"/>
+            <greenDye oreDictName="dyeGreen"/>
             <cocoaBeans id="351" damage="3"/>
-            <brownDye id="351" damage="3"/>
+            <brownDye oreDictName="dyeBrown"/>
             <lapisLazuli id="351" damage="4"/>
-            <lapisLazuliDye id="351" damage="4"/>
-            <blueDye id="351" damage="4"/>
-            <purpleDye id="351" damage="5"/>
-            <cyanDye id="351" damage="6"/>
-            <lightGrayDye id="351" damage="7"/>
-            <grayDye id="351" damage="8"/>
-            <pinkDye id="351" damage="9"/>
-            <limeDye id="351" damage="10"/>
+            <lapisLazuliDye oreDictName="dyeBlue"/>
+            <blueDye oreDictName="dyeBlue"/>
+            <purpleDye oreDictName="dyePurple"/>
+            <cyanDye oreDictName="dyeCyan"/>
+            <lightGrayDye oreDictName="dyeLightGray"/>
+            <grayDye oreDictName="dyeGray"/>
+            <pinkDye oreDictName="dyePink"/>
+            <limeDye oreDictName="dyeLime"/>
             <dandelionYellow id="351" damage="11"/>
-            <yellowDye id="351" damage="11"/>
-            <lightBlueDye id="351" damage="12"/>
-            <magentaDye id="351" damage="13"/>
-            <orangeDye id="351" damage="14"/>
+            <yellowDye oreDictName="dyeYellow"/>
+            <lightBlueDye oreDictName="dyeLightBlue"/>
+            <magentaDye oreDictName="dyeMagenta"/>
+            <orangeDye oreDictName="dyeOrange"/>
         </dye>
     </resources>
     <item>
@@ -543,12 +571,14 @@
                 <spruceSapling id="6" damage="1"/>
                 <birchSapling id="6" damage="2"/>
                 <jungleSapling id="6" damage="3"/>
+                <saplingDict oreDictName="treeSapling"/>
             </sapling>
             <leaves id="18">
                 <oakLeaves id="18" damage="0"/>
                 <spruceLeaves id="18" damage="1"/>
                 <birchLeaves id="18" damage="2"/>
                 <jungleLeaves id="18" damage="3"/>
+                <leavesDict oreDictName="treeLeaves"/>
             </leaves>
             <seed>
                 <wheatSeed id="295"/>

@@ -1,5 +1,6 @@
 package invtweaks;
 
+import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
 import java.io.*;
@@ -100,6 +101,9 @@ public class InvTweaksConfig {
             loadProperties();
             saveProperties(); // Needed to append non-saved properties to the file
 
+            if(tree != null) {
+                MinecraftForge.EVENT_BUS.unregister(tree);
+            }
             // Load tree
             tree = InvTweaksItemTreeLoader.load(treeFile);
 

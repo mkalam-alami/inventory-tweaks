@@ -1,5 +1,6 @@
 package invtweaks;
 
+import net.minecraftforge.common.MinecraftForge;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -24,6 +25,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     private final static String ATTR_RANGE_MAX = "max";
     private final static String ATTR_RANGE_DMIN = "dmin"; // Damage ranges
     private final static String ATTR_RANGE_DMAX = "dmax";
+    private final static String ATTR_OREDICT_NAME = "oreDictName"; // OreDictionary names
     private final static String ATTR_TREE_VERSION = "treeVersion";
 
     private static InvTweaksItemTree tree;
@@ -56,6 +58,8 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
                 onLoadListener.onTreeLoaded(tree);
             }
         }
+
+        MinecraftForge.EVENT_BUS.register(tree);
 
         return tree;
     }
@@ -95,6 +99,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         String rangeMinAttr = attributes.getValue(ATTR_RANGE_MIN);
         String rangeDMinAttr = attributes.getValue(ATTR_RANGE_DMIN);
         String newTreeVersion = attributes.getValue(ATTR_TREE_VERSION);
+        String oreDictNameAttr = attributes.getValue(ATTR_OREDICT_NAME);
 
         // Category
         if (attributes.getLength() == 0 || treeVersion == null
@@ -144,6 +149,8 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
             }
             tree.addItem(categoryStack.getLast(), new InvTweaksItemTreeItem(name.toLowerCase(),
                     id, damage, itemOrder++));
+        } else if (oreDictNameAttr != null) {
+            tree.registerOre(categoryStack.getLast(), name.toLowerCase(), oreDictNameAttr, itemOrder++);
         }
     }
 

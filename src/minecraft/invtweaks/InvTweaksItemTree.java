@@ -1,6 +1,10 @@
 package invtweaks;
 
 
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.oredict.OreDictionary;
+
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -272,4 +276,38 @@ public class InvTweaksItemTree {
 
     }
 
+
+    private class OreDictInfo {
+        String category;
+        String name;
+        String oreName;
+        int order;
+
+        OreDictInfo(String category, String name, String oreName, int order) {
+            this.category = category;
+            this.name = name;
+            this.oreName = oreName;
+            this.order = order;
+        }
+    }
+
+    public void registerOre(String category, String name, String oreName, int order) {
+        for (ItemStack i : OreDictionary.getOres(oreName)) {
+            addItem(category, new InvTweaksItemTreeItem(name,
+                    i.itemID, i.getItemDamage(), order));
+        }
+        oresRegistered.add(new OreDictInfo(category, name, oreName, order));
+    }
+
+    private List<OreDictInfo> oresRegistered = new ArrayList<OreDictInfo>();
+
+    @ForgeSubscribe
+    public void oreRegistered(OreDictionary.OreRegisterEvent ev) {
+        for (OreDictInfo ore : oresRegistered) {
+            if (ore.oreName.equals(ev.Name)) {
+                addItem(ore.category, new InvTweaksItemTreeItem(ore.name,
+                        ev.Ore.itemID, ev.Ore.getItemDamage(), ore.order));
+            }
+        }
+    }
 }

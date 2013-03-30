@@ -389,12 +389,12 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 if (hasToBeMoved(i)) {
                     for (int j = 0; j < size; j++) {
                         if (move(i, j, 1) != -1) {
-                            nextRemaining.remove((Integer)j);
+                            nextRemaining.remove((Integer) j);
                             break;
                         }
                     }
                 } else {
-                    nextRemaining.remove((Integer)i);
+                    nextRemaining.remove((Integer) i);
                 }
             }
             remaining.clear();

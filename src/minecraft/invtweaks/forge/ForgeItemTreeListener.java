@@ -2,9 +2,7 @@ package invtweaks.forge;
 
 import invtweaks.*;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -44,14 +42,6 @@ public class ForgeItemTreeListener implements InvTweaksItemTreeListener {
 
                 for (Item i : itemList) {
                     tree.addItem("forge_toolClasses_" + name, new InvTweaksItemTreeItem(Integer.toString(i.itemID), i.itemID, InvTweaksConst.DAMAGE_WILDCARD, (Integer) itemsByPriority.get(i)));
-                }
-            }
-
-            for (String name : OreDictionary.getOreNames()) {
-                tree.addCategory(tree.getRootCategory().getName(), new InvTweaksItemTreeCategory("forge_oreDict_" + name));
-
-                for (ItemStack i : OreDictionary.getOres(name)) {
-                    tree.addItem("forge_oreDict_" + name, new InvTweaksItemTreeItem(String.format("%d-%d", i.itemID, i.getItemDamage()), i.itemID, i.getItemDamage(), 0));
                 }
             }
         } catch (Exception e) {

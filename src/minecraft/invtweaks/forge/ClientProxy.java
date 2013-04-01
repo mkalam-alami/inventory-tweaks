@@ -89,7 +89,9 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
     }
 
     public void sortComplete() {
-        Packet250CustomPayload pkt = new Packet250CustomPayload("InventoryTweaks", new byte[]{InvTweaksConst.PACKET_SORTCOMPLETE});
-        PacketDispatcher.sendPacketToServer(pkt);
+        if (serverSupportEnabled) {
+            Packet250CustomPayload pkt = new Packet250CustomPayload("InventoryTweaks", new byte[]{InvTweaksConst.PACKET_SORTCOMPLETE});
+            PacketDispatcher.sendPacketToServer(pkt);
+        }
     }
 }

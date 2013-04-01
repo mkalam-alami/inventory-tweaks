@@ -1,6 +1,7 @@
 package invtweaks;
 
 import invtweaks.api.ContainerSection;
+import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.Slot;
@@ -141,6 +142,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 globalContainer.putHoldItemDown(ContainerSection.INVENTORY, emptySlot);
             }
         }
+
+        InvTweaksMod.proxy.sortComplete();
     }
 
     private void sortWithRules() throws TimeoutException {

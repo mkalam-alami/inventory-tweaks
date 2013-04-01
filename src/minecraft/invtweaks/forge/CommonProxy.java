@@ -35,4 +35,8 @@ public class CommonProxy {
                           int windowId, int slot, int data,
                           int action, EntityPlayer player) {
     }
+
+    public void sortComplete() {
+
+    }
 }

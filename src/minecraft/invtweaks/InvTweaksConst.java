@@ -19,6 +19,7 @@ public class InvTweaksConst {
     public static final byte PROTOCOL_VERSION = 1;
     public static final byte PACKET_LOGIN = 0x55;
     public static final byte PACKET_CLICK = 0x01;
+    public static final byte PACKET_SORTCOMPLETE = 0x02;
 
     // Timing constants
     public static final int RULESET_SWAP_DELAY = 1000;

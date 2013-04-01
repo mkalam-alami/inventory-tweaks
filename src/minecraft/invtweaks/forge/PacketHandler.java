@@ -22,6 +22,9 @@ public class PacketHandler implements IPacketHandler {
             case InvTweaksConst.PACKET_CLICK:
                 onClickPacket(manager, packet.data, player);
                 break;
+            case InvTweaksConst.PACKET_SORTCOMPLETE:
+                onSortCompletePacket(manager, packet.data, player);
+                break;
         }
     }
 
@@ -41,7 +44,10 @@ public class PacketHandler implements IPacketHandler {
         int action = packetData.readInt();
 
         realPlayer.openContainer.slotClick(slot, clickData, action, realPlayer);
+    }
 
+    private void onSortCompletePacket(INetworkManager manager, byte[] data, Player player) {
+        EntityPlayerMP realPlayer = (EntityPlayerMP) player;
         ArrayList arraylist = new ArrayList();
 
         for (int i = 0; i < realPlayer.openContainer.inventorySlots.size(); ++i) {

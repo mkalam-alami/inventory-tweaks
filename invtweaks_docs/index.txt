@@ -198,6 +198,16 @@ You can also define categories by entering a range of IDs. Useful for mods::
      <camelOreItems min="358" max="443" />
    </camelOre>
 
+Categories defined by Forge ore Dictionary Names
+-------------------------------
+
+You can also define categories by entering an ore dictionary name. Useful for mods::
+
+   <camelOre>
+     <camelOreBlock oreDictName="oreCamel"/>
+     <camelOreIngot oreDictName="ingotCamel"/>
+   </camelOre>
+
 
 F.A.Q.
 ======

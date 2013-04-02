@@ -3,19 +3,27 @@
 Latest changes
 ==============
 
-`[03.15.2013] 1.52 (1.5) <http://www.mediafire.com/?x5yxgcnx2501fty>`_
+`[04.02.2013] 1.53 (1.5/1.5.1) <http://www.mediafire.com/?0d4jgg5oxbjmmoc>`_
+ * Server-assistance support should handle lag slightly better.
+ * Sorting auto-stacking will stack items with matching NBT data, rather than treating all items with data as inheriently unstackable.
+ * Sorting will order items given a display name before other versions of that item.
+ * Sorting will order enchanted items before unenchanted items, order among enchanted items is determined by number of enchants, ID of highest-level enchant, and level of highest-level enchant.
+ * InvTweaksTree.txt now supports classing items by Forge Ore Dictionary names, default tree has been updated to account for this and includes some commonly-used names.
+ * Autoreplace in repair-friendly mode has a configurable threshhold value for the replacement trigger.
+ 
+`[03.15.2013] 1.52 (1.5/1.5.1) <http://www.mediafire.com/?x5yxgcnx2501fty>`_
  * Fixed NEI detection for larger than vanilla chests (ex. IronChests)
  * Implemented an optional server module to potentially help with mod items that cause glitches with the normal mode
  * Updated tree file for MC1.5
  * Enabled shortcuts in creative mode (may by somewhat buggy)
  
-`[03.10.2013] 1.51b (1.5) <http://www.mediafire.com/?y1u2jfj3smmmr1q>`_
+`[03.10.2013] 1.51b (1.5/1.5.1) <http://www.mediafire.com/?y1u2jfj3smmmr1q>`_
  * Added support for Hopper GUI
  * Fixed crash when viewing mod list
  * Added logo file for mod list
  * Fixed sorting in creative mode version of player inventory
  
-`[03.09.2013] 1.51 (1.5) <http://www.mediafire.com/?7fra267h45hes30>`_
+`[03.09.2013] 1.51 (1.5/1.5.1) <http://www.mediafire.com/?7fra267h45hes30>`_
  * Built with Minecraft Forge/FML instead of ModLoader
  * Additional support for grouping ores and tools of the same type
  * Fixed a bug with Forestry Backpacks/RP2 canvas bags and possibly other inventories causing the client to hang

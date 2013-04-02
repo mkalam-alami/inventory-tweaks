@@ -23,7 +23,7 @@
 # Thanks to Larandar & Lunaqua for their contributions.
 -->
 <!-- Note: 'stuff' matches everything, even items that don't appear here -->
-<stuff treeVersion="1.5.0">
+<stuff treeVersion="1.5.1">
     <equipment>
         <weapon>
             <sword>

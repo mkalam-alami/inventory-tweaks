@@ -9,11 +9,11 @@ import java.util.logging.Level;
 public class InvTweaksConst {
 
     // Mod version
-    public static final String MOD_VERSION = "1.52";
+    public static final String MOD_VERSION = "1.53";
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs
-    public static final String TREE_VERSION = "1.5.0";
+    public static final String TREE_VERSION = "1.5.1";
 
     // Network Protocol version
     public static final byte PROTOCOL_VERSION = 1;

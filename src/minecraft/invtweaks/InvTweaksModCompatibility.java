@@ -31,35 +31,27 @@ public class InvTweaksModCompatibility {
      */
     public boolean isSpecialChest(GuiScreen guiScreen) {
         return getContainerGUIAnnotation(guiScreen.getClass()) != null // API-marked classes
-                || is(guiScreen, "GuiAlchChest") // Equivalent Exchange
-                || is(guiScreen, "GuiCondenser") // Equivalent Exchange
-                || is(guiScreen, "GUIChest") // Iron chests (formerly IC2)
-                || is(guiScreen, "GuiMultiPageChest") // Multi Page chest
-                || is(guiScreen, "GuiGoldSafe") // More Storage
-                || is(guiScreen, "GuiLocker")
-                || is(guiScreen, "GuiDualLocker")
-                || is(guiScreen, "GuiSafe")
-                || is(guiScreen, "GuiCabinet")
-                || is(guiScreen, "GuiTower")
-                || is(guiScreen, "GuiBufferChest") // Red Power 2
-                || is(guiScreen, "GuiRetriever") // Red Power 2
-                || is(guiScreen, "GuiItemDetect") // Red Power 2
-                || is(guiScreen, "GuiAlloyFurnace") // Red Power 2
-                || is(guiScreen, "GuiDeploy") // Red Power 2
-                || is(guiScreen, "GuiSorter") // Red Power 2
-                || is(guiScreen, "GuiFilter") // Red Power 2
-                || is(guiScreen, "GuiAdvBench") // Red Power 2
-                || is(guiScreen, "GuiEject") // Red Power 2
-                || is(guiScreen, "GuiBag") // Red Power 2
-                || is(guiScreen, "GuiPersonalChest")
-                || is(guiScreen, "GuiNuclearReactor") // IC2
-                || is(guiScreen, "GuiEnderChest") // EnderChest
-                || is(guiScreen, "GuiColorBox")
-                || is(guiScreen, "GuiLinkedColorBox") // ColorBox
-                || is(guiScreen, "FC_GuiChest") // Metallurgy
-                || is(guiScreen, "FM_GuiMintStorage") // Metallurgy
-                || is(guiScreen, "GuiChestTFC") // TerraFirmaCraft
-                || is(guiScreen, "GuiBackpack") // Backpacks
+                || isExact(guiScreen, "cpw.mods.ironchest.client.GUIChest") // Iron chests (formerly IC2)
+                || isExact(guiScreen, "cubex2.mods.multipagechest.client.GuiMultiPageChest") // Multi Page chest
+                || isExact(guiScreen, "com.eloraam.redpower.machine.GuiBufferChest") // Red Power 2
+                || isExact(guiScreen, "com.eloraam.redpower.machine.GuiRetriever") // Red Power 2
+                || isExact(guiScreen, "com.eloraam.redpower.machine.GuiItemDetect") // Red Power 2
+                || isExact(guiScreen, "com.eloraam.redpower.base.GuiAlloyFurnace") // Red Power 2
+                || isExact(guiScreen, "com.eloraam.redpower.machine.GuiDeploy") // Red Power 2
+                || isExact(guiScreen, "com.eloraam.redpower.machine.GuiSorter") // Red Power 2
+                || isExact(guiScreen, "com.eloraam.redpower.machine.GuiFilter") // Red Power 2
+                || isExact(guiScreen, "com.eloraam.redpower.base.GuiAdvBench") // Red Power 2
+                || isExact(guiScreen, "com.eloraam.redpower.machine.GuiEject") // Red Power 2
+                || isExact(guiScreen, "com.eloraam.redpower.base.GuiBag") // Red Power 2
+                || isExact(guiScreen, "com.eloraam.redpower.world.GuiSeedBag") // Red Power 2
+                || isExact(guiScreen, "ic2.core.block.personal.GuiPersonalChest")
+                || isExact(guiScreen, "ic2.core.block.generator.gui.GuiNuclearReactor") // IC2
+                || isExact(guiScreen, "mods.laco.colorbox.client.GuiColorBox")
+                || isExact(guiScreen, "shadow.mods.metallurgy.precious.FC_GuiChest") // Metallurgy
+                || isExact(guiScreen, "shadow.mods.metallurgy.precious.FM_GuiMintStorage") // Metallurgy
+                || isExact(guiScreen, "TFC.GUI.GuiChestTFC") // TerraFirmaCraft
+                || isExact(guiScreen, "forestry.storage.gui.GuiBackpack")
+                || isExact(guiScreen, "forestry.storage.gui.GuiBackpackT2")
                 || isExact(guiScreen, "com.pahimar.ee3.client.gui.inventory.GuiPortableCrafting")
                 || isExact(guiScreen, "codechicken.enderstorage.storage.item.GuiEnderItemStorage")
                 || isExact(guiScreen, "net.mcft.copy.betterstorage.client.GuiReinforcedChest")
@@ -88,33 +80,26 @@ public class InvTweaksModCompatibility {
             } else {
                 return annotation.rowSize();
             }
-        } else if (is(guiContainer, "GuiAlchChest")
-                || is(guiContainer, "GuiCondenser")) { // Equivalent Exchange
-            return 13;
-        } else if (is(guiContainer, "GUIChest")) { // Iron chests (formerly IC2)
+        } else if (isExact(guiContainer, "cpw.mods.ironchest.client.GUIChest")) { // Iron chests (formerly IC2)
             try {
                 return (Integer) guiContainer.getClass().getMethod("getRowLength").invoke(guiContainer);
             } catch (Exception e) {
                 return defaultValue;
             }
-        } else if (is(guiContainer, "GuiMultiPageChest")) { // Multi Page chest
+        } else if (isExact(guiContainer, "cubex2.mods.multipagechest.client.GuiMultiPageChest")) { // Multi Page chest
             return 13;
-        } else if (is(guiContainer, "GuiLocker") // More Storage
-                || is(guiContainer, "GuiDualLocker")
-                || is(guiContainer, "GuiTower")) {
-            return 8;
-        } else if (is(guiContainer, "GuiBufferChest")) { // Red Power 2
+        } else if (isExact(guiContainer, "com.eloraam.redpower.machine.GuiBufferChest")) { // Red Power 2
             return 4;
-        } else if (is(guiContainer, "GuiSorter")) {
+        } else if (isExact(guiContainer, "com.eloraam.redpower.machine.GuiSorter")) {
             return 8;
-        } else if (is(guiContainer, "GuiRetriever")
-                || is(guiContainer, "GuiItemDetect")
-                || is(guiContainer, "GuiAlloyFurnace")
-                || is(guiContainer, "GuiDeploy")
-                || is(guiContainer, "GuiFilter")
-                || is(guiContainer, "GuiEject")) {
+        } else if (isExact(guiContainer, "com.eloraam.redpower.machine.GuiRetriever")
+                || isExact(guiContainer, "com.eloraam.redpower.machine.GuiItemDetect")
+                || isExact(guiContainer, "com.eloraam.redpower.base.GuiAlloyFurnace")
+                || isExact(guiContainer, "com.eloraam.redpower.machine.GuiDeploy")
+                || isExact(guiContainer, "com.eloraam.redpower.machine.GuiFilter")
+                || isExact(guiContainer, "com.eloraam.redpower.machine.GuiEject")) {
             return 3;
-        } else if (is(guiContainer, "GuiNuclearReactor")) { // IC2
+        } else if (isExact(guiContainer, "ic2.core.block.generator.gui.GuiNuclearReactor")) { // IC2
             return (obf.getSlots(obf.getContainer(guiContainer)).size() - 36) / 6;
         } else if (isExact(guiContainer, "net.mcft.copy.betterstorage.client.GuiReinforcedChest")) {
             try {
@@ -127,10 +112,9 @@ public class InvTweaksModCompatibility {
     }
 
     public boolean isChestWayTooBig(GuiScreen guiScreen) {
-        return is(guiScreen, "GuiAlchChest") // Equivalent Exchange
-                || is(guiScreen, "GuiMultiPageChest") // MultiPage Chest
-                || is(guiScreen, "GUIChest") // IronChests
-                || is(guiScreen, "FC_GuiChest") // Metallurgy
+        return isExact(guiScreen, "cubex2.mods.multipagechest.client.GuiMultiPageChest") // MultiPage Chest
+                || isExact(guiScreen, "cpw.mods.ironchest.client.GUIChest") // IronChests
+                || isExact(guiScreen, "shadow.mods.metallurgy.precious.FC_GuiChest") // Metallurgy
                 ;
     }
 
@@ -169,13 +153,12 @@ public class InvTweaksModCompatibility {
         Map<ContainerSection, List<Slot>> result = new HashMap<ContainerSection, List<Slot>>();
         List<Slot> slots = (List<Slot>) obf.getSlots(container);
 
-        if (is(guiScreen, "GuiCondenser")) { // EE
-            result.put(ContainerSection.CHEST, slots.subList(1, slots.size() - 36));
-        } else if (is(guiScreen, "GuiAdvBench")) { // RedPower 2
+        if (isExact(guiScreen, "com.eloraam.redpower.base.GuiAdvBench")) { // RedPower 2
             result.put(ContainerSection.CRAFTING_IN_PERSISTENT, slots.subList(0, 9));
             result.put(ContainerSection.CRAFTING_OUT, slots.subList(10, 11));
             result.put(ContainerSection.CHEST, slots.subList(11, 29));
-        } else if (is(guiScreen, "GuiArcaneWorkbench") || is(guiScreen, "GuiInfusionWorkbench")) { // Thaumcraft 3
+        } else if (isExact(guiScreen, "thaumcraft.client.gui.GuiArcaneWorkbench")
+                || isExact(guiScreen, "thaumcraft.client.gui.GuiInfusionWorkbench")) { // Thaumcraft 3
             result.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
             result.put(ContainerSection.CRAFTING_IN_PERSISTENT, slots.subList(2, 11));
         } else if (isExact(guiScreen, "com.pahimar.ee3.client.gui.inventory.GuiPortableCrafting")) {
@@ -185,14 +168,6 @@ public class InvTweaksModCompatibility {
 
         return result;
 
-    }
-
-    private static boolean is(GuiScreen guiScreen, String className) {
-        try {
-            return guiScreen.getClass().getSimpleName().contains(className);
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     private static boolean isExact(GuiScreen guiScreen, String className) {

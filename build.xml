@@ -21,7 +21,8 @@
     </condition>
 
     <property name="temp.dir" value="${build.dir}/temp"/>
-    <property name="src.dir" value="src/minecraft"/>
+    <property name="src.orig.dir" value="src/minecraft"/>
+    <property name="src.dir" value="${build.dir}/src_filtered"/>
     <property name="mcp.dir" value="${forge.dir}/mcp"/>
     <property name="mcp.mappings.dir" value="${forge.dir}/mcp/conf"/>
     <property name="class.dir" value="${build.dir}/classes"/>
@@ -43,7 +44,6 @@
     <condition property="minecraft.jar.exists">
         <available file="${minecraft.mcp.jar}"/>
     </condition>
-
 
     <path id="invtweaks.classpath">
         <pathelement location="${mcp.dir}/bin/minecraft"/>
@@ -101,11 +101,26 @@
         </jar>
     </target>
 
-    <target name="build-invtweaks" depends="install-forge">
+    <target name="build-invtweaks" depends="install-forge, filter-src">
+        <delete dir="${class.dir}" failonerror="no"/>
         <mkdir dir="${class.dir}"/>
-        <depend srcdir="${src.dir}" destdir="${class.dir}" closure="yes"/>
         <javac srcdir="${src.dir}" destdir="${class.dir}" target="1.6" source="1.6"
                 classpathref="invtweaks.classpath" debug="true" debuglevel="lines,source" includeAntRuntime="false"/>
+    </target>
+
+    <target name="filter-src">
+        <delete dir="${src.dir}" failonerror="no"/>
+        <mkdir dir="${src.dir}"/>
+        <copy todir="${src.dir}">
+            <fileset dir="${src.orig.dir}" excludes="**/*.png"/>
+            <filterset>
+                <filter token="VERSION" value="${invtweaks.version}"/>
+                <filter token="MCVERSION" value="${minecraft.version}"/>
+            </filterset>
+        </copy>
+        <copy todir="${src.dir}">
+            <fileset dir="${src.orig.dir}" includes="**/*.png"/>
+        </copy>
     </target>
 
     <target name="build-minecraft-inheritance" depends="jar-minecraft" unless="minecraft.inheritance.exists">

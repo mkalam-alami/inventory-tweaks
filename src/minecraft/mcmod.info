@@ -3,8 +3,8 @@
     "modid": "inventorytweaks",
     "name": "Inventory Tweaks",
     "description": "Tweaks to inventory handling for ease of use, including sorting and automatic replacement of broken tools or exhausted stacks of items.",
-    "mcversion": "1.5",
-    "version": "1.54-dev",
+    "mcversion": "@MCVERSION@",
+    "version": "@VERSION@",
     "url": "https://github.com/Kobata/inventory-tweaks",
     "updateUrl": "",
     "authors": [

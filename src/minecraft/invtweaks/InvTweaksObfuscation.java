@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,29 +169,82 @@ public class InvTweaksObfuscation {
         return guiScreen.height;
     }
 
+    Field guicontainer_x = null;
     public int getGuiX(GuiContainer guiContainer) {
-        return (Integer) ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "field_74198_m", "guiLeft");
+        if(guicontainer_x == null) {
+            guicontainer_x = ReflectionHelper.findField(GuiContainer.class, "field_74198_m", "guiLeft");
+        }
+
+        try {
+            return (Integer) guicontainer_x.get(guiContainer);
+        } catch (IllegalAccessException e) {
+            return 0;
+        }
     }
 
+    Field guicontainer_y = null;
     public int getGuiY(GuiContainer guiContainer) {
-        return (Integer) ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "field_74197_n", "guiTop");
+        if(guicontainer_y == null) {
+            guicontainer_y = ReflectionHelper.findField(GuiContainer.class, "field_74197_n", "guiTop");
+        }
+
+        try {
+            return (Integer) guicontainer_y.get(guiContainer);
+        } catch (IllegalAccessException e) {
+            return 0;
+        }
     }
 
+    Field guicontainer_width = null;
     public int getGuiWidth(GuiContainer guiContainer) {
-        return (Integer) ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "field_74194_b", "xSize");
+        if(guicontainer_width == null) {
+            guicontainer_width = ReflectionHelper.findField(GuiContainer.class, "field_74194_b", "xSize");
+        }
+
+        try {
+            return (Integer) guicontainer_width.get(guiContainer);
+        } catch (IllegalAccessException e) {
+            return 0;
+        }
     }
 
+    Field guicontainer_height = null;
     public int getGuiHeight(GuiContainer guiContainer) {
-        return (Integer) ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class, guiContainer, "field_74195_c", "ySize");
+        if(guicontainer_height == null) {
+            guicontainer_height = ReflectionHelper.findField(GuiContainer.class, "field_74195_c", "ySize");
+        }
+
+        try {
+            return (Integer) guicontainer_height.get(guiContainer);
+        } catch (IllegalAccessException e) {
+            return 0;
+        }
     }
 
+    Field guiscreen_controllist = null;
     @SuppressWarnings("unchecked")
     public List<Object> getControlList(GuiScreen guiScreen) {
-        return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, guiScreen, "field_73887_h", "buttonList");
+        if(guiscreen_controllist == null) {
+            guiscreen_controllist = ReflectionHelper.findField(GuiScreen.class, "field_73887_h", "buttonList");
+        }
+
+        try {
+            return (List<Object>)guiscreen_controllist.get(guiScreen);
+        } catch (IllegalAccessException e) {
+            return new ArrayList<Object>();
+        }
     }
 
     public void setControlList(GuiScreen guiScreen, List<?> controlList) {
-        ObfuscationReflectionHelper.setPrivateValue(GuiScreen.class, guiScreen, controlList, "field_73887_h", "buttonList");
+        if(guiscreen_controllist == null) {
+            guiscreen_controllist = ReflectionHelper.findField(GuiScreen.class, "field_73887_h", "buttonList");
+        }
+
+        try {
+            guiscreen_controllist.set(guiScreen, controlList);
+        } catch (IllegalAccessException e) {
+            // We can't set it, so don't.
+        }
     }
 
     public GuiContainer asGuiContainer(GuiScreen guiScreen) {

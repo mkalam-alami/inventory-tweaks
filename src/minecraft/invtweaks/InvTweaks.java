@@ -74,6 +74,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private boolean sortKeyDown = false;
 
     private boolean itemPickupPending = false;
+    private boolean isNEILoaded;
 
 
     /**
@@ -89,6 +90,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         // Store instance
         instance = this;
+        isNEILoaded = Loader.isModLoaded("NotEnoughItems");
 
         // Load config files
         cfgManager = new InvTweaksConfigManager(mc);
@@ -602,8 +604,9 @@ public class InvTweaks extends InvTweaksObfuscation {
             int w = 10, h = 10;
 
             // Re-layout when NEI changes states.
-            boolean relayout = wasNEIEnabled != isNotEnoughItemsEnabled();
-            wasNEIEnabled = isNotEnoughItemsEnabled();
+            final boolean isNEIEnabled = isNotEnoughItemsEnabled();
+            boolean relayout = wasNEIEnabled != isNEIEnabled;
+            wasNEIEnabled = isNEIEnabled;
 
             // Look for the mods buttons
             boolean customButtonsAdded = false;
@@ -653,7 +656,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     boolean isChestWayTooBig = mods.isChestWayTooBig(guiScreen);
 
                     // NotEnoughItems compatibility
-                    if (isChestWayTooBig && isNotEnoughItemsEnabled()) {
+                    if (isChestWayTooBig && isNEIEnabled) {
                         x = getGuiX(guiContainer) + getGuiWidth(guiContainer) - 35;
                         y += 50;
                     }
@@ -732,7 +735,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     @SuppressWarnings("unchecked")
     private boolean isNotEnoughItemsEnabled() {
-        if (Loader.isModLoaded("NotEnoughItems")) {
+        if (isNEILoaded) {
             if (neiClientConfig == null) {
                 try {
                     neiClientConfig = Class.forName("codechicken.nei.NEIClientConfig");

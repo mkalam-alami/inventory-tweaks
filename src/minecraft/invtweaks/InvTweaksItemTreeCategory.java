@@ -2,6 +2,7 @@ package invtweaks;
 
 
 import invtweaks.api.IItemTreeCategory;
+import invtweaks.api.IItemTreeItem;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -15,8 +16,8 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
 
     private static final Logger log = InvTweaks.log;
 
-    private final Map<Integer, List<InvTweaksItemTreeItem>> items =
-            new HashMap<Integer, List<InvTweaksItemTreeItem>>();
+    private final Map<Integer, List<IItemTreeItem>> items =
+            new HashMap<Integer, List<IItemTreeItem>>();
     private final Vector<String> matchingItems = new Vector<String>();
     private final Vector<IItemTreeCategory> subCategories =
             new Vector<IItemTreeCategory>();
@@ -28,10 +29,10 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
     }
 
     @Override
-    public boolean contains(InvTweaksItemTreeItem item) {
-        List<InvTweaksItemTreeItem> storedItems = items.get(item.getId());
+    public boolean contains(IItemTreeItem item) {
+        List<IItemTreeItem> storedItems = items.get(item.getId());
         if (storedItems != null) {
-            for (InvTweaksItemTreeItem storedItem : storedItems) {
+            for (IItemTreeItem storedItem : storedItems) {
                 if (storedItem.equals(item))
                     return true;
             }
@@ -50,11 +51,11 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
     }
 
     @Override
-    public void addItem(InvTweaksItemTreeItem item) {
+    public void addItem(IItemTreeItem item) {
 
         // Add item to category
         if (items.get(item.getId()) == null) {
-            List<InvTweaksItemTreeItem> itemList = new ArrayList<InvTweaksItemTreeItem>();
+            List<IItemTreeItem> itemList = new ArrayList<IItemTreeItem>();
             itemList.add(item);
             items.put(item.getId(), itemList);
         } else {
@@ -126,7 +127,7 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
     }
 
     @Override
-    public Collection<List<InvTweaksItemTreeItem>> getItems() {
+    public Collection<List<IItemTreeItem>> getItems() {
         return items.values();
     }
 

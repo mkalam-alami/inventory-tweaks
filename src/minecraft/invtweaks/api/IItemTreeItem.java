@@ -22,7 +22,7 @@
 
 package invtweaks.api;
 
-public interface IItemTreeItem {
+public interface IItemTreeItem extends Comparable<IItemTreeItem> {
     String getName();
 
     int getId();

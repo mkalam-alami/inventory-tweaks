@@ -3,6 +3,7 @@ package invtweaks;
 
 import invtweaks.api.IItemTree;
 import invtweaks.api.IItemTreeCategory;
+import invtweaks.api.IItemTreeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary;
@@ -33,15 +34,15 @@ public class InvTweaksItemTree implements IItemTree {
     /**
      * Items stored by ID. A same ID can hold several names.
      */
-    private Map<Integer, Vector<InvTweaksItemTreeItem>> itemsById =
-            new HashMap<Integer, Vector<InvTweaksItemTreeItem>>(500);
-    private static Vector<InvTweaksItemTreeItem> defaultItems = null;
+    private Map<Integer, Vector<IItemTreeItem>> itemsById =
+            new HashMap<Integer, Vector<IItemTreeItem>>(500);
+    private static Vector<IItemTreeItem> defaultItems = null;
 
     /**
      * Items stored by name. A same name can match several IDs.
      */
-    private Map<String, Vector<InvTweaksItemTreeItem>> itemsByName =
-            new HashMap<String, Vector<InvTweaksItemTreeItem>>(500);
+    private Map<String, Vector<IItemTreeItem>> itemsByName =
+            new HashMap<String, Vector<IItemTreeItem>>(500);
 
     private String rootCategory;
 
@@ -52,7 +53,7 @@ public class InvTweaksItemTree implements IItemTree {
     public void reset() {
 
         if (defaultItems == null) {
-            defaultItems = new Vector<InvTweaksItemTreeItem>();
+            defaultItems = new Vector<IItemTreeItem>();
             defaultItems.add(new InvTweaksItemTreeItem(UNKNOWN_ITEM, -1, InvTweaksConst.DAMAGE_WILDCARD, Integer.MAX_VALUE));
         }
 
@@ -71,13 +72,13 @@ public class InvTweaksItemTree implements IItemTree {
      * @param keyword
      */
     @Override
-    public boolean matches(List<InvTweaksItemTreeItem> items, String keyword) {
+    public boolean matches(List<IItemTreeItem> items, String keyword) {
 
         if (items == null)
             return false;
 
         // The keyword is an item
-        for (InvTweaksItemTreeItem item : items) {
+        for (IItemTreeItem item : items) {
             if (item.getName() != null && item.getName().equals(keyword)) {
                 return true;
             }
@@ -86,7 +87,7 @@ public class InvTweaksItemTree implements IItemTree {
         // The keyword is a category
         IItemTreeCategory category = getCategory(keyword);
         if (category != null) {
-            for (InvTweaksItemTreeItem item : items) {
+            for (IItemTreeItem item : items) {
                 if (category.contains(item)) {
                     return true;
                 }
@@ -110,7 +111,7 @@ public class InvTweaksItemTree implements IItemTree {
 
     @Override
     public int getKeywordOrder(String keyword) {
-        List<InvTweaksItemTreeItem> items = getItems(keyword);
+        List<IItemTreeItem> items = getItems(keyword);
         if (items != null && items.size() != 0) {
             return items.get(0).getOrder();
         } else {
@@ -168,16 +169,16 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
-    public List<InvTweaksItemTreeItem> getItems(int id, int damage) {
-        List<InvTweaksItemTreeItem> items = itemsById.get(id);
-        List<InvTweaksItemTreeItem> filteredItems = new ArrayList<InvTweaksItemTreeItem>();
+    public List<IItemTreeItem> getItems(int id, int damage) {
+        List<IItemTreeItem> items = itemsById.get(id);
+        List<IItemTreeItem> filteredItems = new ArrayList<IItemTreeItem>();
         if (items != null) {
             filteredItems.addAll(items);
         }
 
         // Filter items of same ID, but different damage value
         if (items != null && !items.isEmpty()) {
-            for (InvTweaksItemTreeItem item : items) {
+            for (IItemTreeItem item : items) {
                 if (item.getDamage() != InvTweaksConst.DAMAGE_WILDCARD && item.getDamage() != damage) {
                     filteredItems.remove(item);
                 }
@@ -186,10 +187,10 @@ public class InvTweaksItemTree implements IItemTree {
 
         // If there's no matching item, create new ones
         if (filteredItems.isEmpty()) {
-            InvTweaksItemTreeItem newItemId = new InvTweaksItemTreeItem(
+            IItemTreeItem newItemId = new InvTweaksItemTreeItem(
                     String.format("%d-%d", id, damage),
                     id, damage, 5000 + id * 16 + damage);
-            InvTweaksItemTreeItem newItemDamage = new InvTweaksItemTreeItem(
+            IItemTreeItem newItemDamage = new InvTweaksItemTreeItem(
                     Integer.toString(id),
                     id, InvTweaksConst.DAMAGE_WILDCARD, 5000 + id * 16);
             addItem(getRootCategory().getName(), newItemId);
@@ -198,7 +199,7 @@ public class InvTweaksItemTree implements IItemTree {
             filteredItems.add(newItemDamage);
         }
 
-        Iterator<InvTweaksItemTreeItem> it = filteredItems.iterator();
+        Iterator<IItemTreeItem> it = filteredItems.iterator();
         while (it.hasNext()) {
             if (it.next() == null) {
                 it.remove();
@@ -209,13 +210,13 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
-    public List<InvTweaksItemTreeItem> getItems(String name) {
+    public List<IItemTreeItem> getItems(String name) {
         return itemsByName.get(name);
     }
 
     @Override
-    public InvTweaksItemTreeItem getRandomItem(Random r) {
-        return (InvTweaksItemTreeItem) itemsByName.values()
+    public IItemTreeItem getRandomItem(Random r) {
+        return (IItemTreeItem) itemsByName.values()
                 .toArray()[r.nextInt(itemsByName.size())];
     }
 
@@ -247,7 +248,7 @@ public class InvTweaksItemTree implements IItemTree {
 
     @Override
     public void addItem(String parentCategory,
-                        InvTweaksItemTreeItem newItem) throws NullPointerException {
+                        IItemTreeItem newItem) throws NullPointerException {
         // Build tree
         categories.get(parentCategory.toLowerCase()).addItem(newItem);
 
@@ -255,14 +256,14 @@ public class InvTweaksItemTree implements IItemTree {
         if (itemsByName.containsKey(newItem.getName())) {
             itemsByName.get(newItem.getName()).add(newItem);
         } else {
-            Vector<InvTweaksItemTreeItem> list = new Vector<InvTweaksItemTreeItem>();
+            Vector<IItemTreeItem> list = new Vector<IItemTreeItem>();
             list.add(newItem);
             itemsByName.put(newItem.getName(), list);
         }
         if (itemsById.containsKey(newItem.getId())) {
             itemsById.get(newItem.getId()).add(newItem);
         } else {
-            Vector<InvTweaksItemTreeItem> list = new Vector<InvTweaksItemTreeItem>();
+            Vector<IItemTreeItem> list = new Vector<IItemTreeItem>();
             list.add(newItem);
             itemsById.put(newItem.getId(), list);
         }
@@ -283,8 +284,8 @@ public class InvTweaksItemTree implements IItemTree {
             log(subCategory, indentLevel + 1);
         }
 
-        for (List<InvTweaksItemTreeItem> itemList : category.getItems()) {
-            for (InvTweaksItemTreeItem item : itemList) {
+        for (List<IItemTreeItem> itemList : category.getItems()) {
+            for (IItemTreeItem item : itemList) {
                 log.info(logIdent + "  " + item + " " +
                         item.getId() + " " + item.getDamage());
             }

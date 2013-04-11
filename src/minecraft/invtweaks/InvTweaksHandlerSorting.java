@@ -1,6 +1,7 @@
 package invtweaks;
 
 import invtweaks.api.ContainerSection;
+import invtweaks.api.IItemTreeItem;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -163,7 +164,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
                 // If the rule is strong enough to move the item and it matches the item, move it
                 if (hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
-                    List<InvTweaksItemTreeItem> fromItems = tree.getItems(
+                    List<IItemTreeItem> fromItems = tree.getItems(
                             getItemID(from), getItemDamage(from));
                     if (tree.matches(fromItems, rule.getKeyword())) {
 
@@ -620,7 +621,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     }
 
     private int getItemOrder(ItemStack itemStack) {
-        List<InvTweaksItemTreeItem> items = tree.getItems(
+        List<IItemTreeItem> items = tree.getItems(
                 getItemID(itemStack), getItemDamage(itemStack));
         return (items != null && items.size() > 0)
                 ? items.get(0).getOrder()
@@ -632,8 +633,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         rules = new Vector<InvTweaksConfigSortingRule>();
 
 
-        Map<InvTweaksItemTreeItem, Integer> stats = computeContainerStats();
-        List<InvTweaksItemTreeItem> itemOrder = new ArrayList<InvTweaksItemTreeItem>();
+        Map<IItemTreeItem, Integer> stats = computeContainerStats();
+        List<IItemTreeItem> itemOrder = new ArrayList<IItemTreeItem>();
 
         int distinctItems = stats.size();
         int columnSize = getContainerColumnSize(rowSize);
@@ -650,11 +651,11 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             return;
 
         // (Partially) sort stats by decreasing item stack count
-        List<InvTweaksItemTreeItem> unorderedItems = new ArrayList<InvTweaksItemTreeItem>(stats.keySet());
+        List<IItemTreeItem> unorderedItems = new ArrayList<IItemTreeItem>(stats.keySet());
         boolean hasStacksToOrderFirst = true;
         while (hasStacksToOrderFirst) {
             hasStacksToOrderFirst = false;
-            for (InvTweaksItemTreeItem item : unorderedItems) {
+            for (IItemTreeItem item : unorderedItems) {
                 Integer value = stats.get(item);
                 if (value > ((horizontal) ? rowSize : columnSize)
                         && !itemOrder.contains(item)) {
@@ -681,7 +682,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         char column = '1', maxColumn = (char) (column - 1 + rowSize);
 
         // Create rules
-        for (InvTweaksItemTreeItem item : itemOrder) {
+        for (IItemTreeItem item : itemOrder) {
 
             // Adapt rule dimensions to fit the amount
             int thisSpaceWidth = spaceWidth,
@@ -760,16 +761,16 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     }
 
-    private Map<InvTweaksItemTreeItem, Integer> computeContainerStats() {
-        Map<InvTweaksItemTreeItem, Integer> stats = new HashMap<InvTweaksItemTreeItem, Integer>();
-        Map<Integer, InvTweaksItemTreeItem> itemSearch = new HashMap<Integer, InvTweaksItemTreeItem>();
+    private Map<IItemTreeItem, Integer> computeContainerStats() {
+        Map<IItemTreeItem, Integer> stats = new HashMap<IItemTreeItem, Integer>();
+        Map<Integer, IItemTreeItem> itemSearch = new HashMap<Integer, IItemTreeItem>();
 
         for (int i = 0; i < size; i++) {
             ItemStack stack = containerMgr.getItemStack(i);
             if (stack != null) {
                 int itemSearchKey = getItemID(stack) * 100000 +
                         ((getMaxStackSize(stack) != 1) ? getItemDamage(stack) : 0);
-                InvTweaksItemTreeItem item = itemSearch.get(itemSearchKey);
+                IItemTreeItem item = itemSearch.get(itemSearchKey);
                 if (item == null) {
                     item = tree.getItems(getItemID(stack),
                             getItemDamage(stack)).get(0);

@@ -22,8 +22,6 @@
 
 package invtweaks.api;
 
-import invtweaks.InvTweaksItemTreeItem;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -31,7 +29,7 @@ import java.util.Random;
 public interface IItemTree {
     public void registerOre(String category, String name, String oreName, int order);
 
-    boolean matches(List<InvTweaksItemTreeItem> items, String keyword);
+    boolean matches(List<IItemTreeItem> items, String keyword);
 
     boolean isKeywordValid(String keyword);
 
@@ -43,11 +41,11 @@ public interface IItemTree {
 
     boolean isItemUnknown(int id, int damage);
 
-    List<InvTweaksItemTreeItem> getItems(int id, int damage);
+    List<IItemTreeItem> getItems(int id, int damage);
 
-    List<InvTweaksItemTreeItem> getItems(String name);
+    List<IItemTreeItem> getItems(String name);
 
-    InvTweaksItemTreeItem getRandomItem(Random r);
+    IItemTreeItem getRandomItem(Random r);
 
     boolean containsItem(String name);
 
@@ -59,7 +57,7 @@ public interface IItemTree {
                      IItemTreeCategory newCategory) throws NullPointerException;
 
     void addItem(String parentCategory,
-                 InvTweaksItemTreeItem newItem) throws NullPointerException;
+                 IItemTreeItem newItem) throws NullPointerException;
 
     int getKeywordDepth(String keyword);
 

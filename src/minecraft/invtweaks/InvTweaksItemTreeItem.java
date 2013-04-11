@@ -7,7 +7,7 @@ import invtweaks.api.IItemTreeItem;
  *
  * @author Jimeo Wan
  */
-public class InvTweaksItemTreeItem implements Comparable<InvTweaksItemTreeItem>,IItemTreeItem {
+public class InvTweaksItemTreeItem implements IItemTreeItem {
 
     private String name;
     private int id;
@@ -52,9 +52,9 @@ public class InvTweaksItemTreeItem implements Comparable<InvTweaksItemTreeItem>,
      * matches the item constraints (the opposite can be false).
      */
     public boolean equals(Object o) {
-        if (o == null || !(o instanceof InvTweaksItemTreeItem))
+        if (o == null || !(o instanceof IItemTreeItem))
             return false;
-        InvTweaksItemTreeItem item = (InvTweaksItemTreeItem) o;
+        IItemTreeItem item = (IItemTreeItem) o;
         return id == item.getId() && (damage == InvTweaksConst.DAMAGE_WILDCARD || damage == item.getDamage());
     }
 
@@ -63,8 +63,8 @@ public class InvTweaksItemTreeItem implements Comparable<InvTweaksItemTreeItem>,
     }
 
     @Override
-    public int compareTo(InvTweaksItemTreeItem item) {
-        return item.order - order;
+    public int compareTo(IItemTreeItem item) {
+        return item.getOrder() - getOrder();
     }
 
 }

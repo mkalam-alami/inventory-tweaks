@@ -22,21 +22,19 @@
 
 package invtweaks.api;
 
-import invtweaks.InvTweaksItemTreeItem;
-
 import java.util.Collection;
 import java.util.List;
 
 public interface IItemTreeCategory {
-    boolean contains(InvTweaksItemTreeItem item);
+    boolean contains(IItemTreeItem item);
 
     void addCategory(IItemTreeCategory category);
 
-    void addItem(InvTweaksItemTreeItem item);
+    void addItem(IItemTreeItem item);
 
     Collection<IItemTreeCategory> getSubCategories();
 
-    Collection<List<InvTweaksItemTreeItem>> getItems();
+    Collection<List<IItemTreeItem>> getItems();
 
     String getName();
 

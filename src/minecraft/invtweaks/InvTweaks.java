@@ -30,8 +30,8 @@ import java.util.logging.Logger;
  * @author Jimeo Wan
  *         <p/>
  *         Contact: jimeo.wan (at) gmail (dot) com
- *         Website: {@link http://wan.ka.free.fr/?invtweaks}
- *         Source code: {@link https://github.com/jimeowan/inventory-tweaks}
+ *         Website: <a href="https://inventory-tweaks.readthedocs.org/">https://inventory-tweaks.readthedocs.org/</a>
+ *         Source code: <a href="https://github.com/kobata/inventory-tweaks">GitHub</a>
  *         License: MIT
  */
 public class InvTweaks extends InvTweaksObfuscation {
@@ -123,7 +123,7 @@ public class InvTweaks extends InvTweaksObfuscation {
      * To be called on each tick when a menu is open.
      * Handles the GUI additions and the middle clicking.
      *
-     * @param GuiScreen
+     * @param guiScreen
      */
     public void onTickInGUI(GuiScreen guiScreen) {
         synchronized (this) {
@@ -288,9 +288,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     /**
-     * Returns the mods single instance.
-     *
-     * @return
+     * @return InvTweaks instance
      */
     public static InvTweaks getInstance() {
         return instance;

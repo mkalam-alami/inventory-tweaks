@@ -27,7 +27,6 @@ public class InvTweaksModCompatibility {
      * despite not being a GuiChest or a GuiDispenser.
      *
      * @param guiScreen
-     * @return
      */
     public boolean isSpecialChest(GuiScreen guiScreen) {
         return getContainerGUIAnnotation(guiScreen.getClass()) != null // API-marked classes
@@ -64,7 +63,6 @@ public class InvTweaksModCompatibility {
      *
      * @param guiContainer
      * @param defaultValue
-     * @return
      */
     public int getSpecialChestRowSize(GuiContainer guiContainer, int defaultValue) {
         ContainerGUI annotation = getContainerGUIAnnotation(guiContainer.getClass());
@@ -122,7 +120,6 @@ public class InvTweaksModCompatibility {
      * Returns true if the screen is the inventory screen, despite not being a GuiInventory.
      *
      * @param guiScreen
-     * @return
      */
     public boolean isSpecialInventory(GuiScreen guiScreen) {
         if (getInventoryGUIAnnotation(guiScreen.getClass()) != null) {

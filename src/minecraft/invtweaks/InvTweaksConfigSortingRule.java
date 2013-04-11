@@ -48,9 +48,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     }
 
     /**
-     * An array of preferred positions (from the most to the less preferred).
-     *
-     * @return
+     * @return An array of preferred positions (from the most to the less preferred).
      */
     public int[] getPreferredSlots() {
         return preferredPositions;
@@ -68,9 +66,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     }
 
     /**
-     * Returns rule priority (for rule sorting)
-     *
-     * @return
+     * @return rule priority (for rule sorting)
      */
     public int getPriority() {
         return priority;

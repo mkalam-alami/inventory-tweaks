@@ -391,7 +391,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     /**
      * Returns the size of a section of the container.
      *
-     * @param slot
+     * @param section
      * @return The size, or 0 if there is no such section.
      */
     public int getSize(ContainerSection section) {
@@ -450,7 +450,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param slotNumber
      * @param preferInventory Set to true if you prefer to have the index according
      *                        to the whole inventory, instead of a more specific section (hotbar/not hotbar)
-     * @return
+     * @return Full index of slot in the container
      */
     public int getSlotIndex(int slotNumber, boolean preferInventory) {
         // TODO Caching with getSlotSection
@@ -494,7 +494,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * Returns an ItemStack from the wanted section and slot.
      *
      * @param section
-     * @param slot
+     * @param index
      * @return An ItemStack or null.
      */
     public ItemStack getItemStack(ContainerSection section, int index)

@@ -289,9 +289,7 @@ public class InvTweaksConfig {
     }
 
     /**
-     * Returns all sorting rules, themselves sorted by decreasing priority.
-     *
-     * @return
+     * @return all sorting rules, themselves sorted by decreasing priority
      */
     public Vector<InvTweaksConfigSortingRule> getRules() {
         return rulesets.get(currentRuleset).getRules();

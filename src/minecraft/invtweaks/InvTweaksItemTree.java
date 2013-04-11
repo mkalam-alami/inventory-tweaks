@@ -62,12 +62,11 @@ public class InvTweaksItemTree {
     }
 
     /**
-     * Checks it given item ID matches a given keyword (either the item's name
+     * Checks if given item ID matches a given keyword (either the item's name
      * is the keyword, or it is in the keyword category)
      *
-     * @param item
+     * @param items
      * @param keyword
-     * @return
      */
     public boolean matches(List<InvTweaksItemTreeItem> items, String keyword) {
 
@@ -124,7 +123,6 @@ public class InvTweaksItemTree {
      * item or a registered category)
      *
      * @param keyword
-     * @return
      */
     public boolean isKeywordValid(String keyword) {
 

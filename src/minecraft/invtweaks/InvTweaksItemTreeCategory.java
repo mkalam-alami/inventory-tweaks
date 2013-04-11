@@ -110,9 +110,7 @@ public class InvTweaksItemTreeCategory {
     }
 
     /**
-     * Returns a references to all categories contained in this one.
-     *
-     * @return
+     * @return all categories contained in this one.
      */
     public Collection<InvTweaksItemTreeCategory> getSubCategories() {
         return subCategories;

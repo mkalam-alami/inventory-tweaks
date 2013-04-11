@@ -13,8 +13,8 @@ import cpw.mods.fml.common.network.NetworkMod;
  * @author Jimeo Wan
  *         <p/>
  *         Contact: jimeo.wan (at) gmail (dot) com
- *         Website: {@link http://wan.ka.free.fr/?invtweaks}
- *         Source code: {@link https://github.com/mkalam-alami/inventory-tweaks}
+ *         Website: <a href="https://inventory-tweaks.readthedocs.org/">https://inventory-tweaks.readthedocs.org/</a>
+ *         Source code: <a href="https://github.com/kobata/inventory-tweaks">GitHub</a>
  *         License: MIT
  */
 @Mod(modid = "inventorytweaks",

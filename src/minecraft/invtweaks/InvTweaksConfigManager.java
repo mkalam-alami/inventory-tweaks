@@ -83,8 +83,6 @@ public class InvTweaksConfigManager {
     /**
      * Tries to load mod configuration from file, with error handling. If it
      * fails, the config attribute will remain null.
-     *
-     * @param config
      */
     private boolean loadConfig() {
 

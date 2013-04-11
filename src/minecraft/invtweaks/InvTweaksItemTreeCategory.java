@@ -1,6 +1,9 @@
 package invtweaks;
 
 
+import invtweaks.api.IItemTreeCategory;
+import invtweaks.api.IItemTreeItem;
+
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -9,15 +12,15 @@ import java.util.logging.Logger;
  *
  * @author Jimeo Wan
  */
-public class InvTweaksItemTreeCategory {
+public class InvTweaksItemTreeCategory implements IItemTreeCategory {
 
     private static final Logger log = InvTweaks.log;
 
-    private final Map<Integer, List<InvTweaksItemTreeItem>> items =
-            new HashMap<Integer, List<InvTweaksItemTreeItem>>();
+    private final Map<Integer, List<IItemTreeItem>> items =
+            new HashMap<Integer, List<IItemTreeItem>>();
     private final Vector<String> matchingItems = new Vector<String>();
-    private final Vector<InvTweaksItemTreeCategory> subCategories =
-            new Vector<InvTweaksItemTreeCategory>();
+    private final Vector<IItemTreeCategory> subCategories =
+            new Vector<IItemTreeCategory>();
     private String name;
     private int order = -1;
 
@@ -25,15 +28,16 @@ public class InvTweaksItemTreeCategory {
         this.name = (name != null) ? name.toLowerCase() : null;
     }
 
-    public boolean contains(InvTweaksItemTreeItem item) {
-        List<InvTweaksItemTreeItem> storedItems = items.get(item.getId());
+    @Override
+    public boolean contains(IItemTreeItem item) {
+        List<IItemTreeItem> storedItems = items.get(item.getId());
         if (storedItems != null) {
-            for (InvTweaksItemTreeItem storedItem : storedItems) {
+            for (IItemTreeItem storedItem : storedItems) {
                 if (storedItem.equals(item))
                     return true;
             }
         }
-        for (InvTweaksItemTreeCategory category : subCategories) {
+        for (IItemTreeCategory category : subCategories) {
             if (category.contains(item)) {
                 return true;
             }
@@ -41,15 +45,17 @@ public class InvTweaksItemTreeCategory {
         return false;
     }
 
-    public void addCategory(InvTweaksItemTreeCategory category) {
+    @Override
+    public void addCategory(IItemTreeCategory category) {
         subCategories.add(category);
     }
 
-    public void addItem(InvTweaksItemTreeItem item) {
+    @Override
+    public void addItem(IItemTreeItem item) {
 
         // Add item to category
         if (items.get(item.getId()) == null) {
-            List<InvTweaksItemTreeItem> itemList = new ArrayList<InvTweaksItemTreeItem>();
+            List<IItemTreeItem> itemList = new ArrayList<IItemTreeItem>();
             itemList.add(item);
             items.put(item.getId(), itemList);
         } else {
@@ -63,12 +69,13 @@ public class InvTweaksItemTreeCategory {
         }
     }
 
+    @Override
     public int getCategoryOrder() {
         if (this.order != -1) {
             return this.order;
         } else {
             int order;
-            for (InvTweaksItemTreeCategory category : subCategories) {
+            for (IItemTreeCategory category : subCategories) {
                 order = category.getCategoryOrder();
                 if (order != -1)
                     return order;
@@ -77,12 +84,13 @@ public class InvTweaksItemTreeCategory {
         }
     }
 
+    @Override
     public int findCategoryOrder(String keyword) {
         if (keyword.equals(name)) {
             return getCategoryOrder();
         } else {
             int result;
-            for (InvTweaksItemTreeCategory category : subCategories) {
+            for (IItemTreeCategory category : subCategories) {
                 result = category.findCategoryOrder(keyword);
                 if (result != -1) {
                     return result;
@@ -92,6 +100,7 @@ public class InvTweaksItemTreeCategory {
         }
     }
 
+    @Override
     public int findKeywordDepth(String keyword) {
         if (name.equals(keyword)) {
             return 0;
@@ -99,7 +108,7 @@ public class InvTweaksItemTreeCategory {
             return 1;
         } else {
             int result;
-            for (InvTweaksItemTreeCategory category : subCategories) {
+            for (IItemTreeCategory category : subCategories) {
                 result = category.findKeywordDepth(keyword);
                 if (result != -1) {
                     return result + 1;
@@ -112,14 +121,17 @@ public class InvTweaksItemTreeCategory {
     /**
      * @return all categories contained in this one.
      */
-    public Collection<InvTweaksItemTreeCategory> getSubCategories() {
+    @Override
+    public Collection<IItemTreeCategory> getSubCategories() {
         return subCategories;
     }
 
-    public Collection<List<InvTweaksItemTreeItem>> getItems() {
+    @Override
+    public Collection<List<IItemTreeItem>> getItems() {
         return items.values();
     }
 
+    @Override
     public String getName() {
         return name;
     }

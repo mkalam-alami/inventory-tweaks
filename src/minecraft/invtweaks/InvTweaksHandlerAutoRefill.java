@@ -1,6 +1,7 @@
 package invtweaks;
 
 import invtweaks.api.ContainerSection;
+import invtweaks.api.IItemTreeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
@@ -52,10 +53,10 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
             //// Search replacement
 
-            List<InvTweaksItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
+            List<IItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
 
             // Find rules that match the slot
-            for (InvTweaksItemTreeItem item : items) {
+            for (IItemTreeItem item : items) {
                 // Since we search a matching item using rules,
                 // create a fake one that matches the exact item first
                 matchingRules.add(new InvTweaksConfigSortingRule(
@@ -81,7 +82,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 for (int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                     candidateStack = container.getItemStack(i);
                     if (candidateStack != null) {
-                        List<InvTweaksItemTreeItem> candidateItems = tree.getItems(
+                        List<IItemTreeItem> candidateItems = tree.getItems(
                                 getItemID(candidateStack),
                                 getItemDamage(candidateStack));
                         if (tree.matches(candidateItems, rule.getKeyword())) {

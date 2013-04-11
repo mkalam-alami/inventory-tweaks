@@ -1,5 +1,6 @@
 package invtweaks;
 
+import invtweaks.api.IItemTreeItem;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
@@ -332,7 +333,7 @@ public class InvTweaksConfig {
 
     public boolean isAutoRefillEnabled(int itemID, int itemDamage) {
         if (!getProperty(PROP_ENABLE_AUTO_REFILL).equals(VALUE_FALSE)) {
-            List<InvTweaksItemTreeItem> items = tree.getItems(itemID, itemDamage);
+            List<IItemTreeItem> items = tree.getItems(itemID, itemDamage);
             Vector<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();
             boolean found = false;
             for (String keyword : autoReplaceRules) {

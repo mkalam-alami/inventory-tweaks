@@ -1,6 +1,8 @@
 package invtweaks.forge;
 
 import invtweaks.*;
+import invtweaks.api.IItemTree;
+import invtweaks.api.IItemTreeListener;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -9,10 +11,10 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class ForgeItemTreeListener implements InvTweaksItemTreeListener {
+public class ForgeItemTreeListener implements IItemTreeListener {
     @SuppressWarnings("unchecked")
     @Override
-    public void onTreeLoaded(InvTweaksItemTree tree) {
+    public void onTreeLoaded(IItemTree tree) {
         try {
             Field toolClassesField = ForgeHooks.class.getDeclaredField("toolClasses");
             toolClassesField.setAccessible(true);

@@ -1,5 +1,6 @@
 package invtweaks;
 
+import invtweaks.api.IItemTreeListener;
 import net.minecraftforge.common.MinecraftForge;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -35,7 +36,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     private static LinkedList<String> categoryStack;
 
     private static boolean treeLoaded = false;
-    private static final List<InvTweaksItemTreeListener> onLoadListeners = new ArrayList<InvTweaksItemTreeListener>();
+    private static final List<IItemTreeListener> onLoadListeners = new ArrayList<IItemTreeListener>();
 
     private static void init() {
         treeVersion = null;
@@ -54,7 +55,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         // Tree loaded event
         synchronized (onLoadListeners) {
             treeLoaded = true;
-            for (InvTweaksItemTreeListener onLoadListener : onLoadListeners) {
+            for (IItemTreeListener onLoadListener : onLoadListeners) {
                 onLoadListener.onTreeLoaded(tree);
             }
         }
@@ -79,7 +80,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         }
     }
 
-    public synchronized static void addOnLoadListener(InvTweaksItemTreeListener listener) {
+    public synchronized static void addOnLoadListener(IItemTreeListener listener) {
         onLoadListeners.add(listener);
         if (treeLoaded) {
             // Late event triggering
@@ -87,7 +88,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         }
     }
 
-    public synchronized static boolean removeOnLoadListener(InvTweaksItemTreeListener listener) {
+    public synchronized static boolean removeOnLoadListener(IItemTreeListener listener) {
         return onLoadListeners.remove(listener);
     }
 

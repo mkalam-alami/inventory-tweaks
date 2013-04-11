@@ -1,11 +1,13 @@
 package invtweaks;
 
+import invtweaks.api.IItemTreeItem;
+
 /**
  * Representation of an item in the item tree.
  *
  * @author Jimeo Wan
  */
-public class InvTweaksItemTreeItem implements Comparable<InvTweaksItemTreeItem> {
+public class InvTweaksItemTreeItem implements Comparable<InvTweaksItemTreeItem>,IItemTreeItem {
 
     private String name;
     private int id;
@@ -25,18 +27,22 @@ public class InvTweaksItemTreeItem implements Comparable<InvTweaksItemTreeItem> 
         this.order = order;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public int getDamage() {
         return damage;
     }
 
+    @Override
     public int getOrder() {
         return order;
     }

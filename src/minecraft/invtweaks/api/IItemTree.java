@@ -53,11 +53,16 @@ public interface IItemTree {
 
     void setRootCategory(IItemTreeCategory category);
 
+    IItemTreeCategory addCategory(String parentCategory,
+                                  String newCategory) throws NullPointerException;
+
     void addCategory(String parentCategory,
                      IItemTreeCategory newCategory) throws NullPointerException;
 
-    void addItem(String parentCategory,
-                 IItemTreeItem newItem) throws NullPointerException;
+    IItemTreeItem addItem(String parentCategory, String name, int id, int damage, int order)
+            throws NullPointerException;
+
+    void addItem(String parentCategory, IItemTreeItem newItem) throws NullPointerException;
 
     int getKeywordDepth(String keyword);
 

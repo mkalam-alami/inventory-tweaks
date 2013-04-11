@@ -237,6 +237,21 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
+    public IItemTreeCategory addCategory(String parentCategory, String newCategory) throws NullPointerException {
+        IItemTreeCategory addedCategory = new InvTweaksItemTreeCategory(newCategory);
+        addCategory(parentCategory, addedCategory);
+        return addedCategory;
+    }
+
+    @Override
+    public IItemTreeItem addItem(String parentCategory, String name, int id, int damage, int order)
+            throws NullPointerException {
+        InvTweaksItemTreeItem addedItem = new InvTweaksItemTreeItem(name, id, damage, order);
+        addItem(parentCategory, addedItem);
+        return addedItem;
+    }
+
+    @Override
     public void addCategory(String parentCategory,
                             IItemTreeCategory newCategory) throws NullPointerException {
         // Build tree

@@ -1,6 +1,7 @@
 package invtweaks;
 
 
+import invtweaks.api.IItemTree;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary;
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author Jimeo Wan
  */
-public class InvTweaksItemTree {
+public class InvTweaksItemTree implements IItemTree {
 
     public static final int MAX_CATEGORY_RANGE = 1000;
     public static final String UNKNOWN_ITEM = "unknown";
@@ -68,6 +69,7 @@ public class InvTweaksItemTree {
      * @param items
      * @param keyword
      */
+    @Override
     public boolean matches(List<InvTweaksItemTreeItem> items, String keyword) {
 
         if (items == null)
@@ -95,6 +97,7 @@ public class InvTweaksItemTree {
 
     }
 
+    @Override
     public int getKeywordDepth(String keyword) {
         try {
             return getRootCategory().findKeywordDepth(keyword);
@@ -104,6 +107,7 @@ public class InvTweaksItemTree {
         }
     }
 
+    @Override
     public int getKeywordOrder(String keyword) {
         List<InvTweaksItemTreeItem> items = getItems(keyword);
         if (items != null && items.size() != 0) {
@@ -124,6 +128,7 @@ public class InvTweaksItemTree {
      *
      * @param keyword
      */
+    @Override
     public boolean isKeywordValid(String keyword) {
 
         // Is the keyword an item?
@@ -141,22 +146,27 @@ public class InvTweaksItemTree {
     /**
      * Returns a reference to all categories.
      */
+    @Override
     public Collection<InvTweaksItemTreeCategory> getAllCategories() {
         return categories.values();
     }
 
+    @Override
     public InvTweaksItemTreeCategory getRootCategory() {
         return categories.get(rootCategory);
     }
 
+    @Override
     public InvTweaksItemTreeCategory getCategory(String keyword) {
         return categories.get(keyword);
     }
 
+    @Override
     public boolean isItemUnknown(int id, int damage) {
         return itemsById.get(id) == null;
     }
 
+    @Override
     public List<InvTweaksItemTreeItem> getItems(int id, int damage) {
         List<InvTweaksItemTreeItem> items = itemsById.get(id);
         List<InvTweaksItemTreeItem> filteredItems = new ArrayList<InvTweaksItemTreeItem>();
@@ -197,28 +207,34 @@ public class InvTweaksItemTree {
         return filteredItems;
     }
 
+    @Override
     public List<InvTweaksItemTreeItem> getItems(String name) {
         return itemsByName.get(name);
     }
 
+    @Override
     public InvTweaksItemTreeItem getRandomItem(Random r) {
         return (InvTweaksItemTreeItem) itemsByName.values()
                 .toArray()[r.nextInt(itemsByName.size())];
     }
 
+    @Override
     public boolean containsItem(String name) {
         return itemsByName.containsKey(name);
     }
 
+    @Override
     public boolean containsCategory(String name) {
         return categories.containsKey(name);
     }
 
+    @Override
     public void setRootCategory(InvTweaksItemTreeCategory category) {
         rootCategory = category.getName();
         categories.put(rootCategory, category);
     }
 
+    @Override
     public void addCategory(String parentCategory,
                             InvTweaksItemTreeCategory newCategory) throws NullPointerException {
         // Build tree
@@ -228,6 +244,7 @@ public class InvTweaksItemTree {
         categories.put(newCategory.getName(), newCategory);
     }
 
+    @Override
     public void addItem(String parentCategory,
                         InvTweaksItemTreeItem newItem) throws NullPointerException {
         // Build tree
@@ -289,6 +306,7 @@ public class InvTweaksItemTree {
         }
     }
 
+    @Override
     public void registerOre(String category, String name, String oreName, int order) {
         for (ItemStack i : OreDictionary.getOres(oreName)) {
             addItem(category, new InvTweaksItemTreeItem(name,

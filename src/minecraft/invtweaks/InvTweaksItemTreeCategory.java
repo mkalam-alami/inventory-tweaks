@@ -1,6 +1,8 @@
 package invtweaks;
 
 
+import invtweaks.api.IItemTreeCategory;
+
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -9,7 +11,7 @@ import java.util.logging.Logger;
  *
  * @author Jimeo Wan
  */
-public class InvTweaksItemTreeCategory {
+public class InvTweaksItemTreeCategory implements IItemTreeCategory {
 
     private static final Logger log = InvTweaks.log;
 
@@ -25,6 +27,7 @@ public class InvTweaksItemTreeCategory {
         this.name = (name != null) ? name.toLowerCase() : null;
     }
 
+    @Override
     public boolean contains(InvTweaksItemTreeItem item) {
         List<InvTweaksItemTreeItem> storedItems = items.get(item.getId());
         if (storedItems != null) {
@@ -41,10 +44,12 @@ public class InvTweaksItemTreeCategory {
         return false;
     }
 
+    @Override
     public void addCategory(InvTweaksItemTreeCategory category) {
         subCategories.add(category);
     }
 
+    @Override
     public void addItem(InvTweaksItemTreeItem item) {
 
         // Add item to category
@@ -112,14 +117,17 @@ public class InvTweaksItemTreeCategory {
     /**
      * @return all categories contained in this one.
      */
+    @Override
     public Collection<InvTweaksItemTreeCategory> getSubCategories() {
         return subCategories;
     }
 
+    @Override
     public Collection<List<InvTweaksItemTreeItem>> getItems() {
         return items.values();
     }
 
+    @Override
     public String getName() {
         return name;
     }

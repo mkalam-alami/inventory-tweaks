@@ -22,10 +22,8 @@
 
 package invtweaks.api;
 
-import invtweaks.InvTweaksItemTree;
-
 import java.util.EventListener;
 
 public interface IItemTreeListener extends EventListener {
-    void onTreeLoaded(InvTweaksItemTree tree);
+    void onTreeLoaded(IItemTree tree);
 }

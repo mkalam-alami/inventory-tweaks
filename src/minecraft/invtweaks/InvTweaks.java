@@ -2,6 +2,7 @@ package invtweaks;
 
 import cpw.mods.fml.common.Loader;
 import invtweaks.api.ContainerSection;
+import invtweaks.api.IItemTree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -208,7 +209,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                 // Find preffered slots
                 List<Integer> prefferedPositions = new LinkedList<Integer>();
-                InvTweaksItemTree tree = config.getTree();
+                IItemTree tree = config.getTree();
                 ItemStack stack = containerMgr.getItemStack(currentSlot);
                 List<InvTweaksItemTreeItem> items = tree.getItems(getItemID(stack),
                         getItemDamage(stack));

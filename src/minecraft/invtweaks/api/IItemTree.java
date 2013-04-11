@@ -22,7 +22,6 @@
 
 package invtweaks.api;
 
-import invtweaks.InvTweaksItemTreeCategory;
 import invtweaks.InvTweaksItemTreeItem;
 
 import java.util.Collection;
@@ -36,11 +35,11 @@ public interface IItemTree {
 
     boolean isKeywordValid(String keyword);
 
-    Collection<InvTweaksItemTreeCategory> getAllCategories();
+    Collection<IItemTreeCategory> getAllCategories();
 
-    InvTweaksItemTreeCategory getRootCategory();
+    IItemTreeCategory getRootCategory();
 
-    InvTweaksItemTreeCategory getCategory(String keyword);
+    IItemTreeCategory getCategory(String keyword);
 
     boolean isItemUnknown(int id, int damage);
 
@@ -54,10 +53,10 @@ public interface IItemTree {
 
     boolean containsCategory(String name);
 
-    void setRootCategory(InvTweaksItemTreeCategory category);
+    void setRootCategory(IItemTreeCategory category);
 
     void addCategory(String parentCategory,
-                     InvTweaksItemTreeCategory newCategory) throws NullPointerException;
+                     IItemTreeCategory newCategory) throws NullPointerException;
 
     void addItem(String parentCategory,
                  InvTweaksItemTreeItem newItem) throws NullPointerException;

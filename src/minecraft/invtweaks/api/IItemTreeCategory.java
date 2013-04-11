@@ -22,7 +22,6 @@
 
 package invtweaks.api;
 
-import invtweaks.InvTweaksItemTreeCategory;
 import invtweaks.InvTweaksItemTreeItem;
 
 import java.util.Collection;
@@ -31,13 +30,19 @@ import java.util.List;
 public interface IItemTreeCategory {
     boolean contains(InvTweaksItemTreeItem item);
 
-    void addCategory(InvTweaksItemTreeCategory category);
+    void addCategory(IItemTreeCategory category);
 
     void addItem(InvTweaksItemTreeItem item);
 
-    Collection<InvTweaksItemTreeCategory> getSubCategories();
+    Collection<IItemTreeCategory> getSubCategories();
 
     Collection<List<InvTweaksItemTreeItem>> getItems();
 
     String getName();
+
+    int getCategoryOrder();
+
+    int findCategoryOrder(String keyword);
+
+    int findKeywordDepth(String keyword);
 }

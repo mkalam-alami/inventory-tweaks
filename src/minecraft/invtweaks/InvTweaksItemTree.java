@@ -2,6 +2,7 @@ package invtweaks;
 
 
 import invtweaks.api.IItemTree;
+import invtweaks.api.IItemTreeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary;
@@ -26,8 +27,8 @@ public class InvTweaksItemTree implements IItemTree {
     /**
      * All categories, stored by name
      */
-    private Map<String, InvTweaksItemTreeCategory> categories =
-            new HashMap<String, InvTweaksItemTreeCategory>();
+    private Map<String, IItemTreeCategory> categories =
+            new HashMap<String, IItemTreeCategory>();
 
     /**
      * Items stored by ID. A same ID can hold several names.
@@ -83,7 +84,7 @@ public class InvTweaksItemTree implements IItemTree {
         }
 
         // The keyword is a category
-        InvTweaksItemTreeCategory category = getCategory(keyword);
+        IItemTreeCategory category = getCategory(keyword);
         if (category != null) {
             for (InvTweaksItemTreeItem item : items) {
                 if (category.contains(item)) {
@@ -138,7 +139,7 @@ public class InvTweaksItemTree implements IItemTree {
 
         // Or maybe a category ?
         else {
-            InvTweaksItemTreeCategory category = getCategory(keyword);
+            IItemTreeCategory category = getCategory(keyword);
             return category != null;
         }
     }
@@ -147,17 +148,17 @@ public class InvTweaksItemTree implements IItemTree {
      * Returns a reference to all categories.
      */
     @Override
-    public Collection<InvTweaksItemTreeCategory> getAllCategories() {
+    public Collection<IItemTreeCategory> getAllCategories() {
         return categories.values();
     }
 
     @Override
-    public InvTweaksItemTreeCategory getRootCategory() {
+    public IItemTreeCategory getRootCategory() {
         return categories.get(rootCategory);
     }
 
     @Override
-    public InvTweaksItemTreeCategory getCategory(String keyword) {
+    public IItemTreeCategory getCategory(String keyword) {
         return categories.get(keyword);
     }
 
@@ -229,14 +230,14 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
-    public void setRootCategory(InvTweaksItemTreeCategory category) {
+    public void setRootCategory(IItemTreeCategory category) {
         rootCategory = category.getName();
         categories.put(rootCategory, category);
     }
 
     @Override
     public void addCategory(String parentCategory,
-                            InvTweaksItemTreeCategory newCategory) throws NullPointerException {
+                            IItemTreeCategory newCategory) throws NullPointerException {
         // Build tree
         categories.get(parentCategory.toLowerCase()).addCategory(newCategory);
 
@@ -270,7 +271,7 @@ public class InvTweaksItemTree implements IItemTree {
     /**
      * For debug purposes. Call log(getRootCategory(), 0) to log the whole tree.
      */
-    private void log(InvTweaksItemTreeCategory category, int indentLevel) {
+    private void log(IItemTreeCategory category, int indentLevel) {
 
         String logIdent = "";
         for (int i = 0; i < indentLevel; i++) {
@@ -278,7 +279,7 @@ public class InvTweaksItemTree implements IItemTree {
         }
         log.info(logIdent + category.getName());
 
-        for (InvTweaksItemTreeCategory subCategory : category.getSubCategories()) {
+        for (IItemTreeCategory subCategory : category.getSubCategories()) {
             log(subCategory, indentLevel + 1);
         }
 

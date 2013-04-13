@@ -3,10 +3,12 @@ package invtweaks.forge;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import invtweaks.api.IItemTreeListener;
+import invtweaks.api.InvTweaksAPI;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class CommonProxy {
+public class CommonProxy implements InvTweaksAPI {
     public void preInit(FMLPreInitializationEvent e) {
     }
 
@@ -38,5 +40,15 @@ public class CommonProxy {
 
     public void sortComplete() {
 
+    }
+
+    @Override
+    public void addOnLoadListener(IItemTreeListener listener) {
+
+    }
+
+    @Override
+    public boolean removeOnLoadListener(IItemTreeListener listener) {
+        return false;
     }
 }

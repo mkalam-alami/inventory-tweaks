@@ -15,6 +15,7 @@ import invtweaks.InvTweaks;
 import invtweaks.InvTweaksConfig;
 import invtweaks.InvTweaksConst;
 import invtweaks.InvTweaksItemTreeLoader;
+import invtweaks.api.IItemTreeListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.item.EntityItem;
@@ -88,10 +89,21 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
         }
     }
 
+    @Override
     public void sortComplete() {
         if (serverSupportEnabled) {
             Packet250CustomPayload pkt = new Packet250CustomPayload("InventoryTweaks", new byte[]{InvTweaksConst.PACKET_SORTCOMPLETE});
             PacketDispatcher.sendPacketToServer(pkt);
         }
+    }
+
+    @Override
+    public void addOnLoadListener(IItemTreeListener listener) {
+        InvTweaksItemTreeLoader.addOnLoadListener(listener);
+    }
+
+    @Override
+    public boolean removeOnLoadListener(IItemTreeListener listener) {
+        return InvTweaksItemTreeLoader.removeOnLoadListener(listener);
     }
 }

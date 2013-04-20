@@ -203,83 +203,85 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 shortcut.setScope(ShortcutSpecification.Scope.ONE_STACK);
             }
 
-            if (shortcutConfig.fromSection != null && shortcutConfig.fromIndex != -1) {
-                // Compute shortcut target
-                if (shortcut.getTarget() == ShortcutSpecification.Target.HOTBAR_SLOT) {
-                    shortcutConfig.toSection = ContainerSection.INVENTORY_HOTBAR;
-                    InvTweaksShortcutMapping hotbarShortcut = isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
-                    if (hotbarShortcut != null && !hotbarShortcut.getKeyCodes().isEmpty()) {
-                        String keyName = Keyboard.getKeyName(hotbarShortcut.getKeyCodes().get(0));
-                        shortcutConfig.toIndex = -1 + Integer.parseInt(keyName.replace("NUMPAD", ""));
-                    }
-                } else {
-                    // Compute targetable sections in order
-                    Vector<ContainerSection> orderedSections = new Vector<ContainerSection>();
+            if(shortcutConfig.fromSection != null && shortcutConfig.fromIndex != -1) {
+                if (shortcut.getAction() != ShortcutSpecification.Action.DROP) {
+                    // Compute shortcut target
+                    if (shortcut.getTarget() == ShortcutSpecification.Target.HOTBAR_SLOT) {
+                        shortcutConfig.toSection = ContainerSection.INVENTORY_HOTBAR;
+                        InvTweaksShortcutMapping hotbarShortcut = isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
+                        if (hotbarShortcut != null && !hotbarShortcut.getKeyCodes().isEmpty()) {
+                            String keyName = Keyboard.getKeyName(hotbarShortcut.getKeyCodes().get(0));
+                            shortcutConfig.toIndex = -1 + Integer.parseInt(keyName.replace("NUMPAD", ""));
+                        }
+                    } else {
+                        // Compute targetable sections in order
+                        Vector<ContainerSection> orderedSections = new Vector<ContainerSection>();
 
-                    // (Top part)
-                    if (container.hasSection(ContainerSection.CHEST)) {
-                        orderedSections.add(ContainerSection.CHEST);
-                    } else if (container.hasSection(ContainerSection.CRAFTING_IN)) {
-                        orderedSections.add(ContainerSection.CRAFTING_IN);
-                    } else if (container.hasSection(ContainerSection.CRAFTING_IN_PERSISTENT)) {
-                        orderedSections.add(ContainerSection.CRAFTING_IN_PERSISTENT);
-                    } else if (container.hasSection(ContainerSection.FURNACE_IN)) {
-                        orderedSections.add(ContainerSection.FURNACE_IN);
-                    } else if (container.hasSection(ContainerSection.BREWING_INGREDIENT)) {
-                        ItemStack stack = container.getStack(slot);
-                        if (stack != null) {
-                            if (getItemID(stack) == 373 /* Water Bottle/Potions */) {
-                                orderedSections.add(ContainerSection.BREWING_BOTTLES);
-                            } else {
-                                orderedSections.add(ContainerSection.BREWING_INGREDIENT);
+                        // (Top part)
+                        if (container.hasSection(ContainerSection.CHEST)) {
+                            orderedSections.add(ContainerSection.CHEST);
+                        } else if (container.hasSection(ContainerSection.CRAFTING_IN)) {
+                            orderedSections.add(ContainerSection.CRAFTING_IN);
+                        } else if (container.hasSection(ContainerSection.CRAFTING_IN_PERSISTENT)) {
+                            orderedSections.add(ContainerSection.CRAFTING_IN_PERSISTENT);
+                        } else if (container.hasSection(ContainerSection.FURNACE_IN)) {
+                            orderedSections.add(ContainerSection.FURNACE_IN);
+                        } else if (container.hasSection(ContainerSection.BREWING_INGREDIENT)) {
+                            ItemStack stack = container.getStack(slot);
+                            if (stack != null) {
+                                if (getItemID(stack) == 373 /* Water Bottle/Potions */) {
+                                    orderedSections.add(ContainerSection.BREWING_BOTTLES);
+                                } else {
+                                    orderedSections.add(ContainerSection.BREWING_INGREDIENT);
+                                }
                             }
+                        } else if (container.hasSection(ContainerSection.ENCHANTMENT)) {
+                            orderedSections.add(ContainerSection.ENCHANTMENT);
                         }
-                    } else if (container.hasSection(ContainerSection.ENCHANTMENT)) {
-                        orderedSections.add(ContainerSection.ENCHANTMENT);
-                    }
 
-                    // (Inventory part)
-                    orderedSections.add(ContainerSection.INVENTORY_NOT_HOTBAR);
-                    orderedSections.add(ContainerSection.INVENTORY_HOTBAR);
+                        // (Inventory part)
+                        orderedSections.add(ContainerSection.INVENTORY_NOT_HOTBAR);
+                        orderedSections.add(ContainerSection.INVENTORY_HOTBAR);
 
-                    // Choose target section
-                    if (shortcut.getTarget() != ShortcutSpecification.Target.UNSPECIFIED) { // Explicit section (up/down shortcuts)
-                        int sectionOffset = 0;
-                        if (shortcut.getTarget() == ShortcutSpecification.Target.UP) {
-                            sectionOffset--;
-                        } else if (shortcut.getTarget() == ShortcutSpecification.Target.DOWN) {
-                            sectionOffset++;
-                        }
-                        int fromSectionIndex = orderedSections.indexOf(shortcutConfig.fromSection);
-                        if (fromSectionIndex != -1) {
-                            shortcutConfig.toSection = orderedSections.get(
-                                    (orderedSections.size() + fromSectionIndex + sectionOffset) % orderedSections.size());
-                        } else {
-                            shortcutConfig.toSection = ContainerSection.INVENTORY;
-                        }
-                    } else { // Implicit section
-                        switch (shortcutConfig.fromSection) {
-                            case CHEST:
+                        // Choose target section
+                        if (shortcut.getTarget() != ShortcutSpecification.Target.UNSPECIFIED) { // Explicit section (up/down shortcuts)
+                            int sectionOffset = 0;
+                            if (shortcut.getTarget() == ShortcutSpecification.Target.UP) {
+                                sectionOffset--;
+                            } else if (shortcut.getTarget() == ShortcutSpecification.Target.DOWN) {
+                                sectionOffset++;
+                            }
+                            int fromSectionIndex = orderedSections.indexOf(shortcutConfig.fromSection);
+                            if (fromSectionIndex != -1) {
+                                shortcutConfig.toSection = orderedSections.get(
+                                        (orderedSections.size() + fromSectionIndex + sectionOffset) % orderedSections.size());
+                            } else {
                                 shortcutConfig.toSection = ContainerSection.INVENTORY;
-                                break;
-                            case INVENTORY_HOTBAR:
-                                if (orderedSections.contains(ContainerSection.CHEST)) {
-                                    shortcutConfig.toSection = ContainerSection.CHEST;
-                                } else {
+                            }
+                        } else { // Implicit section
+                            switch (shortcutConfig.fromSection) {
+                                case CHEST:
+                                    shortcutConfig.toSection = ContainerSection.INVENTORY;
+                                    break;
+                                case INVENTORY_HOTBAR:
+                                    if (orderedSections.contains(ContainerSection.CHEST)) {
+                                        shortcutConfig.toSection = ContainerSection.CHEST;
+                                    } else {
+                                        shortcutConfig.toSection = ContainerSection.INVENTORY_NOT_HOTBAR;
+                                    }
+                                    break;
+                                case CRAFTING_IN:
+                                case CRAFTING_IN_PERSISTENT:
+                                case FURNACE_IN:
                                     shortcutConfig.toSection = ContainerSection.INVENTORY_NOT_HOTBAR;
-                                }
-                                break;
-                            case CRAFTING_IN:
-                            case CRAFTING_IN_PERSISTENT:
-                            case FURNACE_IN:
-                                shortcutConfig.toSection = ContainerSection.INVENTORY_NOT_HOTBAR;
-                                break;
-                            default:
-                                if (orderedSections.contains(ContainerSection.CHEST)) {
-                                    shortcutConfig.toSection = ContainerSection.CHEST;
-                                } else {
-                                    shortcutConfig.toSection = ContainerSection.INVENTORY_HOTBAR;
-                                }
+                                    break;
+                                default:
+                                    if (orderedSections.contains(ContainerSection.CHEST)) {
+                                        shortcutConfig.toSection = ContainerSection.CHEST;
+                                    } else {
+                                        shortcutConfig.toSection = ContainerSection.INVENTORY_HOTBAR;
+                                    }
+                            }
                         }
                     }
                 }
@@ -290,7 +292,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 shortcutConfig.scope = shortcut.getScope();
 
                 return shortcutConfig;
-
             }
         }
 
@@ -342,7 +343,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             if (shortcut.toSection == ContainerSection.INVENTORY_HOTBAR && shortcut.toIndex != -1) {
                 container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection, shortcut.toIndex);
             } else {
-
                 int toIndex = getNextTargetIndex(shortcut);
                 boolean success;
                 int newIndex;

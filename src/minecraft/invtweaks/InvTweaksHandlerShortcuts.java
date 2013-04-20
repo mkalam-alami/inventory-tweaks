@@ -141,44 +141,40 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         ShortcutSpecification.Scope scope = ShortcutSpecification.Scope.ONE_STACK;
 
         updatePressedKeys();
-        container = new InvTweaksContainerManager(mc);
-        Slot slot = container.getSlotAtMousePosition();
-        if (slot != null && (hasStack(slot) || getHeldStack() != null)) {
-            boolean validAction = false;
-            if(isShortcutDown(InvTweaksShortcutType.DROP) != null) {
-                action = ShortcutSpecification.Action.DROP;
-                validAction = true;
-            }
 
-            if (isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != null) {
-                target = ShortcutSpecification.Target.HOTBAR_SLOT;
-                validAction = true;
-            } else if(isShortcutDown(InvTweaksShortcutType.MOVE_UP) != null) {
-                target = ShortcutSpecification.Target.UP;
-                validAction = true;
-            } else if(isShortcutDown(InvTweaksShortcutType.MOVE_DOWN) != null) {
-                target = ShortcutSpecification.Target.DOWN;
-                validAction = true;
-            }
-
-            if (isShortcutDown(InvTweaksShortcutType.MOVE_ALL_ITEMS) != null) {
-                scope = ShortcutSpecification.Scope.ALL_ITEMS;
-                validAction = true;
-            } else if (isShortcutDown(InvTweaksShortcutType.MOVE_EVERYTHING) != null) {
-                scope = ShortcutSpecification.Scope.EVERYTHING;
-                validAction = true;
-            } else if (isShortcutDown(InvTweaksShortcutType.MOVE_ONE_ITEM) != null) {
-                scope = ShortcutSpecification.Scope.ONE_ITEM;
-                validAction = true;
-            }
-
-            if(validAction) {
-                return new ShortcutSpecification(action, target, scope);
-            } else {
-                return null;
-            }
+        boolean validAction = false;
+        if(isShortcutDown(InvTweaksShortcutType.DROP) != null) {
+            action = ShortcutSpecification.Action.DROP;
+            validAction = true;
         }
-        return null;
+
+        if (isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != null) {
+            target = ShortcutSpecification.Target.HOTBAR_SLOT;
+            validAction = true;
+        } else if(isShortcutDown(InvTweaksShortcutType.MOVE_UP) != null) {
+            target = ShortcutSpecification.Target.UP;
+            validAction = true;
+        } else if(isShortcutDown(InvTweaksShortcutType.MOVE_DOWN) != null) {
+            target = ShortcutSpecification.Target.DOWN;
+            validAction = true;
+        }
+
+        if (isShortcutDown(InvTweaksShortcutType.MOVE_ALL_ITEMS) != null) {
+            scope = ShortcutSpecification.Scope.ALL_ITEMS;
+            validAction = true;
+        } else if (isShortcutDown(InvTweaksShortcutType.MOVE_EVERYTHING) != null) {
+            scope = ShortcutSpecification.Scope.EVERYTHING;
+            validAction = true;
+        } else if (isShortcutDown(InvTweaksShortcutType.MOVE_ONE_ITEM) != null) {
+            scope = ShortcutSpecification.Scope.ONE_ITEM;
+            validAction = true;
+        }
+
+        if(validAction) {
+            return new ShortcutSpecification(action, target, scope);
+        } else {
+            return null;
+        }
     }
 
     public ShortcutConfig computeShortcutToTrigger() {
@@ -186,6 +182,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
         ShortcutConfig shortcutConfig = new ShortcutConfig();
 
+        container = new InvTweaksContainerManager(mc);
         Slot slot = container.getSlotAtMousePosition();
         // If a valid and not empty slot is clicked
         if (shortcut != null && slot != null && (hasStack(slot) || getHeldStack() != null)) {

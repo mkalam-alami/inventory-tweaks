@@ -343,61 +343,95 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             if (shortcut.toSection == ContainerSection.INVENTORY_HOTBAR && shortcut.toIndex != -1) {
                 container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection, shortcut.toIndex);
             } else {
-                int toIndex = getNextTargetIndex(shortcut);
-                boolean success;
-                int newIndex;
+                switch(shortcut.action) {
+                    case DROP: {
+                        switch(shortcut.scope) {
+                            case ONE_ITEM:
+                                container.dropSome(shortcut.fromSection, shortcut.fromIndex, 1);
+                                break;
+                            case ONE_STACK:
+                                container.drop(shortcut.fromSection, shortcut.fromIndex);
+                                break;
+                            case ALL_ITEMS:
+                                dropAll(shortcut, shortcut.fromStack);
+                                break;
+                            case EVERYTHING:
+                                dropAll(shortcut, null);
+                                break;
+                        }
+                    }
+                    case MOVE: {
+                        int toIndex = getNextTargetIndex(shortcut);
+                        boolean success;
+                        int newIndex;
 
-                if (toIndex != -1) {
-                    switch (shortcut.scope) {
-                        case ONE_STACK: {
-                            Slot slot = container.getSlot(shortcut.fromSection, shortcut.fromIndex);
-                            if (shortcut.fromSection != ContainerSection.CRAFTING_OUT
-                                    && shortcut.toSection != ContainerSection.ENCHANTMENT) {
-                                while (hasStack(slot) && toIndex != -1) {
-                                    success = container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection, toIndex);
-                                    newIndex = getNextTargetIndex(shortcut);
-                                    toIndex = (success || (shortcut.action == ShortcutSpecification.Action.DROP) || newIndex != toIndex) ? newIndex : -1; // Needed when we can't put items in the target slot
+                        if(toIndex != -1) {
+                            switch(shortcut.scope) {
+                                case ONE_STACK: {
+                                    Slot slot = container.getSlot(shortcut.fromSection, shortcut.fromIndex);
+                                    if(shortcut.fromSection != ContainerSection.CRAFTING_OUT
+                                            && shortcut.toSection != ContainerSection.ENCHANTMENT) {
+                                        while(hasStack(slot) && toIndex != -1) {
+                                            success = container
+                                                    .move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection,
+                                                          toIndex);
+                                            newIndex = getNextTargetIndex(shortcut);
+                                            toIndex = (success ||
+                                                    (shortcut.action == ShortcutSpecification.Action.DROP) ||
+                                                    newIndex != toIndex) ? newIndex
+                                                                         : -1; // Needed when we can't put items in the target slot
+                                        }
+                                    } else {
+                                        // Move only once, since the crafting output might be refilled
+                                        container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection,
+                                                       toIndex);
+                                    }
+                                    break;
+
                                 }
-                            } else {
-                                // Move only once, since the crafting output might be refilled
-                                container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection, toIndex);
+
+                                case ONE_ITEM: {
+                                    container.moveSome(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection,
+                                                       toIndex, 1);
+                                    break;
+                                }
+
+                                case ALL_ITEMS: {
+                                    moveAll(shortcut, shortcut.fromStack);
+                                    if(shortcut.fromSection == ContainerSection.INVENTORY_NOT_HOTBAR
+                                            && shortcut.toSection == ContainerSection.CHEST) {
+                                        shortcut.fromSection = ContainerSection.INVENTORY_HOTBAR;
+                                        moveAll(shortcut, shortcut.fromStack);
+                                    }
+                                    break;
+                                }
+
+                                case EVERYTHING: {
+                                    moveAll(shortcut, null);
+                                    if(shortcut.fromSection == ContainerSection.INVENTORY_HOTBAR
+                                            && shortcut.toSection == ContainerSection.CHEST) {
+                                        shortcut.fromSection = ContainerSection.INVENTORY_HOTBAR;
+                                        moveAll(shortcut, null);
+                                    }
+                                    break;
+                                }
                             }
-                            break;
-
                         }
-
-                        case ONE_ITEM: {
-                            container.moveSome(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection, toIndex, 1);
-                            break;
-                        }
-
-                        case ALL_ITEMS: {
-                            moveAll(shortcut, shortcut.fromStack);
-                            if (shortcut.fromSection == ContainerSection.INVENTORY_NOT_HOTBAR
-                                    && shortcut.toSection == ContainerSection.CHEST) {
-                                shortcut.fromSection = ContainerSection.INVENTORY_HOTBAR;
-                                moveAll(shortcut, shortcut.fromStack);
-                            }
-                            break;
-                        }
-
-                        case EVERYTHING: {
-                            moveAll(shortcut, null);
-                            if (shortcut.fromSection == ContainerSection.INVENTORY_HOTBAR
-                                    && shortcut.toSection == ContainerSection.CHEST) {
-                                shortcut.fromSection = ContainerSection.INVENTORY_HOTBAR;
-                                moveAll(shortcut, null);
-                            }
-                            break;
-                        }
-
-                        default:
-
                     }
                 }
-
             }
 
+        }
+    }
+
+    private void dropAll(ShortcutConfig shortcut, ItemStack stackToMatch) {
+        for (Slot slot : container.getSlots(shortcut.fromSection)) {
+            if (hasStack(slot) && (stackToMatch == null || areSameItemType(stackToMatch, getStack(slot)))) {
+                int fromIndex = container.getSlotIndex(getSlotNumber(slot));
+                while (hasStack(slot)) {
+                    container.drop(shortcut.fromSection, fromIndex);
+                }
+            }
         }
     }
 

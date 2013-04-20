@@ -148,15 +148,17 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             validAction = true;
         }
 
-        if (isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != null) {
-            target = ShortcutSpecification.Target.HOTBAR_SLOT;
-            validAction = true;
-        } else if(isShortcutDown(InvTweaksShortcutType.MOVE_UP) != null) {
-            target = ShortcutSpecification.Target.UP;
-            validAction = true;
-        } else if(isShortcutDown(InvTweaksShortcutType.MOVE_DOWN) != null) {
-            target = ShortcutSpecification.Target.DOWN;
-            validAction = true;
+        if(action != ShortcutSpecification.Action.DROP) {
+            if (isShortcutDown(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT) != null) {
+                target = ShortcutSpecification.Target.HOTBAR_SLOT;
+                validAction = true;
+            } else if(isShortcutDown(InvTweaksShortcutType.MOVE_UP) != null) {
+                target = ShortcutSpecification.Target.UP;
+                validAction = true;
+            } else if(isShortcutDown(InvTweaksShortcutType.MOVE_DOWN) != null) {
+                target = ShortcutSpecification.Target.DOWN;
+                validAction = true;
+            }
         }
 
         if (isShortcutDown(InvTweaksShortcutType.MOVE_ALL_ITEMS) != null) {

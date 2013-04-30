@@ -332,7 +332,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
 
         // Handle sort key
-        if (Keyboard.isKeyDown(config.getSortKeyCode())) {
+        if (isSortingShortcutDown()) {
             if (!sortKeyDown) {
                 sortKeyDown = true;
                 onSortingKeyPressed();

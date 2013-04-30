@@ -196,9 +196,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             shortcutConfig.fromStack = (hasStack(slot)) ? copy(getStack(slot)) : copy(getHeldStack());
 
             // Compute shortcut type
-            // (Special case: can't move 1 item from crafting output)
-            // TODO Better mod compat by testing slot class to make sure the 'move one' shortcut works
-            if (shortcutConfig.fromSection == ContainerSection.CRAFTING_OUT
+            // Ensure the item currently in the slot can be placed back into it for one-item shortcuts.
+            if (!slot.isItemValid(slot.getStack())
                     && shortcut.getScope() == ShortcutSpecification.Scope.ONE_ITEM) {
                 shortcut.setScope(ShortcutSpecification.Scope.ONE_STACK);
             }

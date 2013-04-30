@@ -467,7 +467,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 storedFocusedSlot = focusedSlot;
             } else if ((currentStack == null || getItemID(currentStack) == 281 && storedStackId == 282)  // Handle eaten mushroom soup
                     && (getCurrentScreen() == null || // Filter open inventory or other window
-                    isGuiEditSign(getCurrentScreen()))) {
+                    isGuiEditSign(getCurrentScreen()))) { // TODO: This should be more expandable on 'equivalent' items (API?) and allowed GUIs
 
                 if (config.isAutoRefillEnabled(storedStackId, storedStackId)) {
                     try {
@@ -479,10 +479,9 @@ public class InvTweaks extends InvTweaksObfuscation {
             } else {
                 int itemMaxDamage = getMaxDamage(getItem(currentStack));
                 int autoRefillThreshhold = config.getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD);
-                if (itemMaxDamage != 0
-                        && itemMaxDamage - currentStackDamage < autoRefillThreshhold
-                        && itemMaxDamage - storedStackDamage >= autoRefillThreshhold
-                        && config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK).equals(InvTweaksConfig.VALUE_TRUE)
+                if (canToolBeReplaced(currentStackDamage, itemMaxDamage, autoRefillThreshhold)
+                        && config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
+                                 .equals(InvTweaksConfig.VALUE_TRUE)
                         && config.isAutoRefillEnabled(storedStackId, storedStackId)) {
                     // Trigger auto-refill before the tool breaks
                     try {
@@ -498,6 +497,12 @@ public class InvTweaks extends InvTweaksObfuscation {
         storedStackId = currentStackId;
         storedStackDamage = currentStackDamage;
 
+    }
+
+    private boolean canToolBeReplaced(int currentStackDamage, int itemMaxDamage, int autoRefillThreshhold) {
+        return itemMaxDamage != 0
+                && itemMaxDamage - currentStackDamage < autoRefillThreshhold
+                && itemMaxDamage - storedStackDamage >= autoRefillThreshhold;
     }
 
     private void handleMiddleClick(GuiScreen guiScreen) {

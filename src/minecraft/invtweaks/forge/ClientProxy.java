@@ -109,6 +109,6 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
 
     @Override
     public void setSortKeyEnabled(boolean enabled) {
-        instance.setSoryKeyEnabled(enabled);
+        instance.setSortKeyEnabled(enabled);
     }
 }

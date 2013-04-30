@@ -214,8 +214,19 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             leftClick(srcSection, srcIndex);
             leftClick(destSection, destIndex);
             if (getHeldStack() != null) {
-                // FIXME What if we can't put the item back in the source? (for example crafting/furnace output)
-                leftClick(srcSection, srcIndex);
+                // Only return to original slot if it can be placed in that slot.
+                // (Ex. crafting/furnace outputs)
+                Slot srcSlot = getSlot(srcSection, srcIndex);
+                if(srcSlot.isItemValid(getHeldStack())) {
+                    leftClick(srcSection, srcIndex);
+                } else {
+                    // If the item cannot be placed in its original slot, move to an empty slot.
+                    int firstEmptyIndex = getFirstEmptyIndex(ContainerSection.INVENTORY);
+                    if (firstEmptyIndex != -1) {
+                        leftClick(ContainerSection.INVENTORY, firstEmptyIndex);
+                    }
+                    // else leave there because we have nowhere to put it.
+                }
             }
         }
 

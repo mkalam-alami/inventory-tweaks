@@ -74,6 +74,7 @@ public class InvTweaks extends InvTweaksObfuscation {
      */
     private long sortingKeyPressedDate = 0;
     private boolean sortKeyDown = false;
+    private boolean sortKeyEnabled = true;
 
     private boolean itemPickupPending = false;
     private boolean isNEILoaded;
@@ -263,6 +264,10 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     public void setItemPickupPending(boolean itemPickupPending) {
         this.itemPickupPending = itemPickupPending;
+    }
+
+    public void setSortKeyEnabled(boolean enabled) {
+        sortKeyEnabled = enabled;
     }
 
     public void logInGame(String message) {
@@ -800,11 +805,15 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private boolean isSortingShortcutDown() {
-        int keyCode = cfgManager.getConfig().getSortKeyCode();
-        if (keyCode > 0) {
-            return Keyboard.isKeyDown(keyCode);
+        if(sortKeyEnabled) {
+            int keyCode = cfgManager.getConfig().getSortKeyCode();
+            if (keyCode > 0) {
+                return Keyboard.isKeyDown(keyCode);
+            } else {
+                return Mouse.isButtonDown(100 + keyCode);
+            }
         } else {
-            return Mouse.isButtonDown(100 + keyCode);
+            return false;
         }
     }
 

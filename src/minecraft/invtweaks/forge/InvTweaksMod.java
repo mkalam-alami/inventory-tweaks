@@ -50,4 +50,9 @@ public class InvTweaksMod implements InvTweaksAPI {
     public boolean removeOnLoadListener(IItemTreeListener listener) {
         return proxy.removeOnLoadListener(listener);
     }
+
+    @Override
+    public void setSortKeyEnabled(boolean enabled) {
+        proxy.setSortKeyEnabled(enabled);
+    }
 }

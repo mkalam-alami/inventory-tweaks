@@ -51,4 +51,8 @@ public class CommonProxy implements InvTweaksAPI {
     public boolean removeOnLoadListener(IItemTreeListener listener) {
         return false;
     }
+
+    @Override
+    public void setSortKeyEnabled(boolean enabled) {
+    }
 }

@@ -106,4 +106,9 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
     public boolean removeOnLoadListener(IItemTreeListener listener) {
         return InvTweaksItemTreeLoader.removeOnLoadListener(listener);
     }
+
+    @Override
+    public void setSortKeyEnabled(boolean enabled) {
+        instance.setSoryKeyEnabled(enabled);
+    }
 }

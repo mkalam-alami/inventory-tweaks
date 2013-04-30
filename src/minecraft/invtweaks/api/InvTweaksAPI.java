@@ -25,4 +25,5 @@ package invtweaks.api;
 public interface InvTweaksAPI {
     void addOnLoadListener(IItemTreeListener listener);
     boolean removeOnLoadListener(IItemTreeListener listener);
+    void setSortKeyEnabled(boolean enabled);
 }

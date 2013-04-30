@@ -736,7 +736,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     @SuppressWarnings("unchecked")
     private boolean isNotEnoughItemsEnabled() {
         if (isNEILoaded) {
-            if (neiClientConfig == null) {
+            if (neiHidden == null) {
                 try {
                     neiClientConfig = Class.forName("codechicken.nei.NEIClientConfig");
                     neiHidden = neiClientConfig.getMethod("isHidden");

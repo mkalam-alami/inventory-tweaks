@@ -3,6 +3,13 @@
 Latest changes
 ==============
 
+`[05.01.2013] 1.54 (1.5/1.5.1/1.5.2) <http://www.mediafire.com/?if4h9jdmoaf70dh>`_
+ * Fixed an error with shortcuts while the inventory screen was shifted (ex. by potion/beacon effects).
+ * Compatibiltiy for Galacticraft's enhanced inventory screen.
+ * API enhancements. (ItemTree information can be accessed via API)
+ * Improved shortcut behavior with extract-only slots.
+ * Various behind-the-scenes enhancements.
+
 `[04.02.2013] 1.53 (1.5/1.5.1) <http://www.mediafire.com/?0d4jgg5oxbjmmoc>`_
  * Server-assistance support should handle lag slightly better.
  * Sorting auto-stacking will stack items with matching NBT data, rather than treating all items with data as inheriently unstackable.

@@ -21,7 +21,7 @@ import sys, os
 # -- General configuration -----------------------------------------------------
 
 # INVENTORY TWEAKS VERSION
-invtweaks_version = '1.54'
+invtweaks_version = '1.55-dev'
 
 
 

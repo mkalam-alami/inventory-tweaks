@@ -124,6 +124,8 @@ public class InvTweaksModCompatibility {
     public boolean isSpecialInventory(GuiScreen guiScreen) {
         if (getInventoryGUIAnnotation(guiScreen.getClass()) != null) {
             return true;
+        } else if (isExact(guiScreen, "micdoodle8.mods.galacticraft.core.client.gui.GCCoreGuiTankRefill")) {
+            return true;
         }
         try {
             return obf.getSlots(obf.getContainer(obf.asGuiContainer(guiScreen))).size() > InvTweaksConst.INVENTORY_SIZE
@@ -161,6 +163,13 @@ public class InvTweaksModCompatibility {
         } else if (isExact(guiScreen, "com.pahimar.ee3.client.gui.inventory.GuiPortableCrafting")) {
             result.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
             result.put(ContainerSection.CRAFTING_IN, slots.subList(1, 10));
+        } else if (isExact(guiScreen, "micdoodle8.mods.galacticraft.core.client.gui.GCCoreGuiTankRefill")) {
+            result.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+            result.put(ContainerSection.CRAFTING_IN, slots.subList(1, 5));
+            result.put(ContainerSection.ARMOR, slots.subList(5, 9));
+            result.put(ContainerSection.INVENTORY, slots.subList(9, 45));
+            result.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(9, 36));
+            result.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(36, 45));
         }
 
         return result;

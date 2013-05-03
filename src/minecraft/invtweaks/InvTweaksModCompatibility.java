@@ -135,16 +135,31 @@ public class InvTweaksModCompatibility {
         }
     }
 
+    /**
+     * Returns true if the screen is the inventory screen, despite not being a GuiInventory.
+     *
+     * @param guiScreen
+     */
+    public boolean isStandardInventory(GuiScreen guiScreen) {
+        // TODO: API stuff to allow this.
+        if (isExact(guiScreen, "micdoodle8.mods.galacticraft.core.client.gui.GCCoreGuiInventory")) {
+            return true;
+        }
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     public Map<ContainerSection, List<Slot>> getSpecialContainerSlots(GuiScreen guiScreen, Container container) {
-        Class<? extends GuiScreen> clazz = guiScreen.getClass();
-        if (isAPIClass(clazz)) {
-            Method m = getAnnotatedMethod(clazz, new Class[]{ContainerGUI.ContainerSectionCallback.class, InventoryGUI.ContainerSectionCallback.class}, 0, Map.class);
-            if (m != null) {
-                try {
-                    return (Map<ContainerSection, List<Slot>>) m.invoke(guiScreen);
-                } catch (Exception e) {
-                    // TODO: Do something here to tell mod authors they're doing it wrong.
+        if(guiScreen != null) {
+            Class<? extends GuiScreen> clazz = guiScreen.getClass();
+            if (isAPIClass(clazz)) {
+                Method m = getAnnotatedMethod(clazz, new Class[]{ContainerGUI.ContainerSectionCallback.class, InventoryGUI.ContainerSectionCallback.class}, 0, Map.class);
+                if (m != null) {
+                    try {
+                        return (Map<ContainerSection, List<Slot>>) m.invoke(guiScreen);
+                    } catch (Exception e) {
+                        // TODO: Do something here to tell mod authors they're doing it wrong.
+                    }
                 }
             }
         }
@@ -170,13 +185,20 @@ public class InvTweaksModCompatibility {
             result.put(ContainerSection.INVENTORY, slots.subList(9, 45));
             result.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(9, 36));
             result.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(36, 45));
+        } else if (isExact(container, "micdoodle8.mods.galacticraft.core.inventory.GCCoreContainerPlayer")) {
+            result.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
+            result.put(ContainerSection.CRAFTING_IN, slots.subList(1, 5));
+            result.put(ContainerSection.ARMOR, slots.subList(5, 9));
+            result.put(ContainerSection.INVENTORY, slots.subList(9, 45));
+            result.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(9, 36));
+            result.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(36, 45));
         }
 
         return result;
 
     }
 
-    private static boolean isExact(GuiScreen guiScreen, String className) {
+    private static boolean isExact(Object guiScreen, String className) {
         try {
             return guiScreen.getClass().getName().equals(className);
         } catch (Exception e) {

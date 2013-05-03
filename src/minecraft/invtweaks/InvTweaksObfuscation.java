@@ -524,7 +524,8 @@ public class InvTweaksObfuscation {
                 || isGuiBeacon(guiScreen)
                 || isGuiHopper(guiScreen)
                 || (isGuiInventoryCreative(guiScreen)
-                && getSlots(getContainer(asGuiContainer(guiScreen))).size() == 46);
+                && getSlots(getContainer(asGuiContainer(guiScreen))).size() == 46)
+                || mods.isStandardInventory(guiScreen);
     }
 
     public boolean isGuiContainer(Object o) { // GuiContainer (abstract class)

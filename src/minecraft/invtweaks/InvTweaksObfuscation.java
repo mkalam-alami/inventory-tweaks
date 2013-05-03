@@ -46,6 +46,8 @@ public class InvTweaksObfuscation {
 
     private static Class containerCreative = ReflectionHelper.getClass(InvTweaksObfuscation.class.getClassLoader(), "ays", "net.minecraft.client.gui.inventory.ContainerCreative");
 
+    private static int CREATIVE_MAIN_INVENTORY_SIZE = 46;
+
     public InvTweaksObfuscation(Minecraft mc) {
         this.mc = mc;
         this.mods = new InvTweaksModCompatibility(this);
@@ -524,7 +526,7 @@ public class InvTweaksObfuscation {
                 || isGuiBeacon(guiScreen)
                 || isGuiHopper(guiScreen)
                 || (isGuiInventoryCreative(guiScreen)
-                && getSlots(getContainer(asGuiContainer(guiScreen))).size() == 46)
+                && getSlots(getContainer(asGuiContainer(guiScreen))).size() == CREATIVE_MAIN_INVENTORY_SIZE)
                 || mods.isStandardInventory(guiScreen);
     }
 

@@ -263,6 +263,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         } catch (Exception e) {
             logInGameError("Failed to move picked up stack", e);
+            itemPickupPending = false;
         }
     }
 

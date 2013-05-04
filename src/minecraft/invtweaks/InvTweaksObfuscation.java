@@ -9,6 +9,7 @@ import net.minecraft.client.gui.inventory.*;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -46,6 +47,8 @@ public class InvTweaksObfuscation {
 
     private static Class containerCreative = ReflectionHelper.getClass(InvTweaksObfuscation.class.getClassLoader(), "ays", "net.minecraft.client.gui.inventory.ContainerCreative");
 
+    // TODO: Remove in MC1.6/Whenever galacticraft works without this
+    @Deprecated
     private static int CREATIVE_MAIN_INVENTORY_SIZE = 46;
 
     public InvTweaksObfuscation(Minecraft mc) {
@@ -526,7 +529,7 @@ public class InvTweaksObfuscation {
                 || isGuiBeacon(guiScreen)
                 || isGuiHopper(guiScreen)
                 || (isGuiInventoryCreative(guiScreen)
-                && getSlots(getContainer(asGuiContainer(guiScreen))).size() == CREATIVE_MAIN_INVENTORY_SIZE)
+                && ((GuiContainerCreative)guiScreen).func_74230_h() == CreativeTabs.tabInventory.getTabIndex())
                 || mods.isStandardInventory(guiScreen);
     }
 

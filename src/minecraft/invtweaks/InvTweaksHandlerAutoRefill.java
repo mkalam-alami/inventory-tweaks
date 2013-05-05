@@ -3,6 +3,7 @@ package invtweaks;
 import invtweaks.api.ContainerSection;
 import invtweaks.api.IItemTreeItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -43,6 +44,13 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
         int replacementStackSlot = -1;
         boolean refillBeforeBreak = config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
                 .equals(InvTweaksConfig.VALUE_TRUE);
+        boolean hasSubtypes = false;
+        if(wantedId > 0 && wantedId < Item.itemsList.length) {
+            Item original = Item.itemsList[wantedId];
+            if(original != null) {
+                hasSubtypes = original.getHasSubtypes();
+            }
+        }
 
         List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<InvTweaksConfigSortingRule>();
         List<InvTweaksConfigSortingRule> rules = config.getRules();
@@ -57,11 +65,13 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
             // Find rules that match the slot
             for (IItemTreeItem item : items) {
-                // Since we search a matching item using rules,
-                // create a fake one that matches the exact item first
-                matchingRules.add(new InvTweaksConfigSortingRule(
-                        tree, "D" + (slot - 27), item.getName(),
-                        InvTweaksConst.INVENTORY_SIZE, InvTweaksConst.INVENTORY_ROW_SIZE));
+                if(!hasSubtypes || (item.getDamage() == wantedDamage)) {
+                    // Since we search a matching item using rules,
+                    // create a fake one that matches the exact item first
+                    matchingRules.add(new InvTweaksConfigSortingRule(
+                            tree, "D" + (slot - 27), item.getName(),
+                            InvTweaksConst.INVENTORY_SIZE, InvTweaksConst.INVENTORY_ROW_SIZE));
+                }
             }
             for (InvTweaksConfigSortingRule rule : rules) {
                 if (rule.getType() == InvTweaksConfigSortingRuleType.SLOT

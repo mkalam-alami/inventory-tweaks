@@ -29,6 +29,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Deprecated
 public @interface InventoryGUI {
     // Annotation for method to get special inventory slots
     // Signature Map<ContainerSection, List<Slot>> func()

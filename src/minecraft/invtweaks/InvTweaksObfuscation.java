@@ -461,7 +461,7 @@ public class InvTweaksObfuscation {
     }
 
     public int getSpecialChestRowSize(GuiContainer guiContainer, int defaultValue) {
-        return mods.getSpecialChestRowSize(guiContainer, defaultValue);
+        return mods.getSpecialChestRowSize(guiContainer, getContainer(guiContainer), defaultValue);
     }
 
     public boolean hasTexture(String texture) {
@@ -507,10 +507,10 @@ public class InvTweaksObfuscation {
     // Classes
 
     public boolean isValidChest(GuiScreen guiScreen) {
-        return guiScreen != null && (isGuiChest(guiScreen)
-                || isGuiDispenser(guiScreen)
-                || mods.isSpecialChest(guiScreen))
-                && (guiScreen instanceof GuiContainer);
+        return guiScreen != null && (guiScreen instanceof GuiContainer)
+                && (isGuiChest(guiScreen)
+                    || isGuiDispenser(guiScreen)
+                    || mods.isSpecialChest(guiScreen, getContainer(asGuiContainer(guiScreen))));
     }
 
     public boolean isValidInventory(GuiScreen guiScreen) {
@@ -529,7 +529,7 @@ public class InvTweaksObfuscation {
                 || isGuiBeacon(guiScreen)
                 || isGuiHopper(guiScreen)
                 || (isGuiInventoryCreative(guiScreen)
-                && ((GuiContainerCreative)guiScreen).func_74230_h() == CreativeTabs.tabInventory.getTabIndex())
+                    && ((GuiContainerCreative)guiScreen).func_74230_h() == CreativeTabs.tabInventory.getTabIndex())
                 || mods.isStandardInventory(guiScreen);
     }
 

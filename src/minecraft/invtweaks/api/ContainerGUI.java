@@ -29,6 +29,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Deprecated
 public @interface ContainerGUI {
     // Size of a chest row
     int rowSize() default 9;

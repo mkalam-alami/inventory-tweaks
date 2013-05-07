@@ -4,10 +4,10 @@
 
     <property name="invtweaks.version" value="UNKNOWN"/>
 
-    <property name="minecraft.version" value="1.5.1"/>
+    <property name="minecraft.version" value="1.5.2"/>
 
-    <property name="forge.build" value="611"/>
-    <property name="forge.version" value="7.7.1"/>
+    <property name="forge.build" value="686"/>
+    <property name="forge.version" value="7.8.0"/>
     <property name="forge.filename" value="minecraftforge-src-${minecraft.version}-${forge.version}.${forge.build}.zip"/>
 
     <property name="forge.download" value="http://files.minecraftforge.net/minecraftforge/${forge.filename}"/>

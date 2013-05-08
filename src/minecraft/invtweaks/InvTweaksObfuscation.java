@@ -43,10 +43,6 @@ public class InvTweaksObfuscation {
 
     private static Map<String, Field> fieldsMap = new HashMap<String, Field>();
 
-    private static Class slotCreativeInventory = ReflectionHelper.getClass(InvTweaksObfuscation.class.getClassLoader(), "ayu", "net.minecraft.client.gui.inventory.SlotCreativeInventory");
-
-    private static Class containerCreative = ReflectionHelper.getClass(InvTweaksObfuscation.class.getClassLoader(), "ays", "net.minecraft.client.gui.inventory.ContainerCreative");
-
     // TODO: Remove in MC1.6/Whenever galacticraft works without this
     @Deprecated
     private static int CREATIVE_MAIN_INVENTORY_SIZE = 46;
@@ -174,82 +170,30 @@ public class InvTweaksObfuscation {
         return guiScreen.height;
     }
 
-    Field guicontainer_x = null;
     public int getGuiX(GuiContainer guiContainer) {
-        if(guicontainer_x == null) {
-            guicontainer_x = ReflectionHelper.findField(GuiContainer.class, "field_74198_m", "guiLeft");
-        }
-
-        try {
-            return (Integer) guicontainer_x.get(guiContainer);
-        } catch (IllegalAccessException e) {
-            return 0;
-        }
+        return guiContainer.guiLeft;
     }
 
-    Field guicontainer_y = null;
     public int getGuiY(GuiContainer guiContainer) {
-        if(guicontainer_y == null) {
-            guicontainer_y = ReflectionHelper.findField(GuiContainer.class, "field_74197_n", "guiTop");
-        }
-
-        try {
-            return (Integer) guicontainer_y.get(guiContainer);
-        } catch (IllegalAccessException e) {
-            return 0;
-        }
+        return guiContainer.guiTop;
     }
 
-    Field guicontainer_width = null;
     public int getGuiWidth(GuiContainer guiContainer) {
-        if(guicontainer_width == null) {
-            guicontainer_width = ReflectionHelper.findField(GuiContainer.class, "field_74194_b", "xSize");
-        }
-
-        try {
-            return (Integer) guicontainer_width.get(guiContainer);
-        } catch (IllegalAccessException e) {
-            return 0;
-        }
+        return guiContainer.xSize;
     }
 
-    Field guicontainer_height = null;
     public int getGuiHeight(GuiContainer guiContainer) {
-        if(guicontainer_height == null) {
-            guicontainer_height = ReflectionHelper.findField(GuiContainer.class, "field_74195_c", "ySize");
-        }
-
-        try {
-            return (Integer) guicontainer_height.get(guiContainer);
-        } catch (IllegalAccessException e) {
-            return 0;
-        }
+        return guiContainer.ySize;
     }
 
     Field guiscreen_controllist = null;
     @SuppressWarnings("unchecked")
     public List<Object> getControlList(GuiScreen guiScreen) {
-        if(guiscreen_controllist == null) {
-            guiscreen_controllist = ReflectionHelper.findField(GuiScreen.class, "field_73887_h", "buttonList");
-        }
-
-        try {
-            return (List<Object>)guiscreen_controllist.get(guiScreen);
-        } catch (IllegalAccessException e) {
-            return new ArrayList<Object>();
-        }
+        return guiScreen.buttonList;
     }
 
     public void setControlList(GuiScreen guiScreen, List<?> controlList) {
-        if(guiscreen_controllist == null) {
-            guiscreen_controllist = ReflectionHelper.findField(GuiScreen.class, "field_73887_h", "buttonList");
-        }
-
-        try {
-            guiscreen_controllist.set(guiScreen, controlList);
-        } catch (IllegalAccessException e) {
-            // We can't set it, so don't.
-        }
+        guiScreen.buttonList = controlList;
     }
 
     public GuiContainer asGuiContainer(GuiScreen guiScreen) {
@@ -387,9 +331,8 @@ public class InvTweaksObfuscation {
     public int getSlotNumber(Slot slot) {
         try {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots
-            if (slotCreativeInventory.isInstance(slot)) {
-                //Slot underlyingSlot = SlotCreativeInventory.func_75240_a((SlotCreativeInventory) slot);
-                Slot underlyingSlot = (Slot) ObfuscationReflectionHelper.getPrivateValue(slotCreativeInventory, slot, "field_75241_b", "theSlot");
+            if (slot instanceof SlotCreativeInventory) {
+                Slot underlyingSlot = SlotCreativeInventory.func_75240_a((SlotCreativeInventory) slot);
                 if (underlyingSlot != null) {
                     return underlyingSlot.slotNumber;
                 } else {
@@ -634,7 +577,7 @@ public class InvTweaksObfuscation {
     }
 
     public boolean isContainerCreative(Object o) { // ContainerCreative
-        return o != null && o.getClass().equals(containerCreative);
+        return o != null && o.getClass().equals(ContainerCreative.class);
     }
 
     public boolean isItemArmor(Object o) { // ItemArmor
@@ -642,7 +585,7 @@ public class InvTweaksObfuscation {
     }
 
     public boolean isBasicSlot(Object o) { // Slot
-        return o != null && (o.getClass().equals(Slot.class) || o.getClass().equals(slotCreativeInventory));
+        return o != null && (o.getClass().equals(Slot.class) || o.getClass().equals(SlotCreativeInventory.class));
     }
 
 }

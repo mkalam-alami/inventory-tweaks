@@ -106,6 +106,10 @@
             <fileset dir="${class.dir}"/>
             <fileset dir="${src.dir}" excludes="**/*.java"/>
             <file file="${temp.dir}/version.properties"/>
+
+            <manifest>
+                <attribute name="FMLCorePlugin" value="invtweaks.forge.asm.FMLPlugin" />
+            </manifest>
         </jar>
     </target>
 

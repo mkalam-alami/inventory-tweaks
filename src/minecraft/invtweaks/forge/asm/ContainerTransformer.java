@@ -31,7 +31,7 @@ public class ContainerTransformer implements IClassTransformer {
         standardClasses.put("net.minecraft.inventory.ContainerFurnace", new ContainerInfo(true, true, false));
 
         // Chest-type
-        standardClasses.put("net.minecraft.inventory.ContainerDispenser", new ContainerInfo(false, false, true));
+        standardClasses.put("net.minecraft.inventory.ContainerDispenser", new ContainerInfo(false, false, true, (short)3));
         standardClasses.put("net.minecraft.inventory.ContainerChest", new ContainerInfo(false, false, true));
     }
 
@@ -39,6 +39,7 @@ public class ContainerTransformer implements IClassTransformer {
     public byte[] transform(String name, String transformedName, byte[] bytes) {
         FMLRelaunchLog.info(String.format("%s = %s", name, transformedName));
 
+        // Transform classes with explicitly specified information
         ContainerInfo info = standardClasses.get(transformedName);
         if(info != null) {
             ClassReader cr = new ClassReader(bytes);
@@ -55,12 +56,26 @@ public class ContainerTransformer implements IClassTransformer {
         return bytes;
     }
 
+    /**
+     * Alter class to contain information contained by ContainerInfo
+     *
+     * @param clazz Class to alter
+     * @param info Information used to alter class
+     */
     private void transformContainer(ClassNode clazz, ContainerInfo info) {
         generateBooleanMethodConst(clazz, "invtweaks$standardInventory", info.standardInventory);
         generateBooleanMethodConst(clazz, "invtweaks$validInventory", info.validInventory);
         generateBooleanMethodConst(clazz, "invtweaks$validChest", info.validChest);
+        generateIntegerMethodConst(clazz, "invtweaks$rowSize", info.rowSize);
     }
 
+    /**
+     * Generate a new method "boolean name()", returning a constant value
+     *
+     * @param clazz Class to add method to
+     * @param name Name of method
+     * @param retval Return value of method
+     */
     private void generateBooleanMethodConst(ClassNode clazz, String name, boolean retval) {
         MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC|Opcodes.ACC_SYNTHETIC, name, "()Z", null, null);
         InsnList code = method.instructions;
@@ -71,11 +86,33 @@ public class ContainerTransformer implements IClassTransformer {
         clazz.methods.add(method);
     }
 
+    /**
+     * Generate a new method "int name()", returning a constant value
+     *
+     * @param clazz Class to add method to
+     * @param name Name of method
+     * @param retval Return value of method
+     */
+    private void generateIntegerMethodConst(ClassNode clazz, String name, short retval) {
+        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC|Opcodes.ACC_SYNTHETIC, name, "()I", null, null);
+        InsnList code = method.instructions;
+
+        // Probably doesn't make a huge difference, but use BIPUSH if the value is small enough.
+        if(retval >= Byte.MIN_VALUE && retval <= Byte.MAX_VALUE) {
+            code.add(new IntInsnNode(Opcodes.BIPUSH, retval));
+        } else {
+            code.add(new IntInsnNode(Opcodes.SIPUSH, retval));
+        }
+        code.add(new InsnNode(Opcodes.IRETURN));
+
+        clazz.methods.add(method);
+    }
 
     class ContainerInfo {
         boolean standardInventory = false;
         boolean validInventory = false;
         boolean validChest = false;
+        short rowSize = 9;
 
         ContainerInfo() { }
 
@@ -83,6 +120,13 @@ public class ContainerTransformer implements IClassTransformer {
             standardInventory = standard;
             validInventory = validInv;
             validChest = validCh;
+        }
+
+        ContainerInfo(boolean standard, boolean validInv, boolean validCh, short rowS) {
+            standardInventory = standard;
+            validInventory = validInv;
+            validChest = validCh;
+            rowSize = rowS;
         }
     }
 }

@@ -4,7 +4,6 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 import java.util.Map;
 
-@IFMLLoadingPlugin.MCVersion("@MCVERSION@")
 @IFMLLoadingPlugin.TransformerExclusions({"invtweaks.forge.asm"})
 public class FMLPlugin implements IFMLLoadingPlugin {
     @Override

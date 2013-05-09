@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import cpw.mods.fml.relauncher.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
@@ -16,9 +17,6 @@ public class ContainerTransformer implements IClassTransformer {
     private static Map<String, ContainerInfo> standardClasses = new HashMap<String, ContainerInfo>();
 
     public ContainerTransformer() {
-        // Default implementations (will need special-cased later because of how isValidInventory works)
-        standardClasses.put("net.minecraft.inventory.Container", new ContainerInfo());
-
         // Standard non-chest type
         standardClasses.put("net.minecraft.inventory.ContainerPlayer", new ContainerInfo(true, true, false));
         standardClasses.put("net.minecraft.inventory.ContainerMerchant", new ContainerInfo(true, true, false));
@@ -38,6 +36,18 @@ public class ContainerTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
         FMLRelaunchLog.info(String.format("%s = %s", name, transformedName));
+
+        if("net.minecraft.inventory.Container".equals(transformedName)) {
+            ClassReader cr = new ClassReader(bytes);
+            ClassNode cn = new ClassNode(Opcodes.ASM4);
+            cr.accept(cn, 0);
+
+            transformBaseContainer(cn);
+
+            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+            cn.accept(cw);
+            return cw.toByteArray();
+        }
 
         // Transform classes with explicitly specified information
         ContainerInfo info = standardClasses.get(transformedName);
@@ -67,6 +77,60 @@ public class ContainerTransformer implements IClassTransformer {
         generateBooleanMethodConst(clazz, "invtweaks$validInventory", info.validInventory);
         generateBooleanMethodConst(clazz, "invtweaks$validChest", info.validChest);
         generateIntegerMethodConst(clazz, "invtweaks$rowSize", info.rowSize);
+    }
+
+
+    /**
+     * Alter class to contain default implementations of added methods.
+     *
+     * @param clazz Class to alter
+     */
+    private void transformBaseContainer(ClassNode clazz) {
+        generateBooleanMethodConst(clazz, "invtweaks$standardInventory", false);
+        generateDefaultInventoryCheck(clazz);
+        generateBooleanMethodConst(clazz, "invtweaks$validChest", false);
+        generateIntegerMethodConst(clazz, "invtweaks$rowSize", (short) 9);
+    }
+
+    /**
+     * Generate a new method "boolean invtweaks$validInventory()", returning true
+     * if the size of the container is large enough to hold the player inventory.
+     *
+     * @param clazz Class to add method to
+     */
+    private void generateDefaultInventoryCheck(ClassNode clazz) {
+        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC|Opcodes.ACC_SYNTHETIC, "invtweaks$validInventory", "()Z", null, null);
+        InsnList code = method.instructions;
+
+        LabelNode start = new LabelNode();
+        code.add(start);
+
+        code.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        code.add(new FieldInsnNode(Opcodes.GETFIELD, clazz.name, "field_75151_b", "Ljava/util/List;"));
+        code.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "size", "()I"));
+        code.add(new IntInsnNode(Opcodes.BIPUSH, 36)); // TODO: Load Static InvTweaksConst.INVENTORY_SIZE
+
+        LabelNode l1 = new LabelNode();
+        code.add(new JumpInsnNode(Opcodes.IF_ICMPLE, l1));
+        code.add(new InsnNode(Opcodes.ICONST_1));
+
+        LabelNode l2 = new LabelNode();
+        code.add(new JumpInsnNode(Opcodes.GOTO, l2));
+
+        code.add(l1);
+        code.add(new InsnNode(Opcodes.ICONST_0));
+
+        code.add(l2);
+        code.add(new InsnNode(Opcodes.IRETURN));
+
+        LabelNode end = new LabelNode();
+        code.add(end);
+
+        // Horrible hack with class name to make it verify, since there doesn't seem to be a default method to
+        // get the descriptor format of the name from the ClassNode.
+        method.localVariables.add(new LocalVariableNode("this", "L"+clazz.name+";", null, start, end, 0));
+
+        clazz.methods.add(method);
     }
 
     /**

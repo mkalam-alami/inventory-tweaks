@@ -28,7 +28,6 @@ public class InvTweaksConst {
     public static final int POLLING_TIMEOUT = 1500;
     public static final int CHEST_ALGORITHM_SWAP_MAX_INTERVAL = 2000;
     public static final int TOOLTIP_DELAY = 800;
-    public static final int INTERRUPT_DELAY = 300;
 
     // File constants
     public static final String MINECRAFT_DIR = getMinecraftDir();
@@ -55,8 +54,6 @@ public class InvTweaksConst {
     public static final int CHEST_ROW_SIZE = INVENTORY_ROW_SIZE;
     public static final int DISPENSER_ROW_SIZE = 3;
     public static final int INVENTORY_HOTBAR_SIZE = INVENTORY_ROW_SIZE;
-    public static final int PLAYER_INVENTORY_WINDOW_ID = 0;
-    public static final int SLOW_SORTING_DELAY = 30;
     public static final int DAMAGE_WILDCARD = OreDictionary.WILDCARD_VALUE;
 
     /**

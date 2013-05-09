@@ -15,6 +15,10 @@
     <property name="build.dir" value="build"/>
     <property name="forge.dir" value="${build.dir}/forge"/>
 
+    <condition property="invtweaks.buildversion" value="${invtweaks.version}-b${env.BUILD_NUMBER}" else="${invtweaks.version}">
+        <isset property="env.BUILD_NUMBER"/>
+    </condition>
+
     <property file="${forge.dir}/forgeversion.properties"/>
     <condition property="forge.installed">
         <equals arg1="${forge.build.number}" arg2="${forge.build}"/>
@@ -32,10 +36,10 @@
     <property name="minecraft.inheritance" value="${temp.dir}/Minecraft-${minecraft.version}-mcp.inheritance"/>
 
     <property name="minecraft.mcp.jar" value="${temp.dir}/Minecraft-${minecraft.version}-mcp.jar"/>
-    <property name="invtweaks.mcp.jar" value="${temp.dir}/InventoryTweaks-${invtweaks.version}.mcp.jar"/>
+    <property name="invtweaks.mcp.jar" value="${temp.dir}/InventoryTweaks-${invtweaks.buildversion}.mcp.jar"/>
 
-    <property name="invtweaks.jar" value="${build.dir}/out/InventoryTweaks-${invtweaks.version}.jar"/>
-    <property name="invtweaks.api.jar" value="${build.dir}/out/InventoryTweaks-api-${invtweaks.version}.jar"/>
+    <property name="invtweaks.jar" value="${build.dir}/out/InventoryTweaks-${invtweaks.buildversion}.jar"/>
+    <property name="invtweaks.api.jar" value="${build.dir}/out/InventoryTweaks-api-${invtweaks.buildversion}.jar"/>
 
     <condition property="minecraft.inheritance.exists">
         <available file="${minecraft.inheritance}"/>

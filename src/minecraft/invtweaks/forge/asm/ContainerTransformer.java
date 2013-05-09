@@ -3,10 +3,7 @@ package invtweaks.forge.asm;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import cpw.mods.fml.relauncher.IClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
 import java.util.HashMap;
@@ -57,6 +54,29 @@ public class ContainerTransformer implements IClassTransformer {
             cr.accept(cn, 0);
 
             transformContainer(cn, info);
+
+            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+            cn.accept(cw);
+            return cw.toByteArray();
+        }
+
+        if("invtweaks.InvTweaksObfuscation".equals(transformedName)) {
+            ClassReader cr = new ClassReader(bytes);
+            ClassNode cn = new ClassNode(Opcodes.ASM4);
+            cr.accept(cn, 0);
+
+            Type thistype = Type.getObjectType(cn.name);
+            for(MethodNode method : cn.methods) {
+                if("isValidChest".equals(method.name))  {
+                    replaceForwardingMethod(method, "invtweaks$validChest", thistype);
+                } else if("isValidInventory".equals(method.name)) {
+                    replaceForwardingMethod(method, "invtweaks$validInventory", thistype);
+                } else if("isStandardInventory".equals(method.name)) {
+                    replaceForwardingMethod(method, "invtweaks$standardInventory", thistype);
+                } else if("getSpecialChestRowSize".equals(method.name)) {
+                    replaceForwardingMethod(method, "invtweaks$rowSize", thistype);
+                }
+            }
 
             ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
             cn.accept(cw);
@@ -126,9 +146,7 @@ public class ContainerTransformer implements IClassTransformer {
         LabelNode end = new LabelNode();
         code.add(end);
 
-        // Horrible hack with class name to make it verify, since there doesn't seem to be a default method to
-        // get the descriptor format of the name from the ClassNode.
-        method.localVariables.add(new LocalVariableNode("this", "L"+clazz.name+";", null, start, end, 0));
+        method.localVariables.add(new LocalVariableNode("this", Type.getObjectType(clazz.name).getDescriptor(), null, start, end, 0));
 
         clazz.methods.add(method);
     }
@@ -170,6 +188,68 @@ public class ContainerTransformer implements IClassTransformer {
         code.add(new InsnNode(Opcodes.IRETURN));
 
         clazz.methods.add(method);
+    }
+
+    /**
+     * Generate a forwarding method of the form "T name(S object) { return S.forward(); }
+     *
+     * @param clazz Class to generate new method on
+     * @param name Name of method to generate
+     * @param forwardname Name of method to call
+     * @param rettype Return type of method
+     * @param argtype Type of object to call method on
+     */
+    private void generateForwardingMethod(ClassNode clazz, String name, String forwardname, Type rettype, Type argtype) {
+        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC|Opcodes.ACC_SYNTHETIC, name, "()" + rettype.getDescriptor(), null, null);
+
+        populateForwardingMethod(method, forwardname, rettype, argtype, Type.getObjectType(clazz.name));
+
+        clazz.methods.add(method);
+    }
+
+    /**
+     * Replace a method's code with a forward to an method on its first argument
+     *
+     * @param method Method to replace code of
+     * @param forwardname Name of method to forward to
+     * @param thistype Type of object method is being replaced on
+     */
+    private void replaceForwardingMethod(MethodNode method, String forwardname, Type thistype) {
+        Type methodType = Type.getMethodType(method.desc);
+
+        method.instructions.clear();
+
+        populateForwardingMethod(method, forwardname, methodType.getReturnType(), methodType.getArgumentTypes()[0], thistype);
+    }
+
+    /**
+     * Populate a forwarding method of the form "T name(S object) { return S.forward(); }
+     *
+     * @param method Method to generate code for
+     * @param forwardname Name of method to call
+     * @param rettype Return type of method
+     * @param argtype Type of object to call method on
+     * @param thistype Type of object method is being generated on
+     */
+    private void populateForwardingMethod(MethodNode method, String forwardname, Type rettype, Type argtype, Type thistype) {
+        InsnList code = method.instructions;
+
+        LabelNode start = new LabelNode();
+        code.add(start);
+
+        code.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        code.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, argtype.getInternalName(), forwardname, "()" + rettype.getDescriptor()));
+        code.add(new InsnNode(rettype.getOpcode(Opcodes.IRETURN)));
+
+        LabelNode end = new LabelNode();
+        code.add(end);
+
+        method.localVariables.add(new LocalVariableNode("this", thistype.getDescriptor(), null, start, end, 0));
+        method.localVariables.add(new LocalVariableNode("arg", argtype.getDescriptor(), null, start, end, 1));
+    }
+
+    private int test(ContainerInfo a) {
+        return a.hashCode();
     }
 
     class ContainerInfo {

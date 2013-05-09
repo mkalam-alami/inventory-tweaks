@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.LWJGLException;
@@ -137,7 +138,9 @@ public class InvTweaks extends InvTweaksObfuscation {
             if (isTimeForPolling()) {
                 unlockKeysIfNecessary();
             }
-            handleGUILayout(guiScreen);
+            if(guiScreen instanceof GuiContainer) {
+                handleGUILayout((GuiContainer)guiScreen);
+            }
             if (!wasInGUI) {
                 // Right-click is always true on initial open of GUI.
                 // Ignore it to prevent erroneous trigger of shortcuts.
@@ -147,7 +150,9 @@ public class InvTweaks extends InvTweaksObfuscation {
                     log.info(((GuiContainer) guiScreen).inventorySlots.getClass().getName());
                 }
             }
-            handleShortcuts(guiScreen);
+            if(guiScreen instanceof GuiContainer) {
+                handleShortcuts((GuiContainer)guiScreen);
+            }
 
             // Copy some info about current selected stack for auto-refill
             ItemStack currentStack = getFocusedStack();
@@ -173,7 +178,10 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             // Check current GUI
             GuiScreen guiScreen = getCurrentScreen();
-            if (guiScreen == null || (isValidChest(guiScreen) || isValidInventory(guiScreen))) {
+            if (guiScreen == null ||
+                    (guiScreen instanceof GuiContainer &&
+                            (isValidChest(((GuiContainer)guiScreen).inventorySlots)
+                            || isValidInventory(((GuiContainer)guiScreen).inventorySlots)))) {
                 // Sorting!
                 handleSorting(guiScreen);
             }
@@ -516,7 +524,6 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private void handleMiddleClick(GuiScreen guiScreen) {
-
         if (Mouse.isButtonDown(2)) {
 
             if (!cfgManager.makeSureConfigurationIsLoaded()) {
@@ -526,7 +533,10 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             // Check that middle click sorting is allowed
             if (config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK)
-                    .equals(InvTweaksConfig.VALUE_TRUE)) {
+                    .equals(InvTweaksConfig.VALUE_TRUE) && guiScreen instanceof GuiContainer) {
+
+                GuiContainer guiContainer = (GuiContainer)guiScreen;
+                Container container = guiContainer.inventorySlots;
 
                 if (!chestAlgorithmButtonDown) {
                     chestAlgorithmButtonDown = true;
@@ -538,11 +548,10 @@ public class InvTweaks extends InvTweaksObfuscation {
                         target = containerMgr.getSlotSection(getSlotNumber(slotAtMousePosition));
                     }
 
-                    if (isValidChest(guiScreen)) {
+                    if (isValidChest(container)) {
 
                         // Check if the middle click target the chest or the inventory
                         // (copied GuiContainer.getSlotAtPosition algorithm)
-                        GuiContainer guiContainer = asGuiContainer(guiScreen);
 
                         if (ContainerSection.CHEST.equals(target)) {
 
@@ -582,7 +591,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                             handleSorting(guiScreen);
                         }
 
-                    } else if (isValidInventory(guiScreen)) {
+                    } else if (isValidInventory(container)) {
                         if (ContainerSection.CRAFTING_IN.equals(target) || ContainerSection.CRAFTING_IN_PERSISTENT.equals(target)) {
                             // Crafting stacks evening
                             try {
@@ -608,12 +617,15 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private boolean wasNEIEnabled = false;
 
-    private void handleGUILayout(GuiScreen guiScreen) {
+    private void handleGUILayout(GuiContainer guiScreen) {
 
         InvTweaksConfig config = cfgManager.getConfig();
-        boolean isValidChest = isValidChest(guiScreen);
 
-        if (isValidChest || (isStandardInventory(guiScreen) && !isGuiEnchantmentTable(guiScreen))) {
+        Container container = guiScreen.inventorySlots;
+
+        boolean isValidChest = isValidChest(container);
+
+        if (isValidChest || (isStandardInventory(container) && !isGuiEnchantmentTable(guiScreen))) {
 
             GuiContainer guiContainer = asGuiContainer(guiScreen);
             int w = 10, h = 10;
@@ -774,10 +786,10 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
     }
 
-    private void handleShortcuts(GuiScreen guiScreen) {
+    private void handleShortcuts(GuiContainer guiScreen) {
 
         // Check open GUI
-        if (!(isValidChest(guiScreen) || isStandardInventory(guiScreen))) {
+        if (!(isValidChest(guiScreen.inventorySlots) || isStandardInventory(guiScreen.inventorySlots))) {
             return;
         }
 
@@ -800,13 +812,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private int getContainerRowSize(GuiContainer guiContainer) {
-        if (isGuiChest(guiContainer)) {
-            return InvTweaksConst.CHEST_ROW_SIZE;
-        } else if (isGuiDispenser(guiContainer)) {
-            return InvTweaksConst.DISPENSER_ROW_SIZE;
-        } else {
-            return getSpecialChestRowSize(guiContainer, InvTweaksConst.CHEST_ROW_SIZE);
-        }
+        return getSpecialChestRowSize(guiContainer.inventorySlots);
     }
 
     private boolean isSortingShortcutDown() {

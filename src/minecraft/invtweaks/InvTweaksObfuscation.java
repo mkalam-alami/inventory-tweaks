@@ -403,8 +403,9 @@ public class InvTweaksObfuscation {
         return b.keyCode;
     }
 
-    public int getSpecialChestRowSize(GuiContainer guiContainer, int defaultValue) {
-        return mods.getSpecialChestRowSize(guiContainer, getContainer(guiContainer), defaultValue);
+    public int getSpecialChestRowSize(Container container) {
+        // This method gets replaced by the transformer with "return container.invtweaks$rowSize()"
+        return 0;
     }
 
     public boolean hasTexture(String texture) {
@@ -449,31 +450,19 @@ public class InvTweaksObfuscation {
 
     // Classes
 
-    public boolean isValidChest(GuiScreen guiScreen) {
-        return guiScreen != null && (guiScreen instanceof GuiContainer)
-                && (isGuiChest(guiScreen)
-                    || isGuiDispenser(guiScreen)
-                    || mods.isSpecialChest(guiScreen, getContainer(asGuiContainer(guiScreen))));
+    public boolean isValidChest(Container container) {
+        // This method gets replaced by the transformer with "return container.invtweaks$validChest()"
+        return false;
     }
 
-    public boolean isValidInventory(GuiScreen guiScreen) {
-        return isStandardInventory(guiScreen)
-                || mods.isSpecialInventory(guiScreen);
+    public boolean isValidInventory(Container container) {
+        // This method gets replaced by the transformer with "return container.invtweaks$validInventory()"
+        return false;
     }
 
-    public boolean isStandardInventory(GuiScreen guiScreen) {
-        return isGuiInventory(guiScreen)
-                || isGuiWorkbench(guiScreen)
-                || isGuiFurnace(guiScreen)
-                || isGuiBrewingStand(guiScreen)
-                || isGuiEnchantmentTable(guiScreen)
-                || isGuiTrading(guiScreen)
-                || isGuiAnvil(guiScreen)
-                || isGuiBeacon(guiScreen)
-                || isGuiHopper(guiScreen)
-                || (isGuiInventoryCreative(guiScreen)
-                    && ((GuiContainerCreative)guiScreen).func_74230_h() == CreativeTabs.tabInventory.getTabIndex())
-                || mods.isStandardInventory(guiScreen);
+    public boolean isStandardInventory(Container container) {
+        // This method gets replaced by the transformer with "return container.invtweaks$standardInventory()"
+        return false;
     }
 
     public boolean isGuiContainer(Object o) { // GuiContainer (abstract class)

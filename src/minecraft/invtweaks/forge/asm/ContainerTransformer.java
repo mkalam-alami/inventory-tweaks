@@ -1,6 +1,7 @@
 package invtweaks.forge.asm;
 
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import cpw.mods.fml.relauncher.IClassTransformer;
 import org.objectweb.asm.*;
@@ -65,17 +66,19 @@ public class ContainerTransformer implements IClassTransformer {
             ClassNode cn = new ClassNode(Opcodes.ASM4);
             cr.accept(cn, 0);
 
-            Type thistype = Type.getObjectType(cn.name);
+            Type containertype = Type.getObjectType(FMLDeobfuscatingRemapper.INSTANCE.unmap("net/minecraft/inventory/Container"));
             for(MethodNode method : cn.methods) {
                 if("isValidChest".equals(method.name))  {
-                    replaceForwardingMethod(method, "invtweaks$validChest", thistype);
+                    replaceForwardingMethod(method, "invtweaks$validChest", containertype);
                 } else if("isValidInventory".equals(method.name)) {
-                    replaceForwardingMethod(method, "invtweaks$validInventory", thistype);
+                    replaceForwardingMethod(method, "invtweaks$validInventory", containertype);
                 } else if("isStandardInventory".equals(method.name)) {
-                    replaceForwardingMethod(method, "invtweaks$standardInventory", thistype);
+                    replaceForwardingMethod(method, "invtweaks$standardInventory", containertype);
                 } else if("getSpecialChestRowSize".equals(method.name)) {
-                    replaceForwardingMethod(method, "invtweaks$rowSize", thistype);
-                }
+                    replaceForwardingMethod(method, "invtweaks$rowSize", containertype);
+                }/* else if("getContainerSlotMap".equals(method.name)) {
+                    replaceForwardingMethod(method, "invtweaks$slotMap", containertype);
+                }*/
             }
 
             ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
@@ -221,6 +224,7 @@ public class ContainerTransformer implements IClassTransformer {
 
         clazz.methods.add(method);
     }
+
 
     /**
      * Replace a method's code with a forward to another method on itself

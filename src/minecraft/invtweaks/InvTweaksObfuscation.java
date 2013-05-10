@@ -2,6 +2,7 @@ package invtweaks;
 
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import invtweaks.api.ContainerSection;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
@@ -450,19 +451,24 @@ public class InvTweaksObfuscation {
 
     // Classes
 
-    public boolean isValidChest(Container container) {
+    public static boolean isValidChest(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$validChest()"
         return false;
     }
 
-    public boolean isValidInventory(Container container) {
+    public static boolean isValidInventory(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$validInventory()"
         return false;
     }
 
-    public boolean isStandardInventory(Container container) {
+    public static boolean isStandardInventory(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$standardInventory()"
         return false;
+    }
+
+    public static Map<ContainerSection, List<Slot>> getContainerSlotMap(Container container) {
+        // This method gets replaced by the transformer with "return container.invtweaks$slotMap()"
+        return null;
     }
 
     public boolean isGuiContainer(Object o) { // GuiContainer (abstract class)

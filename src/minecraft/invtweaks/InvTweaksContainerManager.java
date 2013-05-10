@@ -56,6 +56,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             this.container = getPlayerContainer();
         }
 
+        slotRefs = InvTweaksObfuscation.getContainerSlotMap(container);
+        /*
         List<Slot> slots = (List<Slot>) getSlots(container);
         int size = slots.size();
         boolean guiWithInventory = true;
@@ -126,7 +128,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size - INVENTORY_SIZE, size - HOTBAR_SIZE));
             slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size - HOTBAR_SIZE, size));
         }
-
+        */
     }
 
     /**

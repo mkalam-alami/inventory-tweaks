@@ -31,7 +31,7 @@
     <property name="mcp.mappings.dir" value="${forge.dir}/mcp/conf"/>
     <property name="class.dir" value="${build.dir}/classes"/>
 
-    <property name="specialsource.jar" value="SpecialSource-1.5-SNAPSHOT-shaded.jar"/>
+    <property name="specialsource.jar" value="SpecialSource-1.5-shaded.jar"/>
 
     <property name="minecraft.inheritance" value="${temp.dir}/Minecraft-${minecraft.version}-mcp.inheritance"/>
 

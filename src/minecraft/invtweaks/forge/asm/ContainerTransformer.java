@@ -92,7 +92,7 @@ public class ContainerTransformer implements IClassTransformer {
      * @param clazz Class to alter
      * @param info Information used to alter class
      */
-    private void transformContainer(ClassNode clazz, ContainerInfo info) {
+    public static void transformContainer(ClassNode clazz, ContainerInfo info) {
         generateBooleanMethodConst(clazz, "invtweaks$standardInventory", info.standardInventory);
         generateBooleanMethodConst(clazz, "invtweaks$validInventory", info.validInventory);
         generateBooleanMethodConst(clazz, "invtweaks$validChest", info.validChest);
@@ -105,7 +105,7 @@ public class ContainerTransformer implements IClassTransformer {
      *
      * @param clazz Class to alter
      */
-    private void transformBaseContainer(ClassNode clazz) {
+    public static void transformBaseContainer(ClassNode clazz) {
         generateBooleanMethodConst(clazz, "invtweaks$standardInventory", false);
         generateDefaultInventoryCheck(clazz);
         generateBooleanMethodConst(clazz, "invtweaks$validChest", false);
@@ -118,7 +118,7 @@ public class ContainerTransformer implements IClassTransformer {
      *
      * @param clazz Class to add method to
      */
-    private void generateDefaultInventoryCheck(ClassNode clazz) {
+    public static void generateDefaultInventoryCheck(ClassNode clazz) {
         MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC|Opcodes.ACC_SYNTHETIC, "invtweaks$validInventory", "()Z", null, null);
         InsnList code = method.instructions;
 
@@ -158,7 +158,7 @@ public class ContainerTransformer implements IClassTransformer {
      * @param name Name of method
      * @param retval Return value of method
      */
-    private void generateBooleanMethodConst(ClassNode clazz, String name, boolean retval) {
+    public static void generateBooleanMethodConst(ClassNode clazz, String name, boolean retval) {
         MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC|Opcodes.ACC_SYNTHETIC, name, "()Z", null, null);
         InsnList code = method.instructions;
 
@@ -175,7 +175,7 @@ public class ContainerTransformer implements IClassTransformer {
      * @param name Name of method
      * @param retval Return value of method
      */
-    private void generateIntegerMethodConst(ClassNode clazz, String name, short retval) {
+    public static void generateIntegerMethodConst(ClassNode clazz, String name, short retval) {
         MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC|Opcodes.ACC_SYNTHETIC, name, "()I", null, null);
         InsnList code = method.instructions;
 
@@ -191,6 +191,35 @@ public class ContainerTransformer implements IClassTransformer {
     }
 
     /**
+     * Generate a forwarding method of the form "T name() { return this.forward(); }
+     *
+     * @param clazz Class to generate new method on
+     * @param name Name of method to generate
+     * @param forwardname Name of method to call
+     * @param rettype Return type of method
+     */
+    public static void generateSelfForwardingMethod(ClassNode clazz, String name, String forwardname, Type rettype) {
+        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC|Opcodes.ACC_SYNTHETIC, name, "()" + rettype.getDescriptor(), null, null);
+
+        InsnList code = method.instructions;
+
+        LabelNode start = new LabelNode();
+        code.add(start);
+
+        code.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        code.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz.name, forwardname, "()" + rettype.getDescriptor()));
+        code.add(new InsnNode(rettype.getOpcode(Opcodes.IRETURN)));
+
+        LabelNode end = new LabelNode();
+        code.add(end);
+
+        method.localVariables.add(new LocalVariableNode("this", Type.getObjectType(clazz.name).getDescriptor(), null, start, end, 0));
+
+        clazz.methods.add(method);
+    }
+
+
+    /**
      * Generate a forwarding method of the form "T name(S object) { return S.forward(); }
      *
      * @param clazz Class to generate new method on
@@ -199,7 +228,7 @@ public class ContainerTransformer implements IClassTransformer {
      * @param rettype Return type of method
      * @param argtype Type of object to call method on
      */
-    private void generateForwardingMethod(ClassNode clazz, String name, String forwardname, Type rettype, Type argtype) {
+    public static void generateForwardingMethod(ClassNode clazz, String name, String forwardname, Type rettype, Type argtype) {
         MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC|Opcodes.ACC_SYNTHETIC, name, "()" + rettype.getDescriptor(), null, null);
 
         populateForwardingMethod(method, forwardname, rettype, argtype, Type.getObjectType(clazz.name));
@@ -214,7 +243,7 @@ public class ContainerTransformer implements IClassTransformer {
      * @param forwardname Name of method to forward to
      * @param thistype Type of object method is being replaced on
      */
-    private void replaceForwardingMethod(MethodNode method, String forwardname, Type thistype) {
+    public static void replaceForwardingMethod(MethodNode method, String forwardname, Type thistype) {
         Type methodType = Type.getMethodType(method.desc);
 
         method.instructions.clear();
@@ -231,7 +260,7 @@ public class ContainerTransformer implements IClassTransformer {
      * @param argtype Type of object to call method on
      * @param thistype Type of object method is being generated on
      */
-    private void populateForwardingMethod(MethodNode method, String forwardname, Type rettype, Type argtype, Type thistype) {
+    public static void populateForwardingMethod(MethodNode method, String forwardname, Type rettype, Type argtype, Type thistype) {
         InsnList code = method.instructions;
 
         LabelNode start = new LabelNode();
@@ -246,10 +275,6 @@ public class ContainerTransformer implements IClassTransformer {
 
         method.localVariables.add(new LocalVariableNode("this", thistype.getDescriptor(), null, start, end, 0));
         method.localVariables.add(new LocalVariableNode("arg", argtype.getDescriptor(), null, start, end, 1));
-    }
-
-    private int test(ContainerInfo a) {
-        return a.hashCode();
     }
 
     class ContainerInfo {

@@ -201,26 +201,46 @@ public class ContainerTransformer implements IClassTransformer {
     public static void generateSelfForwardingMethod(ClassNode clazz, String name, String forwardname, Type rettype) {
         MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC|Opcodes.ACC_SYNTHETIC, name, "()" + rettype.getDescriptor(), null, null);
 
-        InsnList code = method.instructions;
-
-        LabelNode start = new LabelNode();
-        code.add(start);
-
-        code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        code.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz.name, forwardname, "()" + rettype.getDescriptor()));
-        code.add(new InsnNode(rettype.getOpcode(Opcodes.IRETURN)));
-
-        LabelNode end = new LabelNode();
-        code.add(end);
-
-        method.localVariables.add(new LocalVariableNode("this", Type.getObjectType(clazz.name).getDescriptor(), null, start, end, 0));
+        populateSelfForwardingMethod(method, forwardname, rettype, Type.getObjectType(clazz.name));
 
         clazz.methods.add(method);
     }
 
+    /**
+     * Generate a forwarding method of the form "static T name(S object) { return object.forward(); }
+     *
+     * @param clazz Class to generate new method on
+     * @param name Name of method to generate
+     * @param forwardname Name of method to call
+     * @param rettype Return type of method
+     */
+    public static void generateStaticForwardingMethod(ClassNode clazz, String name, String forwardname, Type rettype, Type argtype) {
+        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_STATIC|Opcodes.ACC_PUBLIC|Opcodes.ACC_SYNTHETIC, name, "()" + rettype.getDescriptor(), null, null);
+
+        populateSelfForwardingMethod(method, forwardname, rettype, argtype);
+
+        clazz.methods.add(method);
+    }
 
     /**
-     * Generate a forwarding method of the form "T name(S object) { return S.forward(); }
+     * Replace a method's code with a forward to another method on itself
+     * (or the first argument of a static method as the argument takes the place of this)
+     *
+     * @param method Method to replace code of
+     * @param forwardname Name of method to forward to
+     * @param thistype Type of object method is being replaced on
+     */
+    public static void replaceSelfForwardingMethod(MethodNode method, String forwardname, Type thistype) {
+        Type methodType = Type.getMethodType(method.desc);
+
+        method.instructions.clear();
+
+        populateSelfForwardingMethod(method, forwardname, methodType.getReturnType(), thistype);
+    }
+
+
+    /**
+     * Generate a forwarding method of the form "T name(S object) { return object.forward(); }
      *
      * @param clazz Class to generate new method on
      * @param name Name of method to generate
@@ -252,7 +272,33 @@ public class ContainerTransformer implements IClassTransformer {
     }
 
     /**
-     * Populate a forwarding method of the form "T name(S object) { return S.forward(); }
+     * Populate a forwarding method of the form "T name() { return this.forward(); }"
+     * This is also valid for methods of the form "static T name(S object) { return object.forward() }"
+     *
+     * @param method Method to generate code for
+     * @param forwardname Name of method to call
+     * @param rettype Return type of method
+     * @param thistype Type of object method is being generated on
+     */
+    public static void populateSelfForwardingMethod(MethodNode method, String forwardname, Type rettype, Type thistype) {
+        InsnList code = method.instructions;
+
+        LabelNode start = new LabelNode();
+        code.add(start);
+
+        code.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        code.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, thistype.getInternalName(), forwardname, "()" + rettype.getDescriptor()));
+        code.add(new InsnNode(rettype.getOpcode(Opcodes.IRETURN)));
+
+        LabelNode end = new LabelNode();
+        code.add(end);
+
+        //method.localVariables.add(new LocalVariableNode("this", thistype.getDescriptor(), null, start, end, 0));
+    }
+
+
+    /**
+     * Populate a forwarding method of the form "T name(S object) { return object.forward(); }"
      *
      * @param method Method to generate code for
      * @param forwardname Name of method to call
@@ -273,8 +319,8 @@ public class ContainerTransformer implements IClassTransformer {
         LabelNode end = new LabelNode();
         code.add(end);
 
-        method.localVariables.add(new LocalVariableNode("this", thistype.getDescriptor(), null, start, end, 0));
-        method.localVariables.add(new LocalVariableNode("arg", argtype.getDescriptor(), null, start, end, 1));
+        //method.localVariables.add(new LocalVariableNode("this", thistype.getDescriptor(), null, start, end, 0));
+        //method.localVariables.add(new LocalVariableNode("arg", argtype.getDescriptor(), null, start, end, 1));
     }
 
     class ContainerInfo {

@@ -1,7 +1,5 @@
 package invtweaks;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import invtweaks.api.ContainerSection;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
@@ -10,7 +8,6 @@ import net.minecraft.client.gui.inventory.*;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -23,7 +20,6 @@ import net.minecraft.world.World;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +52,7 @@ public class InvTweaksObfuscation {
     // Minecraft members
 
     public void addChatMessage(String message) {
-        if (mc.ingameGUI != null) {
+        if(mc.ingameGUI != null) {
             mc.ingameGUI.getChatGUI().printChatMessage(message);
         }
     }
@@ -188,6 +184,7 @@ public class InvTweaksObfuscation {
     }
 
     Field guiscreen_controllist = null;
+
     @SuppressWarnings("unchecked")
     public List<Object> getControlList(GuiScreen guiScreen) {
         return guiScreen.buttonList;
@@ -261,7 +258,10 @@ public class InvTweaksObfuscation {
     }
 
     public boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) && itemStack1.isStackable() && (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
+        return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) &&
+                itemStack1.isStackable() &&
+                (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) &&
+                ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
     }
 
 
@@ -332,15 +332,15 @@ public class InvTweaksObfuscation {
     public int getSlotNumber(Slot slot) {
         try {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots
-            if (slot instanceof SlotCreativeInventory) {
+            if(slot instanceof SlotCreativeInventory) {
                 Slot underlyingSlot = SlotCreativeInventory.func_75240_a((SlotCreativeInventory) slot);
-                if (underlyingSlot != null) {
+                if(underlyingSlot != null) {
                     return underlyingSlot.slotNumber;
                 } else {
                     log.warning("Creative inventory: Failed to get real slot");
                 }
             }
-        } catch (Exception e) {
+        } catch(Exception e) {
             log.warning("Failed to access creative slot number");
         }
         return slot.slotNumber;
@@ -414,13 +414,13 @@ public class InvTweaksObfuscation {
         try {
             resourceAsStream = mc.renderEngine.texturePack.getSelectedTexturePack().getResourceAsStream(texture);
             return resourceAsStream != null;
-        } catch (IOException e) {
+        } catch(IOException e) {
             return false;
         } finally {
-            if (resourceAsStream != null) {
+            if(resourceAsStream != null) {
                 try {
                     resourceAsStream.close();
-                } catch (IOException e) {
+                } catch(IOException e) {
                     e.printStackTrace();
                 }
             }

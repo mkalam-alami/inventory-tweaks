@@ -30,7 +30,8 @@ public class VanillaSlotMaps {
     public static Map<ContainerSection, List<Slot>> containerChestDispenserSlots(Container container) {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
 
-        slotRefs.put(ContainerSection.CHEST, container.inventorySlots.subList(0, container.inventorySlots.size() - InvTweaksConst.INVENTORY_SIZE));
+        slotRefs.put(ContainerSection.CHEST, container.inventorySlots.subList(0, container.inventorySlots.size() -
+                InvTweaksConst.INVENTORY_SIZE));
 
         return slotRefs;
     }
@@ -75,9 +76,10 @@ public class VanillaSlotMaps {
 
         int size = container.inventorySlots.size();
 
-        if (size >= InvTweaksConst.INVENTORY_SIZE) {
+        if(size >= InvTweaksConst.INVENTORY_SIZE) {
             // Assuming the container ends with the inventory, just like all vanilla containers.
-            slotRefs.put(ContainerSection.CHEST, container.inventorySlots.subList(0, size - InvTweaksConst.INVENTORY_SIZE));
+            slotRefs.put(ContainerSection.CHEST,
+                         container.inventorySlots.subList(0, size - InvTweaksConst.INVENTORY_SIZE));
         } else {
             slotRefs.put(ContainerSection.CHEST, container.inventorySlots.subList(0, size));
         }

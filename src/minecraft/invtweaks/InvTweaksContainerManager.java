@@ -57,9 +57,16 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
 
         slotRefs = InvTweaksObfuscation.getContainerSlotMap(container);
-        /*
+
+        // TODO: Detect if there is a big enough unassigned section for inventory.
         List<Slot> slots = (List<Slot>) getSlots(container);
         int size = slots.size();
+        if(size >= InvTweaksConst.INVENTORY_SIZE && !slotRefs.containsKey(ContainerSection.INVENTORY)) {
+            slotRefs.put(ContainerSection.INVENTORY, slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size));
+            slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size - HOTBAR_SIZE));
+            slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size - HOTBAR_SIZE, size));
+        }
+        /*
         boolean guiWithInventory = true;
 
         // Inventory: 4 crafting slots, then 4 armor slots, then inventory

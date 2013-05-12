@@ -404,7 +404,7 @@ public class InvTweaksObfuscation {
         return b.keyCode;
     }
 
-    public int getSpecialChestRowSize(Container container) {
+    public static int getSpecialChestRowSize(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$rowSize()"
         return 0;
     }

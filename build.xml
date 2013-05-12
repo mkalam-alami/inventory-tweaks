@@ -57,6 +57,20 @@
         </and>
     </condition>
 
+    <condition property="minecraft.jar.correct">
+        <and>
+            <isset property="forge.setupComplete"/>
+            <isset property="minecraft.jar.exists"/>
+        </and>
+    </condition>
+
+    <condition property="minecraft.inheritance.correct">
+        <and>
+            <isset property="forge.setupComplete"/>
+            <isset property="minecraft.inheritance.exists"/>
+        </and>
+    </condition>
+
     <path id="invtweaks.classpath">
         <pathelement location="${mcp.dir}/bin/minecraft"/>
         <pathelement location="${mcp.dir}/lib/argo-3.2.jar"/>
@@ -139,7 +153,7 @@
         </copy>
     </target>
 
-    <target name="build-minecraft-inheritance" depends="jar-minecraft" unless="minecraft.inheritance.exists">
+    <target name="build-minecraft-inheritance" depends="jar-minecraft" unless="minecraft.inheritance.correct">
         <java jar="${specialsource.jar}" fork="true" classpath="">
             <arg value="--srg-in"/>
             <arg value="${mcp.mappings.dir}"/>
@@ -155,7 +169,7 @@
         </java>
     </target>
 
-    <target name="jar-minecraft" depends="install-forge" unless="minecraft.jar.exists">
+    <target name="jar-minecraft" depends="install-forge" unless="minecraft.jar.correct">
         <jar destfile="${minecraft.mcp.jar}">
             <fileset dir="${mcp.dir}/bin/minecraft"/>
         </jar>

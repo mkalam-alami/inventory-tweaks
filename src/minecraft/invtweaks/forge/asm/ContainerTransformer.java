@@ -138,7 +138,7 @@ public class ContainerTransformer implements IClassTransformer {
         generateIntegerMethodConst(clazz, "invtweaks$rowSize", (short) 9);
         generateForwardingToStaticMethod(clazz, "invtweaks$slotMap", "unknownContainerSlots",
                                          Type.getObjectType("java/util/Map"),
-                                         Type.getObjectType("invtweaks/VanillaSlotMaps"));
+                                         Type.getObjectType("invtweaks/containers/VanillaSlotMaps"));
     }
 
     /**
@@ -409,7 +409,7 @@ public class ContainerTransformer implements IClassTransformer {
     }
 
     private MethodInfo getVanillaSlotMapInfo(String name) {
-        return getSlotMapInfo(Type.getObjectType("invtweaks/VanillaSlotMaps"), name, true);
+        return getSlotMapInfo(Type.getObjectType("invtweaks/containers/VanillaSlotMaps"), name, true);
     }
 
     private MethodInfo getSlotMapInfo(Type mClass, String name, boolean isStatic) {

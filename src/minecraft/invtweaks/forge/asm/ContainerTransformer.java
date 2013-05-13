@@ -75,16 +75,17 @@ public class ContainerTransformer implements IClassTransformer {
             lateInit();
         }
 
-        if("net.minecraft.inventory.Container".equals(transformedName)) {
-            ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(Opcodes.ASM4);
-            cr.accept(cn, 0);
+        ClassReader cr = new ClassReader(bytes);
+        ClassNode cn = new ClassNode(Opcodes.ASM4);
+        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 
+        cr.accept(cn, 0);
+
+        if("net.minecraft.inventory.Container".equals(transformedName)) {
             FMLRelaunchLog.info("InvTweaks: %s", transformedName);
 
             transformBaseContainer(cn);
 
-            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
             cn.accept(cw);
             return cw.toByteArray();
         }
@@ -92,24 +93,15 @@ public class ContainerTransformer implements IClassTransformer {
         // Transform classes with explicitly specified information
         ContainerInfo info = standardClasses.get(transformedName);
         if(info != null) {
-            ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(Opcodes.ASM4);
-            cr.accept(cn, 0);
-
             FMLRelaunchLog.info("InvTweaks: %s", transformedName);
 
             transformContainer(cn, info);
 
-            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
             cn.accept(cw);
             return cw.toByteArray();
         }
 
         if("invtweaks.InvTweaksObfuscation".equals(transformedName)) {
-            ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(Opcodes.ASM4);
-            cr.accept(cn, 0);
-
             FMLRelaunchLog.info("InvTweaks: %s", transformedName);
 
             Type containertype =
@@ -128,7 +120,6 @@ public class ContainerTransformer implements IClassTransformer {
                 }
             }
 
-            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
             cn.accept(cw);
             return cw.toByteArray();
         }
@@ -137,15 +128,10 @@ public class ContainerTransformer implements IClassTransformer {
 
         info = compatibilityClasses.get(transformedName);
         if(info != null) {
-            ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(Opcodes.ASM4);
-            cr.accept(cn, 0);
-
             FMLRelaunchLog.info("InvTweaks: %s", transformedName);
 
             transformContainer(cn, info);
 
-            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
             cn.accept(cw);
             return cw.toByteArray();
         }

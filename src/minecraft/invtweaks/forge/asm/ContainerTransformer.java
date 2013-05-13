@@ -21,11 +21,17 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String SLOT_MAP_METHOD = "invtweaks$slotMap";
     public static final String CONTAINER_CLASS_INTERNAL = "net/minecraft/inventory/Container";
     public static final String SLOT_MAPS_VANILLA_CLASS = "invtweaks/containers/VanillaSlotMaps";
+    public static final String SLOT_MAPS_MODCOMPAT_CLASS = "invtweaks/containers/CompatibilitySlotMaps";
 
     private static Map<String, ContainerInfo> standardClasses = new HashMap<String, ContainerInfo>();
+    private static Map<String, ContainerInfo> compatibilityClasses = new HashMap<String, ContainerInfo>();
     private String containerClassName;
 
     public ContainerTransformer() {
+    }
+
+    // This needs to have access to the FML remapper so it needs to run when we know it's been set up correctly.
+    private void lateInit() {
         // TODO: ContainerCreative handling
         // Standard non-chest type
         standardClasses.put("net.minecraft.inventory.ContainerPlayer",
@@ -51,6 +57,11 @@ public class ContainerTransformer implements IClassTransformer {
         standardClasses.put("net.minecraft.inventory.ContainerChest", new ContainerInfo(false, false, true,
                                                                                         getVanillaSlotMapInfo(
                                                                                                 "containerChestDispenserSlots")));
+
+        // Mod compatibility
+        compatibilityClasses.put("micdoodle8.mods.galacticraft.core.inventory.GCCoreContainerPlayer",
+                                 new ContainerInfo(true, true, false,
+                                                   getCompatiblitySlotMapInfo("galacticraftPlayerSlots")));
     }
 
     @Override
@@ -61,6 +72,7 @@ public class ContainerTransformer implements IClassTransformer {
             } else {
                 containerClassName = CONTAINER_CLASS_INTERNAL;
             }
+            lateInit();
         }
 
         FMLRelaunchLog.info(String.format("%s = %s", name, transformedName));
@@ -117,6 +129,21 @@ public class ContainerTransformer implements IClassTransformer {
             return cw.toByteArray();
         }
 
+        // TODO: Check API annotations here
+
+        info = compatibilityClasses.get(transformedName);
+        if(info != null) {
+            ClassReader cr = new ClassReader(bytes);
+            ClassNode cn = new ClassNode(Opcodes.ASM4);
+            cr.accept(cn, 0);
+
+            transformContainer(cn, info);
+
+            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+            cn.accept(cw);
+            return cw.toByteArray();
+        }
+
         return bytes;
     }
 
@@ -158,6 +185,9 @@ public class ContainerTransformer implements IClassTransformer {
                                                    Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
     }
 
+    private MethodInfo getCompatiblitySlotMapInfo(String name) {
+        return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_MODCOMPAT_CLASS), name, true);
+    }
 
     private MethodInfo getVanillaSlotMapInfo(String name) {
         return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_VANILLA_CLASS), name, true);

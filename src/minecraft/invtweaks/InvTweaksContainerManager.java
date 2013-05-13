@@ -56,6 +56,9 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
 
         slotRefs = InvTweaksObfuscation.getContainerSlotMap(container);
+        if(slotRefs == null) {
+            slotRefs = new HashMap<ContainerSection, List<Slot>>();
+        }
 
         // TODO: Detect if there is a big enough unassigned section for inventory.
         List<Slot> slots = (List<Slot>) getSlots(container);

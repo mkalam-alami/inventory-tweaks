@@ -14,7 +14,16 @@ import java.util.Map;
 
 
 public class ContainerTransformer implements IClassTransformer {
+    public static final String VALID_INVENTORY_METHOD = "invtweaks$validInventory";
+    public static final String VALID_CHEST_METHOD = "invtweaks$validChest";
+    public static final String STANDARD_INVENTORY_METHOD = "invtweaks$standardInventory";
+    public static final String ROW_SIZE_METHOD = "invtweaks$rowSize";
+    public static final String SLOT_MAP_METHOD = "invtweaks$slotMap";
+    public static final String CONTAINER_CLASS_INTERNAL = "net/minecraft/inventory/Container";
+    public static final String SLOT_MAPS_VANILLA_CLASS = "invtweaks/containers/VanillaSlotMaps";
+
     private static Map<String, ContainerInfo> standardClasses = new HashMap<String, ContainerInfo>();
+    private String containerClassName;
 
     public ContainerTransformer() {
         // TODO: ContainerCreative handling
@@ -46,6 +55,14 @@ public class ContainerTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
+        if(containerClassName == null) {
+            if(FMLPlugin.runtimeDeobfEnabled) {
+                containerClassName = FMLDeobfuscatingRemapper.INSTANCE.unmap(CONTAINER_CLASS_INTERNAL);
+            } else {
+                containerClassName = CONTAINER_CLASS_INTERNAL;
+            }
+        }
+
         FMLRelaunchLog.info(String.format("%s = %s", name, transformedName));
 
         if("net.minecraft.inventory.Container".equals(transformedName)) {
@@ -80,18 +97,18 @@ public class ContainerTransformer implements IClassTransformer {
             cr.accept(cn, 0);
 
             Type containertype =
-                    Type.getObjectType(FMLDeobfuscatingRemapper.INSTANCE.unmap("net/minecraft/inventory/Container"));
+                    Type.getObjectType(containerClassName);
             for(MethodNode method : cn.methods) {
                 if("isValidChest".equals(method.name)) {
-                    replaceSelfForwardingMethod(method, "invtweaks$validChest", containertype);
+                    replaceSelfForwardingMethod(method, VALID_CHEST_METHOD, containertype);
                 } else if("isValidInventory".equals(method.name)) {
-                    replaceSelfForwardingMethod(method, "invtweaks$validInventory", containertype);
+                    replaceSelfForwardingMethod(method, VALID_INVENTORY_METHOD, containertype);
                 } else if("isStandardInventory".equals(method.name)) {
-                    replaceSelfForwardingMethod(method, "invtweaks$standardInventory", containertype);
+                    replaceSelfForwardingMethod(method, STANDARD_INVENTORY_METHOD, containertype);
                 } else if("getSpecialChestRowSize".equals(method.name)) {
-                    replaceSelfForwardingMethod(method, "invtweaks$rowSize", containertype);
+                    replaceSelfForwardingMethod(method, ROW_SIZE_METHOD, containertype);
                 } else if("getContainerSlotMap".equals(method.name)) {
-                    replaceSelfForwardingMethod(method, "invtweaks$slotMap", containertype);
+                    replaceSelfForwardingMethod(method, SLOT_MAP_METHOD, containertype);
                 }
             }
 
@@ -110,17 +127,17 @@ public class ContainerTransformer implements IClassTransformer {
      * @param info  Information used to alter class
      */
     public static void transformContainer(ClassNode clazz, ContainerInfo info) {
-        generateBooleanMethodConst(clazz, "invtweaks$standardInventory", info.standardInventory);
-        generateBooleanMethodConst(clazz, "invtweaks$validInventory", info.validInventory);
-        generateBooleanMethodConst(clazz, "invtweaks$validChest", info.validChest);
-        generateIntegerMethodConst(clazz, "invtweaks$rowSize", info.rowSize);
+        generateBooleanMethodConst(clazz, STANDARD_INVENTORY_METHOD, info.standardInventory);
+        generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, info.validInventory);
+        generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, info.validChest);
+        generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, info.rowSize);
         if(info.slotMapMethod.isStatic) {
-            generateForwardingToStaticMethod(clazz, "invtweaks$slotMap", info.slotMapMethod.methodName,
+            generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, info.slotMapMethod.methodName,
                                              info.slotMapMethod.methodType.getReturnType(),
                                              info.slotMapMethod.methodClass,
                                              info.slotMapMethod.methodType.getArgumentTypes()[0]);
         } else {
-            generateSelfForwardingMethod(clazz, "invtweaks$slotMap", info.slotMapMethod.methodName,
+            generateSelfForwardingMethod(clazz, SLOT_MAP_METHOD, info.slotMapMethod.methodName,
                                          info.slotMapMethod.methodType);
         }
     }
@@ -132,13 +149,13 @@ public class ContainerTransformer implements IClassTransformer {
      * @param clazz Class to alter
      */
     public static void transformBaseContainer(ClassNode clazz) {
-        generateBooleanMethodConst(clazz, "invtweaks$standardInventory", false);
+        generateBooleanMethodConst(clazz, STANDARD_INVENTORY_METHOD, false);
         generateDefaultInventoryCheck(clazz);
-        generateBooleanMethodConst(clazz, "invtweaks$validChest", false);
-        generateIntegerMethodConst(clazz, "invtweaks$rowSize", (short) 9);
-        generateForwardingToStaticMethod(clazz, "invtweaks$slotMap", "unknownContainerSlots",
+        generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
+        generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);
+        generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "unknownContainerSlots",
                                          Type.getObjectType("java/util/Map"),
-                                         Type.getObjectType("invtweaks/containers/VanillaSlotMaps"));
+                                         Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
     }
 
     /**
@@ -149,12 +166,9 @@ public class ContainerTransformer implements IClassTransformer {
      */
     public static void generateDefaultInventoryCheck(ClassNode clazz) {
         MethodNode method =
-                new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, "invtweaks$validInventory",
+                new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, VALID_INVENTORY_METHOD,
                                "()Z", null, null);
         InsnList code = method.instructions;
-
-        LabelNode start = new LabelNode();
-        code.add(start);
 
         code.add(new VarInsnNode(Opcodes.ALOAD, 0));
         code.add(new FieldInsnNode(Opcodes.GETFIELD, clazz.name, "field_75151_b", "Ljava/util/List;"));
@@ -173,12 +187,6 @@ public class ContainerTransformer implements IClassTransformer {
 
         code.add(l2);
         code.add(new InsnNode(Opcodes.IRETURN));
-
-        LabelNode end = new LabelNode();
-        code.add(end);
-
-        method.localVariables
-              .add(new LocalVariableNode("this", Type.getObjectType(clazz.name).getDescriptor(), null, start, end, 0));
 
         clazz.methods.add(method);
     }
@@ -409,13 +417,13 @@ public class ContainerTransformer implements IClassTransformer {
     }
 
     private MethodInfo getVanillaSlotMapInfo(String name) {
-        return getSlotMapInfo(Type.getObjectType("invtweaks/containers/VanillaSlotMaps"), name, true);
+        return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_VANILLA_CLASS), name, true);
     }
 
     private MethodInfo getSlotMapInfo(Type mClass, String name, boolean isStatic) {
         return new MethodInfo(Type.getMethodType(
                 Type.getObjectType("java/util/Map"),
-                Type.getObjectType(FMLDeobfuscatingRemapper.INSTANCE.unmap("net/minecraft/inventory/Container"))),
+                Type.getObjectType(containerClassName)),
                               mClass, name, true);
     }
 

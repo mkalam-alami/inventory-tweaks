@@ -6,6 +6,8 @@ import java.util.Map;
 
 @IFMLLoadingPlugin.TransformerExclusions({"invtweaks.forge.asm"})
 public class FMLPlugin implements IFMLLoadingPlugin {
+    public static boolean runtimeDeobfEnabled = false;
+
     @Override
     public String[] getLibraryRequestClass() {
         return new String[0];
@@ -28,5 +30,6 @@ public class FMLPlugin implements IFMLLoadingPlugin {
 
     @Override
     public void injectData(Map<String, Object> data) {
+        runtimeDeobfEnabled = (Boolean)data.get("runtimeDeobfuscationEnabled");
     }
 }

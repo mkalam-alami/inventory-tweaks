@@ -75,12 +75,12 @@ public class ContainerTransformer implements IClassTransformer {
             lateInit();
         }
 
-        FMLRelaunchLog.info(String.format("%s = %s", name, transformedName));
-
         if("net.minecraft.inventory.Container".equals(transformedName)) {
             ClassReader cr = new ClassReader(bytes);
             ClassNode cn = new ClassNode(Opcodes.ASM4);
             cr.accept(cn, 0);
+
+            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
 
             transformBaseContainer(cn);
 
@@ -96,6 +96,8 @@ public class ContainerTransformer implements IClassTransformer {
             ClassNode cn = new ClassNode(Opcodes.ASM4);
             cr.accept(cn, 0);
 
+            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
+
             transformContainer(cn, info);
 
             ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
@@ -107,6 +109,8 @@ public class ContainerTransformer implements IClassTransformer {
             ClassReader cr = new ClassReader(bytes);
             ClassNode cn = new ClassNode(Opcodes.ASM4);
             cr.accept(cn, 0);
+
+            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
 
             Type containertype =
                     Type.getObjectType(containerClassName);
@@ -136,6 +140,8 @@ public class ContainerTransformer implements IClassTransformer {
             ClassReader cr = new ClassReader(bytes);
             ClassNode cn = new ClassNode(Opcodes.ASM4);
             cr.accept(cn, 0);
+
+            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
 
             transformContainer(cn, info);
 

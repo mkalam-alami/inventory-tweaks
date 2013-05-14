@@ -22,6 +22,9 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String CONTAINER_CLASS_INTERNAL = "net/minecraft/inventory/Container";
     public static final String SLOT_MAPS_VANILLA_CLASS = "invtweaks/containers/VanillaSlotMaps";
     public static final String SLOT_MAPS_MODCOMPAT_CLASS = "invtweaks/containers/CompatibilitySlotMaps";
+    public static final String ANNOTATION_CHEST_CONTAINER = "Linvtweaks/api/container/ChestContainer;";
+    public static final String ANNOTATION_INVENTORY_CONTAINER = "Linvtweaks/api/container/InventoryContainer;";
+    public static final String ANNOTATION_CONTAINER_SECTION_CALLBACK = "Linvtweaks/api/container/ContainerSectionCallback;";
 
     private static Map<String, ContainerInfo> standardClasses = new HashMap<String, ContainerInfo>();
     private static Map<String, ContainerInfo> compatibilityClasses = new HashMap<String, ContainerInfo>();
@@ -124,7 +127,37 @@ public class ContainerTransformer implements IClassTransformer {
             return cw.toByteArray();
         }
 
-        // TODO: Check API annotations here
+        if(cn.visibleAnnotations != null) {
+            for(AnnotationNode annotation : cn.visibleAnnotations) {
+                if(annotation != null) {
+                    ContainerInfo apiInfo = null;
+
+                    if(ANNOTATION_CHEST_CONTAINER.equals(annotation.desc)) {
+                        apiInfo = new ContainerInfo(false, false, true, (short)((Integer)annotation.values.get(0)).intValue());
+                        // TODO: ChestContainer.RowSizeCallback annotation support
+                    } else if(ANNOTATION_INVENTORY_CONTAINER.equals(annotation.desc)) {
+                        apiInfo = new ContainerInfo((Boolean)annotation.values.get(0), true, false);
+                    }
+
+                    if(apiInfo != null) {
+                        // Search methods to see if any have the ContainerSectionCallback attribute.
+                        methodsearch:
+                        for(MethodNode method : cn.methods) {
+                            if(method.visibleAnnotations != null) {
+                                for(AnnotationNode methodAnnotation : method.visibleAnnotations) {
+                                    if(ANNOTATION_CONTAINER_SECTION_CALLBACK.equals(methodAnnotation.desc)) {
+                                        apiInfo.slotMapMethod = new MethodInfo(Type.getMethodType(method.desc), Type.getObjectType(cn.name), method.name);
+                                        break methodsearch;
+                                    }
+                                }
+                            }
+                        }
+
+                        transformContainer(cn, apiInfo);
+                    }
+                }
+            }
+        }
 
         info = compatibilityClasses.get(transformedName);
         if(info != null) {

@@ -23,6 +23,7 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String SLOT_MAPS_VANILLA_CLASS = "invtweaks/containers/VanillaSlotMaps";
     public static final String SLOT_MAPS_MODCOMPAT_CLASS = "invtweaks/containers/CompatibilitySlotMaps";
     public static final String ANNOTATION_CHEST_CONTAINER = "Linvtweaks/api/container/ChestContainer;";
+    public static final String ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK = "Linvtweaks/api/container/ChestContainer$RowSizeCallback;";
     public static final String ANNOTATION_INVENTORY_CONTAINER = "Linvtweaks/api/container/InventoryContainer;";
     public static final String ANNOTATION_CONTAINER_SECTION_CALLBACK = "Linvtweaks/api/container/ContainerSectionCallback;";
 
@@ -134,23 +135,22 @@ public class ContainerTransformer implements IClassTransformer {
 
                     if(ANNOTATION_CHEST_CONTAINER.equals(annotation.desc)) {
                         apiInfo = new ContainerInfo(false, false, true, (short)((Integer)annotation.values.get(0)).intValue());
-                        // TODO: ChestContainer.RowSizeCallback annotation support
+
+                        MethodNode method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK);
+
+                        if(method != null) {
+                            apiInfo.rowSizeMethod = new MethodInfo(Type.getMethodType(method.desc), Type.getObjectType(cn.name), method.name);
+                        }
                     } else if(ANNOTATION_INVENTORY_CONTAINER.equals(annotation.desc)) {
                         apiInfo = new ContainerInfo((Boolean)annotation.values.get(0), true, false);
                     }
 
                     if(apiInfo != null) {
                         // Search methods to see if any have the ContainerSectionCallback attribute.
-                        methodsearch:
-                        for(MethodNode method : cn.methods) {
-                            if(method.visibleAnnotations != null) {
-                                for(AnnotationNode methodAnnotation : method.visibleAnnotations) {
-                                    if(ANNOTATION_CONTAINER_SECTION_CALLBACK.equals(methodAnnotation.desc)) {
-                                        apiInfo.slotMapMethod = new MethodInfo(Type.getMethodType(method.desc), Type.getObjectType(cn.name), method.name);
-                                        break methodsearch;
-                                    }
-                                }
-                            }
+                        MethodNode method = findAnnotatedMethod(cn, ANNOTATION_CONTAINER_SECTION_CALLBACK);
+
+                        if(method != null) {
+                            apiInfo.slotMapMethod = new MethodInfo(Type.getMethodType(method.desc), Type.getObjectType(cn.name), method.name);
                         }
 
                         transformContainer(cn, apiInfo);
@@ -172,6 +172,19 @@ public class ContainerTransformer implements IClassTransformer {
         return bytes;
     }
 
+    private MethodNode findAnnotatedMethod(ClassNode cn, String annotationDesc) {
+        for(MethodNode method : cn.methods) {
+            if(method.visibleAnnotations != null) {
+                for(AnnotationNode methodAnnotation : method.visibleAnnotations) {
+                    if(annotationDesc.equals(methodAnnotation.desc)) {
+                        return method;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Alter class to contain information contained by ContainerInfo
      *
@@ -182,7 +195,21 @@ public class ContainerTransformer implements IClassTransformer {
         ASMHelper.generateBooleanMethodConst(clazz, STANDARD_INVENTORY_METHOD, info.standardInventory);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, info.validInventory);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, info.validChest);
-        ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, info.rowSize);
+
+        if(info.rowSizeMethod != null) {
+            if(info.rowSizeMethod.isStatic) {
+                ASMHelper.generateForwardingToStaticMethod(clazz, ROW_SIZE_METHOD, info.rowSizeMethod.methodName,
+                                                           info.rowSizeMethod.methodType.getReturnType(),
+                                                           info.rowSizeMethod.methodClass,
+                                                           info.rowSizeMethod.methodType.getArgumentTypes()[0]);
+            } else {
+                ASMHelper.generateSelfForwardingMethod(clazz, ROW_SIZE_METHOD, info.rowSizeMethod.methodName,
+                                                       info.rowSizeMethod.methodType);
+            }
+        } else {
+            ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, info.rowSize);
+        }
+
         if(info.slotMapMethod.isStatic) {
             ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, info.slotMapMethod.methodName,
                                                        info.slotMapMethod.methodType.getReturnType(),
@@ -251,6 +278,7 @@ public class ContainerTransformer implements IClassTransformer {
         boolean validChest = false;
         short rowSize = 9;
         MethodInfo slotMapMethod = getVanillaSlotMapInfo("unknownContainerSlots");
+        MethodInfo rowSizeMethod = null;
 
         ContainerInfo() {
         }

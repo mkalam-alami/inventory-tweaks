@@ -37,6 +37,8 @@ import java.net.URL;
 import java.util.*;
 
 public class RemappingAccessTransformer implements IClassTransformer {
+    private static final int REMOVE_ALL_ACCESS = ~(Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED | Opcodes.ACC_PRIVATE);
+
     private Set<String> alteredClasses = new HashSet<String>();
     private Map<String, List<MemberInfo>> alterationData = new HashMap<String, List<MemberInfo>>();
 
@@ -73,7 +75,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
                 cr.accept(cn, 0);
 
                 if(classTransform != null) {
-                    cn.access &= ~(Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED | Opcodes.ACC_PRIVATE);
+                    cn.access &= REMOVE_ALL_ACCESS;
                     cn.access |= classTransform.desiredAccess;
                 }
 
@@ -84,7 +86,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
 
                         for(MemberInfo transform : fieldTransforms) {
                             if(unmappedName.equals(transform.memberName)) {
-                                field.access &= ~(Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED | Opcodes.ACC_PRIVATE);
+                                field.access &= REMOVE_ALL_ACCESS;
                                 field.access |= transform.desiredAccess;
                                 if(transform.setFinal) {
                                     if(transform.setFinal) {
@@ -106,7 +108,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
 
                         for(MemberInfo transform : methodTransforms) {
                             if(unmappedName.equals(transform.memberName) && unmappedDesc.equals(transform.memberDesc)) {
-                                method.access &= ~(Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED | Opcodes.ACC_PRIVATE);
+                                method.access &= REMOVE_ALL_ACCESS;
                                 method.access |= transform.desiredAccess;
                             }
                         }

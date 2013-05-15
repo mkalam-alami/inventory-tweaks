@@ -52,8 +52,8 @@
     <condition property="forge.setupComplete">
         <and>
             <isset property="forge.installed"/>
-            <uptodate srcfile="${src.orig.dir}/invtweaks_at.cfg"
-                      targetfile="${forge.dir}/accesstransformers/invtweaks_at.cfg"/>
+            <uptodate srcfile="${src.orig.dir}/invtweaks_at_src.cfg"
+                      targetfile="${forge.dir}/accesstransformers/invtweaks_at_src.cfg"/>
         </and>
     </condition>
 
@@ -184,7 +184,7 @@
             <cutdirsmapper dirs="1"/>
         </unzip>
 
-        <copy file="${src.orig.dir}/invtweaks_at.cfg" todir="${forge.dir}/accesstransformers/"/>
+        <copy file="${src.orig.dir}/invtweaks_at_src.cfg" todir="${forge.dir}/accesstransformers/"/>
 
         <exec dir="${forge.dir}" executable="${forge.dir}/fml/python/python_fml" osfamily="windows" inputstring="Yes\n">
             <arg value="install.py"/>

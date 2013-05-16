@@ -7,7 +7,9 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AnnotationNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,9 +25,11 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String SLOT_MAPS_VANILLA_CLASS = "invtweaks/containers/VanillaSlotMaps";
     public static final String SLOT_MAPS_MODCOMPAT_CLASS = "invtweaks/containers/CompatibilitySlotMaps";
     public static final String ANNOTATION_CHEST_CONTAINER = "Linvtweaks/api/container/ChestContainer;";
-    public static final String ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK = "Linvtweaks/api/container/ChestContainer$RowSizeCallback;";
+    public static final String ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK =
+            "Linvtweaks/api/container/ChestContainer$RowSizeCallback;";
     public static final String ANNOTATION_INVENTORY_CONTAINER = "Linvtweaks/api/container/InventoryContainer;";
-    public static final String ANNOTATION_CONTAINER_SECTION_CALLBACK = "Linvtweaks/api/container/ContainerSectionCallback;";
+    public static final String ANNOTATION_CONTAINER_SECTION_CALLBACK =
+            "Linvtweaks/api/container/ContainerSectionCallback;";
 
     private static Map<String, ContainerInfo> standardClasses = new HashMap<String, ContainerInfo>();
     private static Map<String, ContainerInfo> compatibilityClasses = new HashMap<String, ContainerInfo>();
@@ -94,6 +98,15 @@ public class ContainerTransformer implements IClassTransformer {
             return cw.toByteArray();
         }
 
+        if("net.minecraft.client.gui.inventory.ContainerCreative".equals(transformedName)) {
+            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
+
+            transformCreativeContainer(cn);
+
+            cn.accept(cw);
+            return cw.toByteArray();
+        }
+
         // Transform classes with explicitly specified information
         ContainerInfo info = standardClasses.get(transformedName);
         if(info != null) {
@@ -134,15 +147,18 @@ public class ContainerTransformer implements IClassTransformer {
                     ContainerInfo apiInfo = null;
 
                     if(ANNOTATION_CHEST_CONTAINER.equals(annotation.desc)) {
-                        apiInfo = new ContainerInfo(false, false, true, (short)((Integer)annotation.values.get(0)).intValue());
+                        apiInfo = new ContainerInfo(false, false, true,
+                                                    (short) ((Integer) annotation.values.get(0)).intValue());
 
                         MethodNode method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK);
 
                         if(method != null) {
-                            apiInfo.rowSizeMethod = new MethodInfo(Type.getMethodType(method.desc), Type.getObjectType(cn.name), method.name);
+                            apiInfo.rowSizeMethod =
+                                    new MethodInfo(Type.getMethodType(method.desc), Type.getObjectType(cn.name),
+                                                   method.name);
                         }
                     } else if(ANNOTATION_INVENTORY_CONTAINER.equals(annotation.desc)) {
-                        apiInfo = new ContainerInfo((Boolean)annotation.values.get(0), true, false);
+                        apiInfo = new ContainerInfo((Boolean) annotation.values.get(0), true, false);
                     }
 
                     if(apiInfo != null) {
@@ -150,7 +166,9 @@ public class ContainerTransformer implements IClassTransformer {
                         MethodNode method = findAnnotatedMethod(cn, ANNOTATION_CONTAINER_SECTION_CALLBACK);
 
                         if(method != null) {
-                            apiInfo.slotMapMethod = new MethodInfo(Type.getMethodType(method.desc), Type.getObjectType(cn.name), method.name);
+                            apiInfo.slotMapMethod =
+                                    new MethodInfo(Type.getMethodType(method.desc), Type.getObjectType(cn.name),
+                                                   method.name);
                         }
 
                         transformContainer(cn, apiInfo);
@@ -221,7 +239,6 @@ public class ContainerTransformer implements IClassTransformer {
         }
     }
 
-
     /**
      * Alter class to contain default implementations of added methods.
      *
@@ -236,6 +253,19 @@ public class ContainerTransformer implements IClassTransformer {
                                                    Type.getObjectType("java/util/Map"),
                                                    Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
     }
+
+    public static void transformCreativeContainer(ClassNode clazz) {
+        ASMHelper.generateForwardingToStaticMethod(clazz, STANDARD_INVENTORY_METHOD, "containerCreativeIsInventory",
+                                                   Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+        ASMHelper.generateForwardingToStaticMethod(clazz, VALID_INVENTORY_METHOD, "containerCreativeIsInventory",
+                                                   Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+        ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
+        ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);
+        ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "containerCreativeSlots",
+                                                   Type.getObjectType("java/util/Map"),
+                                                   Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+    }
+
 
     private MethodInfo getCompatiblitySlotMapInfo(String name) {
         return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_MODCOMPAT_CLASS), name, true);

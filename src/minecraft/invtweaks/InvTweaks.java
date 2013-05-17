@@ -1,7 +1,7 @@
 package invtweaks;
 
 import cpw.mods.fml.common.Loader;
-import invtweaks.api.ContainerSection;
+import invtweaks.api.container.ContainerSection;
 import invtweaks.api.IItemTree;
 import invtweaks.api.IItemTreeItem;
 import net.minecraft.client.Minecraft;

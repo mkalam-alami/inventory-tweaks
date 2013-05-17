@@ -1,6 +1,6 @@
 package invtweaks;
 
-import invtweaks.api.ContainerSection;
+import invtweaks.api.container.ContainerSection;
 import invtweaks.api.container.ChestContainer;
 import invtweaks.api.container.InventoryContainer;
 import net.minecraft.client.gui.GuiScreen;

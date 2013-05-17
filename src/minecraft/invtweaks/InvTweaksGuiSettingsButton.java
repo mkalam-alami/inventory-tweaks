@@ -1,6 +1,6 @@
 package invtweaks;
 
-import invtweaks.api.ContainerSection;
+import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 
 import java.util.concurrent.TimeoutException;

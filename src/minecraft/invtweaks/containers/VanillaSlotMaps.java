@@ -4,7 +4,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.InvTweaksConst;
-import invtweaks.api.ContainerSection;
+import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.ContainerCreative;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;

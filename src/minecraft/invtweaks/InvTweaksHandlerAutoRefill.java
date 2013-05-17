@@ -1,6 +1,6 @@
 package invtweaks;
 
-import invtweaks.api.ContainerSection;
+import invtweaks.api.container.ContainerSection;
 import invtweaks.api.IItemTreeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;

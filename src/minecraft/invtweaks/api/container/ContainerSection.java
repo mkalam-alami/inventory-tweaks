@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package invtweaks.api;
+package invtweaks.api.container;
 
 /**
  * Names for specific parts of containers. For unknown container types (such as mod containers), only INVENTORY and

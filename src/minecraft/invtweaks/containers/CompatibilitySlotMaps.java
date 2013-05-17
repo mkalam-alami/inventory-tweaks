@@ -9,6 +9,14 @@ import java.util.List;
 import java.util.Map;
 
 public class CompatibilitySlotMaps {
+    public static Map<ContainerSection, List<Slot>> ee3PortableCraftingSlots(Container container) {
+        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
+
+        slotRefs.put(ContainerSection.CRAFTING_OUT, container.inventorySlots.subList(0, 1));
+        slotRefs.put(ContainerSection.CRAFTING_IN, container.inventorySlots.subList(1, 10));
+        return slotRefs;
+    }
+
     public static Map<ContainerSection, List<Slot>> galacticraftPlayerSlots(Container container) {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
 

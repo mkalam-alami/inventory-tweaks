@@ -71,6 +71,10 @@ public class ContainerTransformer implements IClassTransformer {
         // TODO IronChest row size method. (Needs to be injected because it exists on the GUI, although the container has the info needed)
         compatibilityClasses.put("cpw.mods.ironchest.ContainerIronChestBase", ironChestsInfo);
 
+        compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerPortableCrafting",
+                                 new ContainerInfo(true, true, false,
+                                                   getCompatiblitySlotMapInfo("ee3PortableCraftingSlots")));
+
         compatibilityClasses.put("micdoodle8.mods.galacticraft.core.inventory.GCCoreContainerPlayer",
                                  new ContainerInfo(true, true, false,
                                                    getCompatiblitySlotMapInfo("galacticraftPlayerSlots")));

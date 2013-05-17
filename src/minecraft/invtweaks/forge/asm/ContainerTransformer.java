@@ -67,6 +67,10 @@ public class ContainerTransformer implements IClassTransformer {
                                                                                                 "containerChestDispenserSlots")));
 
         // Mod compatibility
+        ContainerInfo ironChestsInfo = new ContainerInfo(false, false, true);
+        // TODO IronChest row size method. (Needs to be injected because it exists on the GUI, although the container has the info needed)
+        compatibilityClasses.put("cpw.mods.ironchest.ContainerIronChestBase", ironChestsInfo);
+
         compatibilityClasses.put("micdoodle8.mods.galacticraft.core.inventory.GCCoreContainerPlayer",
                                  new ContainerInfo(true, true, false,
                                                    getCompatiblitySlotMapInfo("galacticraftPlayerSlots")));

@@ -69,7 +69,7 @@ public class ContainerTransformer implements IClassTransformer {
         // Mod compatibility
         // Iron Chests
         ContainerInfo ironChestsInfo = new ContainerInfo(false, false, true);
-        // TODO IronChest row size method. (Needs to be injected because it exists on the GUI, although the container has the info needed)
+        // TODO Iron Chest row size method. (Needs to be injected because it exists on the GUI, although the container has the info needed)
         compatibilityClasses.put("cpw.mods.ironchest.ContainerIronChestBase", ironChestsInfo);
 
         // Equivalent Exchange 3
@@ -80,6 +80,11 @@ public class ContainerTransformer implements IClassTransformer {
         compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerPortableCrafting",
                                  new ContainerInfo(true, true, false,
                                                    getCompatiblitySlotMapInfo("ee3PortableCraftingSlots")));
+
+        // Better Storage
+        ContainerInfo betterStorageInfo = new ContainerInfo(false, false, true);
+        // TODO Better Storage row size method. (Generate an accessor method for field 'columns')
+        compatibilityClasses.put("net.mcft.copy.betterstorage.container.ContainerBetterStorage", betterStorageInfo);
 
         // Galacticraft
         compatibilityClasses.put("micdoodle8.mods.galacticraft.core.inventory.GCCoreContainerPlayer",

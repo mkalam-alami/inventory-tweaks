@@ -86,6 +86,11 @@ public class ContainerTransformer implements IClassTransformer {
         // TODO Better Storage row size method. (Generate an accessor method for field 'columns')
         compatibilityClasses.put("net.mcft.copy.betterstorage.container.ContainerBetterStorage", betterStorageInfo);
 
+        // Ender Storage
+        // TODO blahblah see above. A bit less important because it's a config setting and 2 of 3 options give rowsize 9.
+        compatibilityClasses.put("codechicken.enderstorage.storage.item.ContainerEnderItemStorage",
+                                 new ContainerInfo(false, false, true));
+
         // Galacticraft
         compatibilityClasses.put("micdoodle8.mods.galacticraft.core.inventory.GCCoreContainerPlayer",
                                  new ContainerInfo(true, true, false,

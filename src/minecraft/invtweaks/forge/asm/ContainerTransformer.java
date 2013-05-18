@@ -69,15 +69,15 @@ public class ContainerTransformer implements IClassTransformer {
 
         // Mod compatibility
         // Iron Chests
-        ContainerInfo ironChestsInfo = new ContainerInfo(false, false, true);
+        ContainerInfo ironChestsInfo = new ContainerInfo(false, false, true, true);
         // TODO Iron Chest row size method. (Needs to be injected because it exists on the GUI, although the container has the info needed)
         compatibilityClasses.put("cpw.mods.ironchest.ContainerIronChestBase", ironChestsInfo);
 
         // Equivalent Exchange 3
         compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerAlchemicalBag",
-                                 new ContainerInfo(false, false, true, (short)13));
+                                 new ContainerInfo(false, false, true, true, (short)13));
         compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerAlchemicalChest",
-                                 new ContainerInfo(false, false, true, (short)13));
+                                 new ContainerInfo(false, false, true, true, (short)13));
         compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerPortableCrafting",
                                  new ContainerInfo(true, true, false,
                                                    getCompatiblitySlotMapInfo("ee3PortableCraftingSlots")));

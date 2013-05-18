@@ -241,7 +241,7 @@ public class ContainerTransformer implements IClassTransformer {
         ASMHelper.generateBooleanMethodConst(clazz, STANDARD_INVENTORY_METHOD, info.standardInventory);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, info.validInventory);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, info.validChest);
-        ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, info.validChest);
+        ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, info.largeChest);
 
         if(info.rowSizeMethod != null) {
             if(info.rowSizeMethod.isStatic) {
@@ -333,6 +333,7 @@ public class ContainerTransformer implements IClassTransformer {
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     class ContainerInfo {
         boolean standardInventory = false;
         boolean validInventory = false;

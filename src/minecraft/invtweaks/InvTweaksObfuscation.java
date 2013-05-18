@@ -456,6 +456,11 @@ public class InvTweaksObfuscation {
         return false;
     }
 
+    public static boolean isLargeChest(Container container) {
+        // This method gets replaced by the transformer with "return container.invtweaks$largeChest()"
+        return false;
+    }
+
     public static boolean isValidInventory(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$validInventory()"
         return false;

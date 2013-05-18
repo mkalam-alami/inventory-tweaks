@@ -18,6 +18,7 @@ import java.util.Map;
 public class ContainerTransformer implements IClassTransformer {
     public static final String VALID_INVENTORY_METHOD = "invtweaks$validInventory";
     public static final String VALID_CHEST_METHOD = "invtweaks$validChest";
+    public static final String LARGE_CHEST_METHOD = "invtweaks$largeChest";
     public static final String STANDARD_INVENTORY_METHOD = "invtweaks$standardInventory";
     public static final String ROW_SIZE_METHOD = "invtweaks$rowSize";
     public static final String SLOT_MAP_METHOD = "invtweaks$slotMap";
@@ -159,6 +160,8 @@ public class ContainerTransformer implements IClassTransformer {
                     ASMHelper.replaceSelfForwardingMethod(method, ROW_SIZE_METHOD, containertype);
                 } else if("getContainerSlotMap".equals(method.name)) {
                     ASMHelper.replaceSelfForwardingMethod(method, SLOT_MAP_METHOD, containertype);
+                } else if("isLargeChest".equals(method.name)) {
+                    ASMHelper.replaceSelfForwardingMethod(method, LARGE_CHEST_METHOD, containertype);
                 }
             }
 
@@ -172,7 +175,7 @@ public class ContainerTransformer implements IClassTransformer {
                     ContainerInfo apiInfo = null;
 
                     if(ANNOTATION_CHEST_CONTAINER.equals(annotation.desc)) {
-                        apiInfo = new ContainerInfo(false, false, true,
+                        apiInfo = new ContainerInfo(false, false, true, (Boolean)annotation.values.get(1),
                                                     (short) ((Integer) annotation.values.get(0)).intValue());
 
                         MethodNode method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK);
@@ -238,6 +241,7 @@ public class ContainerTransformer implements IClassTransformer {
         ASMHelper.generateBooleanMethodConst(clazz, STANDARD_INVENTORY_METHOD, info.standardInventory);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, info.validInventory);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, info.validChest);
+        ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, info.validChest);
 
         if(info.rowSizeMethod != null) {
             if(info.rowSizeMethod.isStatic) {
@@ -273,6 +277,7 @@ public class ContainerTransformer implements IClassTransformer {
         ASMHelper.generateBooleanMethodConst(clazz, STANDARD_INVENTORY_METHOD, false);
         ASMHelper.generateDefaultInventoryCheck(clazz);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
+        ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, false);
         ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);
         ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "unknownContainerSlots",
                                                    Type.getObjectType("java/util/Map"),
@@ -285,6 +290,7 @@ public class ContainerTransformer implements IClassTransformer {
         ASMHelper.generateForwardingToStaticMethod(clazz, VALID_INVENTORY_METHOD, "containerCreativeIsInventory",
                                                    Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
+        ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, false);
         ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);
         ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "containerCreativeSlots",
                                                    Type.getObjectType("java/util/Map"),
@@ -331,6 +337,7 @@ public class ContainerTransformer implements IClassTransformer {
         boolean standardInventory = false;
         boolean validInventory = false;
         boolean validChest = false;
+        boolean largeChest = false;
         short rowSize = 9;
         MethodInfo slotMapMethod = getVanillaSlotMapInfo("unknownContainerSlots");
         MethodInfo rowSizeMethod = null;
@@ -344,6 +351,13 @@ public class ContainerTransformer implements IClassTransformer {
             validChest = validCh;
         }
 
+        ContainerInfo(boolean standard, boolean validInv, boolean validCh, boolean largeCh) {
+            standardInventory = standard;
+            validInventory = validInv;
+            validChest = validCh;
+            largeChest = largeCh;
+        }
+
         ContainerInfo(boolean standard, boolean validInv, boolean validCh, MethodInfo slotMap) {
             standardInventory = standard;
             validInventory = validInv;
@@ -355,6 +369,14 @@ public class ContainerTransformer implements IClassTransformer {
             standardInventory = standard;
             validInventory = validInv;
             validChest = validCh;
+            rowSize = rowS;
+        }
+
+        ContainerInfo(boolean standard, boolean validInv, boolean validCh, boolean largeCh, short rowS) {
+            standardInventory = standard;
+            validInventory = validInv;
+            validChest = validCh;
+            largeChest = largeCh;
             rowSize = rowS;
         }
 

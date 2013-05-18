@@ -679,7 +679,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     int id = InvTweaksConst.JIMEOWAN_ID,
                             x = getGuiX(guiContainer) + getGuiWidth(guiContainer) - 16,
                             y = getGuiY(guiContainer) + 5;
-                    boolean isChestWayTooBig = mods.isChestWayTooBig(guiScreen);
+                    boolean isChestWayTooBig = isLargeChest(guiContainer.inventorySlots);
 
                     // NotEnoughItems compatibility
                     if(isChestWayTooBig && isNEIEnabled) {

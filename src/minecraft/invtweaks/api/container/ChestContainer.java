@@ -15,6 +15,10 @@ public @interface ChestContainer {
     // Size of a chest row
     int rowSize() default 9;
 
+    // Uses 'large chest' mode for sorting buttons
+    // (Renders buttons vertically down the right side of the GUI)
+    boolean isLargeChest() default false;
+
     // Annotation for method to get size of a chest row if it is not a fixed size for this container class
     // Signature int func()
     @Retention(RetentionPolicy.RUNTIME)

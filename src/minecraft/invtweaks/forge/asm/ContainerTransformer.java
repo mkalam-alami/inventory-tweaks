@@ -310,7 +310,7 @@ public class ContainerTransformer implements IClassTransformer {
         return new MethodInfo(Type.getMethodType(
                 Type.getObjectType("java/util/Map"),
                 Type.getObjectType(containerClassName)),
-                              mClass, name, true);
+                              mClass, name, isStatic);
     }
 
     class MethodInfo {

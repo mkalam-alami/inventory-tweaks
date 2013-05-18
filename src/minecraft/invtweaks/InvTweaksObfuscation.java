@@ -36,8 +36,6 @@ public class InvTweaksObfuscation {
 
     public Minecraft mc;
 
-    public InvTweaksModCompatibility mods;
-
     private static Map<String, Field> fieldsMap = new HashMap<String, Field>();
 
     // TODO: Remove in MC1.6/Whenever galacticraft works without this
@@ -46,7 +44,6 @@ public class InvTweaksObfuscation {
 
     public InvTweaksObfuscation(Minecraft mc) {
         this.mc = mc;
-        this.mods = new InvTweaksModCompatibility(this);
     }
 
     // Minecraft members

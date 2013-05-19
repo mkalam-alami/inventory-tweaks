@@ -175,8 +175,23 @@ public class ContainerTransformer implements IClassTransformer {
                     ContainerInfo apiInfo = null;
 
                     if(ANNOTATION_CHEST_CONTAINER.equals(annotation.desc)) {
-                        apiInfo = new ContainerInfo(false, false, true, (Boolean)annotation.values.get(1),
-                                                    (short) ((Integer) annotation.values.get(0)).intValue());
+                        short rowSize = 9;
+                        boolean isLargeChest = false;
+
+                        if(annotation.values != null) {
+                            for(int i = 0; i < annotation.values.size(); i += 2) {
+                                String valueName = (String)annotation.values.get(i);
+                                Object value = annotation.values.get(i+1);
+
+                                if("rowSize".equals(valueName)) {
+                                    rowSize = (short)((Integer)value).intValue();
+                                } else if("isLargeChest".equals(valueName)) {
+                                    isLargeChest = (Boolean)value;
+                                }
+                            }
+                        }
+
+                        apiInfo = new ContainerInfo(false, false, true, isLargeChest, rowSize);
 
                         MethodNode method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK);
 
@@ -186,7 +201,20 @@ public class ContainerTransformer implements IClassTransformer {
                                                    method.name);
                         }
                     } else if(ANNOTATION_INVENTORY_CONTAINER.equals(annotation.desc)) {
-                        apiInfo = new ContainerInfo((Boolean) annotation.values.get(0), true, false);
+                        boolean showOptions = false;
+
+                        if(annotation.values != null) {
+                            for(int i = 0; i < annotation.values.size(); i += 2) {
+                                String valueName = (String)annotation.values.get(i);
+                                Object value = annotation.values.get(i+1);
+
+                                if("showOptions".equals(valueName)) {
+                                    showOptions = (Boolean)value;
+                                }
+                            }
+                        }
+
+                        apiInfo = new ContainerInfo(showOptions, true, false);
                     }
 
                     if(apiInfo != null) {
@@ -200,6 +228,9 @@ public class ContainerTransformer implements IClassTransformer {
                         }
 
                         transformContainer(cn, apiInfo);
+
+                        cn.accept(cw);
+                        return cw.toByteArray();
                     }
                 }
             }
@@ -251,7 +282,7 @@ public class ContainerTransformer implements IClassTransformer {
                                                            info.rowSizeMethod.methodType.getArgumentTypes()[0]);
             } else {
                 ASMHelper.generateSelfForwardingMethod(clazz, ROW_SIZE_METHOD, info.rowSizeMethod.methodName,
-                                                       info.rowSizeMethod.methodType);
+                                                       info.rowSizeMethod.methodType.getReturnType());
             }
         } else {
             ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, info.rowSize);
@@ -264,7 +295,7 @@ public class ContainerTransformer implements IClassTransformer {
                                                        info.slotMapMethod.methodType.getArgumentTypes()[0]);
         } else {
             ASMHelper.generateSelfForwardingMethod(clazz, SLOT_MAP_METHOD, info.slotMapMethod.methodName,
-                                                   info.slotMapMethod.methodType);
+                                                   info.slotMapMethod.methodType.getReturnType());
         }
     }
 

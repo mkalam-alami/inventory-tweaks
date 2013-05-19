@@ -94,7 +94,7 @@
     <target name="package-invtweaks-api">
         <delete file="${invtweaks.api.jar}" failonerror="no"/>
         <jar destfile="${invtweaks.api.jar}">
-            <fileset dir="${src.dir}" includes="invtweaks/api/*.java"/>
+            <fileset dir="${src.dir}" includes="invtweaks/api/**/*.java"/>
         </jar>
     </target>
 

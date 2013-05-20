@@ -1,5 +1,7 @@
 package invtweaks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -55,6 +57,21 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             container = mc.thePlayer.inventoryContainer;
         }
 
+        initSlots();
+    }
+
+
+    // TODO: Remove dependency on Minecraft class
+    // TODO: Refactor the mouse-coverage stuff that needs the GuiContainer into a different class.
+    public InvTweaksContainerManager(Minecraft mc, Container cont, GuiContainer gui) {
+        super(mc);
+
+        guiContainer = gui;
+        container = cont;
+        initSlots();
+    }
+
+    private void initSlots() {
         slotRefs = InvTweaksObfuscation.getContainerSlotMap(container);
         if(slotRefs == null) {
             slotRefs = new HashMap<ContainerSection, List<Slot>>();
@@ -85,6 +102,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      *
      * @throws TimeoutException
      */
+    // TODO: Server helper directly implementing this as a swap without the need for intermediate slots.
     public boolean move(ContainerSection srcSection, int srcIndex,
                         ContainerSection destSection, int destIndex) {
         ItemStack srcStack = getItemStack(srcSection, srcIndex);
@@ -188,6 +206,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      *
      * @throws TimeoutException
      */
+    // TODO: Server helper directly implementing this.
     public boolean moveSome(ContainerSection srcSection, int srcIndex,
                             ContainerSection destSection, int destIndex,
                             int amount) {
@@ -217,10 +236,12 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
     }
 
+    // TODO: Server helper directly implementing this.
     public boolean drop(ContainerSection srcSection, int srcIndex) {
         return move(srcSection, srcIndex, null, DROP_SLOT);
     }
 
+    // TODO: Server helper directly implementing this.
     public boolean dropSome(ContainerSection srcSection, int srcIndex, int amount) {
         return moveSome(srcSection, srcIndex, null, DROP_SLOT, amount);
     }
@@ -276,13 +297,15 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
     }
 
+    // TODO: Move these mouse things somewhere else
+    @SideOnly(Side.CLIENT)
     public Slot getSlotAtMousePosition() {
         // Copied from GuiContainer
         if(guiContainer != null) {
             int x = getMouseX();
             int y = getMouseY();
-            for(int k = 0; k < getSlots(getContainer(guiContainer)).size(); k++) {
-                Slot slot = (Slot) getSlots(getContainer(guiContainer)).get(k);
+            for(int k = 0; k < getSlots(container).size(); k++) {
+                Slot slot = (Slot) getSlots(container).get(k);
                 if(getIsMouseOverSlot(slot, x, y)) {
                     return slot;
                 }
@@ -293,10 +316,12 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     public boolean getIsMouseOverSlot(Slot slot) {
         return getIsMouseOverSlot(slot, getMouseX(), getMouseY());
     }
 
+    @SideOnly(Side.CLIENT)
     private boolean getIsMouseOverSlot(Slot slot, int x, int y) {
         // Copied from GuiContainer
         if(guiContainer != null) {
@@ -311,10 +336,12 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     private int getMouseX() {
         return (Mouse.getEventX() * getWindowWidth(guiContainer)) / getDisplayWidth();
     }
 
+    @SideOnly(Side.CLIENT)
     private int getMouseY() {
         return getWindowHeight(guiContainer) -
                 (Mouse.getEventY() * getWindowHeight(guiContainer)) / getDisplayHeight() - 1;

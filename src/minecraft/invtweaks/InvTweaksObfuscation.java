@@ -38,10 +38,6 @@ public class InvTweaksObfuscation {
 
     private static Map<String, Field> fieldsMap = new HashMap<String, Field>();
 
-    // TODO: Remove in MC1.6/Whenever galacticraft works without this
-    @Deprecated
-    private static int CREATIVE_MAIN_INVENTORY_SIZE = 46;
-
     public InvTweaksObfuscation(Minecraft mc) {
         this.mc = mc;
     }

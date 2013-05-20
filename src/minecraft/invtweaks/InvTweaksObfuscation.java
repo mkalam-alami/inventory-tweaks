@@ -1,5 +1,8 @@
 package invtweaks;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
@@ -16,6 +19,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringTranslate;
 import net.minecraft.world.World;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,12 +74,12 @@ public class InvTweaksObfuscation {
         mc.displayGuiScreen(parentScreen);
     }
 
-    public int getDisplayWidth() {
-        return mc.displayWidth;
+    public static int getDisplayWidth() {
+        return FMLClientHandler.instance().getClient().displayWidth;
     }
 
-    public int getDisplayHeight() {
-        return mc.displayHeight;
+    public static int getDisplayHeight() {
+        return FMLClientHandler.instance().getClient().displayHeight;
     }
 
     public GameSettings getGameSettings() {
@@ -140,27 +144,27 @@ public class InvTweaksObfuscation {
 
     // GuiScreen members
 
-    public int getWindowWidth(GuiScreen guiScreen) {
+    public static int getWindowWidth(GuiScreen guiScreen) {
         return guiScreen.width;
     }
 
-    public int getWindowHeight(GuiScreen guiScreen) {
+    public static int getWindowHeight(GuiScreen guiScreen) {
         return guiScreen.height;
     }
 
-    public int getGuiX(GuiContainer guiContainer) {
+    public static int getGuiX(GuiContainer guiContainer) {
         return guiContainer.guiLeft;
     }
 
-    public int getGuiY(GuiContainer guiContainer) {
+    public static int getGuiY(GuiContainer guiContainer) {
         return guiContainer.guiTop;
     }
 
-    public int getGuiWidth(GuiContainer guiContainer) {
+    public static int getGuiWidth(GuiContainer guiContainer) {
         return guiContainer.xSize;
     }
 
-    public int getGuiHeight(GuiContainer guiContainer) {
+    public static int getGuiHeight(GuiContainer guiContainer) {
         return guiContainer.ySize;
     }
 
@@ -280,7 +284,7 @@ public class InvTweaksObfuscation {
         return container.windowId;
     }
 
-    public List<?> getSlots(Container container) {
+    public static List<?> getSlots(Container container) {
         return container.inventorySlots;
     }
 
@@ -325,11 +329,11 @@ public class InvTweaksObfuscation {
         return slot.getStack();
     }
 
-    public int getXDisplayPosition(Slot slot) {
+    public static int getXDisplayPosition(Slot slot) {
         return slot.xDisplayPosition;
     }
 
-    public int getYDisplayPosition(Slot slot) {
+    public static int getYDisplayPosition(Slot slot) {
         return slot.yDisplayPosition;
     }
 
@@ -343,6 +347,56 @@ public class InvTweaksObfuscation {
         return guiContainer.inventorySlots;
     }
 
+    @SideOnly(Side.CLIENT)
+    public static Slot getSlotAtMousePosition(GuiContainer guiContainer) {
+        // Copied from GuiContainer
+        if(guiContainer != null) {
+            Container container = guiContainer.inventorySlots;
+
+            int x = getMouseX(guiContainer);
+            int y = getMouseY(guiContainer);
+            for(int k = 0; k < getSlots(container).size(); k++) {
+                Slot slot = (Slot) getSlots(container).get(k);
+                if(getIsMouseOverSlot(guiContainer, slot, x, y)) {
+                    return slot;
+                }
+            }
+            return null;
+        } else {
+            return null;
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot) {
+        return getIsMouseOverSlot(guiContainer, slot, getMouseX(guiContainer), getMouseY(guiContainer));
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int x, int y) {
+        // Copied from GuiContainer
+        if(guiContainer != null) {
+            x -= getGuiX(guiContainer);
+            y -= getGuiY(guiContainer);
+            return x >= getXDisplayPosition(slot) - 1
+                    && x < getXDisplayPosition(slot) + 16 + 1
+                    && y >= getYDisplayPosition(slot) - 1
+                    && y < getYDisplayPosition(slot) + 16 + 1;
+        } else {
+            return false;
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static int getMouseX(GuiContainer guiContainer) {
+        return (Mouse.getEventX() * getWindowWidth(guiContainer)) / getDisplayWidth();
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static int getMouseY(GuiContainer guiContainer) {
+        return getWindowHeight(guiContainer) -
+                (Mouse.getEventY() * getWindowHeight(guiContainer)) / getDisplayHeight() - 1;
+    }
     // GuiButton
 
     public GuiButton asGuiButton(Object o) {

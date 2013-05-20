@@ -2,6 +2,7 @@ package invtweaks;
 
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
@@ -186,7 +187,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         ShortcutConfig shortcutConfig = new ShortcutConfig();
 
         container = new InvTweaksContainerManager(mc);
-        Slot slot = container.getSlotAtMousePosition();
+        Slot slot = InvTweaksObfuscation.getSlotAtMousePosition((GuiContainer)container.getCurrentScreen());
         // If a valid and not empty slot is clicked
         if(shortcut != null && slot != null && (hasStack(slot) || getHeldStack() != null)) {
             int slotNumber = getSlotNumber(slot);
@@ -330,7 +331,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private void runShortcut(ShortcutConfig shortcut) throws TimeoutException {
         // Try to put held item down
         if(getHeldStack() != null) {
-            Slot slot = container.getSlotAtMousePosition();
+            Slot slot = InvTweaksObfuscation.getSlotAtMousePosition((GuiContainer)container.getCurrentScreen());
             if(slot != null) {
                 int slotNumber = getSlotNumber(slot);
                 container.putHoldItemDown(container.getSlotSection(slotNumber), container.getSlotIndex(slotNumber));

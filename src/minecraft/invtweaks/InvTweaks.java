@@ -539,7 +539,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     chestAlgorithmButtonDown = true;
 
                     InvTweaksContainerManager containerMgr = new InvTweaksContainerManager(mc);
-                    Slot slotAtMousePosition = containerMgr.getSlotAtMousePosition();
+                    Slot slotAtMousePosition = InvTweaksObfuscation.getSlotAtMousePosition((GuiContainer)containerMgr.getCurrentScreen());
                     ContainerSection target = null;
                     if(slotAtMousePosition != null) {
                         target = containerMgr.getSlotSection(getSlotNumber(slotAtMousePosition));

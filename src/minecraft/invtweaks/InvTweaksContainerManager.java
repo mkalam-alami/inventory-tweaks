@@ -298,54 +298,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     }
 
     // TODO: Move these mouse things somewhere else
-    @SideOnly(Side.CLIENT)
-    public Slot getSlotAtMousePosition() {
-        // Copied from GuiContainer
-        if(guiContainer != null) {
-            int x = getMouseX();
-            int y = getMouseY();
-            for(int k = 0; k < getSlots(container).size(); k++) {
-                Slot slot = (Slot) getSlots(container).get(k);
-                if(getIsMouseOverSlot(slot, x, y)) {
-                    return slot;
-                }
-            }
-            return null;
-        } else {
-            return null;
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public boolean getIsMouseOverSlot(Slot slot) {
-        return getIsMouseOverSlot(slot, getMouseX(), getMouseY());
-    }
-
-    @SideOnly(Side.CLIENT)
-    private boolean getIsMouseOverSlot(Slot slot, int x, int y) {
-        // Copied from GuiContainer
-        if(guiContainer != null) {
-            x -= getGuiX(guiContainer);
-            y -= getGuiY(guiContainer);
-            return x >= getXDisplayPosition(slot) - 1
-                    && x < getXDisplayPosition(slot) + 16 + 1
-                    && y >= getYDisplayPosition(slot) - 1
-                    && y < getYDisplayPosition(slot) + 16 + 1;
-        } else {
-            return false;
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    private int getMouseX() {
-        return (Mouse.getEventX() * getWindowWidth(guiContainer)) / getDisplayWidth();
-    }
-
-    @SideOnly(Side.CLIENT)
-    private int getMouseY() {
-        return getWindowHeight(guiContainer) -
-                (Mouse.getEventY() * getWindowHeight(guiContainer)) / getDisplayHeight() - 1;
-    }
 
 
     public boolean hasSection(ContainerSection section) {

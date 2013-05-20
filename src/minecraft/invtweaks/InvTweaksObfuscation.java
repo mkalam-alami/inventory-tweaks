@@ -190,31 +190,31 @@ public class InvTweaksObfuscation {
 
     // ItemStack members
 
-    public ItemStack copy(ItemStack itemStack) {
+    public static ItemStack copy(ItemStack itemStack) {
         return itemStack.copy();
     }
 
-    public int getItemDamage(ItemStack itemStack) {
+    public static int getItemDamage(ItemStack itemStack) {
         return itemStack.getItemDamage();
     }
 
-    public int getMaxStackSize(ItemStack itemStack) {
+    public static int getMaxStackSize(ItemStack itemStack) {
         return itemStack.getMaxStackSize();
     }
 
-    public boolean hasDataTags(ItemStack itemStack) {
+    public static boolean hasDataTags(ItemStack itemStack) {
         return itemStack.hasTagCompound();
     }
 
-    public int getStackSize(ItemStack itemStack) {
+    public static int getStackSize(ItemStack itemStack) {
         return itemStack.stackSize;
     }
 
-    public int getItemID(ItemStack itemStack) {
+    public static int getItemID(ItemStack itemStack) {
         return itemStack.itemID;
     }
 
-    public boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
+    public static boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
         return itemStack1.isItemEqual(itemStack2) && getStackSize(itemStack1) == getStackSize(itemStack2);
     }
 

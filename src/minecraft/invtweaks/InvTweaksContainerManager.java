@@ -47,12 +47,12 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     public InvTweaksContainerManager(Minecraft mc) {
         super(mc);
 
-        GuiScreen currentScreen = getCurrentScreen();
-        if(isGuiContainer(currentScreen)) {
-            this.guiContainer = asGuiContainer(currentScreen);
-            this.container = getContainer(this.guiContainer);
+        GuiScreen currentScreen = mc.currentScreen;
+        if(currentScreen instanceof GuiContainer) {
+            guiContainer = (GuiContainer)currentScreen;
+            container = guiContainer.inventorySlots;
         } else {
-            this.container = getPlayerContainer();
+            container = mc.thePlayer.inventoryContainer;
         }
 
         slotRefs = InvTweaksObfuscation.getContainerSlotMap(container);
@@ -61,7 +61,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
 
         // TODO: Detect if there is a big enough unassigned section for inventory.
-        List<Slot> slots = (List<Slot>) getSlots(container);
+        List<Slot> slots = (List<Slot>)container.inventorySlots;
         int size = slots.size();
         if(size >= InvTweaksConst.INVENTORY_SIZE && !slotRefs.containsKey(ContainerSection.INVENTORY)) {
             slotRefs.put(ContainerSection.INVENTORY, slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size));
@@ -69,76 +69,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
                          slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size - HOTBAR_SIZE));
             slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size - HOTBAR_SIZE, size));
         }
-        /*
-        boolean guiWithInventory = true;
-
-        // Inventory: 4 crafting slots, then 4 armor slots, then inventory
-        if (isContainerPlayer(container)) {
-            slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
-            slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 5));
-            slotRefs.put(ContainerSection.ARMOR, slots.subList(5, 9));
-        }
-
-        // Creative mode inventory: 4 armor slots, then inventory
-        else if (isContainerCreative(container)) {
-            slotRefs.put(ContainerSection.ARMOR, slots.subList(5, 9));
-            size--; // Last slot is something else than the inventory (maybe the trash)
-        }
-
-        // Chest/Dispenser
-        else if (isContainerChest(container)
-                || isContainerDispenser(container)) {
-            slotRefs.put(ContainerSection.CHEST, slots.subList(0, size - INVENTORY_SIZE));
-        }
-
-        // Furnace
-        else if (isContainerFurnace(container)) {
-            slotRefs.put(ContainerSection.FURNACE_IN, slots.subList(0, 1));
-            slotRefs.put(ContainerSection.FURNACE_FUEL, slots.subList(1, 2));
-            slotRefs.put(ContainerSection.FURNACE_OUT, slots.subList(2, 3));
-        }
-
-        // Workbench
-        else if (isContainerWorkbench(container)) {
-            slotRefs.put(ContainerSection.CRAFTING_OUT, slots.subList(0, 1));
-            slotRefs.put(ContainerSection.CRAFTING_IN, slots.subList(1, 10));
-        }
-
-        // Enchantment table
-        else if (isContainerEnchantmentTable(container)) {
-            slotRefs.put(ContainerSection.ENCHANTMENT, slots.subList(0, 1));
-        }
-
-        // Brewing stand
-        else if (isContainerBrewingStand(container)) {
-            slotRefs.put(ContainerSection.BREWING_BOTTLES, slots.subList(0, 3));
-            slotRefs.put(ContainerSection.BREWING_INGREDIENT, slots.subList(3, 4));
-        }
-
-        // Unknown = chest
-        else {
-
-            // Load mod's slots
-            slotRefs = mods.getSpecialContainerSlots(currentScreen, container);
-
-            // Else, guess slots
-            if (slotRefs.isEmpty()) {
-                if (size >= INVENTORY_SIZE) {
-                    // Assuming the container ends with the inventory, just like all vanilla containers.
-                    slotRefs.put(ContainerSection.CHEST, slots.subList(0, size - INVENTORY_SIZE));
-                } else {
-                    guiWithInventory = false;
-                    slotRefs.put(ContainerSection.CHEST, slots.subList(0, size));
-                }
-            }
-        }
-
-        if (guiWithInventory && !slotRefs.containsKey(ContainerSection.INVENTORY)) {
-            slotRefs.put(ContainerSection.INVENTORY, slots.subList(size - INVENTORY_SIZE, size));
-            slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, slots.subList(size - INVENTORY_SIZE, size - HOTBAR_SIZE));
-            slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size - HOTBAR_SIZE, size));
-        }
-        */
     }
 
     /**
@@ -157,7 +87,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      */
     public boolean move(ContainerSection srcSection, int srcIndex,
                         ContainerSection destSection, int destIndex) {
-        //System.out.println(srcSection + ":" + srcIndex + " to " + destSection + ":" + destIndex);
         ItemStack srcStack = getItemStack(srcSection, srcIndex);
         ItemStack destStack = getItemStack(destSection, destIndex);
 
@@ -189,9 +118,9 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
         // Use intermediate slot if we have to swap tools, maps, etc.
         if(destStack != null
-                && getItemID(srcStack) == getItemID(destStack)
-                && (getMaxStackSize(srcStack) == 1 ||
-                hasDataTags(srcStack) || hasDataTags(destStack)
+                && srcStack.itemID == destStack.itemID
+                && (srcStack.getMaxStackSize() == 1 ||
+                srcStack.hasTagCompound() || destStack.hasTagCompound()
         )) {
             int intermediateSlot = getFirstEmptyUsableSlotNumber();
             ContainerSection intermediateSection = getSlotSection(intermediateSlot);
@@ -269,10 +198,10 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
 
         ItemStack destination = getItemStack(srcSection, srcIndex);
-        int sourceSize = getStackSize(source);
+        int sourceSize = source.stackSize;
         int movedAmount = Math.min(amount, sourceSize);
 
-        if(destination == null || areItemStacksEqual(source, destination)) {
+        if(destination == null || InvTweaksObfuscation.areItemStacksEqual(source, destination)) {
 
             leftClick(srcSection, srcIndex);
             for(int i = 0; i < movedAmount; i++) {

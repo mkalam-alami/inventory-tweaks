@@ -54,10 +54,6 @@ public class InvTweaksObfuscation {
         return mc.thePlayer;
     }
 
-    public World getTheWorld() {
-        return mc.theWorld;
-    }
-
     public PlayerControllerMP getPlayerController() {
         return mc.playerController;
     }
@@ -84,14 +80,6 @@ public class InvTweaksObfuscation {
 
     public GameSettings getGameSettings() {
         return mc.gameSettings;
-    }
-
-    public KeyBinding[] getRegisteredBindings() {
-        return getGameSettings().keyBindings;
-    }
-
-    public void setRegisteredBindings(KeyBinding[] bindings) {
-        getGameSettings().keyBindings = bindings;
     }
 
     public int getKeyBindingForwardKeyCode() {
@@ -176,8 +164,6 @@ public class InvTweaksObfuscation {
         return guiContainer.ySize;
     }
 
-    Field guiscreen_controllist = null;
-
     @SuppressWarnings("unchecked")
     public List<Object> getControlList(GuiScreen guiScreen) {
         return guiScreen.buttonList;
@@ -203,10 +189,6 @@ public class InvTweaksObfuscation {
     }
 
     // ItemStack members
-
-    public ItemStack createItemStack(int id, int size, int damage) {
-        return new ItemStack(id, size, damage);
-    }
 
     public ItemStack copy(ItemStack itemStack) {
         return itemStack.copy();
@@ -389,10 +371,6 @@ public class InvTweaksObfuscation {
         mc.sndManager.playSoundFX(string, f, g);
     }
 
-    public long getCurrentTime() {
-        return getTheWorld().getTotalWorldTime();
-    }
-
     public int getKeyCode(KeyBinding b) {
         return b.keyCode;
     }
@@ -434,14 +412,6 @@ public class InvTweaksObfuscation {
         return getLocalizationService().translateKey(key);
     }
 
-    public static ItemStack getHoldStackStatic(Minecraft mc) {
-        return new InvTweaksObfuscation(mc).getHeldStack();
-    }
-
-    public static GuiScreen getCurrentScreenStatic(Minecraft mc) {
-        return new InvTweaksObfuscation(mc).getCurrentScreen();
-    }
-
     // Classes
 
     public static boolean isValidChest(Container container) {
@@ -473,22 +443,6 @@ public class InvTweaksObfuscation {
         return o != null && o instanceof GuiContainer;
     }
 
-    public boolean isGuiBeacon(Object o) { // GuiBeacon
-        return o != null && o.getClass().equals(GuiBeacon.class);
-    }
-
-    public boolean isGuiBrewingStand(Object o) { // GuiBrewingStand
-        return o != null && o.getClass().equals(GuiBrewingStand.class);
-    }
-
-    public boolean isGuiChest(Object o) { // GuiChest
-        return o != null && o.getClass().equals(GuiChest.class);
-    }
-
-    public boolean isGuiWorkbench(Object o) { // GuiWorkbench
-        return o != null && o.getClass().equals(GuiCrafting.class);
-    }
-
     public boolean isGuiInventoryCreative(Object o) { // GuiInventoryCreative
         return o != null && o.getClass().equals(GuiContainerCreative.class);
     }
@@ -497,28 +451,8 @@ public class InvTweaksObfuscation {
         return o != null && o.getClass().equals(GuiEnchantment.class);
     }
 
-    public boolean isGuiFurnace(Object o) { // GuiFurnace
-        return o != null && o.getClass().equals(GuiFurnace.class);
-    }
-
     public boolean isGuiInventory(Object o) { // GuiInventory
         return o != null && o.getClass().equals(GuiInventory.class);
-    }
-
-    public boolean isGuiTrading(Object o) { // GuiTrading
-        return o != null && o.getClass().equals(GuiMerchant.class);
-    }
-
-    public boolean isGuiAnvil(Object o) { // GuiAnvil
-        return o != null && o.getClass().equals(GuiRepair.class);
-    }
-
-    public boolean isGuiDispenser(Object o) { // GuiDispenser
-        return o != null && o.getClass().equals(GuiDispenser.class);
-    }
-
-    public boolean isGuiHopper(Object o) { // GuiHopper
-        return o != null && o.getClass().equals(GuiHopper.class);
     }
 
     public boolean isGuiButton(Object o) { // GuiButton
@@ -527,50 +461,6 @@ public class InvTweaksObfuscation {
 
     public boolean isGuiEditSign(Object o) {
         return o != null && o.getClass().equals(GuiEditSign.class);
-    }
-
-    public boolean isContainerBeacon(Object o) {
-        return o != null && o.getClass().equals(ContainerBeacon.class);
-    }
-
-    public boolean isContainerBrewingStand(Object o) {
-        return o != null && o.getClass().equals(ContainerBrewingStand.class);
-    }
-
-    public boolean isContainerChest(Object o) {
-        return o != null && o.getClass().equals(ContainerChest.class);
-    }
-
-    public boolean isContainerWorkbench(Object o) {
-        return o != null && o.getClass().equals(ContainerWorkbench.class);
-    }
-
-    public boolean isContainerEnchantmentTable(Object o) {
-        return o != null && o.getClass().equals(ContainerEnchantment.class);
-    }
-
-    public boolean isContainerFurnace(Object o) {
-        return o != null && o.getClass().equals(ContainerFurnace.class);
-    }
-
-    public boolean isContainerPlayer(Object o) {
-        return o != null && o.getClass().equals(ContainerPlayer.class);
-    }
-
-    public boolean isContainerTrading(Object o) {
-        return o != null && o.getClass().equals(ContainerMerchant.class);
-    }
-
-    public boolean isContainerAnvil(Object o) {
-        return o != null && o.getClass().equals(ContainerRepair.class);
-    }
-
-    public boolean isContainerDispenser(Object o) {
-        return o != null && o.getClass().equals(ContainerDispenser.class);
-    }
-
-    public boolean isContainerCreative(Object o) { // ContainerCreative
-        return o != null && o.getClass().equals(ContainerCreative.class);
     }
 
     public boolean isItemArmor(Object o) { // ItemArmor

@@ -22,6 +22,9 @@ import invtweaks.api.InvTweaksAPI;
 @NetworkMod(channels = {"InventoryTweaks"}, packetHandler = PacketHandler.class,
             connectionHandler = ConnectionHandler.class)
 public class InvTweaksMod implements InvTweaksAPI {
+    @Mod.Instance
+    public static InvTweaksMod instance;
+
     @SidedProxy(clientSide = "invtweaks.forge.ClientProxy", serverSide = "invtweaks.forge.CommonProxy")
     public static CommonProxy proxy;
 
@@ -53,5 +56,10 @@ public class InvTweaksMod implements InvTweaksAPI {
     @Override
     public void setSortKeyEnabled(boolean enabled) {
         proxy.setSortKeyEnabled(enabled);
+    }
+
+    // Helper for ASM transform of GuiTextField to disable sorting on focus.
+    public static void setSortKeyDisabledStatic(boolean enabled) {
+        instance.setSortKeyEnabled(!enabled);
     }
 }

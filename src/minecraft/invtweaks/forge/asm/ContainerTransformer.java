@@ -3,15 +3,11 @@ package invtweaks.forge.asm;
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import cpw.mods.fml.relauncher.IClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.AnnotationNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.*;
+import org.objectweb.asm.tree.*;
 
 import java.util.HashMap;
+import java.util.ListIterator;
 import java.util.Map;
 
 
@@ -246,6 +242,15 @@ public class ContainerTransformer implements IClassTransformer {
             return cw.toByteArray();
         }
 
+        if("net.minecraft.client.gui.GuiTextField".equals(transformedName)) {
+            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
+
+            transformTextField(cn);
+
+            cn.accept(cw);
+            return cw.toByteArray();
+        }
+
         return bytes;
     }
 
@@ -326,6 +331,40 @@ public class ContainerTransformer implements IClassTransformer {
         ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "containerCreativeSlots",
                                                    Type.getObjectType("java/util/Map"),
                                                    Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+    }
+
+    private static void transformTextField(ClassNode clazz) {
+        for(MethodNode method : clazz.methods) {
+            String unmappedName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(clazz.name, method.name,
+                                                                                  method.desc);
+            String unmappedDesc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(method.desc);
+
+            if("func_73796_b".equals(unmappedName) && "(Z)V".equals(unmappedDesc)) {
+                InsnList code = method.instructions;
+                AbstractInsnNode returnNode = null;
+                for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
+                    AbstractInsnNode insn = iterator.next();
+
+                    if(insn.getOpcode() == Opcodes.RETURN) {
+                        returnNode = insn;
+                        break;
+                    }
+                }
+
+                if(returnNode != null) {
+                    // Insert a call to helper method to disable sorting while a text field is focused
+                    code.insertBefore(returnNode, new VarInsnNode(Opcodes.ILOAD, 1));
+                    code.insertBefore(returnNode,
+                                      new MethodInsnNode(Opcodes.INVOKESTATIC,
+                                                         "invtweaks/forge/InvTweaksMod",
+                                                         "setSortKeyDisabledStatic", "(Z)V"));
+
+                    FMLRelaunchLog.info("InvTweaks: successfully transformed setFocused/func_73796_b");
+                } else {
+                    FMLRelaunchLog.severe("InvTweaks: unable to find return in setFocused/func_73796_b");
+                }
+            }
+        }
     }
 
 

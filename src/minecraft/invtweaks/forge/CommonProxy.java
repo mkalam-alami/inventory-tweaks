@@ -55,4 +55,7 @@ public class CommonProxy implements InvTweaksAPI {
     @Override
     public void setSortKeyEnabled(boolean enabled) {
     }
+
+    public void setTextboxMode(boolean enabled) {
+    }
 }

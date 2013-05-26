@@ -8,6 +8,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
+import net.minecraft.block.Block;
+
+import java.util.LinkedHashMap;
 
 /**
  * ModLoader entry point to load and configure the mod.
@@ -58,8 +61,12 @@ public class InvTweaksMod implements InvTweaksAPI {
         proxy.setSortKeyEnabled(enabled);
     }
 
+    public void setTextboxMode(boolean enabled) {
+        proxy.setTextboxMode(enabled);
+    }
+
     // Helper for ASM transform of GuiTextField to disable sorting on focus.
-    public static void setSortKeyDisabledStatic(boolean enabled) {
-        instance.setSortKeyEnabled(!enabled);
+    public static void setTextboxModeStatic(boolean enabled) {
+        instance.setTextboxMode(enabled);
     }
 }

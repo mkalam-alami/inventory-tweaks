@@ -71,6 +71,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private long sortingKeyPressedDate = 0;
     private boolean sortKeyDown = false;
     private boolean sortKeyEnabled = true;
+    private boolean textboxMode = false;
 
     private boolean itemPickupPending = false;
     private boolean isNEILoaded;
@@ -112,6 +113,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             handleAutoRefill();
             if(wasInGUI) {
                 wasInGUI = false;
+                textboxMode = false;
             }
         }
     }
@@ -273,6 +275,10 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     public void setSortKeyEnabled(boolean enabled) {
         sortKeyEnabled = enabled;
+    }
+
+    public void setTextboxMode(boolean enabled) {
+        textboxMode = enabled;
     }
 
     public void logInGame(String message) {
@@ -815,7 +821,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private boolean isSortingShortcutDown() {
-        if(sortKeyEnabled) {
+        if(sortKeyEnabled && !textboxMode) {
             int keyCode = cfgManager.getConfig().getSortKeyCode();
             if(keyCode > 0) {
                 return Keyboard.isKeyDown(keyCode);

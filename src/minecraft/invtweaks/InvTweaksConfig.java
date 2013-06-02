@@ -423,6 +423,8 @@ public class InvTweaksConfig {
 
         } catch(ClassNotFoundException e) {
             // Failed to find Convenient Inventory class, not a problem
+        } catch(LinkageError e) {
+            // We're just trying to see if it exists and works, an error loading the class isn't important for us.
         } catch(Exception e) {
             InvTweaks.logInGameErrorStatic("invtweaks.modcompat.ci.error", e);
         }

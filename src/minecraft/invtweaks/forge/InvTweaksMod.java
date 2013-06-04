@@ -9,6 +9,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 
 import java.util.LinkedHashMap;
 
@@ -61,8 +62,14 @@ public class InvTweaksMod implements InvTweaksAPI {
         proxy.setSortKeyEnabled(enabled);
     }
 
+    @Override
     public void setTextboxMode(boolean enabled) {
         proxy.setTextboxMode(enabled);
+    }
+
+    @Override
+    public int compareItems(ItemStack i, ItemStack j) {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     // Helper for ASM transform of GuiTextField to disable sorting on focus.

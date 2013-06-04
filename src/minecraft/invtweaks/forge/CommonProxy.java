@@ -7,6 +7,7 @@ import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 
 public class CommonProxy implements InvTweaksAPI {
     public void preInit(FMLPreInitializationEvent e) {
@@ -56,6 +57,13 @@ public class CommonProxy implements InvTweaksAPI {
     public void setSortKeyEnabled(boolean enabled) {
     }
 
+    @Override
     public void setTextboxMode(boolean enabled) {
     }
+
+    @Override
+    public int compareItems(ItemStack i, ItemStack j) {
+        return 0;
+    }
+
 }

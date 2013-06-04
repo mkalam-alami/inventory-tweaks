@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
 public class ClientProxy extends CommonProxy implements IPickupNotifier {
@@ -117,7 +118,13 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
         instance.setSortKeyEnabled(enabled);
     }
 
+    @Override
     public void setTextboxMode(boolean enabled) {
         instance.setTextboxMode(enabled);
+    }
+
+    @Override
+    public int compareItems(ItemStack i, ItemStack j) {
+        return instance.compareItems(i, j);
     }
 }

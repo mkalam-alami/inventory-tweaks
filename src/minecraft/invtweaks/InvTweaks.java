@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -21,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -266,6 +268,92 @@ public class InvTweaks extends InvTweaksObfuscation {
         } catch(Exception e) {
             logInGameError("Failed to move picked up stack", e);
             itemPickupPending = false;
+        }
+    }
+
+    public int compareItems(ItemStack i, ItemStack j) {
+        return compareItems(i, j, getItemOrder(i), getItemOrder(j));
+    }
+
+    int compareItems(ItemStack i, ItemStack j, int orderI, int orderJ) {
+        if(j == null) {
+            return -1;
+        } else if(i == null || orderI == -1) {
+            return 1;
+        } else {
+            if(orderI == orderJ) {
+                // Items of same keyword orders can have different IDs,
+                // in the case of categories defined by a range of IDs
+                if(i.itemID == j.itemID) {
+                    boolean iHasName = i.hasDisplayName();
+                    boolean jHasName = j.hasDisplayName();
+                    if(iHasName || jHasName) {
+                        if(!iHasName) {
+                            return -1;
+                        } else if(!jHasName) {
+                            return 1;
+                        } else {
+                            String iDisplayName = i.getDisplayName();
+                            String jDisplayName = j.getDisplayName();
+
+                            if(!iDisplayName.equals(jDisplayName)) {
+                                return iDisplayName.compareTo(jDisplayName);
+                            }
+                        }
+                    }
+
+                    @SuppressWarnings("unchecked")
+                    Map<Integer, Integer> iEnchs = EnchantmentHelper.getEnchantments(i);
+                    @SuppressWarnings("unchecked")
+                    Map<Integer, Integer> jEnchs = EnchantmentHelper.getEnchantments(j);
+                    if(iEnchs.size() == jEnchs.size()) {
+                        int iEnchMaxId = 0, iEnchMaxLvl = 0;
+                        int jEnchMaxId = 0, jEnchMaxLvl = 0;
+
+                        for(Map.Entry<Integer, Integer> ench : iEnchs.entrySet()) {
+                            if(ench.getValue() > iEnchMaxLvl) {
+                                iEnchMaxId = ench.getKey();
+                                iEnchMaxLvl = ench.getValue();
+                            } else if(ench.getValue() == iEnchMaxLvl && ench.getKey() > iEnchMaxId) {
+                                iEnchMaxId = ench.getKey();
+                            }
+                        }
+
+                        for(Map.Entry<Integer, Integer> ench : jEnchs.entrySet()) {
+                            if(ench.getValue() > jEnchMaxLvl) {
+                                jEnchMaxId = ench.getKey();
+                                jEnchMaxLvl = ench.getValue();
+                            } else if(ench.getValue() == jEnchMaxLvl && ench.getKey() > jEnchMaxId) {
+                                jEnchMaxId = ench.getKey();
+                            }
+                        }
+
+                        if(iEnchMaxId == jEnchMaxId) {
+                            if(iEnchMaxLvl == jEnchMaxLvl) {
+                                if(getItemDamage(i) != getItemDamage(j)) {
+                                    if(isItemStackDamageable(i)) {
+                                        return getItemDamage(j) - getItemDamage(i);
+                                    } else {
+                                        return getItemDamage(i) - getItemDamage(j);
+                                    }
+                                } else {
+                                    return getStackSize(j) - getStackSize(i);
+                                }
+                            } else {
+                                return jEnchMaxLvl - iEnchMaxLvl;
+                            }
+                        } else {
+                            return jEnchMaxId - iEnchMaxId;
+                        }
+                    } else {
+                        return jEnchs.size() - iEnchs.size();
+                    }
+                } else {
+                    return getItemID(j) - getItemID(i);
+                }
+            } else {
+                return orderJ - orderI;
+            }
         }
     }
 
@@ -814,6 +902,14 @@ public class InvTweaks extends InvTweaksObfuscation {
             mouseWasDown = false;
         }
 
+    }
+
+    private int getItemOrder(ItemStack itemStack) {
+        List<IItemTreeItem> items = cfgManager.getConfig().getTree().getItems(
+                getItemID(itemStack), getItemDamage(itemStack));
+        return (items != null && items.size() > 0)
+               ? items.get(0).getOrder()
+               : Integer.MAX_VALUE;
     }
 
     private int getContainerRowSize(GuiContainer guiContainer) {

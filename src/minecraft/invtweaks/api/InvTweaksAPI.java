@@ -22,10 +22,16 @@
 
 package invtweaks.api;
 
+import net.minecraft.item.ItemStack;
+
 public interface InvTweaksAPI {
     void addOnLoadListener(IItemTreeListener listener);
 
     boolean removeOnLoadListener(IItemTreeListener listener);
 
     void setSortKeyEnabled(boolean enabled);
+
+    void setTextboxMode(boolean enabled);
+
+    int compareItems(ItemStack i, ItemStack j);
 }

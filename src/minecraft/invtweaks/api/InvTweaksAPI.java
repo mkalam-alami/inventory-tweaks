@@ -24,14 +24,52 @@ package invtweaks.api;
 
 import net.minecraft.item.ItemStack;
 
+/**
+ * Interface to access functions exposed by Inventory Tweaks
+ *
+ * The main @Mod instance of the mod implements this interface, so a refernce to it can
+ * be obtained via @Instance("inventorytweaks") or methods in cpw.mods.fml.common.Loader
+ *
+ * All of these functions currently have no effect if called on a dedicated server.
+ */
 public interface InvTweaksAPI {
+    /**
+     * Add a listener for ItemTree load events
+     *
+     * @param listener
+     */
     void addOnLoadListener(IItemTreeListener listener);
 
+    /**
+     * Remove a listener for ItemTree load events
+     *
+     * @param listener
+     * @return true if the listener was previously added
+     */
     boolean removeOnLoadListener(IItemTreeListener listener);
 
+    /**
+     * Toggle sorting shortcut state.
+     *
+     * @param enabled
+     */
     void setSortKeyEnabled(boolean enabled);
 
+    /**
+     * Toggle sorting shortcut supression.
+     * Unlike setSortKeyEnabled, this flag is automatically cleared when GUIs are closed.
+     *
+     * @param enabled
+     */
     void setTextboxMode(boolean enabled);
 
+    /**
+     * Compare two items using the default (non-rule based) algorithm,
+     * sutable for an implementation of Comparator&lt;ItemStack&gt;.
+     *
+     * @param i
+     * @param j
+     * @return A value with a sign representing the relative order of the item stacks
+     */
     int compareItems(ItemStack i, ItemStack j);
 }

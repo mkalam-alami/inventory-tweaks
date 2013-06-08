@@ -311,7 +311,7 @@ public class ContainerTransformer implements IClassTransformer {
      */
     public static void transformBaseContainer(ClassNode clazz) {
         ASMHelper.generateBooleanMethodConst(clazz, STANDARD_INVENTORY_METHOD, false);
-        ASMHelper.generateDefaultInventoryCheck(clazz);
+        ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, false);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
         ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, false);
         ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);

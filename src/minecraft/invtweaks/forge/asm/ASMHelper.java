@@ -6,40 +6,6 @@ import org.objectweb.asm.tree.*;
 
 public class ASMHelper {
     /**
-     * Generate a new method "boolean invtweaks$validInventory()", returning true if the size of the container is large
-     * enough to hold the player inventory.
-     *
-     * @param clazz Class to add method to
-     */
-    public static void generateDefaultInventoryCheck(ClassNode clazz) {
-        MethodNode method =
-                new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC,
-                               ContainerTransformer.VALID_INVENTORY_METHOD,
-                               "()Z", null, null);
-        InsnList code = method.instructions;
-
-        code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        code.add(new FieldInsnNode(Opcodes.GETFIELD, clazz.name, "field_75151_b", "Ljava/util/List;"));
-        code.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "size", "()I"));
-        code.add(new IntInsnNode(Opcodes.BIPUSH, 36)); // TODO: Load Static InvTweaksConst.INVENTORY_SIZE
-
-        LabelNode l1 = new LabelNode();
-        code.add(new JumpInsnNode(Opcodes.IF_ICMPLE, l1));
-        code.add(new InsnNode(Opcodes.ICONST_1));
-
-        LabelNode l2 = new LabelNode();
-        code.add(new JumpInsnNode(Opcodes.GOTO, l2));
-
-        code.add(l1);
-        code.add(new InsnNode(Opcodes.ICONST_0));
-
-        code.add(l2);
-        code.add(new InsnNode(Opcodes.IRETURN));
-
-        clazz.methods.add(method);
-    }
-
-    /**
      * Generate a new method "boolean name()", returning a constant value
      *
      * @param clazz  Class to add method to

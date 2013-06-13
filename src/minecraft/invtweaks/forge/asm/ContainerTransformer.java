@@ -197,7 +197,7 @@ public class ContainerTransformer implements IClassTransformer {
                                                    method.name);
                         }
                     } else if(ANNOTATION_INVENTORY_CONTAINER.equals(annotation.desc)) {
-                        boolean showOptions = false;
+                        boolean showOptions = true;
 
                         if(annotation.values != null) {
                             for(int i = 0; i < annotation.values.size(); i += 2) {

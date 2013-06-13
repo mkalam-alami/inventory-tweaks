@@ -16,5 +16,5 @@ import java.lang.annotation.Target;
 public @interface InventoryContainer {
     // Set to true if the Inventory Tweaks options button should be shown for this container.
     // (For instance, if you are replacing a vanilla container such as the player's inventory)
-    boolean showOptions() default false;
+    boolean showOptions() default true;
 }

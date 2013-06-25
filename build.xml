@@ -36,7 +36,7 @@
     <property name="minecraft.inheritance" value="${temp.dir}/Minecraft-${minecraft.version}-mcp.inheritance"/>
 
     <property name="minecraft.mcp.jar" value="${temp.dir}/Minecraft-${minecraft.version}-mcp.jar"/>
-    <property name="invtweaks.mcp.jar" value="${build.dir}/out/InventoryTweaks-${invtweaks.buildversion}.mcp.jar"/>
+    <property name="invtweaks.mcp.jar" value="${build.dir}/out/InventoryTweaks-MC${minecraft.version}-${invtweaks.buildversion}.mcp.jar"/>
 
     <property name="invtweaks.jar" value="${build.dir}/out/InventoryTweaks-MC${minecraft.version}-${invtweaks.buildversion}.jar"/>
     <property name="invtweaks.api.jar" value="${build.dir}/out/InventoryTweaks-api-MC${minecraft.version}-${invtweaks.buildversion}.jar"/>

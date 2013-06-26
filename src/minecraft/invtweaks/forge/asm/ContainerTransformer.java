@@ -3,6 +3,9 @@ package invtweaks.forge.asm;
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import cpw.mods.fml.relauncher.IClassTransformer;
+import invtweaks.forge.asm.compatibility.CompatibilityConfigLoader;
+import invtweaks.forge.asm.compatibility.ContainerInfo;
+import invtweaks.forge.asm.compatibility.MethodInfo;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
@@ -30,7 +33,8 @@ public class ContainerTransformer implements IClassTransformer {
 
     private static Map<String, ContainerInfo> standardClasses = new HashMap<String, ContainerInfo>();
     private static Map<String, ContainerInfo> compatibilityClasses = new HashMap<String, ContainerInfo>();
-    private String containerClassName;
+    private static Map<String, ContainerInfo> configClasses = new HashMap<String, ContainerInfo>();
+    private static String containerClassName;
 
     public ContainerTransformer() {
     }
@@ -87,6 +91,13 @@ public class ContainerTransformer implements IClassTransformer {
         compatibilityClasses.put("micdoodle8.mods.galacticraft.core.inventory.GCCoreContainerPlayer",
                                  new ContainerInfo(true, true, false,
                                                    getCompatiblitySlotMapInfo("galacticraftPlayerSlots")));
+
+
+        try {
+            configClasses = CompatibilityConfigLoader.load("config/InvTweaksCompatibility.xml");
+        } catch(Exception ex) {
+            configClasses = new HashMap<String, ContainerInfo>();
+        }
     }
 
     @Override
@@ -155,6 +166,17 @@ public class ContainerTransformer implements IClassTransformer {
                     ASMHelper.replaceSelfForwardingMethod(method, LARGE_CHEST_METHOD, containertype);
                 }
             }
+
+            cn.accept(cw);
+            return cw.toByteArray();
+        }
+
+
+        info = configClasses.get(transformedName);
+        if(info != null) {
+            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
+
+            transformContainer(cn, info);
 
             cn.accept(cw);
             return cw.toByteArray();
@@ -363,95 +385,18 @@ public class ContainerTransformer implements IClassTransformer {
     }
 
 
-    private MethodInfo getCompatiblitySlotMapInfo(String name) {
+    public static MethodInfo getCompatiblitySlotMapInfo(String name) {
         return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_MODCOMPAT_CLASS), name, true);
     }
 
-    private MethodInfo getVanillaSlotMapInfo(String name) {
+    public static MethodInfo getVanillaSlotMapInfo(String name) {
         return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_VANILLA_CLASS), name, true);
     }
 
-    private MethodInfo getSlotMapInfo(Type mClass, String name, boolean isStatic) {
+    public static MethodInfo getSlotMapInfo(Type mClass, String name, boolean isStatic) {
         return new MethodInfo(Type.getMethodType(
                 Type.getObjectType("java/util/Map"),
                 Type.getObjectType(containerClassName)),
                               mClass, name, isStatic);
-    }
-
-    class MethodInfo {
-        Type methodType;
-        Type methodClass;
-        String methodName;
-        boolean isStatic = false;
-
-        MethodInfo(Type mType, Type mClass, String name) {
-            methodType = mType;
-            methodClass = mClass;
-            methodName = name;
-        }
-
-        MethodInfo(Type mType, Type mClass, String name, boolean stat) {
-            methodType = mType;
-            methodClass = mClass;
-            methodName = name;
-            isStatic = stat;
-        }
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    class ContainerInfo {
-        boolean standardInventory = false;
-        boolean validInventory = false;
-        boolean validChest = false;
-        boolean largeChest = false;
-        short rowSize = 9;
-        MethodInfo slotMapMethod = getVanillaSlotMapInfo("unknownContainerSlots");
-        MethodInfo rowSizeMethod = null;
-
-        ContainerInfo() {
-        }
-
-        ContainerInfo(boolean standard, boolean validInv, boolean validCh) {
-            standardInventory = standard;
-            validInventory = validInv;
-            validChest = validCh;
-        }
-
-        ContainerInfo(boolean standard, boolean validInv, boolean validCh, boolean largeCh) {
-            standardInventory = standard;
-            validInventory = validInv;
-            validChest = validCh;
-            largeChest = largeCh;
-        }
-
-        ContainerInfo(boolean standard, boolean validInv, boolean validCh, MethodInfo slotMap) {
-            standardInventory = standard;
-            validInventory = validInv;
-            validChest = validCh;
-            slotMapMethod = slotMap;
-        }
-
-        ContainerInfo(boolean standard, boolean validInv, boolean validCh, short rowS) {
-            standardInventory = standard;
-            validInventory = validInv;
-            validChest = validCh;
-            rowSize = rowS;
-        }
-
-        ContainerInfo(boolean standard, boolean validInv, boolean validCh, boolean largeCh, short rowS) {
-            standardInventory = standard;
-            validInventory = validInv;
-            validChest = validCh;
-            largeChest = largeCh;
-            rowSize = rowS;
-        }
-
-        ContainerInfo(boolean standard, boolean validInv, boolean validCh, short rowS, MethodInfo slotMap) {
-            standardInventory = standard;
-            validInventory = validInv;
-            validChest = validCh;
-            rowSize = rowS;
-            slotMapMethod = slotMap;
-        }
     }
 }

@@ -4,7 +4,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 import java.util.Map;
 
-@IFMLLoadingPlugin.TransformerExclusions({"invtweaks.forge.asm"})
+@IFMLLoadingPlugin.TransformerExclusions({"invtweaks.forge.asm", "invtweaks.forge.asm.compatibility"})
 public class FMLPlugin implements IFMLLoadingPlugin {
     public static boolean runtimeDeobfEnabled = false;
 

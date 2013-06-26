@@ -78,11 +78,6 @@ public class ContainerTransformer implements IClassTransformer {
                                  new ContainerInfo(true, true, false,
                                                    getCompatiblitySlotMapInfo("ee3PortableCraftingSlots")));
 
-        // Better Storage
-        ContainerInfo betterStorageInfo = new ContainerInfo(false, false, true);
-        // TODO Better Storage row size method. (Generate an accessor method for field 'columns')
-        compatibilityClasses.put("net.mcft.copy.betterstorage.container.ContainerBetterStorage", betterStorageInfo);
-
         // Ender Storage
         // TODO blahblah see above. A bit less important because it's a config setting and 2 of 3 options give rowsize 9.
         compatibilityClasses.put("codechicken.enderstorage.storage.item.ContainerEnderItemStorage",

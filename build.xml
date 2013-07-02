@@ -151,7 +151,7 @@
         </jar>
     </target>
 
-    <target name="build-invtweaks" depends="install-forge, filter-src">
+    <target name="build-invtweaks" depends="install-forge, cache-resources, filter-src">
         <delete dir="${class.dir}" failonerror="no"/>
         <mkdir dir="${class.dir}"/>
         <javac srcdir="${src.dir}" destdir="${class.dir}" target="1.6" source="1.6"
@@ -189,10 +189,19 @@
         </java>
     </target>
 
-    <target name="jar-minecraft" depends="install-forge" unless="minecraft.jar.correct">
+    <target name="jar-minecraft" depends="install-forge, cache-resources" unless="minecraft.jar.correct">
         <jar destfile="${minecraft.mcp.jar}">
             <fileset dir="${mcp.dir}/bin/minecraft"/>
         </jar>
+    </target>
+
+    <target name="cache-resources" depends="install-forge">
+        <copy todir="${temp.dir}/mcp_data">
+            <fileset dir="${mcp.dir}">
+                <include name="jars/libraries/"/>
+                <include name="jars/assets/"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="install-forge" depends="download-forge" unless="forge.setupComplete">
@@ -205,6 +214,9 @@
         </unzip>
 
         <copy file="${src.orig.dir}/invtweaks_at_src.cfg" todir="${forge.dir}/accesstransformers/"/>
+        <copy todir="${forge.dir}/fml/mcp_data">
+            <fileset dir="${temp.dir}/mcp_data"/>
+        </copy>
 
         <exec dir="${forge.dir}" executable="${forge.dir}/fml/python/python_fml" osfamily="windows" inputstring="Yes\n">
             <arg value="install.py"/>

@@ -43,6 +43,9 @@ public class VanillaSlotMaps {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
 
         slotRefs.put(ContainerSection.ARMOR, container.inventorySlots.subList(5, 9));
+        slotRefs.put(ContainerSection.INVENTORY, container.inventorySlots.subList(9, 45));
+        slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, container.inventorySlots.subList(9, 36));
+        slotRefs.put(ContainerSection.INVENTORY_HOTBAR, container.inventorySlots.subList(36, 45));
 
         return slotRefs;
     }

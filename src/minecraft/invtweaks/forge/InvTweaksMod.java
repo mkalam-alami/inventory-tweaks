@@ -32,17 +32,17 @@ public class InvTweaksMod implements InvTweaksAPI {
     @SidedProxy(clientSide = "invtweaks.forge.ClientProxy", serverSide = "invtweaks.forge.CommonProxy")
     public static CommonProxy proxy;
 
-    @Mod.PreInit
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
         proxy.preInit(e);
     }
 
-    @Mod.Init
+    @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
         proxy.init(e);
     }
 
-    @Mod.PostInit
+    @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
         proxy.postInit(e);
     }

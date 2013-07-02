@@ -1,6 +1,7 @@
 package invtweaks;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -13,6 +14,9 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
     protected InvTweaksConfigManager cfgManager;
 
     private boolean useCustomTexture;
+
+    private static ResourceLocation resourceButtonCustom = new ResourceLocation("textures/gui/button10px.png");
+    private static ResourceLocation resourceButtonDefault = new ResourceLocation("textures/gui/widgets.png");
 
     public InvTweaksGuiIconButton(InvTweaksConfigManager cfgManager,
                                   int id, int x, int y, int w, int h,
@@ -30,10 +34,10 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if(useCustomTexture) {
-            minecraft.renderEngine.bindTexture("/gui/button10px.png");
+            minecraft.func_110434_K().func_110577_a(resourceButtonCustom);
             drawTexturedModalRect(xPosition, yPosition, (k - 1) * 10, 0, width, height);
         } else {
-            minecraft.renderEngine.bindTexture("/gui/gui.png");
+            minecraft.func_110434_K().func_110577_a(resourceButtonDefault);
             drawTexturedModalRect(xPosition, yPosition, 1, 46 + k * 20 + 1, width / 2, height / 2);
             drawTexturedModalRect(xPosition, yPosition + height / 2, 1, 46 + k * 20 + 20 - height / 2 - 1, width / 2,
                                   height / 2);

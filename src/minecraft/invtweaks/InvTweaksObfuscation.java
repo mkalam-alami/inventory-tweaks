@@ -435,6 +435,9 @@ public class InvTweaksObfuscation {
     }
 
     public boolean hasTexture(String texture) {
+        return false;
+        // TODO: Figure out if there's even a possible way to find out if a texture is sucessfully loaded with resource packs.
+        /*
         InputStream resourceAsStream = null;
         try {
             resourceAsStream = mc.renderEngine.texturePack.getSelectedTexturePack().getResourceAsStream(texture);
@@ -450,16 +453,17 @@ public class InvTweaksObfuscation {
                 }
             }
         }
+        */
     }
 
     // Static access
 
     public static StringTranslate getLocalizationService() { // StringTranslate
-        return StringTranslate.getInstance(); // StringTranslate.getInstance()
+        return StringTranslate.getInstance();
     }
 
     public static String getCurrentLanguage() {
-        return getLocalizationService().getCurrentLanguage();
+        return Minecraft.getMinecraft().func_135016_M().func_135041_c().func_135034_a();
     }
 
     public static String getLocalizedString(String key) {

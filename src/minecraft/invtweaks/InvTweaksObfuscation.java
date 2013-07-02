@@ -17,6 +17,7 @@ import net.minecraft.inventory.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.StringTranslate;
 import net.minecraft.world.World;
 import org.lwjgl.input.Mouse;
@@ -457,17 +458,12 @@ public class InvTweaksObfuscation {
     }
 
     // Static access
-
-    public static StringTranslate getLocalizationService() { // StringTranslate
-        return StringTranslate.getInstance();
-    }
-
     public static String getCurrentLanguage() {
         return Minecraft.getMinecraft().func_135016_M().func_135041_c().func_135034_a();
     }
 
     public static String getLocalizedString(String key) {
-        return getLocalizationService().translateKey(key);
+        return StatCollector.translateToLocal(key);
     }
 
     // Classes

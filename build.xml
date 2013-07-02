@@ -214,7 +214,7 @@
         </unzip>
 
         <copy file="${src.orig.dir}/invtweaks_at_src.cfg" todir="${forge.dir}/accesstransformers/"/>
-        <copy todir="${forge.dir}/fml/mcp_data">
+        <copy todir="${forge.dir}/fml/mcp_data" failonerror="no">
             <fileset dir="${temp.dir}/mcp_data"/>
         </copy>
 

@@ -10,6 +10,7 @@ import java.util.logging.Logger;
  *
  * @author Jimeo Wan
  */
+// TODO: This stuff is a perfect candidate for resourcepacks.
 public class InvTweaksLocalization {
 
     private static final Logger log = InvTweaks.log;

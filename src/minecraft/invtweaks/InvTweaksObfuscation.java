@@ -463,7 +463,7 @@ public class InvTweaksObfuscation {
     }
 
     public static String getCurrentLanguage() {
-        return "en-US"; //TODO: Figure out where this actually is now.
+        return "en_US"; //TODO: Figure out where this actually is now.
         //return getLocalizationService().getCurrentLanguage();
     }
 

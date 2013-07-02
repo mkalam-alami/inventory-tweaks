@@ -463,8 +463,7 @@ public class InvTweaksObfuscation {
     }
 
     public static String getCurrentLanguage() {
-        return "en_US"; //TODO: Figure out where this actually is now.
-        //return getLocalizationService().getCurrentLanguage();
+        return Minecraft.getMinecraft().func_135016_M().func_135041_c().func_135034_a();
     }
 
     public static String getLocalizedString(String key) {

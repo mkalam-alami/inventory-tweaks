@@ -14,14 +14,15 @@ import java.util.logging.Logger;
 public class InvTweaksLocalization {
 
     private static final Logger log = InvTweaks.log;
-    private static final String LANG_RESOURCES_LOCATION = "/invtweaks/lang/";
+    private static final String LANG_RESOURCES_LOCATION = "/lang/";
     private static final String DEFAULT_LANGUAGE = "en_US";
     private static Properties defaultMappings = new Properties();
     private static Properties mappings = new Properties();
     private static String loadedLanguage = null;
 
-    public synchronized static String get(String key) {
-
+    public/* synchronized */static String get(String key) {
+        return InvTweaksObfuscation.getLocalizedString(key);
+        /*
         String currentLanguage = InvTweaksObfuscation.getCurrentLanguage();
         if(!currentLanguage.equals(loadedLanguage)) {
             loadedLanguage = load(currentLanguage);
@@ -29,11 +30,11 @@ public class InvTweaksLocalization {
 
         return mappings.getProperty(key,
                                     defaultMappings.getProperty(key, key));
-
+        */
     }
 
     private static String load(String currentLanguage) {
-
+        /*
         defaultMappings.clear();
         mappings.clear();
 
@@ -54,6 +55,7 @@ public class InvTweaksLocalization {
             e.printStackTrace();
         }
 
+        */
         return currentLanguage;
     }
 

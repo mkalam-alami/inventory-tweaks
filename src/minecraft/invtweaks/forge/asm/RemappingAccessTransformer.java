@@ -24,7 +24,7 @@ package invtweaks.forge.asm;
 
 import com.google.common.io.Resources;
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
-import cpw.mods.fml.relauncher.IClassTransformer;
+import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -80,7 +80,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
                 }
 
                 if(cn.fields != null && !fieldTransforms.isEmpty()) {
-                    for(FieldNode field : cn.fields) {
+                    for(FieldNode field : (List<FieldNode>)cn.fields) {
                         String unmappedName =
                                 FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(name, field.name, field.desc);
 
@@ -101,7 +101,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
                 }
 
                 if(cn.methods != null && !methodTransforms.isEmpty()) {
-                    for(MethodNode method : cn.methods) {
+                    for(MethodNode method : (List<MethodNode>)cn.methods) {
                         String unmappedName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(name, method.name,
                                                                                               method.desc);
                         String unmappedDesc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(method.desc);

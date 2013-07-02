@@ -60,7 +60,7 @@ public class InvTweaksConst {
      * Returns the Minecraft folder ensuring: - It is an absolute path - It ends with a folder separator
      */
     public static String getMinecraftDir() {
-        String absolutePath = Minecraft.getMinecraftDir().getAbsolutePath();
+        String absolutePath = Minecraft.getMinecraft().mcDataDir.getAbsolutePath();
         if(absolutePath.endsWith(".")) {
             return absolutePath.substring(0, absolutePath.length() - 1);
         }

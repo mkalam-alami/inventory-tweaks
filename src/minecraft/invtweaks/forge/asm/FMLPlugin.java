@@ -9,6 +9,7 @@ public class FMLPlugin implements IFMLLoadingPlugin {
     public static boolean runtimeDeobfEnabled = false;
 
     @Override
+    @Deprecated
     public String[] getLibraryRequestClass() {
         return new String[0];
     }

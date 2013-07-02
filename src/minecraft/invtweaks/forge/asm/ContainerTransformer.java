@@ -2,7 +2,7 @@ package invtweaks.forge.asm;
 
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
-import cpw.mods.fml.relauncher.IClassTransformer;
+import net.minecraft.launchwrapper.IClassTransformer;
 import invtweaks.forge.asm.compatibility.CompatibilityConfigLoader;
 import invtweaks.forge.asm.compatibility.ContainerInfo;
 import invtweaks.forge.asm.compatibility.MethodInfo;
@@ -10,6 +10,7 @@ import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
@@ -151,7 +152,7 @@ public class ContainerTransformer implements IClassTransformer {
 
             Type containertype =
                     Type.getObjectType(containerClassName);
-            for(MethodNode method : cn.methods) {
+            for(MethodNode method : (List<MethodNode>)cn.methods) {
                 if("isValidChest".equals(method.name)) {
                     ASMHelper.replaceSelfForwardingMethod(method, VALID_CHEST_METHOD, containertype);
                 } else if("isValidInventory".equals(method.name)) {
@@ -183,7 +184,7 @@ public class ContainerTransformer implements IClassTransformer {
         }
 
         if(cn.visibleAnnotations != null) {
-            for(AnnotationNode annotation : cn.visibleAnnotations) {
+            for(AnnotationNode annotation : (List<AnnotationNode>)cn.visibleAnnotations) {
                 if(annotation != null) {
                     ContainerInfo apiInfo = null;
 
@@ -272,9 +273,9 @@ public class ContainerTransformer implements IClassTransformer {
     }
 
     private MethodNode findAnnotatedMethod(ClassNode cn, String annotationDesc) {
-        for(MethodNode method : cn.methods) {
+        for(MethodNode method : (List<MethodNode>)cn.methods) {
             if(method.visibleAnnotations != null) {
-                for(AnnotationNode methodAnnotation : method.visibleAnnotations) {
+                for(AnnotationNode methodAnnotation : (List<AnnotationNode>)method.visibleAnnotations) {
                     if(annotationDesc.equals(methodAnnotation.desc)) {
                         return method;
                     }
@@ -351,7 +352,7 @@ public class ContainerTransformer implements IClassTransformer {
     }
 
     private static void transformTextField(ClassNode clazz) {
-        for(MethodNode method : clazz.methods) {
+        for(MethodNode method : (List<MethodNode>)clazz.methods) {
             String unmappedName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(clazz.name, method.name,
                                                                                   method.desc);
             String unmappedDesc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(method.desc);

@@ -4,10 +4,10 @@
 
     <property name="invtweaks.version" value="UNKNOWN"/>
 
-    <property name="minecraft.version" value="1.5.2"/>
+    <property name="minecraft.version" value="1.6.1"/>
 
-    <property name="forge.build" value="686"/>
-    <property name="forge.version" value="7.8.0"/>
+    <property name="forge.build" value="751"/>
+    <property name="forge.version" value="8.9.0"/>
     <property name="forge.filename" value="minecraftforge-src-${minecraft.version}-${forge.version}.${forge.build}.zip"/>
 
     <property name="forge.download" value="http://files.minecraftforge.net/minecraftforge/${forge.filename}"/>
@@ -73,13 +73,26 @@
 
     <path id="invtweaks.classpath">
         <pathelement location="${mcp.dir}/bin/minecraft"/>
-        <pathelement location="${mcp.dir}/lib/argo-3.2.jar"/>
-        <pathelement location="${mcp.dir}/lib/asm-debug-all-4.1.jar"/>
-        <pathelement location="${mcp.dir}/lib/bcprov-jdk15on-148.jar"/>
-        <pathelement location="${mcp.dir}/lib/guava-14.0-rc3.jar"/>
-        <pathelement location="${mcp.dir}/jars/bin/jinput.jar"/>
-        <pathelement location="${mcp.dir}/jars/bin/lwjgl.jar"/>
-        <pathelement location="${mcp.dir}/jars/bin/lwjgl_util.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\argo\argo\2.25_fixed\argo-2.25_fixed.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\com\google\code\gson\gson\2.2.2\gson-2.2.2.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\com\google\guava\guava\14.0\guava-14.0.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\com\paulscode\codecjorbis\20101023\codecjorbis-20101023.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\com\paulscode\codecwav\20101023\codecwav-20101023.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\com\paulscode\libraryjavasound\20101123\libraryjavasound-20101123.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\com\paulscode\librarylwjglopenal\20100824\librarylwjglopenal-20100824.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\com\paulscode\soundsystem\20120107\soundsystem-20120107.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\commons-io\commons-io\2.4\commons-io-2.4.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\lzma\lzma\0.0.1\lzma-0.0.1.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\net\java\jinput\jinput\2.0.5\jinput-2.0.5.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\net\java\jutils\jutils\1.0.0\jutils-1.0.0.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\net\minecraft\launchwrapper\1.3\launchwrapper-1.3.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\net\sf\jopt-simple\jopt-simple\4.5\jopt-simple-4.5.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\net\sourceforge\argo\argo\2.25\argo-2.25.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\org\apache\commons\commons-lang3\3.1\commons-lang3-3.1.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\org\bouncycastle\bcprov-jdk15on\1.47\bcprov-jdk15on-1.47.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\org\lwjgl\lwjgl\lwjgl\2.9.0\lwjgl-2.9.0.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\org\lwjgl\lwjgl\lwjgl_util\2.9.0\lwjgl_util-2.9.0.jar"/>
+		<pathelement location="${mcp.dir}\jars\libraries\org\ow2\asm\asm-all\4.1\asm-all-4.1.jar"/>
     </path>
 
     <target name="dist" depends="reobf-invtweaks, package-invtweaks-api, sign-invtweaks"/>

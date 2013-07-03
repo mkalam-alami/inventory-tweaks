@@ -13,7 +13,7 @@ public class InvTweaksConst {
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs
-    public static final String TREE_VERSION = "1.5.1";
+    public static final String TREE_VERSION = "1.6.0";
 
     // Network Protocol version
     public static final byte PROTOCOL_VERSION = 1;

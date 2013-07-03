@@ -23,7 +23,7 @@
 # Thanks to Larandar & Lunaqua for their contributions.
 -->
 <!-- Note: 'stuff' matches everything, even items that don't appear here -->
-<stuff treeVersion="1.5.1">
+<stuff treeVersion="1.6.0">
     <equipment>
         <weapon>
             <sword>
@@ -202,6 +202,26 @@
                 <netherBrickFence id="113"/>
                 <fenceGate id="107"/>
             </fence>
+            <carpet>
+                <whiteCarpet id="171" damage="0"/>
+                <orangeCarpet id="171" damage="1"/>
+                <magentaCarpet id="171" damage="2"/>
+                <lightBlueCarpet id="171" damage="3"/>
+                <yellowCarpet id="171" damage="4"/>
+                <lightGreenCarpet id="171" damage="5"/>
+                <limeCarpet id="171" damage="5"/>
+                <pinkCarpet id="171" damage="6"/>
+                <grayCarpet id="171" damage="7"/>
+                <lightGrayCarpet id="171" damage="8"/>
+                <cyanCarpet id="171" damage="9"/>
+                <purpleCarpet id="171" damage="10"/>
+                <blueCarpet id="171" damage="11"/>
+                <brownCarpet id="171" damage="12"/>
+                <greenCarpet id="171" damage="13"/>
+                <darkGreenCarpet id="171" damage="13"/>
+                <redCarpet id="171" damage="14"/>
+                <blackCarpet id="171" damage="15"/>
+            </carpet>
             <stoneWall>
                 <cobblestoneWall id="139" damage="0"/>
                 <mossyCobblestoneWall id="139" damage="1"/>
@@ -228,6 +248,27 @@
                     </stoneBricks>
                     <netherBrick id="112"/>
                 </bricks>
+                <hardenedClay id="172"/>
+                <stainedClay>
+                    <whiteStainedClay id="159" damage="0"/>
+                    <orangeStainedClay id="159" damage="1"/>
+                    <magentaStainedClay id="159" damage="2"/>
+                    <lightBlueStainedClay id="159" damage="3"/>
+                    <yellowStainedClay id="159" damage="4"/>
+                    <lightGreenStainedClay id="159" damage="5"/>
+                    <limeStainedClay id="159" damage="5"/>
+                    <pinkStainedClay id="159" damage="6"/>
+                    <grayStainedClay id="159" damage="7"/>
+                    <lightGrayStainedClay id="159" damage="8"/>
+                    <cyanStainedClay id="159" damage="9"/>
+                    <purpleStainedClay id="159" damage="10"/>
+                    <blueStainedClay id="159" damage="11"/>
+                    <brownStainedClay id="159" damage="12"/>
+                    <greenStainedClay id="159" damage="13"/>
+                    <darkGreenStainedClay id="159" damage="13"/>
+                    <redStainedClay id="159" damage="14"/>
+                    <blackStainedClay id="159" damage="15"/>
+                </stainedClay>
                 <glass>
                     <glassBlock id="20"/>
                     <glassPane id="102"/>
@@ -279,13 +320,16 @@
                     </doubleSlab>
                 </slabs>
                 <oreBlock>
+                    <coalBlock id="173"/>
                     <ironBlock id="42"/>
                     <goldBlock id="41"/>
+                    <redstoneBlock id="152"/>
                     <lapisLazuliBlock id="22"/>
                     <diamondBlock id="57"/>
                     <emeraldBlock id="133"/>
                     <quartzBlock id="155"/>
                 </oreBlock>
+                <hayBale id="170"/>
                 <stick id="280"/>
                 <stickDict oreDictName="stickWood"/>
             </constructionBlock>
@@ -459,6 +503,7 @@
                 <bookAndQuill id="386"/>
                 <writtenBook id="387"/>
             </readableBooks>
+            <enchantedBook id="403"/>
             <tnt id="46"/>
             <tripwireHook id="131"/>
             <bowl id="281"/>
@@ -469,6 +514,13 @@
             <enderEye id="381"/>
             <spawnerEgg id="383"/>
             <tripwire id="132"/>
+            <nameTag id="421"/>
+            <animalLead id="420"/>
+            <horseArmor>
+                <ironHorseArmor id="417"/>
+                <goldHorseArmor id="418"/>
+                <diamondHorseArmor id="419"/>
+            </horseArmor>
         </utility>
         <bucket>
             <emptyBucket id="325"/>
@@ -607,6 +659,7 @@
             <potatoesBlock id="142"/>
             <lilyPad id="111"/>
         </plant>
+        <fireworks id="402"/>
         <potion>
             <drinkablePotion>
                 <neutralPotion>
@@ -642,6 +695,14 @@
                         <potionStrengthEx id="373" damage="8265"/>
                         <potionStrengthII id="373" damage="8233"/>
                     </strengthPotion>
+                    <nightVisionPotion>
+                        <potionNightVision id="373" damage="8230"/>
+                        <potionNightVisionEx id="373" damage="8262"/>
+                    </nightVisionPotion>
+                    <invisibilityPotion>
+                        <potionInvisibility id="373" damage="8238"/>
+                        <potionInvisibilityEx id="373" damage="8270"/>
+                    </invisibilityPotion>
                 </positivePotion>
                 <negativePotion>
                     <poisonPotion>
@@ -694,6 +755,14 @@
                         <splashPotionStrengthEx id="373" damage="16457"/>
                         <splashPotionStrengthII id="373" damage="16425"/>
                     </strengthSplashPotion>
+                    <nightVisionSplashPotion>
+                        <splashPotionNightVision id="373" damage="16422"/>
+                        <splashPotionNightVisionEx id="373" damage="16454"/>
+                    </nightVisionSplashPotion>
+                    <invisibilitySplashPotion>
+                        <splashPotionInvisibility id="373" damage="16430"/>
+                        <splashPotionInvisibilityEx id="373" damage="16462"/>
+                    </invisibilitySplashPotion>
                 </positiveSplashPotion>
                 <negativeSplashPotion>
                     <poisonSplashPotion>

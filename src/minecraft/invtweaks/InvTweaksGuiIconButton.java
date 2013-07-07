@@ -15,7 +15,7 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
 
     private boolean useCustomTexture;
 
-    private static ResourceLocation resourceButtonCustom = new ResourceLocation("textures/gui/button10px.png");
+    private static ResourceLocation resourceButtonCustom = new ResourceLocation("inventorytweaks", "textures/gui/button10px.png");
     private static ResourceLocation resourceButtonDefault = new ResourceLocation("textures/gui/widgets.png");
 
     public InvTweaksGuiIconButton(InvTweaksConfigManager cfgManager,

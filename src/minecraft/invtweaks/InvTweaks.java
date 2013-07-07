@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -752,7 +753,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             if(!customButtonsAdded) {
 
                 // Check for custom button texture
-                boolean customTextureAvailable = hasTexture("/gui/button10px.png");
+                boolean customTextureAvailable = hasTexture(new ResourceLocation("inventorytweaks", "textures/gui/button10px.png"));
 
                 // Inventory button
                 if(!isValidChest) {

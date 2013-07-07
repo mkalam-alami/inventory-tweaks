@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.inventory.*;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
@@ -435,26 +436,13 @@ public class InvTweaksObfuscation {
         return 0;
     }
 
-    public boolean hasTexture(String texture) {
-        return false;
-        // TODO: Figure out if there's even a possible way to find out if a texture is sucessfully loaded with resource packs.
-        /*
-        InputStream resourceAsStream = null;
+    public boolean hasTexture(ResourceLocation texture) {
         try {
-            resourceAsStream = mc.renderEngine.texturePack.getSelectedTexturePack().getResourceAsStream(texture);
-            return resourceAsStream != null;
+            mc.func_110442_L().func_110536_a(texture);
         } catch(IOException e) {
             return false;
-        } finally {
-            if(resourceAsStream != null) {
-                try {
-                    resourceAsStream.close();
-                } catch(IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-        */
+        return true;
     }
 
     // Static access

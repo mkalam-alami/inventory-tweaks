@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import java.util.Map;
 
 @IFMLLoadingPlugin.TransformerExclusions({"invtweaks.forge.asm", "invtweaks.forge.asm.compatibility"})
+@IFMLLoadingPlugin.MCVersion("") // We're using runtime debof integration, so no point in being specific about version
 public class FMLPlugin implements IFMLLoadingPlugin {
     public static boolean runtimeDeobfEnabled = false;
 

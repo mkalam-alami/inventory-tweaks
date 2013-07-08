@@ -230,4 +230,4 @@ You're probably running a platform that is not 100% supported by Java. In any ca
 
 * **The "..." icon looks bad with my texture pack!**
 
-By default, the mod uses *gui/gui.png* to draw the small buttons for the inventory and chests. It looks good most of the time, but you can override this by adding a **gui/button10px.png** file to your pack. `Here is a template <_static/img/button10px.png>`_.
+By default, the mod uses *assets/minecraft/textures/gui/widgets.png* to draw the small buttons for the inventory and chests. It looks good most of the time, but you can override this by adding a **assets/inventorytweaks/textures/gui/button10px.png** file to your pack. `Here is a template <_static/img/button10px.png>`_.

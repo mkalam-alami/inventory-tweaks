@@ -2,7 +2,7 @@
 
 Latest changes
 ==============
-`1.55 (1.6.1/1.6.2) <>`_
+`1.55 (1.6.1/1.6.2) <http://build.technicpack.net/job/Inventory-Tweaks/56/artifact/build/out/InventoryTweaks-MC1.6.2-1.55-b56.jar>`_
 * Sort-on-pickup attempts no longer spam chat messages by repeatedly failing.
 * Auto-refill will now match metadata exactly on items with subtypes (wool, carpet, stained clay, etc.)
 * Major API update, to allow for mods that change the basic player inventory to add compatibility via API.

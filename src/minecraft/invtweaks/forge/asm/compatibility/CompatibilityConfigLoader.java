@@ -46,13 +46,13 @@ public class CompatibilityConfigLoader extends DefaultHandler {
      */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if("chest".equals(localName) || "inventory".equals(localName)) {
+        if("chest".equals(qName) || "inventory".equals(qName)) {
             ContainerInfo info = new ContainerInfo();
             String className = attributes.getValue("class");
 
             if(className == null) return;
 
-            if("chest".equals(localName)) {
+            if("chest".equals(qName)) {
                 info.validChest = true;
 
                 String rowSizeAttr = attributes.getValue("row_size");
@@ -61,7 +61,7 @@ public class CompatibilityConfigLoader extends DefaultHandler {
                 }
 
                 info.largeChest = Boolean.parseBoolean(attributes.getValue("large_chest"));
-            } else if("inventory".equals(localName)) {
+            } else if("inventory".equals(qName)) {
                 info.validInventory = true;
                 info.standardInventory = !Boolean.parseBoolean(attributes.getValue("disable_buttons"));
             }

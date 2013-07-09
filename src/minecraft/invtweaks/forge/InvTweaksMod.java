@@ -8,10 +8,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-
-import java.util.LinkedHashMap;
 
 /**
  * ModLoader entry point to load and configure the mod.
@@ -22,7 +19,7 @@ import java.util.LinkedHashMap;
  *         Source code: <a href="https://github.com/kobata/inventory-tweaks">GitHub</a> License: MIT
  */
 @Mod(modid = "inventorytweaks",
-     dependencies = "required-after:FML@[5.0.0,);required-after:Forge@[7.7.0,)")
+     dependencies = "required-after:FML@[6.2.0,);required-after:Forge@[9.10.0,)")
 @NetworkMod(channels = {"InventoryTweaks"}, packetHandler = PacketHandler.class,
             connectionHandler = ConnectionHandler.class)
 public class InvTweaksMod implements InvTweaksAPI {

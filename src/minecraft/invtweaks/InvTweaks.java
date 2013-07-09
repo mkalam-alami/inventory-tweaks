@@ -1,18 +1,18 @@
 package invtweaks;
 
 import cpw.mods.fml.common.Loader;
-import invtweaks.api.container.ContainerSection;
 import invtweaks.api.IItemTree;
 import invtweaks.api.IItemTreeItem;
+import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;

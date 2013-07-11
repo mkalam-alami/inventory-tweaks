@@ -88,12 +88,15 @@ public class RemappingAccessTransformer implements IClassTransformer {
                             if(unmappedName.equals(transform.memberName)) {
                                 field.access &= REMOVE_ALL_ACCESS;
                                 field.access |= transform.desiredAccess;
-                                if(transform.setFinal) {
-                                    if(transform.setFinal) {
+                                switch(transform.desiredFinal) {
+                                    case SETFINAL:
                                         field.access |= Opcodes.ACC_FINAL;
-                                    } else {
+                                        break;
+                                    case UNSETFINAL:
                                         field.access &= ~Opcodes.ACC_FINAL;
-                                    }
+                                        break;
+                                    default:
+                                        break;
                                 }
                             }
                         }
@@ -146,6 +149,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
             tokens.wordChars('(', ')');
             tokens.wordChars('_', '_');
             tokens.wordChars('.', '.');
+            tokens.wordChars('-', '-');
 
 
             tokens.whitespaceChars(' ', ' ');
@@ -154,6 +158,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
             tokens.eolIsSignificant(true);
 
             int newAccess = Opcodes.ACC_PUBLIC;
+            FinalState finalState = FinalState.UNDEFINED;
             MemberType memberType = MemberType.CLASS;
             String memberInfo = "";
             while(tokens.nextToken() != StreamTokenizer.TT_EOF) {
@@ -170,13 +175,18 @@ public class RemappingAccessTransformer implements IClassTransformer {
                         memberType = MemberType.FIELD;
                     } else if("method".equals(tokens.sval)) {
                         memberType = MemberType.METHOD;
+                    } else if("final".equals(tokens.sval)) {
+                        finalState = FinalState.SETFINAL;
+                    } else if("-final".equals(tokens.sval)) {
+                        finalState = FinalState.UNSETFINAL;
                     } else {
                         memberInfo = tokens.sval;
                     }
                 } else if(tokens.ttype == StreamTokenizer.TT_EOL) {
-                    processEntry(newAccess, memberType, memberInfo);
+                    processEntry(newAccess, memberType, memberInfo, finalState);
 
                     memberInfo = "";
+                    finalState = FinalState.UNDEFINED;
                 }
             }
         } catch(IOException e) {
@@ -184,7 +194,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
         }
     }
 
-    private void processEntry(int newAccess, MemberType memberType, String memberInfo) {
+    private void processEntry(int newAccess, MemberType memberType, String memberInfo, FinalState finalState) {
         if(!memberInfo.isEmpty()) {
             switch(memberType) {
                 case CLASS: {
@@ -196,7 +206,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
                         alterationData.put(memberInfo, info);
                     }
 
-                    info.add(new MemberInfo(memberInfo, newAccess));
+                    info.add(new MemberInfo(memberInfo, newAccess, finalState));
                     break;
                 }
                 case FIELD: {
@@ -212,7 +222,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
                         alterationData.put(className, info);
                     }
 
-                    info.add(new MemberInfo(className, fieldName, newAccess));
+                    info.add(new MemberInfo(className, fieldName, newAccess, finalState));
                     break;
                 }
                 case METHOD: {
@@ -232,7 +242,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
                         alterationData.put(className, info);
                     }
 
-                    info.add(new MemberInfo(className, methodName, methodDesc, newAccess));
+                    info.add(new MemberInfo(className, methodName, methodDesc, newAccess, finalState));
                     break;
                 }
             }
@@ -245,41 +255,40 @@ public class RemappingAccessTransformer implements IClassTransformer {
         METHOD
     }
 
+    private enum FinalState {
+        UNDEFINED,
+        SETFINAL,
+        UNSETFINAL
+    }
+
     private class MemberInfo {
         String classType;
         String memberName;
         String memberDesc;
         MemberType type = MemberType.CLASS;
         int desiredAccess = Opcodes.ACC_PUBLIC;
-        boolean setFinal = false;
-        boolean desiredFinal = false;
+        FinalState desiredFinal = FinalState.UNDEFINED;
 
-        MemberInfo(String className, int access) {
+        MemberInfo(String className, int access, FinalState finalState) {
             classType = className;
             desiredAccess = access;
+            desiredFinal = finalState;
         }
 
-        MemberInfo(String className, String memName, int access) {
-            classType = className;
-            memberName = memName;
-            desiredAccess = access;
-            type = MemberType.FIELD;
-        }
-
-        MemberInfo(String className, String memName, int access, boolean isFinal) {
+        MemberInfo(String className, String memName, int access, FinalState finalState) {
             classType = className;
             memberName = memName;
             desiredAccess = access;
-            setFinal = true;
-            desiredFinal = isFinal;
+            desiredFinal = finalState;
             type = MemberType.FIELD;
         }
 
-        MemberInfo(String className, String memName, String memDesc, int access) {
+        MemberInfo(String className, String memName, String memDesc, int access, FinalState finalState) {
             classType = className;
             memberName = memName;
             memberDesc = memDesc;
             desiredAccess = access;
+            desiredFinal = finalState;
             type = MemberType.METHOD;
         }
     }

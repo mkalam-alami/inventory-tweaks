@@ -353,7 +353,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     return getItemID(j) - getItemID(i);
                 }
             } else {
-                return orderJ - orderI;
+                return orderI - orderJ;
             }
         }
     }

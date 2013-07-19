@@ -2,7 +2,7 @@
 
 Latest changes
 ==============
-`1.55b (1.6.2) <http://build.technicpack.net/job/Inventory-Tweaks/56/artifact/build/out/InventoryTweaks-MC1.6.2-1.55b-b61.jar>`_
+`1.55b (1.6.2) <http://build.technicpack.net/job/Inventory-Tweaks/61/artifact/build/out/InventoryTweaks-MC1.6.2-1.55b-b61.jar>`_
  * Fix reversed tree priority sorting.
  * Fix translation format.
  

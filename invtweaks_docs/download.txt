@@ -1,6 +1,11 @@
 .. image:: _static/img/dl.png
   :align: left
   
+`Inventory Tweaks 1.55b <http://build.technicpack.net/job/Inventory-Tweaks/56/artifact/build/out/InventoryTweaks-MC1.6.2-1.55b-b61.jar>`_ (`API <http://build.technicpack.net/job/Inventory-Tweaks/56/artifact/build/out/InventoryTweaks-api-MC1.6.2-1.55b-b61.jar>`_) for **Minecraft 1.6.2** (requires `Forge <http://files.minecraftforge.net>`_)
+
+.. image:: _static/img/dl.png
+  :align: left
+  
 `Inventory Tweaks 1.55 <http://build.technicpack.net/job/Inventory-Tweaks/56/artifact/build/out/InventoryTweaks-MC1.6.2-1.55-b56.jar>`_ (`API <http://build.technicpack.net/job/Inventory-Tweaks/56/artifact/build/out/InventoryTweaks-api-MC1.6.2-1.55-b56.jar>`_) for **Minecraft 1.6.2** (requires `Forge <http://files.minecraftforge.net>`_)
 
 .. image:: _static/img/dl.png
@@ -8,7 +13,7 @@
   
 `Inventory Tweaks 1.54 <http://www.mediafire.com/?if4h9jdmoaf70dh>`_ (`API <http://www.mediafire.com/?5ym8dndqqc1calm>`_) for **Minecraft 1.5/1.5.1/1.5.2** (requires `Forge <http://files.minecraftforge.net>`_)
 
-.. image:: _static/img/dl.png.. image:: _static/img/dl.png
+.. image:: _static/img/dl.png
   :align: left
   
 `Inventory Tweaks 1.53 <http://www.mediafire.com/?0d4jgg5oxbjmmoc>`_ (`API <http://www.mediafire.com/?gjn7lkd628qeuf4>`_) for **Minecraft 1.5/1.5.1** (requires `Forge <http://files.minecraftforge.net>`_)

@@ -45,14 +45,6 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
     }
 
     @Override
-    public void postInit(FMLPostInitializationEvent e) {
-        if(!InvTweaks.getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_FORGE_ITEMTREE)
-                     .equals(InvTweaksConfig.VALUE_FALSE)) {
-            InvTweaksItemTreeLoader.addOnLoadListener(new ForgeItemTreeListener());
-        }
-    }
-
-    @Override
     public void notifyPickup(EntityItem item, EntityPlayer player) {
         instance.setItemPickupPending(true);
     }

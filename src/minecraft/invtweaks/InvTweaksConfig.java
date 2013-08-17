@@ -53,7 +53,6 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_SOUNDS = "enableSounds";
     public static final String PROP_OBSOLETE_ENABLE_SORTING_SOUND = "enableSortingSound";
     public static final String PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND = "enableAutoRefillSound";
-    public static final String PROP_ENABLE_FORGE_ITEMTREE = "enableForgeTreeAdditions";
     public static final String PROP_ENABLE_SERVER_ITEMSWAP = "enableServerItemSwap";
 
     public static final String VALUE_TRUE = "true";
@@ -475,7 +474,6 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_SOUNDS, VALUE_TRUE);
         properties.put(PROP_ENABLE_SHORTCUTS, VALUE_TRUE);
         properties.put(PROP_ENABLE_AUTO_EQUIP_ARMOR, VALUE_FALSE);
-        properties.put(PROP_ENABLE_FORGE_ITEMTREE, VALUE_TRUE);
         properties.put(PROP_ENABLE_SERVER_ITEMSWAP, VALUE_TRUE);
         properties.put(PROP_KEY_SORT_INVENTORY, "R");
 

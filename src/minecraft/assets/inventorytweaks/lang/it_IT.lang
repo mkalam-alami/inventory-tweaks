@@ -41,6 +41,7 @@ invtweaks.help.bugsorting=Non funziona?
 invtweaks.help.bugsorting.pt1=Se ti sembra che il server annulli ciò che fa questa mod,
 invtweaks.help.bugsorting.pt2=è probabilmente causato dall'utilizzo del plugin "NoCheatPlus".
 invtweaks.help.bugsorting.pt3=Chiedi all'admin di disabilitare la seguente opzione:
+invtweaks.help.bugsorting.pt4="\"inventory.fastclick\" e \"combined.improbable\""
 invtweaks.settings.pvpwarning.pt1=NOta: Nei server PvP, l'auto-ricarica e l'auto-equipaggiamento dell'armatura
 invtweaks.settings.pvpwarning.pt2=spesso sono considerati barare!
 invtweaks.settings.exit=Fatto

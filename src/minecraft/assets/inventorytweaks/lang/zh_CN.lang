@@ -41,6 +41,7 @@ invtweaks.help.bugsorting=不管用？
 invtweaks.help.bugsorting.pt1=如果服务器似乎“取消”了此Mod的操作，
 invtweaks.help.bugsorting.pt2=那么可能是因为它使用了NoCheatPlus插件。
 invtweaks.help.bugsorting.pt3=请求你的服务器管理员取消掉以下选项：
+invtweaks.help.bugsorting.pt4="\"inventory.fastclick\" 和 \"combined.improbable\""
 invtweaks.settings.pvpwarning.pt1=提示：在PVP服务器上，自动填装和自动装备盔甲
 invtweaks.settings.pvpwarning.pt2=选项通常被视作为作弊！
 invtweaks.settings.exit=完成

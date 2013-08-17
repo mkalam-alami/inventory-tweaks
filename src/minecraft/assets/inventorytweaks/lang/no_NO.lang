@@ -41,6 +41,7 @@ invtweaks.help.bugsorting=Fungerer ikke?
 invtweaks.help.bugsorting.pt1=Dersom serveren ser ut til å 'Avbryte' hva modden gjør,
 invtweaks.help.bugsorting.pt2=det skyldes sannsynligvis av NoCheatPlus pluginen.
 invtweaks.help.bugsorting.pt3=Spør din Admin til å deaktivere følgende alternativer:
+invtweaks.help.bugsorting.pt4="\"inventory.fastclick\" og \"combined.improbable\""
 invtweaks.settings.pvpwarning.pt1=Merk: På PvP servere kan auto-fylling & auto-utstyre rustning
 invtweaks.settings.pvpwarning.pt2=innstillinger regnes ofte som juksing!
 invtweaks.settings.exit=Ferdig

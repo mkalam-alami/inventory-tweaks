@@ -41,6 +41,7 @@ invtweaks.help.bugsorting=動作しません？
 invtweaks.help.bugsorting.pt1=サーバーはこのModの動作を"キャンセル"しているような場合は
 invtweaks.help.bugsorting.pt2=それがNoCheatPlusプラグインを使用しているかもしれない
 invtweaks.help.bugsorting.pt3=次のオプションを無効にするのにはサーバーの管理者を頼みなさい
+invtweaks.help.bugsorting.pt4="\"inventory.fastclick\" と \"combined.improbable\""
 invtweaks.settings.pvpwarning.pt1=注: PvPサーバーで、自動補充 ＆ 鎧の自動装備
 invtweaks.settings.pvpwarning.pt2=のオプションは、不正行為と見なされます！
 invtweaks.settings.exit=完了

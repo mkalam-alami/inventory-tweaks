@@ -146,6 +146,7 @@
 
             <manifest>
                 <attribute name="FMLCorePlugin" value="invtweaks.forge.asm.FMLPlugin"/>
+                <attribute name="FMLCorePluginContainsFMLMod" value="true"/>
             </manifest>
         </jar>
     </target>

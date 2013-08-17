@@ -6,7 +6,7 @@
 
     <property name="minecraft.version" value="1.6.2"/>
 
-    <property name="forge.build" value="779"/>
+    <property name="forge.build" value="835"/>
     <property name="forge.version" value="9.10.0"/>
     <property name="forge.filename"
               value="minecraftforge-src-${minecraft.version}-${forge.version}.${forge.build}.zip"/>

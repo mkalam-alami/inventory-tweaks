@@ -75,8 +75,8 @@ public class InvTweaksConfigManager {
     }
 
     private long computeConfigLastModified() {
-        return new File(InvTweaksConst.CONFIG_RULES_FILE).lastModified()
-                + new File(InvTweaksConst.CONFIG_TREE_FILE).lastModified();
+        return InvTweaksConst.CONFIG_RULES_FILE.lastModified()
+                + InvTweaksConst.CONFIG_TREE_FILE.lastModified();
     }
 
     /**
@@ -86,7 +86,7 @@ public class InvTweaksConfigManager {
     private boolean loadConfig() {
 
         // Ensure the config folder exists
-        File configDir = new File(InvTweaksConst.MINECRAFT_CONFIG_DIR);
+        File configDir = InvTweaksConst.MINECRAFT_CONFIG_DIR;
         if(!configDir.exists()) {
             configDir.mkdir();
         }
@@ -94,34 +94,33 @@ public class InvTweaksConfigManager {
         // Compatibility: Tree version check
         try {
             if(!(InvTweaksItemTreeLoader.isValidVersion(InvTweaksConst.CONFIG_TREE_FILE))) {
-                backupFile(new File(InvTweaksConst.CONFIG_TREE_FILE), InvTweaksConst.CONFIG_TREE_FILE);
+                backupFile(InvTweaksConst.CONFIG_TREE_FILE);
             }
         } catch(Exception e) {
             log.warning("Failed to check item tree version: " + e.getMessage());
         }
 
         // Compatibility: File names check
-        if(new File(InvTweaksConst.OLDER_CONFIG_RULES_FILE).exists()) {
-            if(new File(InvTweaksConst.CONFIG_RULES_FILE).exists()) {
-                backupFile(new File(InvTweaksConst.CONFIG_RULES_FILE), InvTweaksConst.CONFIG_RULES_FILE);
+        if(InvTweaksConst.OLD_CONFIG_TREE_FILE.exists()) {
+            if(InvTweaksConst.CONFIG_RULES_FILE.exists()) {
+                backupFile(InvTweaksConst.CONFIG_TREE_FILE);
             }
-            new File(InvTweaksConst.OLDER_CONFIG_RULES_FILE).renameTo(new File(InvTweaksConst.CONFIG_RULES_FILE));
-        }
-        if(new File(InvTweaksConst.OLDER_CONFIG_TREE_FILE).exists()) {
-            backupFile(new File(InvTweaksConst.OLDER_CONFIG_TREE_FILE), InvTweaksConst.CONFIG_TREE_FILE);
-        }
-        if(new File(InvTweaksConst.OLD_CONFIG_TREE_FILE).exists()) {
-            new File(InvTweaksConst.OLD_CONFIG_TREE_FILE).renameTo(new File(InvTweaksConst.CONFIG_TREE_FILE));
+            InvTweaksConst.OLD_CONFIG_TREE_FILE.renameTo(InvTweaksConst.CONFIG_TREE_FILE);
+        } else if(InvTweaksConst.OLDER_CONFIG_RULES_FILE.exists()) {
+            if(InvTweaksConst.CONFIG_RULES_FILE.exists()) {
+                backupFile(InvTweaksConst.CONFIG_RULES_FILE);
+            }
+            InvTweaksConst.OLDER_CONFIG_RULES_FILE.renameTo(InvTweaksConst.CONFIG_RULES_FILE);
         }
 
         // Create missing files
 
-        if(!new File(InvTweaksConst.CONFIG_RULES_FILE).exists() &&
+        if(!InvTweaksConst.CONFIG_RULES_FILE.exists() &&
                 extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE, InvTweaksConst.CONFIG_RULES_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_RULES_FILE + " " +
                                               InvTweaksLocalization.get("invtweaks.loadconfig.invalidkeywords"));
         }
-        if(!new File(InvTweaksConst.CONFIG_TREE_FILE).exists() &&
+        if(!InvTweaksConst.CONFIG_TREE_FILE.exists() &&
                 extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE, InvTweaksConst.CONFIG_TREE_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_TREE_FILE + " " +
                                               InvTweaksLocalization.get("invtweaks.loadconfig.invalidkeywords"));
@@ -167,6 +166,14 @@ public class InvTweaksConfigManager {
         }
     }
 
+    private void backupFile(File file) {
+        File newFile = new File(file.getName() + ".bak");
+        if(newFile.exists()) {
+            newFile.delete();
+        }
+        file.renameTo(newFile);
+    }
+
     private void backupFile(File file, String name) {
         File newFile = new File(name + ".bak");
         if(newFile.exists()) {
@@ -175,7 +182,7 @@ public class InvTweaksConfigManager {
         file.renameTo(newFile);
     }
 
-    private boolean extractFile(String resource, String destination) {
+    private boolean extractFile(String resource, File destination) {
 
         String resourceContents = "";
         URL resourceUrl = InvTweaks.class.getResource(resource);
@@ -209,7 +216,7 @@ public class InvTweaksConfigManager {
         // Extraction from mods folder
         if(resourceUrl == null) {
 
-            File modFolder = new File(InvTweaksConst.MINECRAFT_DIR + File.separatorChar + "mods");
+            File modFolder = new File(InvTweaksConst.MINECRAFT_DIR, "mods");
 
             File[] zips = modFolder.listFiles();
             if(zips != null && zips.length > 0) {

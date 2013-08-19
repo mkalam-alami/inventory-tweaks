@@ -45,12 +45,12 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         categoryStack = new LinkedList<String>();
     }
 
-    public synchronized static InvTweaksItemTree load(String filePath) throws Exception {
+    public synchronized static InvTweaksItemTree load(File file) throws Exception {
         init();
 
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         SAXParser parser = parserFactory.newSAXParser();
-        parser.parse(new File(filePath), new InvTweaksItemTreeLoader());
+        parser.parse(file, new InvTweaksItemTreeLoader());
 
         // Tree loaded event
         synchronized(onLoadListeners) {
@@ -65,10 +65,9 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         return tree;
     }
 
-    public synchronized static boolean isValidVersion(String filePath) throws Exception {
+    public synchronized static boolean isValidVersion(File file) throws Exception {
         init();
 
-        File file = new File(filePath);
         if(file.exists()) {
             treeVersion = null;
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();

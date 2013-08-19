@@ -67,8 +67,8 @@ public class InvTweaksConfig {
     public static final boolean DEFAULT_AUTO_REFILL_BEHAVIOUR = true;
 
 
-    private String rulesFile;
-    private String treeFile;
+    private File rulesFile;
+    private File treeFile;
 
     private InvTweaksConfigProperties properties;
     private InvTweaksItemTree tree;
@@ -84,7 +84,7 @@ public class InvTweaksConfig {
     /**
      * Creates a new configuration holder. The configuration is not yet loaded.
      */
-    public InvTweaksConfig(String rulesFile, String treeFile) {
+    public InvTweaksConfig(File rulesFile, File treeFile) {
         this.rulesFile = rulesFile;
         this.treeFile = treeFile;
         reset();
@@ -108,11 +108,10 @@ public class InvTweaksConfig {
             tree = InvTweaksItemTreeLoader.load(treeFile);
 
             // Read file
-            File f = new File(rulesFile);
-            char[] bytes = new char[(int) f.length()];
+            char[] bytes = new char[(int) rulesFile.length()];
             FileReader reader = null;
             try {
-                reader = new FileReader(f);
+                reader = new FileReader(rulesFile);
                 reader.read(bytes);
             } finally {
                 if(reader != null) {
@@ -193,7 +192,7 @@ public class InvTweaksConfig {
 
     public boolean refreshProperties() throws IOException {
         // Check time of last edit
-        long configLastModified = new File(InvTweaksConst.CONFIG_PROPS_FILE).lastModified();
+        long configLastModified = InvTweaksConst.CONFIG_PROPS_FILE.lastModified();
         if(storedConfigLastModified != configLastModified) {
             storedConfigLastModified = configLastModified;
             loadProperties();
@@ -215,7 +214,7 @@ public class InvTweaksConfig {
                         "(Regarding shortcuts, all key names can be found at: http://www.lwjgl.org/javadoc/org/lwjgl/input/Keyboard.html)");
                 fos.flush();
                 fos.close();
-                storedConfigLastModified = new File(InvTweaksConst.CONFIG_PROPS_FILE).lastModified();
+                storedConfigLastModified = InvTweaksConst.CONFIG_PROPS_FILE.lastModified();
             } catch(IOException e) {
                 InvTweaks.logInGameStatic("Failed to save config file " +
                                                   InvTweaksConst.CONFIG_PROPS_FILE);
@@ -528,7 +527,7 @@ public class InvTweaksConfig {
      * @return May return null in case of failure while creating the file.
      */
     private File getPropertyFile() {
-        File configPropsFile = new File(InvTweaksConst.CONFIG_PROPS_FILE);
+        File configPropsFile = InvTweaksConst.CONFIG_PROPS_FILE;
         if(!configPropsFile.exists()) {
             try {
                 configPropsFile.createNewFile();

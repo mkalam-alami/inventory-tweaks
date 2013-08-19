@@ -155,7 +155,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
             // Open shortcuts mappings in external editor
             case ID_EDITSHORTCUTS:
                 try {
-                    Desktop.getDesktop().open(new File(InvTweaksConst.CONFIG_PROPS_FILE));
+                    Desktop.getDesktop().open(InvTweaksConst.CONFIG_PROPS_FILE);
                 } catch(Exception e) {
                     InvTweaks.logInGameErrorStatic("invtweaks.settings.advanced.mappingsfile.error", e);
                 }

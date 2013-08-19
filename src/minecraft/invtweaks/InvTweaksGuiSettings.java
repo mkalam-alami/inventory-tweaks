@@ -202,7 +202,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             // Open rules configuration in external editor
             case ID_EDITRULES:
                 try {
-                    Desktop.getDesktop().open(new File(InvTweaksConst.CONFIG_RULES_FILE));
+                    Desktop.getDesktop().open(InvTweaksConst.CONFIG_RULES_FILE);
                 } catch(Exception e) {
                     InvTweaks.logInGameErrorStatic("invtweaks.settings.rulesfile.error", e);
                 }
@@ -211,7 +211,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
             // Open tree configuration in external editor
             case ID_EDITTREE:
                 try {
-                    Desktop.getDesktop().open(new File(InvTweaksConst.CONFIG_TREE_FILE));
+                    Desktop.getDesktop().open(InvTweaksConst.CONFIG_TREE_FILE);
                 } catch(Exception e) {
                     InvTweaks.logInGameErrorStatic("invtweaks.settings.treefile.error", e);
                 }

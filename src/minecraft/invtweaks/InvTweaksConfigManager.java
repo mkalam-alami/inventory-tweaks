@@ -1,6 +1,7 @@
 package invtweaks;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.*;
 import java.net.URL;
@@ -181,92 +182,30 @@ public class InvTweaksConfigManager {
         file.renameTo(newFile);
     }
 
-    private boolean extractFile(String resource, File destination) {
+    private boolean extractFile(ResourceLocation resource, File destination) {
+        InputStream input;
+        try {
+            input = mc.func_110442_L().func_110536_a(resource).func_110527_b();
 
-        String resourceContents = "";
-        URL resourceUrl = InvTweaks.class.getResource(resource);
+            byte[] contents = new byte[input.available()];
+            input.read(contents);
+            input.close();
 
-        // Extraction from minecraft.jar
-        if(resourceUrl != null) {
-            InputStream content = null;
             try {
-                Object o = resourceUrl.getContent();
-                if(o instanceof InputStream) {
-                    content = (InputStream) o;
-                    while(content.available() > 0) {
-                        byte[] bytes = new byte[content.available()];
-                        content.read(bytes);
-                        resourceContents += new String(bytes);
-                    }
-                }
-            } catch(IOException e) {
-                resourceUrl = null;
-            } finally {
-                if(content != null) {
-                    try {
-                        content.close();
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        // Extraction from mods folder
-        if(resourceUrl == null) {
-
-            File modFolder = new File(InvTweaksConst.MINECRAFT_DIR, "mods");
-
-            File[] zips = modFolder.listFiles();
-            if(zips != null && zips.length > 0) {
-                for(File zip : zips) {
-                    try {
-                        ZipFile invTweaksZip = new ZipFile(zip);
-                        ZipEntry zipResource = invTweaksZip.getEntry(resource);
-                        if(zipResource != null) {
-                            InputStream content = invTweaksZip.getInputStream(zipResource);
-                            while(content.available() > 0) {
-                                byte[] bytes = new byte[content.available()];
-                                content.read(bytes);
-                                resourceContents += new String(bytes);
-                            }
-                            invTweaksZip.close();
-                            break;
-                        } else {
-                            invTweaksZip.close();
-                        }
-                    } catch(Exception e) {
-                        log.warning("Failed to extract " + resource + " from mod: " + e.getMessage());
-                    }
-                }
-            }
-        }
-
-        // Write to destination
-        if(!resourceContents.isEmpty()) {
-            try {
-                FileWriter f = new FileWriter(destination);
-                f.write(resourceContents);
+                FileOutputStream f = new FileOutputStream(destination);
+                f.write(contents);
                 f.close();
+
                 return true;
-            } catch(IOException e) {
-                try {
-                    InvTweaks.logInGameStatic(
-                            String.format(InvTweaksLocalization.get("invtweaks.extract.create.error"), destination));
-                } catch(IllegalFormatException e2) {
-                    InvTweaks.logInGameStatic("[16] The mod won't work, because " + destination + " creation failed!");
-                }
+            } catch (IOException e) {
+                InvTweaks.logInGameStatic("[16] The mod won't work, because " + destination + " creation failed!");
                 log.severe("Cannot create " + destination + " file: " + e.getMessage());
                 return false;
             }
-        } else {
-            try {
-                InvTweaks.logInGameStatic(
-                        String.format(InvTweaksLocalization.get("invtweaks.extract.find.error"), resource));
-            } catch(IllegalFormatException e2) {
-                InvTweaks.logInGameStatic("[15] The mod won't work, because " + resource + " creation failed!");
-            }
-            log.severe("Cannot create " + destination + " file: " + resource + " not found");
+        } catch (IOException e) {
+            InvTweaks.logInGameStatic("[15] The mod won't work, because " + resource + " extraction failed!");
+
+            log.severe("Cannot extract " + resource + " file: " + e.getMessage());
             return false;
         }
     }

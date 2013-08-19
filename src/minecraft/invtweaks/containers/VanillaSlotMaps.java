@@ -31,8 +31,8 @@ public class VanillaSlotMaps {
     public static boolean containerCreativeIsInventory(ContainerCreative container) {
         GuiScreen currentScreen = FMLClientHandler.instance().getClient().currentScreen;
         if(currentScreen instanceof GuiContainerCreative) {
-            return ((GuiContainerCreative)currentScreen).getCurrentTabIndex() ==
-                    CreativeTabs.tabInventory.getTabIndex();
+            return ((GuiContainerCreative) currentScreen).getCurrentTabIndex() == CreativeTabs.tabInventory
+                                                                                              .getTabIndex();
         } else {
             return false;
         }
@@ -53,8 +53,8 @@ public class VanillaSlotMaps {
     public static Map<ContainerSection, List<Slot>> containerChestDispenserSlots(Container container) {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
 
-        slotRefs.put(ContainerSection.CHEST, container.inventorySlots.subList(0, container.inventorySlots.size() -
-                InvTweaksConst.INVENTORY_SIZE));
+        slotRefs.put(ContainerSection.CHEST, container.inventorySlots.subList(0, container.inventorySlots
+                                                                                          .size() - InvTweaksConst.INVENTORY_SIZE));
 
         return slotRefs;
     }

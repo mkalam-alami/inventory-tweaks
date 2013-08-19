@@ -26,10 +26,10 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Interface to access functions exposed by Inventory Tweaks
- *
+ * <p/>
  * The main @Mod instance of the mod implements this interface, so a refernce to it can
  * be obtained via @Instance("inventorytweaks") or methods in cpw.mods.fml.common.Loader
- *
+ * <p/>
  * All of these functions currently have no effect if called on a dedicated server.
  */
 public interface InvTweaksAPI {

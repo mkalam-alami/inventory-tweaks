@@ -191,8 +191,7 @@ public class InvTweaksObfuscation {
         return fontRenderer.getStringWidth(line);
     }
 
-    public void drawStringWithShadow(FontRenderer fontRenderer,
-                                     String s, int i, int j, int k) {
+    public void drawStringWithShadow(FontRenderer fontRenderer, String s, int i, int j, int k) {
         fontRenderer.drawStringWithShadow(s, i, j, k);
     }
 
@@ -231,9 +230,8 @@ public class InvTweaksObfuscation {
     }
 
     public boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
-        return areItemsEqual(itemStack1, itemStack2) ||
-                (isItemStackDamageable(itemStack1)
-                        && getItemID(itemStack1) == getItemID(itemStack2));
+        return areItemsEqual(itemStack1, itemStack2) || (isItemStackDamageable(itemStack1) && getItemID(
+                itemStack1) == getItemID(itemStack2));
     }
 
     public boolean areItemsEqual(ItemStack itemStack1, ItemStack itemStack2) {
@@ -276,9 +274,8 @@ public class InvTweaksObfuscation {
 
     // PlayerController members
 
-    public void clickInventory(PlayerControllerMP playerController,
-                               int windowId, int slot, int data,
-                               int action, EntityPlayer entityPlayer) {
+    public void clickInventory(PlayerControllerMP playerController, int windowId, int slot, int data, int action,
+                               EntityPlayer entityPlayer) {
         InvTweaksMod.proxy.slotClick(playerController, windowId, slot, data, action, entityPlayer);
     }
 
@@ -382,10 +379,8 @@ public class InvTweaksObfuscation {
         if(guiContainer != null) {
             x -= getGuiX(guiContainer);
             y -= getGuiY(guiContainer);
-            return x >= getXDisplayPosition(slot) - 1
-                    && x < getXDisplayPosition(slot) + 16 + 1
-                    && y >= getYDisplayPosition(slot) - 1
-                    && y < getYDisplayPosition(slot) + 16 + 1;
+            return x >= getXDisplayPosition(slot) - 1 && x < getXDisplayPosition(
+                    slot) + 16 + 1 && y >= getYDisplayPosition(slot) - 1 && y < getYDisplayPosition(slot) + 16 + 1;
         } else {
             return false;
         }

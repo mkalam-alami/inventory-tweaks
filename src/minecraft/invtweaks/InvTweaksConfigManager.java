@@ -75,8 +75,7 @@ public class InvTweaksConfigManager {
     }
 
     private long computeConfigLastModified() {
-        return InvTweaksConst.CONFIG_RULES_FILE.lastModified()
-                + InvTweaksConst.CONFIG_TREE_FILE.lastModified();
+        return InvTweaksConst.CONFIG_RULES_FILE.lastModified() + InvTweaksConst.CONFIG_TREE_FILE.lastModified();
     }
 
     /**
@@ -115,13 +114,13 @@ public class InvTweaksConfigManager {
 
         // Create missing files
 
-        if(!InvTweaksConst.CONFIG_RULES_FILE.exists() &&
-                extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE, InvTweaksConst.CONFIG_RULES_FILE)) {
+        if(!InvTweaksConst.CONFIG_RULES_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE,
+                                                                     InvTweaksConst.CONFIG_RULES_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_RULES_FILE + " " +
                                               InvTweaksLocalization.get("invtweaks.loadconfig.invalidkeywords"));
         }
-        if(!InvTweaksConst.CONFIG_TREE_FILE.exists() &&
-                extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE, InvTweaksConst.CONFIG_TREE_FILE)) {
+        if(!InvTweaksConst.CONFIG_TREE_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE,
+                                                                    InvTweaksConst.CONFIG_TREE_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_TREE_FILE + " " +
                                               InvTweaksLocalization.get("invtweaks.loadconfig.invalidkeywords"));
         }

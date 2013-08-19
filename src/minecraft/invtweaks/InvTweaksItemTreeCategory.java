@@ -16,11 +16,9 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
 
     private static final Logger log = InvTweaks.log;
 
-    private final Map<Integer, List<IItemTreeItem>> items =
-            new HashMap<Integer, List<IItemTreeItem>>();
+    private final Map<Integer, List<IItemTreeItem>> items = new HashMap<Integer, List<IItemTreeItem>>();
     private final Vector<String> matchingItems = new Vector<String>();
-    private final Vector<IItemTreeCategory> subCategories =
-            new Vector<IItemTreeCategory>();
+    private final Vector<IItemTreeCategory> subCategories = new Vector<IItemTreeCategory>();
     private String name;
     private int order = -1;
 

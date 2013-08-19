@@ -1,7 +1,5 @@
 package invtweaks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -9,7 +7,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.input.Mouse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +30,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
     private GuiContainer guiContainer;
     private Container container;
-    private Map<ContainerSection, List<Slot>> slotRefs
-            = new HashMap<ContainerSection, List<Slot>>();
+    private Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
     private int clickDelay = 0;
 
 
@@ -51,7 +47,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
         GuiScreen currentScreen = mc.currentScreen;
         if(currentScreen instanceof GuiContainer) {
-            guiContainer = (GuiContainer)currentScreen;
+            guiContainer = (GuiContainer) currentScreen;
             container = guiContainer.inventorySlots;
         } else {
             container = mc.thePlayer.inventoryContainer;
@@ -78,7 +74,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
 
         // TODO: Detect if there is a big enough unassigned section for inventory.
-        List<Slot> slots = (List<Slot>)container.inventorySlots;
+        List<Slot> slots = (List<Slot>) container.inventorySlots;
         int size = slots.size();
         if(size >= InvTweaksConst.INVENTORY_SIZE && !slotRefs.containsKey(ContainerSection.INVENTORY)) {
             slotRefs.put(ContainerSection.INVENTORY, slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size));
@@ -97,14 +93,11 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param srcIndex    The source slot
      * @param destSection The destination section
      * @param destIndex   The destination slot
-     *
      * @return false if the source slot is empty or the player is holding an item that couln't be put down.
-     *
      * @throws TimeoutException
      */
     // TODO: Server helper directly implementing this as a swap without the need for intermediate slots.
-    public boolean move(ContainerSection srcSection, int srcIndex,
-                        ContainerSection destSection, int destIndex) {
+    public boolean move(ContainerSection srcSection, int srcIndex, ContainerSection destSection, int destIndex) {
         ItemStack srcStack = getItemStack(srcSection, srcIndex);
         ItemStack destStack = getItemStack(destSection, destIndex);
 
@@ -135,11 +128,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         }
 
         // Use intermediate slot if we have to swap tools, maps, etc.
-        if(destStack != null
-                && srcStack.itemID == destStack.itemID
-                && (srcStack.getMaxStackSize() == 1 ||
-                srcStack.hasTagCompound() || destStack.hasTagCompound()
-        )) {
+        if(destStack != null && srcStack.itemID == destStack.itemID && (srcStack.getMaxStackSize() == 1 ||
+                srcStack.hasTagCompound() || destStack.hasTagCompound())) {
             int intermediateSlot = getFirstEmptyUsableSlotNumber();
             ContainerSection intermediateSection = getSlotSection(intermediateSlot);
             int intermediateIndex = getSlotIndex(intermediateSlot);
@@ -200,15 +190,12 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param amount      The amount of items to move. If <= 0, does nothing. If > to the source stack size, moves as
      *                    much as possible from the stack size. If not all can be moved to the destination, only moves
      *                    as much as possible.
-     *
      * @return false if the destination slot is already occupied by a different item (meaning items cannot be moved to
      *         destination).
-     *
      * @throws TimeoutException
      */
     // TODO: Server helper directly implementing this.
-    public boolean moveSome(ContainerSection srcSection, int srcIndex,
-                            ContainerSection destSection, int destIndex,
+    public boolean moveSome(ContainerSection srcSection, int srcIndex, ContainerSection destSection, int destIndex,
                             int amount) {
 
         ItemStack source = getItemStack(srcSection, srcIndex);
@@ -250,7 +237,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * If an item is in hand (= attached to the cursor), puts it down.
      *
      * @return true unless the item could not be put down
-     *
      * @throws Exception
      */
     public boolean putHoldItemDown(ContainerSection destSection, int destIndex) {
@@ -279,8 +265,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         // Click! (we finally call the Minecraft code)
         int slot = indexToSlot(section, index);
         if(slot != -1) {
-            clickInventory(getPlayerController(),
-                           getWindowId(container), // Select container
+            clickInventory(getPlayerController(), getWindowId(container), // Select container
                            slot, // Targeted slot
                            (rightClick) ? 1 : 0, // Click #
                            0, // Normal click
@@ -323,7 +308,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * Returns the size of a section of the container.
      *
      * @param section
-     *
      * @return The size, or 0 if there is no such section.
      */
     public int getSize(ContainerSection section) {
@@ -336,7 +320,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
     /**
      * @param section
-     *
      * @return -1 if no slot is free
      */
     public int getFirstEmptyIndex(ContainerSection section) {
@@ -352,7 +335,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
     /**
      * @param slot
-     *
      * @return true if the specified slot exists and is empty, false otherwise.
      */
     public boolean isSlotEmpty(ContainerSection section, int slot) {
@@ -374,7 +356,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
     /**
      * @param slotNumber
-     *
      * @return -1 if not found
      */
     public int getSlotIndex(int slotNumber) {
@@ -385,15 +366,12 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param slotNumber
      * @param preferInventory Set to true if you prefer to have the index according to the whole inventory, instead of a
      *                        more specific section (hotbar/not hotbar)
-     *
      * @return Full index of slot in the container
      */
     public int getSlotIndex(int slotNumber, boolean preferInventory) {
         // TODO Caching with getSlotSection
         for(ContainerSection section : slotRefs.keySet()) {
-            if(!preferInventory && section != ContainerSection.INVENTORY
-                    || (preferInventory && section != ContainerSection.INVENTORY_NOT_HOTBAR
-                    && section != ContainerSection.INVENTORY_HOTBAR)) {
+            if(!preferInventory && section != ContainerSection.INVENTORY || (preferInventory && section != ContainerSection.INVENTORY_NOT_HOTBAR && section != ContainerSection.INVENTORY_HOTBAR)) {
                 int i = 0;
                 for(Slot slot : slotRefs.get(section)) {
                     if(getSlotNumber(slot) == slotNumber) {
@@ -410,7 +388,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * Note: Prefers INVENTORY_HOTBAR/NOT_HOTBAR instead of INVENTORY.
      *
      * @param slotNumber
-     *
      * @return null if the slot number is invalid.
      */
     public ContainerSection getSlotSection(int slotNumber) {
@@ -432,7 +409,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      *
      * @param section
      * @param index
-     *
      * @return An ItemStack or null.
      */
     public ItemStack getItemStack(ContainerSection section, int index)
@@ -467,7 +443,6 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      *
      * @param section
      * @param index
-     *
      * @return -1 if not found
      */
     private int indexToSlot(ContainerSection section, int index) {

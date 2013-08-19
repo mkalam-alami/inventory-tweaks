@@ -14,8 +14,7 @@ public class InvTweaksConfigProperties extends Properties {
     private final List<String> keys = new LinkedList<String>();
 
     public Enumeration<Object> keys() {
-        return Collections.enumeration(
-                new LinkedHashSet<Object>(keys));
+        return Collections.enumeration(new LinkedHashSet<Object>(keys));
     }
 
     public Object put(String key, Object value) {

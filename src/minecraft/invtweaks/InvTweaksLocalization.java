@@ -1,6 +1,5 @@
 package invtweaks;
 
-import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -20,7 +19,7 @@ public class InvTweaksLocalization {
     private static Properties mappings = new Properties();
     private static String loadedLanguage = null;
 
-    public/* synchronized */static String get(String key) {
+    public/* synchronized */ static String get(String key) {
         return InvTweaksObfuscation.getLocalizedString(key);
         /*
         String currentLanguage = InvTweaksObfuscation.getCurrentLanguage();

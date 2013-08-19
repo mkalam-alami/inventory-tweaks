@@ -7,7 +7,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.Point;
 
 import java.awt.*;
-import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.logging.Logger;
@@ -76,13 +75,13 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         // Create settings buttons
 
         moveToButtonCoords(i++, p);
-        controlList.add(new InvTweaksGuiTooltipButton(ID_SHORTCUTS_HELP,
-                                                      p.getX() + 130, p.getY(), 20, 20, "?", "Shortcuts help"));
+        controlList.add(new InvTweaksGuiTooltipButton(ID_SHORTCUTS_HELP, p.getX() + 130, p.getY(), 20, 20, "?",
+                                                      "Shortcuts help"));
         String shortcuts = config.getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
-        InvTweaksGuiTooltipButton shortcutsBtn =
-                new InvTweaksGuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130, 20, computeBooleanButtonLabel(
-                        InvTweaksConfig.PROP_ENABLE_SHORTCUTS, labelShortcuts),
-                                              InvTweaksLocalization.get("invtweaks.settings.shortcuts.tooltip"));
+        InvTweaksGuiTooltipButton shortcutsBtn = new InvTweaksGuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130,
+                                                                               20, computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_ENABLE_SHORTCUTS, labelShortcuts), InvTweaksLocalization
+                                                                                       .get("invtweaks.settings.shortcuts.tooltip"));
         controlList.add(shortcutsBtn);
         if(shortcuts.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: shortcuts not available
@@ -99,17 +98,21 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         controlList.add(sortMappingButton);
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton beforeBreakBtn =
-                new InvTweaksGuiTooltipButton(ID_BEFORE_BREAK, p.getX(), p.getY(), computeBooleanButtonLabel(
-                        InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK, labelAutoRefillBeforeBreak),
-                                              InvTweaksLocalization.get("invtweaks.settings.beforebreak.tooltip"));
+        InvTweaksGuiTooltipButton beforeBreakBtn = new InvTweaksGuiTooltipButton(ID_BEFORE_BREAK, p.getX(), p.getY(),
+                                                                                 computeBooleanButtonLabel(
+                                                                                         InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK,
+                                                                                         labelAutoRefillBeforeBreak),
+                                                                                 InvTweaksLocalization
+                                                                                         .get("invtweaks.settings.beforebreak.tooltip"));
         controlList.add(beforeBreakBtn);
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton autoRefillBtn =
-                new InvTweaksGuiTooltipButton(ID_AUTO_REFILL, p.getX(), p.getY(), computeBooleanButtonLabel(
-                        InvTweaksConfig.PROP_ENABLE_AUTO_REFILL, labelAutoRefill),
-                                              InvTweaksLocalization.get("invtweaks.settings.autorefill.tooltip"));
+        InvTweaksGuiTooltipButton autoRefillBtn = new InvTweaksGuiTooltipButton(ID_AUTO_REFILL, p.getX(), p.getY(),
+                                                                                computeBooleanButtonLabel(
+                                                                                        InvTweaksConfig.PROP_ENABLE_AUTO_REFILL,
+                                                                                        labelAutoRefill),
+                                                                                InvTweaksLocalization
+                                                                                        .get("invtweaks.settings.autorefill.tooltip"));
         controlList.add(autoRefillBtn);
 
         moveToButtonCoords(i++, p);
@@ -123,10 +126,12 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
         String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton middleClickBtn =
-                new InvTweaksGuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(), computeBooleanButtonLabel(
-                        InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, labelMiddleClick),
-                                              InvTweaksLocalization.get("invtweaks.settings.middleclick.tooltip"));
+        InvTweaksGuiTooltipButton middleClickBtn = new InvTweaksGuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(),
+                                                                                 computeBooleanButtonLabel(
+                                                                                         InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
+                                                                                         labelMiddleClick),
+                                                                                 InvTweaksLocalization
+                                                                                         .get("invtweaks.settings.middleclick.tooltip"));
         controlList.add(middleClickBtn);
         if(middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: middle click not available

@@ -17,7 +17,7 @@ public class FMLPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[]{/*"invtweaks.forge.asm.ITAccessTransformer", */"invtweaks.forge.asm.ContainerTransformer"};
+        return new String[] {/*"invtweaks.forge.asm.ITAccessTransformer", */"invtweaks.forge.asm.ContainerTransformer"};
     }
 
     @Override
@@ -32,6 +32,6 @@ public class FMLPlugin implements IFMLLoadingPlugin {
 
     @Override
     public void injectData(Map<String, Object> data) {
-        runtimeDeobfEnabled = (Boolean)data.get("runtimeDeobfuscationEnabled");
+        runtimeDeobfEnabled = (Boolean) data.get("runtimeDeobfuscationEnabled");
     }
 }

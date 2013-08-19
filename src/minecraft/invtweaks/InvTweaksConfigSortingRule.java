@@ -22,8 +22,8 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     private int containerSize;
     private int containerRowSize;
 
-    public InvTweaksConfigSortingRule(InvTweaksItemTree tree, String constraint,
-                                      String keyword, int containerSize, int containerRowSize) {
+    public InvTweaksConfigSortingRule(InvTweaksItemTree tree, String constraint, String keyword, int containerSize,
+                                      int containerRowSize) {
 
         this.keyword = keyword;
         this.constraint = constraint;
@@ -80,12 +80,10 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
     public int[] getRulePreferredPositions(String constraint) {
         // TODO Caching
-        return InvTweaksConfigSortingRule.getRulePreferredPositions(
-                constraint, containerSize, containerRowSize);
+        return InvTweaksConfigSortingRule.getRulePreferredPositions(constraint, containerSize, containerRowSize);
     }
 
-    public static int[] getRulePreferredPositions(String constraint,
-                                                  int containerSize, int containerRowSize) {
+    public static int[] getRulePreferredPositions(String constraint, int containerSize, int containerRowSize) {
 
         int[] result = null;
         int containerColumnSize = containerSize / containerRowSize;
@@ -101,10 +99,8 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
             String[] elements = constraint.split("-");
             if(elements.length == 2) {
 
-                int[] slots1 = getRulePreferredPositions(elements[0],
-                                                         containerSize, containerRowSize);
-                int[] slots2 = getRulePreferredPositions(elements[1],
-                                                         containerSize, containerRowSize);
+                int[] slots1 = getRulePreferredPositions(elements[0], containerSize, containerRowSize);
+                int[] slots2 = getRulePreferredPositions(elements[1], containerSize, containerRowSize);
                 if(slots1.length == 1 && slots2.length == 1) {
 
                     int slot1 = slots1[0], slot2 = slots2[0];
@@ -112,13 +108,12 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
                     Point point1 = new Point(slot1 % containerRowSize, slot1 / containerRowSize),
                             point2 = new Point(slot2 % containerRowSize, slot2 / containerRowSize);
 
-                    result = new int[(Math.abs(point2.y - point1.y) + 1) *
-                            (Math.abs(point2.x - point1.x) + 1)];
+                    result = new int[(Math.abs(point2.y - point1.y) + 1) * (Math.abs(point2.x - point1.x) + 1)];
                     int resultIndex = 0;
 
                     // Swap coordinates for vertical ordering
                     if(vertical) {
-                        for(Point p : new Point[]{point1, point2}) {
+                        for(Point p : new Point[] {point1, point2}) {
                             int buffer = p.x;
                             p.x = p.y;
                             p.y = buffer;
@@ -129,8 +124,8 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
                     while((point1.y < point2.y) ? y <= point2.y : y >= point2.y) {
                         int x = point1.x;
                         while((point1.x < point2.x) ? x <= point2.x : x >= point2.x) {
-                            result[resultIndex++] = (vertical)
-                                                    ? index(containerRowSize, x, y) : index(containerRowSize, y, x);
+                            result[resultIndex++] = (vertical) ? index(containerRowSize, x, y) : index(containerRowSize,
+                                                                                                       y, x);
                             x += (point1.x < point2.x) ? 1 : -1;
                         }
                         y += (point1.y < point2.y) ? 1 : -1;
@@ -164,22 +159,20 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
             // Tile case
             if(column != -1 && row != -1) {
-                result = new int[]{index(containerRowSize, row, column)};
+                result = new int[] {index(containerRowSize, row, column)};
             }
             // Row case
             else if(row != -1) {
                 result = new int[containerRowSize];
                 for(int i = 0; i < containerRowSize; i++) {
-                    result[i] = index(containerRowSize, row,
-                                      reverse ? containerRowSize - 1 - i : i);
+                    result[i] = index(containerRowSize, row, reverse ? containerRowSize - 1 - i : i);
                 }
             }
             // Column case
             else {
                 result = new int[containerColumnSize];
                 for(int i = 0; i < containerColumnSize; i++) {
-                    result[i] = index(containerRowSize,
-                                      reverse ? i : containerColumnSize - 1 - i, column);
+                    result[i] = index(containerRowSize, reverse ? i : containerColumnSize - 1 - i, column);
                 }
             }
         }

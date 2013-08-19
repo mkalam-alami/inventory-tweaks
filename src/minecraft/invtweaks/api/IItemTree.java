@@ -53,11 +53,9 @@ public interface IItemTree {
 
     void setRootCategory(IItemTreeCategory category);
 
-    IItemTreeCategory addCategory(String parentCategory,
-                                  String newCategory) throws NullPointerException;
+    IItemTreeCategory addCategory(String parentCategory, String newCategory) throws NullPointerException;
 
-    void addCategory(String parentCategory,
-                     IItemTreeCategory newCategory) throws NullPointerException;
+    void addCategory(String parentCategory, IItemTreeCategory newCategory) throws NullPointerException;
 
     IItemTreeItem addItem(String parentCategory, String name, int id, int damage, int order)
             throws NullPointerException;

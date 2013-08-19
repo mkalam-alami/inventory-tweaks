@@ -13,8 +13,8 @@ public class ASMHelper {
      * @param retval Return value of method
      */
     public static void generateBooleanMethodConst(ClassNode clazz, String name, boolean retval) {
-        MethodNode method =
-                new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name, "()Z", null, null);
+        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name, "()Z", null,
+                                           null);
         InsnList code = method.instructions;
 
         code.add(new InsnNode(retval ? Opcodes.ICONST_1 : Opcodes.ICONST_0));
@@ -31,8 +31,8 @@ public class ASMHelper {
      * @param retval Return value of method
      */
     public static void generateIntegerMethodConst(ClassNode clazz, String name, short retval) {
-        MethodNode method =
-                new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name, "()I", null, null);
+        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name, "()I", null,
+                                           null);
         InsnList code = method.instructions;
 
         // Probably doesn't make a huge difference, but use BIPUSH if the value is small enough.
@@ -73,9 +73,9 @@ public class ASMHelper {
      */
     public static void generateStaticForwardingMethod(ClassNode clazz, String name, String forwardname, Type rettype,
                                                       Type argtype) {
-        MethodNode method =
-                new MethodNode(Opcodes.ASM4, Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name,
-                               "()" + rettype.getDescriptor(), null, null);
+        MethodNode method = new MethodNode(Opcodes.ASM4,
+                                           Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name,
+                                           "()" + rettype.getDescriptor(), null, null);
 
         populateSelfForwardingMethod(method, forwardname, rettype, argtype);
 

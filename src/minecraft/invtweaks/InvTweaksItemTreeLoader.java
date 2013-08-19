@@ -93,8 +93,8 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
 
 
     @Override
-    public synchronized void startElement(String uri, String localName,
-                                          String name, Attributes attributes) throws SAXException {
+    public synchronized void startElement(String uri, String localName, String name, Attributes attributes)
+            throws SAXException {
 
         String rangeMinAttr = attributes.getValue(ATTR_RANGE_MIN);
         String rangeDMinAttr = attributes.getValue(ATTR_RANGE_DMIN);
@@ -102,8 +102,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         String oreDictNameAttr = attributes.getValue(ATTR_OREDICT_NAME);
 
         // Category
-        if(attributes.getLength() == 0 || treeVersion == null
-                || rangeMinAttr != null || rangeDMinAttr != null) {
+        if(attributes.getLength() == 0 || treeVersion == null || rangeMinAttr != null || rangeDMinAttr != null) {
 
             // Tree version
             if(treeVersion == null) {
@@ -123,17 +122,16 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
                 int rangeMin = Integer.parseInt(rangeMinAttr);
                 int rangeMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_MAX));
                 for(int id = rangeMin; id <= rangeMax; id++) {
-                    tree.addItem(name, new InvTweaksItemTreeItem((name + id).toLowerCase(),
-                                                                 id, InvTweaksConst.DAMAGE_WILDCARD, itemOrder++));
+                    tree.addItem(name, new InvTweaksItemTreeItem((name + id).toLowerCase(), id,
+                                                                 InvTweaksConst.DAMAGE_WILDCARD, itemOrder++));
                 }
             } else if(rangeDMinAttr != null) {
                 int id = Integer.parseInt(attributes.getValue(ATTR_ID));
                 int rangeDMin = Integer.parseInt(rangeDMinAttr);
                 int rangeDMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_DMAX));
                 for(int damage = rangeDMin; damage <= rangeDMax; damage++) {
-                    tree.addItem(name, new InvTweaksItemTreeItem(
-                            (name + id + "-" + damage).toLowerCase(),
-                            id, damage, itemOrder++));
+                    tree.addItem(name, new InvTweaksItemTreeItem((name + id + "-" + damage).toLowerCase(), id, damage,
+                                                                 itemOrder++));
                 }
             }
 
@@ -147,8 +145,8 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
             if(attributes.getValue(ATTR_DAMAGE) != null) {
                 damage = Integer.parseInt(attributes.getValue(ATTR_DAMAGE));
             }
-            tree.addItem(categoryStack.getLast(), new InvTweaksItemTreeItem(name.toLowerCase(),
-                                                                            id, damage, itemOrder++));
+            tree.addItem(categoryStack.getLast(),
+                         new InvTweaksItemTreeItem(name.toLowerCase(), id, damage, itemOrder++));
         } else if(oreDictNameAttr != null) {
             tree.registerOre(categoryStack.getLast(), name.toLowerCase(), oreDictNameAttr, itemOrder++);
         }

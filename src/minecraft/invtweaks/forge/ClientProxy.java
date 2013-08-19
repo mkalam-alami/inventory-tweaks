@@ -5,7 +5,6 @@ import com.google.common.io.ByteStreams;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.IPickupNotifier;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -59,16 +58,15 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
     @Override
     public void setServerHasInvTweaks(boolean hasInvTweaks) {
         serverSupportDetected = hasInvTweaks;
-        serverSupportEnabled = hasInvTweaks &&
-                !InvTweaks.getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP)
-                          .equals(InvTweaksConfig.VALUE_FALSE);
+        serverSupportEnabled = hasInvTweaks && !InvTweaks.getConfigManager().getConfig()
+                                                         .getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP)
+                                                         .equals(InvTweaksConfig.VALUE_FALSE);
         InvTweaks.log.info("Server has support: " + hasInvTweaks + " support enabled: " + serverSupportEnabled);
     }
 
     @Override
-    public void slotClick(PlayerControllerMP playerController,
-                          int windowId, int slot, int data,
-                          int action, EntityPlayer player) {
+    public void slotClick(PlayerControllerMP playerController, int windowId, int slot, int data, int action,
+                          EntityPlayer player) {
         //int modiferKeys = (shiftHold) ? 1 : 0 /* XXX Placeholder */;
         if(serverSupportEnabled) {
             player.openContainer.slotClick(slot, data, action, player);
@@ -89,8 +87,8 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
     @Override
     public void sortComplete() {
         if(serverSupportEnabled) {
-            Packet250CustomPayload pkt =
-                    new Packet250CustomPayload("InventoryTweaks", new byte[]{InvTweaksConst.PACKET_SORTCOMPLETE});
+            Packet250CustomPayload pkt = new Packet250CustomPayload("InventoryTweaks",
+                                                                    new byte[] {InvTweaksConst.PACKET_SORTCOMPLETE});
             PacketDispatcher.sendPacketToServer(pkt);
         }
     }

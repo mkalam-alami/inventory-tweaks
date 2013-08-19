@@ -174,10 +174,9 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             // Check current GUI
             GuiScreen guiScreen = getCurrentScreen();
-            if(guiScreen == null ||
-                    (guiScreen instanceof GuiContainer &&
-                            (isValidChest(((GuiContainer) guiScreen).inventorySlots)
-                                    || isValidInventory(((GuiContainer) guiScreen).inventorySlots)))) {
+            if(guiScreen == null || (guiScreen instanceof GuiContainer && (isValidChest(
+                    ((GuiContainer) guiScreen).inventorySlots) || isValidInventory(
+                    ((GuiContainer) guiScreen).inventorySlots)))) {
                 // Sorting!
                 handleSorting(guiScreen);
             }
@@ -200,8 +199,8 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
 
         try {
-            InvTweaksContainerSectionManager containerMgr =
-                    new InvTweaksContainerSectionManager(mc, ContainerSection.INVENTORY);
+            InvTweaksContainerSectionManager containerMgr = new InvTweaksContainerSectionManager(mc,
+                                                                                                 ContainerSection.INVENTORY);
 
             // Find stack slot (look in hotbar only).
             // We're looking for a brand new stack in the hotbar
@@ -222,8 +221,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 List<Integer> prefferedPositions = new LinkedList<Integer>();
                 IItemTree tree = config.getTree();
                 ItemStack stack = containerMgr.getItemStack(currentSlot);
-                List<IItemTreeItem> items = tree.getItems(getItemID(stack),
-                                                          getItemDamage(stack));
+                List<IItemTreeItem> items = tree.getItems(getItemID(stack), getItemDamage(stack));
                 for(InvTweaksConfigSortingRule rule : config.getRules()) {
                     if(tree.matches(items, rule.getKeyword())) {
                         for(int slot : rule.getPreferredSlots()) {
@@ -303,10 +301,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                         }
                     }
 
-                    @SuppressWarnings("unchecked")
-                    Map<Integer, Integer> iEnchs = EnchantmentHelper.getEnchantments(i);
-                    @SuppressWarnings("unchecked")
-                    Map<Integer, Integer> jEnchs = EnchantmentHelper.getEnchantments(j);
+                    @SuppressWarnings("unchecked") Map<Integer, Integer> iEnchs = EnchantmentHelper.getEnchantments(i);
+                    @SuppressWarnings("unchecked") Map<Integer, Integer> jEnchs = EnchantmentHelper.getEnchantments(j);
                     if(iEnchs.size() == jEnchs.size()) {
                         int iEnchMaxId = 0, iEnchMaxLvl = 0;
                         int jEnchMaxId = 0, jEnchMaxLvl = 0;
@@ -375,8 +371,8 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     public void logInGame(String message, boolean alreadyTranslated) {
-        String formattedMsg =
-                buildlogString(Level.INFO, (alreadyTranslated) ? message : InvTweaksLocalization.get(message));
+        String formattedMsg = buildlogString(Level.INFO,
+                                             (alreadyTranslated) ? message : InvTweaksLocalization.get(message));
         addChatMessage(formattedMsg);
         log.info(formattedMsg);
     }
@@ -461,9 +457,8 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         // Switch between configurations (shortcut)
         cfgManager.getShortcutsHandler().updatePressedKeys();
-        InvTweaksShortcutMapping switchMapping = cfgManager.getShortcutsHandler()
-                                                           .isShortcutDown(
-                                                                   InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
+        InvTweaksShortcutMapping switchMapping = cfgManager.getShortcutsHandler().isShortcutDown(
+                InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT);
         if(isSortingShortcutDown() && switchMapping != null) {
             String newRuleset = null;
             int pressedKey = switchMapping.getKeyCodes().get(0);
@@ -513,8 +508,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             long currentTime = System.currentTimeMillis();
             if(sortingKeyPressedDate == 0) {
                 sortingKeyPressedDate = currentTime;
-            } else if(currentTime - sortingKeyPressedDate > InvTweaksConst.RULESET_SWAP_DELAY
-                    && sortingKeyPressedDate != Integer.MAX_VALUE) {
+            } else if(currentTime - sortingKeyPressedDate > InvTweaksConst.RULESET_SWAP_DELAY && sortingKeyPressedDate != Integer.MAX_VALUE) {
                 String previousRuleset = config.getCurrentRulesetName();
                 String newRuleset = config.switchConfig();
                 // Log only if there is more than 1 ruleset
@@ -542,10 +536,9 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         // Sorting
         try {
-            new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-                                        ContainerSection.INVENTORY,
-                                        InvTweaksHandlerSorting.ALGORITHM_INVENTORY,
-                                        InvTweaksConst.INVENTORY_ROW_SIZE).sort();
+            new InvTweaksHandlerSorting(mc, cfgManager.getConfig(), ContainerSection.INVENTORY,
+                                        InvTweaksHandlerSorting.ALGORITHM_INVENTORY, InvTweaksConst.INVENTORY_ROW_SIZE)
+                    .sort();
         } catch(Exception e) {
             logInGameError("invtweaks.sort.inventory.error", e);
             e.printStackTrace();
@@ -589,10 +582,10 @@ public class InvTweaks extends InvTweaksObfuscation {
             } else {
                 int itemMaxDamage = getMaxDamage(getItem(currentStack));
                 int autoRefillThreshhold = config.getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD);
-                if(canToolBeReplaced(currentStackDamage, itemMaxDamage, autoRefillThreshhold)
-                        && config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
-                                 .equals(InvTweaksConfig.VALUE_TRUE)
-                        && config.isAutoRefillEnabled(storedStackId, storedStackId)) {
+                if(canToolBeReplaced(currentStackDamage, itemMaxDamage, autoRefillThreshhold) && config
+                        .getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
+                        .equals(InvTweaksConfig.VALUE_TRUE) && config
+                        .isAutoRefillEnabled(storedStackId, storedStackId)) {
                     // Trigger auto-refill before the tool breaks
                     try {
                         cfgManager.getAutoRefillHandler().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
@@ -610,9 +603,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private boolean canToolBeReplaced(int currentStackDamage, int itemMaxDamage, int autoRefillThreshhold) {
-        return itemMaxDamage != 0
-                && itemMaxDamage - currentStackDamage < autoRefillThreshhold
-                && itemMaxDamage - storedStackDamage >= autoRefillThreshhold;
+        return itemMaxDamage != 0 && itemMaxDamage - currentStackDamage < autoRefillThreshhold && itemMaxDamage - storedStackDamage >= autoRefillThreshhold;
     }
 
     private void handleMiddleClick(GuiScreen guiScreen) {
@@ -634,7 +625,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                     chestAlgorithmButtonDown = true;
 
                     InvTweaksContainerManager containerMgr = new InvTweaksContainerManager(mc);
-                    Slot slotAtMousePosition = InvTweaksObfuscation.getSlotAtMousePosition((GuiContainer)containerMgr.getCurrentScreen());
+                    Slot slotAtMousePosition = InvTweaksObfuscation
+                            .getSlotAtMousePosition((GuiContainer) containerMgr.getCurrentScreen());
                     ContainerSection target = null;
                     if(slotAtMousePosition != null) {
                         target = containerMgr.getSlotSection(getSlotNumber(slotAtMousePosition));
@@ -651,15 +643,12 @@ public class InvTweaks extends InvTweaksObfuscation {
                             playClick();
 
                             long timestamp = System.currentTimeMillis();
-                            if(timestamp - chestAlgorithmClickTimestamp >
-                                    InvTweaksConst.CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
+                            if(timestamp - chestAlgorithmClickTimestamp > InvTweaksConst.CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
                                 chestAlgorithm = InvTweaksHandlerSorting.ALGORITHM_DEFAULT;
                             }
                             try {
-                                new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-                                                            ContainerSection.CHEST,
-                                                            chestAlgorithm,
-                                                            getContainerRowSize(guiContainer)).sort();
+                                new InvTweaksHandlerSorting(mc, cfgManager.getConfig(), ContainerSection.CHEST,
+                                                            chestAlgorithm, getContainerRowSize(guiContainer)).sort();
                             } catch(Exception e) {
                                 logInGameError("invtweaks.sort.chest.error", e);
                                 e.printStackTrace();
@@ -667,11 +656,10 @@ public class InvTweaks extends InvTweaksObfuscation {
                             chestAlgorithm = (chestAlgorithm + 1) % 3;
                             chestAlgorithmClickTimestamp = timestamp;
 
-                        } else if(ContainerSection.CRAFTING_IN.equals(target) ||
-                                ContainerSection.CRAFTING_IN_PERSISTENT.equals(target)) {
+                        } else if(ContainerSection.CRAFTING_IN.equals(target) || ContainerSection.CRAFTING_IN_PERSISTENT
+                                                                                                 .equals(target)) {
                             try {
-                                new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-                                                            target,
+                                new InvTweaksHandlerSorting(mc, cfgManager.getConfig(), target,
                                                             InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
                                                             (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
                             } catch(Exception e) {
@@ -679,18 +667,17 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 e.printStackTrace();
                             }
 
-                        } else if(ContainerSection.INVENTORY_HOTBAR.equals(target)
-                                || (ContainerSection.INVENTORY_NOT_HOTBAR.equals(target))) {
+                        } else if(ContainerSection.INVENTORY_HOTBAR.equals(target) || (ContainerSection
+                                .INVENTORY_NOT_HOTBAR.equals(target))) {
                             handleSorting(guiScreen);
                         }
 
                     } else if(isValidInventory(container)) {
-                        if(ContainerSection.CRAFTING_IN.equals(target) ||
-                                ContainerSection.CRAFTING_IN_PERSISTENT.equals(target)) {
+                        if(ContainerSection.CRAFTING_IN.equals(target) || ContainerSection.CRAFTING_IN_PERSISTENT
+                                                                                          .equals(target)) {
                             // Crafting stacks evening
                             try {
-                                new InvTweaksHandlerSorting(mc, cfgManager.getConfig(),
-                                                            target,
+                                new InvTweaksHandlerSorting(mc, cfgManager.getConfig(), target,
                                                             InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
                                                             (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
                             } catch(Exception e) {
@@ -753,17 +740,18 @@ public class InvTweaks extends InvTweaksObfuscation {
             if(!customButtonsAdded) {
 
                 // Check for custom button texture
-                boolean customTextureAvailable = hasTexture(new ResourceLocation("inventorytweaks", "textures/gui/button10px.png"));
+                boolean customTextureAvailable = hasTexture(
+                        new ResourceLocation("inventorytweaks", "textures/gui/button10px.png"));
 
                 // Inventory button
                 if(!isValidChest) {
-                    controlList.add(new InvTweaksGuiSettingsButton(
-                            cfgManager, InvTweaksConst.JIMEOWAN_ID,
-                            getGuiX(guiContainer) + getGuiWidth(guiContainer) - 15,
-                            getGuiY(guiContainer) + 5,
-                            w, h, "...",
-                            InvTweaksLocalization.get("invtweaks.button.settings.tooltip"),
-                            customTextureAvailable));
+                    controlList.add(new InvTweaksGuiSettingsButton(cfgManager, InvTweaksConst.JIMEOWAN_ID,
+                                                                   getGuiX(guiContainer) + getGuiWidth(
+                                                                           guiContainer) - 15,
+                                                                   getGuiY(guiContainer) + 5, w, h, "...",
+                                                                   InvTweaksLocalization
+                                                                           .get("invtweaks.button.settings.tooltip"),
+                                                                   customTextureAvailable));
                 }
 
                 // Chest buttons
@@ -783,47 +771,41 @@ public class InvTweaks extends InvTweaksObfuscation {
                     }
 
                     // Settings button
-                    controlList.add(new InvTweaksGuiSettingsButton(
-                            cfgManager, id++,
-                            (isChestWayTooBig) ? x + 22 : x - 1,
-                            (isChestWayTooBig) ? y - 3 : y,
-                            w, h, "...",
-                            InvTweaksLocalization.get("invtweaks.button.settings.tooltip"),
-                            customTextureAvailable));
+                    controlList
+                            .add(new InvTweaksGuiSettingsButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 1,
+                                                                (isChestWayTooBig) ? y - 3 : y, w, h, "...",
+                                                                InvTweaksLocalization
+                                                                        .get("invtweaks.button.settings.tooltip"),
+                                                                customTextureAvailable));
 
                     // Sorting buttons
                     if(!config.getProperty(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS).equals("false")) {
 
                         int rowSize = getContainerRowSize(guiContainer);
 
-                        GuiButton button = new InvTweaksGuiSortingButton(
-                                cfgManager, id++,
-                                (isChestWayTooBig) ? x + 22 : x - 13,
-                                (isChestWayTooBig) ? y + 12 : y,
-                                w, h, "h", InvTweaksLocalization.get("invtweaks.button.chest3.tooltip"),
-                                InvTweaksHandlerSorting.ALGORITHM_HORIZONTAL,
-                                rowSize,
-                                customTextureAvailable);
+                        GuiButton button = new InvTweaksGuiSortingButton(cfgManager, id++,
+                                                                         (isChestWayTooBig) ? x + 22 : x - 13,
+                                                                         (isChestWayTooBig) ? y + 12 : y, w, h, "h",
+                                                                         InvTweaksLocalization
+                                                                                 .get("invtweaks.button.chest3.tooltip"),
+                                                                         InvTweaksHandlerSorting.ALGORITHM_HORIZONTAL,
+                                                                         rowSize, customTextureAvailable);
                         controlList.add(button);
 
-                        button = new InvTweaksGuiSortingButton(
-                                cfgManager, id++,
-                                (isChestWayTooBig) ? x + 22 : x - 25,
-                                (isChestWayTooBig) ? y + 25 : y,
-                                w, h, "v", InvTweaksLocalization.get("invtweaks.button.chest2.tooltip"),
-                                InvTweaksHandlerSorting.ALGORITHM_VERTICAL,
-                                rowSize,
-                                customTextureAvailable);
+                        button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 25,
+                                                               (isChestWayTooBig) ? y + 25 : y, w, h, "v",
+                                                               InvTweaksLocalization
+                                                                       .get("invtweaks.button.chest2.tooltip"),
+                                                               InvTweaksHandlerSorting.ALGORITHM_VERTICAL, rowSize,
+                                                               customTextureAvailable);
                         controlList.add(button);
 
-                        button = new InvTweaksGuiSortingButton(
-                                cfgManager, id++,
-                                (isChestWayTooBig) ? x + 22 : x - 37,
-                                (isChestWayTooBig) ? y + 38 : y,
-                                w, h, "s", InvTweaksLocalization.get("invtweaks.button.chest1.tooltip"),
-                                InvTweaksHandlerSorting.ALGORITHM_DEFAULT,
-                                rowSize,
-                                customTextureAvailable);
+                        button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 37,
+                                                               (isChestWayTooBig) ? y + 38 : y, w, h, "s",
+                                                               InvTweaksLocalization
+                                                                       .get("invtweaks.button.chest1.tooltip"),
+                                                               InvTweaksHandlerSorting.ALGORITHM_DEFAULT, rowSize,
+                                                               customTextureAvailable);
                         controlList.add(button);
 
                     }
@@ -894,8 +876,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                 // The mouse has just been clicked,
                 // trigger a shortcut according to the pressed keys.
-                if(cfgManager.getConfig().getProperty(
-                        InvTweaksConfig.PROP_ENABLE_SHORTCUTS).equals("true")) {
+                if(cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS).equals("true")) {
                     cfgManager.getShortcutsHandler().handleShortcut();
                 }
             }
@@ -906,11 +887,9 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private int getItemOrder(ItemStack itemStack) {
-        List<IItemTreeItem> items = cfgManager.getConfig().getTree().getItems(
-                getItemID(itemStack), getItemDamage(itemStack));
-        return (items != null && items.size() > 0)
-               ? items.get(0).getOrder()
-               : Integer.MAX_VALUE;
+        List<IItemTreeItem> items = cfgManager.getConfig().getTree()
+                                              .getItems(getItemID(itemStack), getItemDamage(itemStack));
+        return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
     private int getContainerRowSize(GuiContainer guiContainer) {

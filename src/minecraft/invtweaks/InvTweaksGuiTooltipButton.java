@@ -22,34 +22,30 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     private int tooltipWidth = -1;
     private boolean drawBackground = true;
 
-    public InvTweaksGuiTooltipButton(int id,
-                                     int x, int y, String displayString) {
+    public InvTweaksGuiTooltipButton(int id, int x, int y, String displayString) {
         this(id, x, y, 150, 20, displayString, null);
     }
 
     /**
      * Default size is 150, the common "GuiSmallButton" button size.
      */
-    public InvTweaksGuiTooltipButton(int id,
-                                     int x, int y, String displayString, String tooltip) {
+    public InvTweaksGuiTooltipButton(int id, int x, int y, String displayString, String tooltip) {
         this(id, x, y, 150, 20, displayString, tooltip);
     }
 
-    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h,
-                                     String displayString) {
+    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h, String displayString) {
         this(id, x, y, w, h, displayString, null);
     }
 
-    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h,
-                                     String displayString, String tooltip) {
+    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h, String displayString, String tooltip) {
         super(id, x, y, w, h, displayString);
         if(tooltip != null) {
             setTooltip(tooltip);
         }
     }
 
-    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h,
-                                     String displayString, String tooltip, boolean drawBackground) {
+    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h, String displayString, String tooltip,
+                                     boolean drawBackground) {
         super(id, x, y, w, h, displayString);
         if(tooltip != null) {
             setTooltip(tooltip);
@@ -89,9 +85,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
                 int x = i + 12, y = j - LINE_HEIGHT * tooltipLines.length;
                 if(tooltipWidth == -1) {
                     for(String line : tooltipLines) {
-                        tooltipWidth = Math.max(
-                                obf.getStringWidth(fontRenderer, line),
-                                tooltipWidth);
+                        tooltipWidth = Math.max(obf.getStringWidth(fontRenderer, line), tooltipWidth);
                     }
                 }
                 if(x + tooltipWidth > obf.getWindowWidth(obf.getCurrentScreen())) {
@@ -99,15 +93,13 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
                 }
 
                 // Draw background
-                drawGradientRect(x - 3, y - 3,
-                                 x + tooltipWidth + 3, y + LINE_HEIGHT * tooltipLines.length,
-                                 0xc0000000, 0xc0000000);
+                drawGradientRect(x - 3, y - 3, x + tooltipWidth + 3, y + LINE_HEIGHT * tooltipLines.length, 0xc0000000,
+                                 0xc0000000);
 
                 // Draw lines
                 int lineCount = 0;
                 for(String line : tooltipLines) {
-                    obf.drawStringWithShadow(fontRenderer,
-                                             line, x, y + (lineCount++) * LINE_HEIGHT, -1);
+                    obf.drawStringWithShadow(fontRenderer, line, x, y + (lineCount++) * LINE_HEIGHT, -1);
                 }
             }
         }
@@ -115,9 +107,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     }
 
     protected boolean isMouseOverButton(int i, int j) {
-        return i >= xPosition && j >= yPosition
-                && i < (xPosition + width)
-                && j < (yPosition + height);
+        return i >= xPosition && j >= yPosition && i < (xPosition + width) && j < (yPosition + height);
     }
 
     protected int getTextColor(int i, int j) {

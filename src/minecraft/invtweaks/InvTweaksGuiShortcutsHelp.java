@@ -17,8 +17,7 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
     private GuiScreen parentScreen;
     private InvTweaksConfig config;
 
-    public InvTweaksGuiShortcutsHelp(Minecraft mc,
-                                     GuiScreen parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiShortcutsHelp(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
         this.obf = new InvTweaksObfuscation(mc);
         this.parentScreen = parentScreen;
         this.config = config;
@@ -27,9 +26,8 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
     public void initGui() {
         // Create Done button
         List<Object> controlList = new LinkedList<Object>();
-        controlList.add(new GuiButton(ID_DONE,
-                                      obf.getWindowWidth(this) / 2 - 100,
-                                      obf.getWindowHeight(this) / 6 + 168, "Done"));
+        controlList.add(new GuiButton(ID_DONE, obf.getWindowWidth(this) / 2 - 100, obf.getWindowHeight(this) / 6 + 168,
+                                      "Done"));
         obf.setControlList(this, controlList);
     }
 
@@ -52,24 +50,26 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
                                  clickLabel, 0x00FFFF00, y);
         y += 12;
         drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_UP, obf.getKeyBindingForwardKeyCode(),
-                                                InvTweaksLocalization.get("invtweaks.help.shortcuts.forward"))
-                + " + " + clickLabel, 0x00FFFF00, y);
+                                                InvTweaksLocalization
+                                                        .get("invtweaks.help.shortcuts.forward")) + " + " + clickLabel,
+                         0x00FFFF00, y);
         y += 12;
         drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_DOWN, obf.getKeyBindingBackKeyCode(),
-                                                InvTweaksLocalization.get("invtweaks.help.shortcuts.backwards"))
-                + " + " + clickLabel, 0x00FFFF00, y);
+                                                InvTweaksLocalization
+                                                        .get("invtweaks.help.shortcuts.backwards")) + " + " + clickLabel,
+                         0x00FFFF00, y);
         y += 12;
         drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.oneitem"),
-                         config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + " + clickLabel,
-                         0x00FFFF00, y);
+                         config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + " + clickLabel, 0x00FFFF00,
+                         y);
         y += 12;
         drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.allitems"),
-                         config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS) + " + " + clickLabel,
-                         0x00FFFF00, y);
+                         config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS) + " + " + clickLabel, 0x00FFFF00,
+                         y);
         y += 12;
         drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.everything"),
-                         config.getProperty(InvTweaksConfig.PROP_SHORTCUT_EVERYTHING) + " + " + clickLabel,
-                         0x00FFFF00, y);
+                         config.getProperty(InvTweaksConfig.PROP_SHORTCUT_EVERYTHING) + " + " + clickLabel, 0x00FFFF00,
+                         y);
         y += 19;
 
         drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.hotbar"), "0-9 + " + clickLabel,
@@ -79,8 +79,7 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
                          InvTweaksLocalization.get("invtweaks.help.shortcuts.rightclick"), 0x0000FF33, y);
         y += 12;
         drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.drop"),
-                         config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DROP) + " + " + clickLabel,
-                         0x0000FF33, y);
+                         config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DROP) + " + " + clickLabel, 0x0000FF33, y);
         y += 19;
 
         drawShortcutLine(InvTweaksLocalization.get("invtweaks.help.shortcuts.craftall"),

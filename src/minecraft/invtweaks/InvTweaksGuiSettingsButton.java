@@ -15,8 +15,7 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
 
     private static final Logger log = InvTweaks.log;
 
-    public InvTweaksGuiSettingsButton(InvTweaksConfigManager cfgManager,
-                                      int id, int x, int y, int w, int h,
+    public InvTweaksGuiSettingsButton(InvTweaksConfigManager cfgManager, int id, int x, int y, int w, int h,
                                       String displayString, String tooltip, boolean useCustomTexture) {
         super(cfgManager, id, x, y, w, h, displayString, tooltip, useCustomTexture);
     }
@@ -26,11 +25,7 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
 
         // Display string
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
-        drawCenteredString(obf.getFontRenderer(),
-                           displayString,
-                           xPosition + 5,
-                           yPosition - 1,
-                           getTextColor(i, j));
+        drawCenteredString(obf.getFontRenderer(), displayString, xPosition + 5, yPosition - 1, getTextColor(i, j));
     }
 
     /**
@@ -46,8 +41,7 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
             InvTweaksContainerSectionManager containerMgr;
 
             try {
-                containerMgr = new InvTweaksContainerSectionManager(
-                        minecraft, ContainerSection.INVENTORY);
+                containerMgr = new InvTweaksContainerSectionManager(minecraft, ContainerSection.INVENTORY);
                 if(obf.getHeldStack() != null) {
                     try {
                         // Put hold item down

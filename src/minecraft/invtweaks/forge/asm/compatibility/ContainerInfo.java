@@ -50,8 +50,7 @@ public class ContainerInfo {
         rowSize = rowS;
     }
 
-    public ContainerInfo(boolean standard, boolean validInv, boolean validCh, short rowS,
-                         MethodInfo slotMap) {
+    public ContainerInfo(boolean standard, boolean validInv, boolean validCh, short rowS, MethodInfo slotMap) {
         standardInventory = standard;
         validInventory = validInv;
         validChest = validCh;

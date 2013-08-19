@@ -1,7 +1,7 @@
 package invtweaks;
 
-import invtweaks.api.container.ContainerSection;
 import invtweaks.api.IItemTreeItem;
+import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,8 +38,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
      */
     public void autoRefillSlot(int slot, int wantedId, int wantedDamage) throws Exception {
 
-        InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(
-                mc, ContainerSection.INVENTORY);
+        InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(mc,
+                                                                                          ContainerSection.INVENTORY);
         ItemStack candidateStack, replacementStack = null;
         int replacementStackSlot = -1;
         boolean refillBeforeBreak = config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
@@ -68,14 +68,14 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 if(!hasSubtypes || (item.getDamage() == wantedDamage)) {
                     // Since we search a matching item using rules,
                     // create a fake one that matches the exact item first
-                    matchingRules.add(new InvTweaksConfigSortingRule(
-                            tree, "D" + (slot - 27), item.getName(),
-                            InvTweaksConst.INVENTORY_SIZE, InvTweaksConst.INVENTORY_ROW_SIZE));
+                    matchingRules.add(new InvTweaksConfigSortingRule(tree, "D" + (slot - 27), item.getName(),
+                                                                     InvTweaksConst.INVENTORY_SIZE,
+                                                                     InvTweaksConst.INVENTORY_ROW_SIZE));
                 }
             }
             for(InvTweaksConfigSortingRule rule : rules) {
-                if(rule.getType() == InvTweaksConfigSortingRuleType.SLOT
-                        || rule.getType() == InvTweaksConfigSortingRuleType.COLUMN) {
+                if(rule.getType() == InvTweaksConfigSortingRuleType.SLOT || rule
+                        .getType() == InvTweaksConfigSortingRuleType.COLUMN) {
                     for(int preferredSlot : rule.getPreferredSlots()) {
                         if(slot == preferredSlot) {
                             matchingRules.add(rule);
@@ -92,25 +92,22 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 for(int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                     candidateStack = container.getItemStack(i);
                     if(candidateStack != null) {
-                        List<IItemTreeItem> candidateItems = tree.getItems(
-                                getItemID(candidateStack),
-                                getItemDamage(candidateStack));
+                        List<IItemTreeItem> candidateItems = tree
+                                .getItems(getItemID(candidateStack), getItemDamage(candidateStack));
                         if(tree.matches(candidateItems, rule.getKeyword())) {
                             // Choose tool of highest damage value
                             if(getMaxStackSize(candidateStack) == 1) {
-                                if((replacementStack == null ||
-                                        getItemDamage(candidateStack) > getItemDamage(replacementStack)) &&
-                                        (!refillBeforeBreak ||
-                                                getMaxDamage(getItem(candidateStack)) - getItemDamage(candidateStack)
-                                                        > config.getIntProperty(
-                                                        InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD))) {
+                                if((replacementStack == null || getItemDamage(candidateStack) > getItemDamage(
+                                        replacementStack)) && (!refillBeforeBreak || getMaxDamage(
+                                        getItem(candidateStack)) - getItemDamage(candidateStack) > config
+                                        .getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD))) {
                                     replacementStack = candidateStack;
                                     replacementStackSlot = i;
                                 }
                             }
                             // Choose stack of lowest size
-                            else if(replacementStack == null ||
-                                    getStackSize(candidateStack) < getStackSize(replacementStack)) {
+                            else if(replacementStack == null || getStackSize(candidateStack) < getStackSize(
+                                    replacementStack)) {
                                 replacementStack = candidateStack;
                                 replacementStackSlot = i;
                             }
@@ -153,10 +150,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                         expectedItemId;
                 private boolean refillBeforeBreak;
 
-                public Runnable init(Minecraft mc,
-                                     int i, int currentItem, boolean refillBeforeBreak) throws Exception {
-                    this.containerMgr = new InvTweaksContainerSectionManager(
-                            mc, ContainerSection.INVENTORY);
+                public Runnable init(Minecraft mc, int i, int currentItem, boolean refillBeforeBreak) throws Exception {
+                    this.containerMgr = new InvTweaksContainerSectionManager(mc, ContainerSection.INVENTORY);
                     this.targetedSlot = currentItem;
                     if(i != -1) {
                         this.i = i;
@@ -175,8 +170,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     // slot is now empty
                     int pollingTime = 0;
                     setHasInventoryChanged(false);
-                    while(getThePlayer() != null && !hasInventoryChanged()
-                            && pollingTime < InvTweaksConst.POLLING_TIMEOUT) {
+                    while(getThePlayer() != null && !hasInventoryChanged() && pollingTime < InvTweaksConst.POLLING_TIMEOUT) {
                         trySleep(InvTweaksConst.POLLING_DELAY);
                     }
                     if(getThePlayer() == null) {

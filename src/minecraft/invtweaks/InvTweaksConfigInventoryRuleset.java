@@ -50,9 +50,7 @@ public class InvTweaksConfigInventoryRuleset {
 
     /**
      * @param rawLine
-     *
      * @return If not null, returns the invalid keyword found
-     *
      * @throws InvalidParameterException
      */
     public String registerLine(String rawLine) throws InvalidParameterException {
@@ -65,8 +63,8 @@ public class InvTweaksConfigInventoryRuleset {
         if(words.length == 2) {
 
             // Standard rules format
-            if(lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$")
-                    || lineText.matches("^[a-d][1-9]-[a-d][1-9][rv]?[rv]? [\\w]*$")) {
+            if(lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$") || lineText
+                    .matches("^[a-d][1-9]-[a-d][1-9][rv]?[rv]? [\\w]*$")) {
 
                 words[0] = words[0].toLowerCase();
                 words[1] = words[1];
@@ -74,9 +72,8 @@ public class InvTweaksConfigInventoryRuleset {
                 // Locking rule
                 if(words[1].equals(InvTweaksConfig.LOCKED)) {
                     int[] newLockedSlots = InvTweaksConfigSortingRule
-                            .getRulePreferredPositions(
-                                    words[0], InvTweaksConst.INVENTORY_SIZE,
-                                    InvTweaksConst.INVENTORY_ROW_SIZE);
+                            .getRulePreferredPositions(words[0], InvTweaksConst.INVENTORY_SIZE,
+                                                       InvTweaksConst.INVENTORY_ROW_SIZE);
                     int lockPriority = InvTweaksConfigSortingRule.
                                                                          getRuleType(words[0],
                                                                                      InvTweaksConst.INVENTORY_ROW_SIZE)
@@ -90,9 +87,8 @@ public class InvTweaksConfigInventoryRuleset {
                 // Freeze rule
                 else if(words[1].equals(InvTweaksConfig.FROZEN)) {
                     int[] newLockedSlots = InvTweaksConfigSortingRule
-                            .getRulePreferredPositions(
-                                    words[0], InvTweaksConst.INVENTORY_SIZE,
-                                    InvTweaksConst.INVENTORY_ROW_SIZE);
+                            .getRulePreferredPositions(words[0], InvTweaksConst.INVENTORY_SIZE,
+                                                       InvTweaksConst.INVENTORY_ROW_SIZE);
                     for(int i : newLockedSlots) {
                         frozenSlots[i] = true;
                     }
@@ -123,8 +119,8 @@ public class InvTweaksConfigInventoryRuleset {
                     }
 
                     if(isValidKeyword) {
-                        newRule = new InvTweaksConfigSortingRule(tree, words[0],
-                                                                 keyword.toLowerCase(), InvTweaksConst.INVENTORY_SIZE,
+                        newRule = new InvTweaksConfigSortingRule(tree, words[0], keyword.toLowerCase(),
+                                                                 InvTweaksConst.INVENTORY_SIZE,
                                                                  InvTweaksConst.INVENTORY_ROW_SIZE);
                         rules.add(newRule);
                         return null;
@@ -135,11 +131,9 @@ public class InvTweaksConfigInventoryRuleset {
             }
 
             // Autoreplace rule
-            else if(words[0].equals(InvTweaksConfig.AUTOREFILL)
-                    || words[0].equals("autoreplace")) { // Compatibility
+            else if(words[0].equals(InvTweaksConfig.AUTOREFILL) || words[0].equals("autoreplace")) { // Compatibility
                 words[1] = words[1].toLowerCase();
-                if(tree.isKeywordValid(words[1]) ||
-                        words[1].equals(InvTweaksConfig.AUTOREFILL_NOTHING)) {
+                if(tree.isKeywordValid(words[1]) || words[1].equals(InvTweaksConfig.AUTOREFILL_NOTHING)) {
                     autoReplaceRules.add(words[1]);
                 }
                 return null;
@@ -260,8 +254,7 @@ public class InvTweaksConfigInventoryRuleset {
             byte[] keywordBytes = keyword.getBytes();
             for(int i = 0; i < keywordBytes.length; i++) {
                 if(keywordBytes[i] >= 'A' && keywordBytes[i] <= 'Z') {
-                    String swapped = (keyword.substring(i) +
-                            keyword.substring(0, i)).toLowerCase();
+                    String swapped = (keyword.substring(i) + keyword.substring(0, i)).toLowerCase();
                     variants.add(swapped);
                     variants.addAll(getKeywordVariants(swapped));
                 }

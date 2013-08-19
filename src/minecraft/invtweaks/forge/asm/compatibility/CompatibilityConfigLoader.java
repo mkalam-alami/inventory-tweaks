@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class CompatibilityConfigLoader extends DefaultHandler {
     private Map<String, ContainerInfo> config;
+
     public CompatibilityConfigLoader(Map<String, ContainerInfo> compatibilityConfig) {
         config = compatibilityConfig;
     }
@@ -29,19 +30,19 @@ public class CompatibilityConfigLoader extends DefaultHandler {
     /**
      * Receive notification of the start of an element.
      *
-     * @param uri The Namespace URI, or the empty string if the
-     *        element has no Namespace URI or if Namespace
-     *        processing is not being performed.
-     * @param localName The local name (without prefix), or the
-     *        empty string if Namespace processing is not being
-     *        performed.
-     * @param qName The qualified name (with prefix), or the
-     *        empty string if qualified names are not available.
+     * @param uri        The Namespace URI, or the empty string if the
+     *                   element has no Namespace URI or if Namespace
+     *                   processing is not being performed.
+     * @param localName  The local name (without prefix), or the
+     *                   empty string if Namespace processing is not being
+     *                   performed.
+     * @param qName      The qualified name (with prefix), or the
+     *                   empty string if qualified names are not available.
      * @param attributes The attributes attached to the element.  If
-     *        there are no attributes, it shall be an empty
-     *        Attributes object.
-     * @exception org.xml.sax.SAXException Any SAX exception, possibly
-     *            wrapping another exception.
+     *                   there are no attributes, it shall be an empty
+     *                   Attributes object.
+     * @throws org.xml.sax.SAXException Any SAX exception, possibly
+     *                                  wrapping another exception.
      * @see org.xml.sax.ContentHandler#startElement
      */
     @Override
@@ -50,7 +51,9 @@ public class CompatibilityConfigLoader extends DefaultHandler {
             ContainerInfo info = new ContainerInfo();
             String className = attributes.getValue("class");
 
-            if(className == null) return;
+            if(className == null) {
+                return;
+            }
 
             if("chest".equals(qName)) {
                 info.validChest = true;

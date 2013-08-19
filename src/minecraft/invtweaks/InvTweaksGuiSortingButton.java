@@ -15,10 +15,9 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
     private int algorithm;
     private int rowSize;
 
-    public InvTweaksGuiSortingButton(InvTweaksConfigManager cfgManager,
-                                     int id, int x, int y, int w, int h,
-                                     String displayString, String tooltip,
-                                     int algorithm, int rowSize, boolean useCustomTexture) {
+    public InvTweaksGuiSortingButton(InvTweaksConfigManager cfgManager, int id, int x, int y, int w, int h,
+                                     String displayString, String tooltip, int algorithm, int rowSize,
+                                     boolean useCustomTexture) {
         super(cfgManager, id, x, y, w, h, displayString, tooltip, useCustomTexture);
         this.algorithm = algorithm;
         this.rowSize = rowSize;
@@ -49,9 +48,7 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
     public boolean mousePressed(Minecraft minecraft, int i, int j) {
         if(super.mousePressed(minecraft, i, j)) {
             try {
-                new InvTweaksHandlerSorting(
-                        minecraft, cfgManager.getConfig(),
-                        section, algorithm, rowSize).sort();
+                new InvTweaksHandlerSorting(minecraft, cfgManager.getConfig(), section, algorithm, rowSize).sort();
             } catch(Exception e) {
                 InvTweaks.logInGameErrorStatic("invtweaks.sort.chest.error", e);
                 e.printStackTrace();

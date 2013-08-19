@@ -80,9 +80,9 @@ public class RemappingAccessTransformer implements IClassTransformer {
                 }
 
                 if(cn.fields != null && !fieldTransforms.isEmpty()) {
-                    for(FieldNode field : (List<FieldNode>)cn.fields) {
-                        String unmappedName =
-                                FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(name, field.name, field.desc);
+                    for(FieldNode field : (List<FieldNode>) cn.fields) {
+                        String unmappedName = FMLDeobfuscatingRemapper.INSTANCE
+                                                                      .mapFieldName(name, field.name, field.desc);
 
                         for(MemberInfo transform : fieldTransforms) {
                             if(unmappedName.equals(transform.memberName)) {
@@ -104,9 +104,9 @@ public class RemappingAccessTransformer implements IClassTransformer {
                 }
 
                 if(cn.methods != null && !methodTransforms.isEmpty()) {
-                    for(MethodNode method : (List<MethodNode>)cn.methods) {
-                        String unmappedName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(name, method.name,
-                                                                                              method.desc);
+                    for(MethodNode method : (List<MethodNode>) cn.methods) {
+                        String unmappedName = FMLDeobfuscatingRemapper.INSTANCE
+                                                                      .mapMethodName(name, method.name, method.desc);
                         String unmappedDesc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(method.desc);
 
                         for(MemberInfo transform : methodTransforms) {

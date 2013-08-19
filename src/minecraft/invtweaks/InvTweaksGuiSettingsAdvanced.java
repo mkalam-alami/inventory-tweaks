@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.util.Point;
 
 import java.awt.*;
-import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -61,36 +60,44 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
         i += 2;
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton sortOnPickupBtn =
-                new InvTweaksGuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(), computeBooleanButtonLabel(
-                        InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, labelSortOnPickup), InvTweaksLocalization
-                                                      .get("invtweaks.settings.advanced.sortonpickup.tooltip"));
+        InvTweaksGuiTooltipButton sortOnPickupBtn = new InvTweaksGuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(),
+                                                                                  computeBooleanButtonLabel(
+                                                                                          InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP,
+                                                                                          labelSortOnPickup),
+                                                                                  InvTweaksLocalization
+                                                                                          .get("invtweaks.settings.advanced.sortonpickup.tooltip"));
         controlList.add(sortOnPickupBtn);
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton enableSoundsBtn =
-                new InvTweaksGuiTooltipButton(ID_ENABLE_SOUNDS, p.getX(), p.getY(), computeBooleanButtonLabel(
-                        InvTweaksConfig.PROP_ENABLE_SOUNDS, labelEnableSounds),
-                                              InvTweaksLocalization.get("invtweaks.settings.advanced.sounds.tooltip"));
+        InvTweaksGuiTooltipButton enableSoundsBtn = new InvTweaksGuiTooltipButton(ID_ENABLE_SOUNDS, p.getX(), p.getY(),
+                                                                                  computeBooleanButtonLabel(
+                                                                                          InvTweaksConfig.PROP_ENABLE_SOUNDS,
+                                                                                          labelEnableSounds),
+                                                                                  InvTweaksLocalization
+                                                                                          .get("invtweaks.settings.advanced.sounds.tooltip"));
         controlList.add(enableSoundsBtn);
 
         moveToButtonCoords(i++, p);
-        controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons), InvTweaksLocalization
+        controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(),
+                                                      computeBooleanButtonLabel(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS,
+                                                                                labelChestButtons),
+                                                      InvTweaksLocalization
                                                               .get("invtweaks.settings.chestbuttons.tooltip")));
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton autoEquipArmorBtn =
-                new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(), p.getY(), computeBooleanButtonLabel(
-                        InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor), InvTweaksLocalization
-                                                      .get("invtweaks.settings.advanced.autoequip.tooltip"));
+        InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(),
+                                                                                    p.getY(), computeBooleanButtonLabel(
+                InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor), InvTweaksLocalization
+                                                                                            .get("invtweaks.settings.advanced.autoequip.tooltip"));
         controlList.add(autoEquipArmorBtn);
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton serverAssistBtn =
-                new InvTweaksGuiTooltipButton(ID_SERVER_ASSIST, p.getX(), p.getY(), computeBooleanButtonLabel(
-                        InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP, labelServerAssist), InvTweaksLocalization
-                                                      .get("invtweaks.settings.advanced.serverassist.tooltip"));
+        InvTweaksGuiTooltipButton serverAssistBtn = new InvTweaksGuiTooltipButton(ID_SERVER_ASSIST, p.getX(), p.getY(),
+                                                                                  computeBooleanButtonLabel(
+                                                                                          InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP,
+                                                                                          labelServerAssist),
+                                                                                  InvTweaksLocalization
+                                                                                          .get("invtweaks.settings.advanced.serverassist.tooltip"));
         controlList.add(serverAssistBtn);
 
         // Check if links to files are supported, if not disable the buttons

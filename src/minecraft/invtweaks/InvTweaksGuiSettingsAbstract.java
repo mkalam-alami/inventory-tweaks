@@ -31,8 +31,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     protected static String LABEL_DONE;
     protected final static int ID_DONE = 200;
 
-    public InvTweaksGuiSettingsAbstract(Minecraft mc, GuiScreen parentScreen,
-                                        InvTweaksConfig config) {
+    public InvTweaksGuiSettingsAbstract(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
 
         LABEL_DONE = InvTweaksLocalization.get("invtweaks.settings.exit");
         ON = ": " + InvTweaksLocalization.get("invtweaks.settings.on");

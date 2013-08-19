@@ -27,21 +27,18 @@ public class InvTweaksItemTree implements IItemTree {
     /**
      * All categories, stored by name
      */
-    private Map<String, IItemTreeCategory> categories =
-            new HashMap<String, IItemTreeCategory>();
+    private Map<String, IItemTreeCategory> categories = new HashMap<String, IItemTreeCategory>();
 
     /**
      * Items stored by ID. A same ID can hold several names.
      */
-    private Map<Integer, Vector<IItemTreeItem>> itemsById =
-            new HashMap<Integer, Vector<IItemTreeItem>>(500);
+    private Map<Integer, Vector<IItemTreeItem>> itemsById = new HashMap<Integer, Vector<IItemTreeItem>>(500);
     private static Vector<IItemTreeItem> defaultItems = null;
 
     /**
      * Items stored by name. A same name can match several IDs.
      */
-    private Map<String, Vector<IItemTreeItem>> itemsByName =
-            new HashMap<String, Vector<IItemTreeItem>>(500);
+    private Map<String, Vector<IItemTreeItem>> itemsByName = new HashMap<String, Vector<IItemTreeItem>>(500);
 
     private String rootCategory;
 
@@ -187,12 +184,10 @@ public class InvTweaksItemTree implements IItemTree {
 
         // If there's no matching item, create new ones
         if(filteredItems.isEmpty()) {
-            IItemTreeItem newItemId = new InvTweaksItemTreeItem(
-                    String.format("%d-%d", id, damage),
-                    id, damage, 5000 + id * 16 + damage);
-            IItemTreeItem newItemDamage = new InvTweaksItemTreeItem(
-                    Integer.toString(id),
-                    id, InvTweaksConst.DAMAGE_WILDCARD, 5000 + id * 16);
+            IItemTreeItem newItemId = new InvTweaksItemTreeItem(String.format("%d-%d", id, damage), id, damage,
+                                                                5000 + id * 16 + damage);
+            IItemTreeItem newItemDamage = new InvTweaksItemTreeItem(Integer.toString(id), id,
+                                                                    InvTweaksConst.DAMAGE_WILDCARD, 5000 + id * 16);
             addItem(getRootCategory().getName(), newItemId);
             addItem(getRootCategory().getName(), newItemDamage);
             filteredItems.add(newItemId);
@@ -216,8 +211,7 @@ public class InvTweaksItemTree implements IItemTree {
 
     @Override
     public IItemTreeItem getRandomItem(Random r) {
-        return (IItemTreeItem) itemsByName.values()
-                                          .toArray()[r.nextInt(itemsByName.size())];
+        return (IItemTreeItem) itemsByName.values().toArray()[r.nextInt(itemsByName.size())];
     }
 
     @Override
@@ -252,8 +246,7 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
-    public void addCategory(String parentCategory,
-                            IItemTreeCategory newCategory) throws NullPointerException {
+    public void addCategory(String parentCategory, IItemTreeCategory newCategory) throws NullPointerException {
         // Build tree
         categories.get(parentCategory.toLowerCase()).addCategory(newCategory);
 
@@ -262,8 +255,7 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
-    public void addItem(String parentCategory,
-                        IItemTreeItem newItem) throws NullPointerException {
+    public void addItem(String parentCategory, IItemTreeItem newItem) throws NullPointerException {
         // Build tree
         categories.get(parentCategory.toLowerCase()).addItem(newItem);
 
@@ -326,8 +318,7 @@ public class InvTweaksItemTree implements IItemTree {
     @Override
     public void registerOre(String category, String name, String oreName, int order) {
         for(ItemStack i : OreDictionary.getOres(oreName)) {
-            addItem(category, new InvTweaksItemTreeItem(name,
-                                                        i.itemID, i.getItemDamage(), order));
+            addItem(category, new InvTweaksItemTreeItem(name, i.itemID, i.getItemDamage(), order));
         }
         oresRegistered.add(new OreDictInfo(category, name, oreName, order));
     }
@@ -338,8 +329,8 @@ public class InvTweaksItemTree implements IItemTree {
     public void oreRegistered(OreDictionary.OreRegisterEvent ev) {
         for(OreDictInfo ore : oresRegistered) {
             if(ore.oreName.equals(ev.Name)) {
-                addItem(ore.category, new InvTweaksItemTreeItem(ore.name,
-                                                                ev.Ore.itemID, ev.Ore.getItemDamage(), ore.order));
+                addItem(ore.category,
+                        new InvTweaksItemTreeItem(ore.name, ev.Ore.itemID, ev.Ore.getItemDamage(), ore.order));
             }
         }
     }

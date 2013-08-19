@@ -1,10 +1,9 @@
 package invtweaks;
 
-import invtweaks.api.container.ContainerSection;
 import invtweaks.api.IItemTreeItem;
+import invtweaks.api.container.ContainerSection;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -50,8 +49,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private int[] lockPriorities;
     private boolean[] frozenSlots;
 
-    public InvTweaksHandlerSorting(Minecraft mc, InvTweaksConfig config,
-                                   ContainerSection section, int algorithm, int rowSize) throws Exception {
+    public InvTweaksHandlerSorting(Minecraft mc, InvTweaksConfig config, ContainerSection section, int algorithm,
+                                   int rowSize) throws Exception {
         super(mc);
 
         // Init constants
@@ -73,10 +72,9 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
         this.containerMgr = new InvTweaksContainerSectionManager(mc, section);
         this.size = containerMgr.getSize();
-        this.sortArmorParts =
-                config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR).equals(InvTweaksConfig.VALUE_TRUE)
-                        && !isGuiInventoryCreative(
-                        getCurrentScreen()); // FIXME Armor parts disappear when sorting in creative mode while holding an item
+        this.sortArmorParts = config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR)
+                                    .equals(InvTweaksConfig.VALUE_TRUE) && !isGuiInventoryCreative(
+                getCurrentScreen()); // FIXME Armor parts disappear when sorting in creative mode while holding an item
 
         this.rules = config.getRules();
         this.tree = config.getTree();
@@ -89,8 +87,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             this.frozenSlots = DEFAULT_FROZEN_SLOTS;
             this.algorithm = algorithm;
             if(algorithm != ALGORITHM_DEFAULT) {
-                computeLineSortingRules(rowSize,
-                                        algorithm == ALGORITHM_HORIZONTAL);
+                computeLineSortingRules(rowSize, algorithm == ALGORITHM_HORIZONTAL);
             }
         }
 
@@ -167,8 +164,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
                 // If the rule is strong enough to move the item and it matches the item, move it
                 if(hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
-                    List<IItemTreeItem> fromItems = tree.getItems(
-                            getItemID(from), getItemDamage(from));
+                    List<IItemTreeItem> fromItems = tree.getItems(getItemID(from), getItemDamage(from));
                     if(tree.matches(fromItems, rule.getKeyword())) {
 
                         // Test preffered slots
@@ -218,11 +214,9 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             if(emptyIndex != -1) {
                 for(Slot craftingSlot : craftingSlots) {
                     if(hasStack(craftingSlot)) {
-                        globalContainer.move(
-                                ContainerSection.CRAFTING_IN,
-                                globalContainer.getSlotIndex(getSlotNumber(craftingSlot)),
-                                ContainerSection.INVENTORY,
-                                emptyIndex);
+                        globalContainer.move(ContainerSection.CRAFTING_IN,
+                                             globalContainer.getSlotIndex(getSlotNumber(craftingSlot)),
+                                             ContainerSection.INVENTORY, emptyIndex);
                         emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
                         if(emptyIndex == -1) {
                             break;
@@ -286,9 +280,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                             Item currentArmor = getItem(getStack(slot));
                             if(isItemArmor(currentArmor)) {
                                 int armorLevel = getArmorLevel(asItemArmor(currentArmor));
-                                if(armorLevel < getArmorLevel(fromItemArmor)
-                                        || (armorLevel == getArmorLevel(fromItemArmor)
-                                        && getItemDamage(getStack(slot)) < getItemDamage(from))) {
+                                if(armorLevel < getArmorLevel(fromItemArmor) || (armorLevel == getArmorLevel(
+                                        fromItemArmor) && getItemDamage(getStack(slot)) < getItemDamage(from))) {
                                     move = true;
                                 }
                             } else {
@@ -449,9 +442,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     }
 
     private boolean canSwapSlots(int i, int j, int priority) {
-        return lockPriorities[j] <= priority
-                && (rulePriority[j] < priority
-                || (rulePriority[j] == priority && isOrderedBefore(i, j)));
+        return lockPriorities[j] <= priority && (rulePriority[j] < priority || (rulePriority[j] == priority && isOrderedBefore(
+                i, j)));
     }
 
     /**
@@ -461,9 +453,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
      * @param i        from slot
      * @param j        to slot
      * @param priority The rule priority. Use 1 if the stack was not moved using a rule.
-     *
      * @return -1 if it failed, j if the stacks were merged into one, n if the j stack has been moved to the n slot.
-     *
      * @throws TimeoutException
      */
     private int move(int i, int j, int priority) throws TimeoutException {
@@ -506,8 +496,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                         int dropSlot = i;
                         if(lockPriorities[j] > lockPriorities[i]) {
                             for(int k = 0; k < size; k++) {
-                                if(containerMgr.getItemStack(k) == null
-                                        && lockPriorities[k] == 0) {
+                                if(containerMgr.getItemStack(k) == null && lockPriorities[k] == 0) {
                                     dropSlot = k;
                                     break;
                                 }
@@ -539,8 +528,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     }
 
     private boolean hasToBeMoved(int slot) {
-        return containerMgr.getItemStack(slot) != null
-                && rulePriority[slot] == -1;
+        return containerMgr.getItemStack(slot) != null && rulePriority[slot] == -1;
     }
 
     private boolean isOrderedBefore(int i, int j) {
@@ -550,11 +538,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     }
 
     private int getItemOrder(ItemStack itemStack) {
-        List<IItemTreeItem> items = tree.getItems(
-                getItemID(itemStack), getItemDamage(itemStack));
-        return (items != null && items.size() > 0)
-               ? items.get(0).getOrder()
-               : Integer.MAX_VALUE;
+        List<IItemTreeItem> items = tree.getItems(getItemID(itemStack), getItemDamage(itemStack));
+        return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
     private void computeLineSortingRules(int rowSize, boolean horizontal) {
@@ -587,8 +572,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             hasStacksToOrderFirst = false;
             for(IItemTreeItem item : unorderedItems) {
                 Integer value = stats.get(item);
-                if(value > ((horizontal) ? rowSize : columnSize)
-                        && !itemOrder.contains(item)) {
+                if(value > ((horizontal) ? rowSize : columnSize) && !itemOrder.contains(item)) {
                     hasStacksToOrderFirst = true;
                     itemOrder.add(item);
                     unorderedItems.remove(item);
@@ -645,9 +629,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             }
 
             // Create rule
-            String constraint = row + "" + column + "-"
-                    + (char) (row - 1 + thisSpaceHeight)
-                    + (char) (column - 1 + thisSpaceWidth);
+            String constraint = row + "" + column + "-" + (char) (row - 1 + thisSpaceHeight) + (char) (column - 1 + thisSpaceWidth);
             if(!horizontal) {
                 constraint += 'v';
             }
@@ -687,8 +669,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         } else {
             defaultRule = "a" + maxColumn + "-" + maxRow + "1v";
         }
-        rules.add(new InvTweaksConfigSortingRule(tree, defaultRule,
-                                                 tree.getRootCategory().getName(), size, rowSize));
+        rules.add(new InvTweaksConfigSortingRule(tree, defaultRule, tree.getRootCategory().getName(), size, rowSize));
 
     }
 
@@ -699,12 +680,11 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         for(int i = 0; i < size; i++) {
             ItemStack stack = containerMgr.getItemStack(i);
             if(stack != null) {
-                int itemSearchKey = getItemID(stack) * 100000 +
-                        ((getMaxStackSize(stack) != 1) ? getItemDamage(stack) : 0);
+                int itemSearchKey = getItemID(stack) * 100000 + ((getMaxStackSize(stack) != 1) ? getItemDamage(
+                        stack) : 0);
                 IItemTreeItem item = itemSearch.get(itemSearchKey);
                 if(item == null) {
-                    item = tree.getItems(getItemID(stack),
-                                         getItemDamage(stack)).get(0);
+                    item = tree.getItems(getItemID(stack), getItemDamage(stack)).get(0);
                     itemSearch.put(itemSearchKey, item);
                     stats.put(item, 1);
                 } else {

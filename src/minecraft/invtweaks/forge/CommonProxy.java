@@ -34,9 +34,8 @@ public class CommonProxy implements InvTweaksAPI {
      * 5: Spread items (Drag behavior)
      * 6: Merge all valid items with held item
      */
-    public void slotClick(PlayerControllerMP playerController,
-                          int windowId, int slot, int data,
-                          int action, EntityPlayer player) {
+    public void slotClick(PlayerControllerMP playerController, int windowId, int slot, int data, int action,
+                          EntityPlayer player) {
     }
 
     public void sortComplete() {

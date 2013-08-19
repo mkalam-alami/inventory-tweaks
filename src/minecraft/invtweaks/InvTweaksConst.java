@@ -40,7 +40,7 @@ public class InvTweaksConst {
     public static final String OLDER_CONFIG_TREE_FILE = MINECRAFT_DIR + "InvTweaksTree.txt";
     public static final String DEFAULT_CONFIG_FILE = "DefaultConfig.dat";
     public static final String DEFAULT_CONFIG_TREE_FILE = "DefaultTree.dat";
-    public static final String HELP_URL = "http://modding.kalam-alami.net/invtweaks";
+    public static final String HELP_URL = "http://inventory-tweaks.readthedocs.org";
 
     // Global mod constants
     public static final String INGAME_LOG_PREFIX = "InvTweaks: ";

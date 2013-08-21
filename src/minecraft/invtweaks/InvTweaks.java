@@ -626,7 +626,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                     InvTweaksContainerManager containerMgr = new InvTweaksContainerManager(mc);
                     Slot slotAtMousePosition = InvTweaksObfuscation
-                            .getSlotAtMousePosition((GuiContainer) containerMgr.getCurrentScreen());
+                            .getSlotAtMousePosition((GuiContainer) getCurrentScreen());
                     ContainerSection target = null;
                     if(slotAtMousePosition != null) {
                         target = containerMgr.getSlotSection(getSlotNumber(slotAtMousePosition));

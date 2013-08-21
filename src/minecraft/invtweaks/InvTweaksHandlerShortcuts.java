@@ -186,7 +186,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         ShortcutConfig shortcutConfig = new ShortcutConfig();
 
         container = new InvTweaksContainerManager(mc);
-        Slot slot = InvTweaksObfuscation.getSlotAtMousePosition((GuiContainer) container.getCurrentScreen());
+        Slot slot = InvTweaksObfuscation.getSlotAtMousePosition((GuiContainer)getCurrentScreen());
         // If a valid and not empty slot is clicked
         if(shortcut != null && slot != null && (hasStack(slot) || getHeldStack() != null)) {
             int slotNumber = getSlotNumber(slot);
@@ -227,7 +227,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         } else if(container.hasSection(ContainerSection.FURNACE_IN)) {
                             orderedSections.add(ContainerSection.FURNACE_IN);
                         } else if(container.hasSection(ContainerSection.BREWING_INGREDIENT)) {
-                            ItemStack stack = container.getStack(slot);
+                            ItemStack stack = getStack(slot);
                             if(stack != null) {
                                 if(getItemID(stack) == 373 /* Water Bottle/Potions */) {
                                     orderedSections.add(ContainerSection.BREWING_BOTTLES);
@@ -328,7 +328,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private void runShortcut(ShortcutConfig shortcut) throws TimeoutException {
         // Try to put held item down
         if(getHeldStack() != null) {
-            Slot slot = InvTweaksObfuscation.getSlotAtMousePosition((GuiContainer) container.getCurrentScreen());
+            Slot slot = InvTweaksObfuscation.getSlotAtMousePosition((GuiContainer) getCurrentScreen());
             if(slot != null) {
                 int slotNumber = getSlotNumber(slot);
                 container.putHoldItemDown(container.getSlotSection(slotNumber), container.getSlotIndex(slotNumber));

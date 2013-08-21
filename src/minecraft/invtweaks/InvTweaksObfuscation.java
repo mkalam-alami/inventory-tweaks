@@ -4,7 +4,6 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.api.container.ContainerSection;
-import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -13,17 +12,14 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.*;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
@@ -91,11 +87,11 @@ public class InvTweaksObfuscation {
     }
 
     public int getKeyBindingForwardKeyCode() {
-        return getKeyCode(getGameSettings().keyBindForward);
+        return getGameSettings().keyBindForward.keyCode;
     }
 
     public int getKeyBindingBackKeyCode() {
-        return getKeyCode(getGameSettings().keyBindBack);
+        return getGameSettings().keyBindBack.keyCode;
     }
 
     // EntityPlayer members
@@ -146,96 +142,14 @@ public class InvTweaksObfuscation {
         return getInventoryPlayer().currentItem; // currentItem
     }
 
-    // GuiScreen members
-
-    public static int getWindowWidth(GuiScreen guiScreen) {
-        return guiScreen.width;
-    }
-
-    public static int getWindowHeight(GuiScreen guiScreen) {
-        return guiScreen.height;
-    }
-
-    public static int getGuiX(GuiContainer guiContainer) {
-        return guiContainer.guiLeft;
-    }
-
-    public static int getGuiY(GuiContainer guiContainer) {
-        return guiContainer.guiTop;
-    }
-
-    public static int getGuiWidth(GuiContainer guiContainer) {
-        return guiContainer.xSize;
-    }
-
-    public static int getGuiHeight(GuiContainer guiContainer) {
-        return guiContainer.ySize;
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<Object> getControlList(GuiScreen guiScreen) {
-        return guiScreen.buttonList;
-    }
-
-    public void setControlList(GuiScreen guiScreen, List<?> controlList) {
-        guiScreen.buttonList = controlList;
-    }
-
-    public GuiContainer asGuiContainer(GuiScreen guiScreen) {
-        return (GuiContainer) guiScreen;
-    }
-
     // FontRenderer members
 
-    public int getStringWidth(FontRenderer fontRenderer, String line) {
-        return fontRenderer.getStringWidth(line);
-    }
-
-    public void drawStringWithShadow(FontRenderer fontRenderer, String s, int i, int j, int k) {
-        fontRenderer.drawStringWithShadow(s, i, j, k);
-    }
-
-    // ItemStack members
-
-    public static ItemStack copy(ItemStack itemStack) {
-        return itemStack.copy();
-    }
-
-    public static int getItemDamage(ItemStack itemStack) {
-        return itemStack.getItemDamage();
-    }
-
-    public static int getMaxStackSize(ItemStack itemStack) {
-        return itemStack.getMaxStackSize();
-    }
-
-    public static boolean hasDataTags(ItemStack itemStack) {
-        return itemStack.hasTagCompound();
-    }
-
-    public static int getStackSize(ItemStack itemStack) {
-        return itemStack.stackSize;
-    }
-
-    public static int getItemID(ItemStack itemStack) {
-        return itemStack.itemID;
-    }
-
     public static boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1.isItemEqual(itemStack2) && getStackSize(itemStack1) == getStackSize(itemStack2);
-    }
-
-    public boolean isItemStackDamageable(ItemStack itemStack) {
-        return itemStack.isItemStackDamageable();
+        return itemStack1.isItemEqual(itemStack2) && itemStack1.stackSize == itemStack2.stackSize;
     }
 
     public boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
-        return areItemsEqual(itemStack1, itemStack2) || (isItemStackDamageable(itemStack1) && getItemID(
-                itemStack1) == getItemID(itemStack2));
-    }
-
-    public boolean areItemsEqual(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1.isItemEqual(itemStack2);
+        return itemStack1.isItemEqual(itemStack2) || (itemStack1.isItemStackDamageable() && itemStack1.itemID == itemStack2.itemID);
     }
 
     public boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
@@ -245,68 +159,15 @@ public class InvTweaksObfuscation {
                 ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
     }
 
-
-    public int getAnimationsToGo(ItemStack itemStack) {
-        return itemStack.animationsToGo;
-    }
-
-    public Item getItem(ItemStack itemStack) { // Item
-        return itemStack.getItem();
-    }
-
-    // Item & ItemArmor
-
-    public boolean isDamageable(Item item) {
-        return item.isDamageable();
-    }
-
-    public int getMaxDamage(Item item) {
-        return item.getMaxDamage();
-    }
-
-    public int getArmorLevel(ItemArmor itemArmor) { // ItemArmor
-        return itemArmor.damageReduceAmount;
-    }
-
-    public ItemArmor asItemArmor(Item item) { // ItemArmor
-        return (ItemArmor) item;
-    }
-
-    // PlayerController members
-
-    public static void clickInventory(PlayerControllerMP playerController, int windowId, int slot, int data, int action,
-                                      EntityPlayer entityPlayer) {
-        InvTweaksMod.proxy.slotClick(playerController, windowId, slot, data, action, entityPlayer);
-    }
-
     // Container members
 
-    public static int getWindowId(Container container) {
-        return container.windowId;
-    }
-
-    public static List<?> getSlots(Container container) {
-        return container.inventorySlots;
-    }
-
-    public static Slot getSlot(Container container, int i) { // Slot
-        return (Slot) (getSlots(container).get(i));
-    }
-
     public static ItemStack getSlotStack(Container container, int i) {
-        Slot slot = getSlot(container, i);
-        return (slot == null) ? null : getStack(slot); // getStack
-    }
-
-    public void setSlotStack(Container container, int i, ItemStack stack) {
-        container.putStackInSlot(i, stack); // putStackInSlot
+        // Slot
+        Slot slot = (Slot) (container.inventorySlots.get(i));
+        return (slot == null) ? null : slot.getStack(); // getStack
     }
 
     // Slot members
-
-    public static boolean hasStack(Slot slot) {
-        return slot.getHasStack();
-    }
 
     @SuppressWarnings("unchecked")
     public static int getSlotNumber(Slot slot) {
@@ -326,28 +187,6 @@ public class InvTweaksObfuscation {
         return slot.slotNumber;
     }
 
-    public static ItemStack getStack(Slot slot) {
-        return slot.getStack();
-    }
-
-    public static int getXDisplayPosition(Slot slot) {
-        return slot.xDisplayPosition;
-    }
-
-    public static int getYDisplayPosition(Slot slot) {
-        return slot.yDisplayPosition;
-    }
-
-    public boolean areSlotAndStackCompatible(Slot slot, ItemStack itemStack) {
-        return slot.isItemValid(itemStack); // isItemValid
-    }
-
-    // GuiContainer members
-
-    public Container getContainer(GuiContainer guiContainer) {
-        return guiContainer.inventorySlots;
-    }
-
     @SideOnly(Side.CLIENT)
     public static Slot getSlotAtMousePosition(GuiContainer guiContainer) {
         // Copied from GuiContainer
@@ -356,8 +195,8 @@ public class InvTweaksObfuscation {
 
             int x = getMouseX(guiContainer);
             int y = getMouseY(guiContainer);
-            for(int k = 0; k < getSlots(container).size(); k++) {
-                Slot slot = (Slot) getSlots(container).get(k);
+            for(int k = 0; k < container.inventorySlots.size(); k++) {
+                Slot slot = (Slot) container.inventorySlots.get(k);
                 if(getIsMouseOverSlot(guiContainer, slot, x, y)) {
                     return slot;
                 }
@@ -377,10 +216,9 @@ public class InvTweaksObfuscation {
     private static boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int x, int y) {
         // Copied from GuiContainer
         if(guiContainer != null) {
-            x -= getGuiX(guiContainer);
-            y -= getGuiY(guiContainer);
-            return x >= getXDisplayPosition(slot) - 1 && x < getXDisplayPosition(
-                    slot) + 16 + 1 && y >= getYDisplayPosition(slot) - 1 && y < getYDisplayPosition(slot) + 16 + 1;
+            x -= guiContainer.guiLeft;
+            y -= guiContainer.guiTop;
+            return x >= slot.xDisplayPosition - 1 && x < slot.xDisplayPosition + 16 + 1 && y >= slot.yDisplayPosition - 1 && y < slot.yDisplayPosition + 16 + 1;
         } else {
             return false;
         }
@@ -388,44 +226,13 @@ public class InvTweaksObfuscation {
 
     @SideOnly(Side.CLIENT)
     private static int getMouseX(GuiContainer guiContainer) {
-        return (Mouse.getEventX() * getWindowWidth(guiContainer)) / getDisplayWidth();
+        return (Mouse.getEventX() * guiContainer.width) / getDisplayWidth();
     }
 
     @SideOnly(Side.CLIENT)
     private static int getMouseY(GuiContainer guiContainer) {
-        return getWindowHeight(guiContainer) -
-                (Mouse.getEventY() * getWindowHeight(guiContainer)) / getDisplayHeight() - 1;
-    }
-    // GuiButton
-
-    public GuiButton asGuiButton(Object o) {
-        return (GuiButton) o;
-    }
-
-    public void setEnabled(GuiButton guiButton, boolean enabled) { // GuiButton
-        guiButton.enabled = enabled;
-    }
-
-    public int getId(GuiButton guiButton) { // GuiButton
-        return guiButton.id;
-    }
-
-    public void setDisplayString(GuiButton guiButton, String string) {
-        guiButton.displayString = string;
-    }
-
-    public String getDisplayString(GuiButton guiButton) {
-        return guiButton.displayString;
-    }
-
-    // Other
-
-    public void playSound(String string, float f, float g) {
-        mc.sndManager.playSoundFX(string, f, g);
-    }
-
-    public int getKeyCode(KeyBinding b) {
-        return b.keyCode;
+        return guiContainer.height -
+                (Mouse.getEventY() * guiContainer.height) / getDisplayHeight() - 1;
     }
 
     public static int getSpecialChestRowSize(Container container) {
@@ -445,10 +252,6 @@ public class InvTweaksObfuscation {
     // Static access
     public static String getCurrentLanguage() {
         return Minecraft.getMinecraft().func_135016_M().func_135041_c().func_135034_a();
-    }
-
-    public static String getLocalizedString(String key) {
-        return StatCollector.translateToLocal(key);
     }
 
     // Classes

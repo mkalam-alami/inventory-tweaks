@@ -85,11 +85,11 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
                 int x = i + 12, y = j - LINE_HEIGHT * tooltipLines.length;
                 if(tooltipWidth == -1) {
                     for(String line : tooltipLines) {
-                        tooltipWidth = Math.max(obf.getStringWidth(fontRenderer, line), tooltipWidth);
+                        tooltipWidth = Math.max(fontRenderer.getStringWidth(line), tooltipWidth);
                     }
                 }
-                if(x + tooltipWidth > obf.getWindowWidth(obf.getCurrentScreen())) {
-                    x = obf.getWindowWidth(obf.getCurrentScreen()) - tooltipWidth;
+                if(x + tooltipWidth > obf.getCurrentScreen().width) {
+                    x = obf.getCurrentScreen().width - tooltipWidth;
                 }
 
                 // Draw background
@@ -99,7 +99,9 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
                 // Draw lines
                 int lineCount = 0;
                 for(String line : tooltipLines) {
-                    obf.drawStringWithShadow(fontRenderer, line, x, y + (lineCount++) * LINE_HEIGHT, -1);
+                    int j1 = y + (lineCount++) * LINE_HEIGHT;
+                    int k = -1;
+                    fontRenderer.drawStringWithShadow(line, x, j1, k);
                 }
             }
         }

@@ -3,6 +3,7 @@ package invtweaks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.api.container.ContainerSection;
+import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -260,12 +261,10 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         // Click! (we finally call the Minecraft code)
         int slot = indexToSlot(section, index);
         if(slot != -1) {
-            InvTweaksObfuscation.clickInventory(InvTweaks.getInstance().getPlayerController(), container.windowId,
-                                                // Select container
-                                                slot, // Targeted slot
-                                                (rightClick) ? 1 : 0, // Click #
-                                                0, // Normal click
-                                                InvTweaks.getInstance().getThePlayer());
+            int data = (rightClick) ? 1 : 0;
+            InvTweaksMod
+                    .proxy.slotClick(InvTweaks.getInstance().getPlayerController(), container.windowId, slot, data, 0,
+                                     InvTweaks.getInstance().getThePlayer());
         }
 
         if(clickDelay > 0) {

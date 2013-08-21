@@ -3,6 +3,7 @@ package invtweaks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.Point;
 
@@ -47,30 +48,30 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     public InvTweaksGuiSettings(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
 
-        labelMiddleClick = InvTweaksObfuscation.getLocalizedString("invtweaks.settings.middleclick");
-        labelShortcuts = InvTweaksObfuscation.getLocalizedString("invtweaks.settings.shortcuts");
-        labelAutoRefill = InvTweaksObfuscation.getLocalizedString("invtweaks.settings.autorefill");
-        labelAutoRefillBeforeBreak = InvTweaksObfuscation.getLocalizedString("invtweaks.settings.beforebreak");
-        labelMoreOptions = InvTweaksObfuscation.getLocalizedString("invtweaks.settings.moreoptions");
-        labelBugSorting = InvTweaksObfuscation.getLocalizedString("invtweaks.help.bugsorting");
+        labelMiddleClick = StatCollector.translateToLocal("invtweaks.settings.middleclick");
+        labelShortcuts = StatCollector.translateToLocal("invtweaks.settings.shortcuts");
+        labelAutoRefill = StatCollector.translateToLocal("invtweaks.settings.autorefill");
+        labelAutoRefillBeforeBreak = StatCollector.translateToLocal("invtweaks.settings.beforebreak");
+        labelMoreOptions = StatCollector.translateToLocal("invtweaks.settings.moreoptions");
+        labelBugSorting = StatCollector.translateToLocal("invtweaks.help.bugsorting");
     }
 
     public void initGui() {
         super.initGui();
 
-        List<Object> controlList = obf.getControlList(this);
+        List<Object> controlList = buttonList;
         Point p = new Point();
         int i = 0;
 
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new GuiButton(ID_EDITRULES, p.getX() + 55, obf.getWindowHeight(this) / 6 + 96,
-                                      InvTweaksObfuscation.getLocalizedString("invtweaks.settings.rulesfile")));
-        controlList.add(new GuiButton(ID_EDITTREE, p.getX() + 55, obf.getWindowHeight(this) / 6 + 120,
-                                      InvTweaksObfuscation.getLocalizedString("invtweaks.settings.treefile")));
-        controlList.add(new GuiButton(ID_HELP, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144,
-                                      InvTweaksObfuscation.getLocalizedString("invtweaks.settings.onlinehelp")));
+        controlList.add(new GuiButton(ID_EDITRULES, p.getX() + 55, height / 6 + 96,
+                                      StatCollector.translateToLocal("invtweaks.settings.rulesfile")));
+        controlList.add(new GuiButton(ID_EDITTREE, p.getX() + 55, height / 6 + 120,
+                                      StatCollector.translateToLocal("invtweaks.settings.treefile")));
+        controlList.add(new GuiButton(ID_HELP, p.getX() + 55, height / 6 + 144,
+                                      StatCollector.translateToLocal("invtweaks.settings.onlinehelp")));
 
         // Create settings buttons
 
@@ -80,20 +81,20 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         String shortcuts = config.getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
         InvTweaksGuiTooltipButton shortcutsBtn = new InvTweaksGuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130,
                                                                                20, computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_SHORTCUTS, labelShortcuts), InvTweaksObfuscation.getLocalizedString(
-                "invtweaks.settings.shortcuts.tooltip"));
+                InvTweaksConfig.PROP_ENABLE_SHORTCUTS, labelShortcuts), StatCollector
+                .translateToLocal("invtweaks.settings.shortcuts.tooltip"));
         controlList.add(shortcutsBtn);
         if(shortcuts.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: shortcuts not available
-            obf.setEnabled(shortcutsBtn, false);
+            // GuiButton
+            shortcutsBtn.enabled = false;
             shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(" +
-                                            InvTweaksObfuscation
-                                                    .getLocalizedString("invtweaks.settings.disableci.tooltip") + ")");
+                                            StatCollector.translateToLocal("invtweaks.settings.disableci.tooltip") + ")");
         }
 
         moveToButtonCoords(i++, p);
-        sortMappingButton = new InvTweaksGuiTooltipButton(ID_SORTING_KEY, p.getX(), p.getY(), InvTweaksObfuscation
-                .getLocalizedString("invtweaks.settings.key") + " " +
+        sortMappingButton = new InvTweaksGuiTooltipButton(ID_SORTING_KEY, p.getX(), p.getY(), StatCollector
+                .translateToLocal("invtweaks.settings.key") + " " +
                 config.getProperty(
                                                                           InvTweaksConfig.PROP_KEY_SORT_INVENTORY));
         controlList.add(sortMappingButton);
@@ -103,23 +104,21 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                                                                                  computeBooleanButtonLabel(
                                                                                          InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK,
                                                                                          labelAutoRefillBeforeBreak),
-                                                                                 InvTweaksObfuscation
-                                                                                         .getLocalizedString(
-                                                                                                 "invtweaks.settings.beforebreak.tooltip"));
+                                                                                 StatCollector.translateToLocal(
+                                                                                         "invtweaks.settings.beforebreak.tooltip"));
         controlList.add(beforeBreakBtn);
 
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton autoRefillBtn = new InvTweaksGuiTooltipButton(ID_AUTO_REFILL, p.getX(), p.getY(),
                                                                                 computeBooleanButtonLabel(
                                                                                         InvTweaksConfig.PROP_ENABLE_AUTO_REFILL,
-                                                                                        labelAutoRefill),
-                                                                                InvTweaksObfuscation.getLocalizedString(
-                                                                                        "invtweaks.settings.autorefill.tooltip"));
+                                                                                        labelAutoRefill), StatCollector
+                .translateToLocal("invtweaks.settings.autorefill.tooltip"));
         controlList.add(autoRefillBtn);
 
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_MORE_OPTIONS, p.getX(), p.getY(), labelMoreOptions,
-                                                      InvTweaksObfuscation.getLocalizedString(
+                                                      StatCollector.translateToLocal(
                                                               "invtweaks.settings.moreoptions.tooltip")));
 
         controlList
@@ -132,44 +131,46 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                                                                                  computeBooleanButtonLabel(
                                                                                          InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
                                                                                          labelMiddleClick),
-                                                                                 InvTweaksObfuscation
-                                                                                         .getLocalizedString(
-                                                                                                 "invtweaks.settings.middleclick.tooltip"));
+                                                                                 StatCollector.translateToLocal(
+                                                                                         "invtweaks.settings.middleclick.tooltip"));
         controlList.add(middleClickBtn);
         if(middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: middle click not available
-            obf.setEnabled(middleClickBtn, false);
+            // GuiButton
+            middleClickBtn.enabled = false;
             middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(" +
-                                              InvTweaksObfuscation
-                                                      .getLocalizedString("invtweaks.settings.disableci.tooltip"));
+                                              StatCollector.translateToLocal("invtweaks.settings.disableci.tooltip"));
         }
 
         // Check if links to files are supported, if not disable the buttons
         if(!Desktop.isDesktopSupported()) {
             for(Object o : controlList) {
                 if(obf.isGuiButton(o)) {
-                    GuiButton guiButton = obf.asGuiButton(o);
-                    if(obf.getId(guiButton) >= ID_EDITRULES && obf.getId(guiButton) <= ID_HELP) {
-                        obf.setEnabled(guiButton, false);
+                    GuiButton guiButton = (GuiButton) o;
+                    // GuiButton
+                    // GuiButton
+                    if(guiButton.id >= ID_EDITRULES && guiButton.id <= ID_HELP) {
+                        // GuiButton
+                        guiButton.enabled = false;
                     }
                 }
             }
         }
 
         // Save control list
-        obf.setControlList(this, controlList);
+        buttonList = controlList;
 
     }
 
     protected void actionPerformed(GuiButton guibutton) {
         super.actionPerformed(guibutton);
 
-        switch(obf.getId(guibutton)) {
+        // GuiButton
+        switch(guibutton.id) {
 
             // Switch sorting key
             case ID_SORTING_KEY:
-                sortMappingButton.displayString = InvTweaksObfuscation
-                        .getLocalizedString("invtweaks.settings.key") + " > ??? <";
+                sortMappingButton.displayString = StatCollector.translateToLocal("invtweaks.settings.key") + " > ??? <";
                 sortMappingEdition = true;
                 break;
 
@@ -244,8 +245,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         if(sortMappingEdition) {
             String keyName = Keyboard.getKeyName(keyCode);
             config.setProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY, keyName);
-            sortMappingButton.displayString = InvTweaksObfuscation
-                    .getLocalizedString("invtweaks.settings.key") + " " + keyName;
+            sortMappingButton.displayString = StatCollector.translateToLocal("invtweaks.settings.key") + " " + keyName;
         }
         super.keyTyped(c, keyCode);
     }

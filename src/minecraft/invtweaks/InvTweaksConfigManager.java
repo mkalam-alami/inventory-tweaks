@@ -2,6 +2,7 @@ package invtweaks;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import java.io.*;
 import java.util.Vector;
@@ -114,14 +115,12 @@ public class InvTweaksConfigManager {
         if(!InvTweaksConst.CONFIG_RULES_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE,
                                                                      InvTweaksConst.CONFIG_RULES_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_RULES_FILE + " " +
-                                              InvTweaksObfuscation
-                                                      .getLocalizedString("invtweaks.loadconfig.invalidkeywords"));
+                                              StatCollector.translateToLocal("invtweaks.loadconfig.invalidkeywords"));
         }
         if(!InvTweaksConst.CONFIG_TREE_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE,
                                                                     InvTweaksConst.CONFIG_TREE_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_TREE_FILE + " " +
-                                              InvTweaksObfuscation
-                                                      .getLocalizedString("invtweaks.loadconfig.invalidkeywords"));
+                                              StatCollector.translateToLocal("invtweaks.loadconfig.invalidkeywords"));
         }
 
         storedConfigLastModified = computeConfigLastModified();
@@ -211,7 +210,7 @@ public class InvTweaksConfigManager {
     private void showConfigErrors(InvTweaksConfig config) {
         Vector<String> invalid = config.getInvalidKeywords();
         if(invalid.size() > 0) {
-            String error = InvTweaksObfuscation.getLocalizedString("invtweaks.loadconfig.invalidkeywords") + ": ";
+            String error = StatCollector.translateToLocal("invtweaks.loadconfig.invalidkeywords") + ": ";
             for(String keyword : config.getInvalidKeywords()) {
                 error += keyword + " ";
             }

@@ -3,6 +3,7 @@ package invtweaks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 
 import java.util.LinkedList;
@@ -26,9 +27,9 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
     public void initGui() {
         // Create Done button
         List<Object> controlList = new LinkedList<Object>();
-        controlList.add(new GuiButton(ID_DONE, obf.getWindowWidth(this) / 2 - 100, obf.getWindowHeight(this) / 6 + 168,
+        controlList.add(new GuiButton(ID_DONE, width / 2 - 100, height / 6 + 168,
                                       "Done"));
-        obf.setControlList(this, controlList);
+        buttonList = controlList;
     }
 
     public void drawScreen(int i, int j, float f) {
@@ -38,69 +39,66 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
         drawDefaultBackground();
         drawCenteredString(obf.getFontRenderer(),
                            "WARNING: Since 1.3.1, shortcuts won't work as expected. Looking for a workaround...",
-                           obf.getWindowWidth(this) / 2, 5, 0xff0000);
-        drawCenteredString(obf.getFontRenderer(),
-                           InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.title"),
-                           obf.getWindowWidth(this) / 2, 20, 0xffffff); // Gui.drawCenteredString
-        String clickLabel = InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.click");
+                           width / 2, 5, 0xff0000);
+        drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.shortcuts.title"),
+                           width / 2, 20, 0xffffff); // Gui.drawCenteredString
+        String clickLabel = StatCollector.translateToLocal("invtweaks.help.shortcuts.click");
 
-        int y = obf.getWindowHeight(this) / 6 - 2;
+        int y = height / 6 - 2;
 
-        drawShortcutLine(InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.onestack"),
-                         "LSHIFT " + InvTweaksObfuscation
-                                 .getLocalizedString("invtweaks.help.shortcuts.or") + " RSHIFT + " +
+        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.onestack"),
+                         "LSHIFT " + StatCollector.translateToLocal("invtweaks.help.shortcuts.or") + " RSHIFT + " +
                                  clickLabel, 0x00FFFF00, y);
         y += 12;
         drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_UP, obf.getKeyBindingForwardKeyCode(),
-                                                InvTweaksObfuscation.getLocalizedString(
-                                                        "invtweaks.help.shortcuts.forward")) + " + " + clickLabel,
+                                                StatCollector.translateToLocal("invtweaks.help.shortcuts.forward")) + " + " + clickLabel,
                          0x00FFFF00, y);
         y += 12;
         drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_DOWN, obf.getKeyBindingBackKeyCode(),
-                                                InvTweaksObfuscation.getLocalizedString(
-                                                        "invtweaks.help.shortcuts.backwards")) + " + " + clickLabel,
+                                                StatCollector.translateToLocal("invtweaks.help.shortcuts.backwards")) + " + " + clickLabel,
                          0x00FFFF00, y);
         y += 12;
-        drawShortcutLine(InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.oneitem"),
+        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.oneitem"),
                          config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + " + clickLabel, 0x00FFFF00,
                          y);
         y += 12;
-        drawShortcutLine(InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.allitems"),
+        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.allitems"),
                          config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ALL_ITEMS) + " + " + clickLabel, 0x00FFFF00,
                          y);
         y += 12;
-        drawShortcutLine(InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.everything"),
+        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.everything"),
                          config.getProperty(InvTweaksConfig.PROP_SHORTCUT_EVERYTHING) + " + " + clickLabel, 0x00FFFF00,
                          y);
         y += 19;
 
-        drawShortcutLine(InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.hotbar"),
+        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.hotbar"),
                          "0-9 + " + clickLabel, 0x0000FF33, y);
         y += 12;
-        drawShortcutLine(InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.emptyslot"),
-                         InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.rightclick"), 0x0000FF33, y);
+        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.emptyslot"),
+                         StatCollector.translateToLocal("invtweaks.help.shortcuts.rightclick"), 0x0000FF33, y);
         y += 12;
-        drawShortcutLine(InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.drop"),
+        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.drop"),
                          config.getProperty(InvTweaksConfig.PROP_SHORTCUT_DROP) + " + " + clickLabel, 0x0000FF33, y);
         y += 19;
 
-        drawShortcutLine(InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.craftall"),
+        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.craftall"),
                          "LSHIFT, RSHIFT + " + clickLabel, 0x00FF8800, y);
         y += 12;
-        drawShortcutLine(InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.craftone"),
+        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.craftone"),
                          config.getProperty(InvTweaksConfig.PROP_SHORTCUT_ONE_ITEM) + " + " + clickLabel, 0x00FF8800,
                          y);
         y += 19;
 
         String sortKeyName = getKeyName(config.getSortKeyCode(), "(Sort Key)");
-        drawShortcutLine(InvTweaksObfuscation.getLocalizedString("invtweaks.help.shortcuts.selectconfig"),
+        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.selectconfig"),
                          "0-9 + " + sortKeyName, 0x0088FFFF, y);
 
         super.drawScreen(i, j, f);
     }
 
     protected void actionPerformed(GuiButton guibutton) {
-        switch(obf.getId(guibutton)) {
+        // GuiButton
+        switch(guibutton.id) {
             case ID_DONE:
                 obf.displayGuiScreen(parentScreen);
                 break;
@@ -135,10 +133,10 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
         drawString(obf.getFontRenderer(), label, 30, y, -1); // drawString
         if(value != null) {
             drawString(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value.replaceAll(", ",
-                                                                                                 " " + InvTweaksObfuscation
-                                                                                                         .getLocalizedString(
+                                                                                                 " " + StatCollector
+                                                                                                         .translateToLocal(
                                                                                                                  "invtweaks.help.shortcuts.or") + " "),
-                       obf.getWindowWidth(this) / 2 - 30, y, color); // drawString
+                       width / 2 - 30, y, color); // drawString
         }
     }
 

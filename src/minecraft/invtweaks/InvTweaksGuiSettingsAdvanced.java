@@ -36,11 +36,11 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     public InvTweaksGuiSettingsAdvanced(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
 
-        labelSortOnPickup = InvTweaksLocalization.get("invtweaks.settings.advanced.sortonpickup");
-        labelEquipArmor = InvTweaksLocalization.get("invtweaks.settings.advanced.autoequip");
-        labelEnableSounds = InvTweaksLocalization.get("invtweaks.settings.advanced.sounds");
-        labelChestButtons = InvTweaksLocalization.get("invtweaks.settings.chestbuttons");
-        labelServerAssist = InvTweaksLocalization.get("invtweaks.settings.advanced.serverassist");
+        labelSortOnPickup = InvTweaksObfuscation.getLocalizedString("invtweaks.settings.advanced.sortonpickup");
+        labelEquipArmor = InvTweaksObfuscation.getLocalizedString("invtweaks.settings.advanced.autoequip");
+        labelEnableSounds = InvTweaksObfuscation.getLocalizedString("invtweaks.settings.advanced.sounds");
+        labelChestButtons = InvTweaksObfuscation.getLocalizedString("invtweaks.settings.chestbuttons");
+        labelServerAssist = InvTweaksObfuscation.getLocalizedString("invtweaks.settings.advanced.serverassist");
     }
 
     public void initGui() {
@@ -54,7 +54,8 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
         moveToButtonCoords(1, p);
         controlList.add(new GuiButton(ID_EDITSHORTCUTS, p.getX() + 55, obf.getWindowHeight(this) / 6 + 144,
-                                      InvTweaksLocalization.get("invtweaks.settings.advanced.mappingsfile")));
+                                      InvTweaksObfuscation
+                                              .getLocalizedString("invtweaks.settings.advanced.mappingsfile")));
 
         // Create settings buttons
 
@@ -64,8 +65,9 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                                                                                   computeBooleanButtonLabel(
                                                                                           InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP,
                                                                                           labelSortOnPickup),
-                                                                                  InvTweaksLocalization
-                                                                                          .get("invtweaks.settings.advanced.sortonpickup.tooltip"));
+                                                                                  InvTweaksObfuscation
+                                                                                          .getLocalizedString(
+                                                                                                  "invtweaks.settings.advanced.sortonpickup.tooltip"));
         controlList.add(sortOnPickupBtn);
 
         moveToButtonCoords(i++, p);
@@ -73,22 +75,22 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                                                                                   computeBooleanButtonLabel(
                                                                                           InvTweaksConfig.PROP_ENABLE_SOUNDS,
                                                                                           labelEnableSounds),
-                                                                                  InvTweaksLocalization
-                                                                                          .get("invtweaks.settings.advanced.sounds.tooltip"));
+                                                                                  InvTweaksObfuscation
+                                                                                          .getLocalizedString(
+                                                                                                  "invtweaks.settings.advanced.sounds.tooltip"));
         controlList.add(enableSoundsBtn);
 
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(),
                                                       computeBooleanButtonLabel(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS,
-                                                                                labelChestButtons),
-                                                      InvTweaksLocalization
-                                                              .get("invtweaks.settings.chestbuttons.tooltip")));
+                                                                                labelChestButtons), InvTweaksObfuscation
+                .getLocalizedString("invtweaks.settings.chestbuttons.tooltip")));
 
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(),
                                                                                     p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor), InvTweaksLocalization
-                                                                                            .get("invtweaks.settings.advanced.autoequip.tooltip"));
+                InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor), InvTweaksObfuscation.getLocalizedString(
+                "invtweaks.settings.advanced.autoequip.tooltip"));
         controlList.add(autoEquipArmorBtn);
 
         moveToButtonCoords(i++, p);
@@ -96,8 +98,9 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                                                                                   computeBooleanButtonLabel(
                                                                                           InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP,
                                                                                           labelServerAssist),
-                                                                                  InvTweaksLocalization
-                                                                                          .get("invtweaks.settings.advanced.serverassist.tooltip"));
+                                                                                  InvTweaksObfuscation
+                                                                                          .getLocalizedString(
+                                                                                                  "invtweaks.settings.advanced.serverassist.tooltip"));
         controlList.add(serverAssistBtn);
 
         // Check if links to files are supported, if not disable the buttons
@@ -121,10 +124,10 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         super.drawScreen(i, j, f);
 
         int x = obf.getWindowWidth(this) / 2;
-        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt1"), x, 40,
-                           0x999999);
-        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.pvpwarning.pt2"), x, 50,
-                           0x999999);
+        drawCenteredString(obf.getFontRenderer(),
+                           InvTweaksObfuscation.getLocalizedString("invtweaks.settings.pvpwarning.pt1"), x, 40, 0x999999);
+        drawCenteredString(obf.getFontRenderer(),
+                           InvTweaksObfuscation.getLocalizedString("invtweaks.settings.pvpwarning.pt2"), x, 50, 0x999999);
     }
 
     protected void actionPerformed(GuiButton guibutton) {

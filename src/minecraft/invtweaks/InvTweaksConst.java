@@ -42,8 +42,10 @@ public class InvTweaksConst {
     public static final File OLDER_CONFIG_TREE_FILE = new File(MINECRAFT_DIR, "InvTweaksTree.txt");
 
     public static final String INVTWEAKS_RESOURCE_DOMAIN = "inventorytweaks";
-    public static final ResourceLocation DEFAULT_CONFIG_FILE = new ResourceLocation(INVTWEAKS_RESOURCE_DOMAIN, "DefaultConfig.dat");
-    public static final ResourceLocation DEFAULT_CONFIG_TREE_FILE = new ResourceLocation(INVTWEAKS_RESOURCE_DOMAIN, "DefaultTree.dat");
+    public static final ResourceLocation DEFAULT_CONFIG_FILE = new ResourceLocation(INVTWEAKS_RESOURCE_DOMAIN,
+                                                                                    "DefaultConfig.dat");
+    public static final ResourceLocation DEFAULT_CONFIG_TREE_FILE = new ResourceLocation(INVTWEAKS_RESOURCE_DOMAIN,
+                                                                                         "DefaultTree.dat");
 
     public static final String HELP_URL = "http://inventory-tweaks.readthedocs.org";
 

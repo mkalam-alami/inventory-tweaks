@@ -33,10 +33,10 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
     public InvTweaksGuiSettingsAbstract(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
 
-        LABEL_DONE = InvTweaksLocalization.get("invtweaks.settings.exit");
-        ON = ": " + InvTweaksLocalization.get("invtweaks.settings.on");
-        OFF = ": " + InvTweaksLocalization.get("invtweaks.settings.off");
-        DISABLE_CI = ": " + InvTweaksLocalization.get("invtweaks.settings.disableci");
+        LABEL_DONE = InvTweaksObfuscation.getLocalizedString("invtweaks.settings.exit");
+        ON = ": " + InvTweaksObfuscation.getLocalizedString("invtweaks.settings.on");
+        OFF = ": " + InvTweaksObfuscation.getLocalizedString("invtweaks.settings.off");
+        DISABLE_CI = ": " + InvTweaksObfuscation.getLocalizedString("invtweaks.settings.disableci");
 
         this.mc = mc;
         this.obf = new InvTweaksObfuscation(mc);
@@ -59,7 +59,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
     public void drawScreen(int i, int j, float f) {
         drawDefaultBackground();
-        drawCenteredString(obf.getFontRenderer(), InvTweaksLocalization.get("invtweaks.settings.title"),
+        drawCenteredString(obf.getFontRenderer(), InvTweaksObfuscation.getLocalizedString("invtweaks.settings.title"),
                            obf.getWindowWidth(this) / 2, 20, 0xffffff);
         super.drawScreen(i, j, f);
     }

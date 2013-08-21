@@ -4,12 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.*;
-import java.net.URL;
-import java.util.IllegalFormatException;
 import java.util.Vector;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Handles the (re)loading of the configuration, and all that is related to file extraction/moves.
@@ -118,12 +114,14 @@ public class InvTweaksConfigManager {
         if(!InvTweaksConst.CONFIG_RULES_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE,
                                                                      InvTweaksConst.CONFIG_RULES_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_RULES_FILE + " " +
-                                              InvTweaksLocalization.get("invtweaks.loadconfig.invalidkeywords"));
+                                              InvTweaksObfuscation
+                                                      .getLocalizedString("invtweaks.loadconfig.invalidkeywords"));
         }
         if(!InvTweaksConst.CONFIG_TREE_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE,
                                                                     InvTweaksConst.CONFIG_TREE_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_TREE_FILE + " " +
-                                              InvTweaksLocalization.get("invtweaks.loadconfig.invalidkeywords"));
+                                              InvTweaksObfuscation
+                                                      .getLocalizedString("invtweaks.loadconfig.invalidkeywords"));
         }
 
         storedConfigLastModified = computeConfigLastModified();
@@ -213,7 +211,7 @@ public class InvTweaksConfigManager {
     private void showConfigErrors(InvTweaksConfig config) {
         Vector<String> invalid = config.getInvalidKeywords();
         if(invalid.size() > 0) {
-            String error = InvTweaksLocalization.get("invtweaks.loadconfig.invalidkeywords") + ": ";
+            String error = InvTweaksObfuscation.getLocalizedString("invtweaks.loadconfig.invalidkeywords") + ": ";
             for(String keyword : config.getInvalidKeywords()) {
                 error += keyword + " ";
             }

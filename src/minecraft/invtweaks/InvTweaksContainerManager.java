@@ -255,7 +255,6 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         click(section, index, true);
     }
 
-
     public void click(ContainerSection section, int index, boolean rightClick) {
         //System.out.println("Click " + section + ":" + index);
         // Click! (we finally call the Minecraft code)
@@ -278,9 +277,6 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
             }
         }
     }
-
-    // TODO: Move these mouse things somewhere else
-
 
     public boolean hasSection(ContainerSection section) {
         return slotRefs.containsKey(section);

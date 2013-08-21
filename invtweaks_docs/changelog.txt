@@ -2,6 +2,11 @@
 
 Latest changes
 ==============
+`1.56 (1.6.2) <http://build.technicpack.net/job/Inventory-Tweaks/77/artifact/build/out/InventoryTweaks-MC1.6.2-1.56-b77.jar>`_
+ * Fix loading on Forge build 831 and above.
+ * Removed the attempt to register tools from Forge's internal maps, it wasn't very precise.
+ * Much internal work to simplify things.
+ 
 `1.55b (1.6.2) <http://build.technicpack.net/job/Inventory-Tweaks/61/artifact/build/out/InventoryTweaks-MC1.6.2-1.55b-b61.jar>`_
  * Fix reversed tree priority sorting.
  * Fix translation format.

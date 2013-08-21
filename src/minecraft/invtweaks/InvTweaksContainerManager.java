@@ -1,5 +1,7 @@
 package invtweaks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -18,15 +20,12 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Jimeo Wan
  */
-public class InvTweaksContainerManager extends InvTweaksObfuscation {
+public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
 
     // TODO: Throw errors when the container isn't available anymore
 
     public static final int DROP_SLOT = -999;
-    public static final int INVENTORY_SIZE = 36;
     public static final int HOTBAR_SIZE = 9;
-    public static final int ACTION_TIMEOUT = 500;
-    public static final int POLLING_DELAY = 3;
 
     private GuiContainer guiContainer;
     private Container container;
@@ -42,9 +41,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @param mc Minecraft
      */
     @SuppressWarnings({"unchecked"})
+    @SideOnly(Side.CLIENT)
     public InvTweaksContainerManager(Minecraft mc) {
-        super(mc);
-
         GuiScreen currentScreen = mc.currentScreen;
         if(currentScreen instanceof GuiContainer) {
             guiContainer = (GuiContainer) currentScreen;
@@ -59,9 +57,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
     // TODO: Remove dependency on Minecraft class
     // TODO: Refactor the mouse-coverage stuff that needs the GuiContainer into a different class.
-    public InvTweaksContainerManager(Minecraft mc, Container cont, GuiContainer gui) {
-        super(mc);
-
+    public InvTweaksContainerManager(Container cont, GuiContainer gui) {
         guiContainer = gui;
         container = cont;
         initSlots();
@@ -118,7 +114,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
 
 
         // Put hold item down
-        if(getHeldStack() != null) {
+        if(InvTweaks.getInstance().getHeldStack() != null) {
             int firstEmptyIndex = getFirstEmptyIndex(ContainerSection.INVENTORY);
             if(firstEmptyIndex != -1) {
                 leftClick(ContainerSection.INVENTORY, firstEmptyIndex);
@@ -160,11 +156,11 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         else {
             leftClick(srcSection, srcIndex);
             leftClick(destSection, destIndex);
-            if(getHeldStack() != null) {
+            if(InvTweaks.getInstance().getHeldStack() != null) {
                 // Only return to original slot if it can be placed in that slot.
                 // (Ex. crafting/furnace outputs)
                 Slot srcSlot = getSlot(srcSection, srcIndex);
-                if(srcSlot.isItemValid(getHeldStack())) {
+                if(srcSlot.isItemValid(InvTweaks.getInstance().getHeldStack())) {
                     leftClick(srcSection, srcIndex);
                 } else {
                     // If the item cannot be placed in its original slot, move to an empty slot.
@@ -240,7 +236,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
      * @throws Exception
      */
     public boolean putHoldItemDown(ContainerSection destSection, int destIndex) {
-        ItemStack heldStack = getHeldStack();
+        ItemStack heldStack = InvTweaks.getInstance().getHeldStack();
         if(heldStack != null) {
             if(getItemStack(destSection, destIndex) == null) {
                 click(destSection, destIndex, false);
@@ -265,11 +261,12 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         // Click! (we finally call the Minecraft code)
         int slot = indexToSlot(section, index);
         if(slot != -1) {
-            clickInventory(getPlayerController(), getWindowId(container), // Select container
-                           slot, // Targeted slot
-                           (rightClick) ? 1 : 0, // Click #
-                           0, // Normal click
-                           getThePlayer());
+            InvTweaksObfuscation.clickInventory(InvTweaks.getInstance().getPlayerController(), container.windowId,
+                                                // Select container
+                                                slot, // Targeted slot
+                                                (rightClick) ? 1 : 0, // Click #
+                                                0, // Normal click
+                                                InvTweaks.getInstance().getThePlayer());
         }
 
         if(clickDelay > 0) {
@@ -325,7 +322,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     public int getFirstEmptyIndex(ContainerSection section) {
         int i = 0;
         for(Slot slot : slotRefs.get(section)) {
-            if(!hasStack(slot)) {
+            if(!slot.getHasStack()) {
                 return i;
             }
             i++;
@@ -374,7 +371,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             if(!preferInventory && section != ContainerSection.INVENTORY || (preferInventory && section != ContainerSection.INVENTORY_NOT_HOTBAR && section != ContainerSection.INVENTORY_HOTBAR)) {
                 int i = 0;
                 for(Slot slot : slotRefs.get(section)) {
-                    if(getSlotNumber(slot) == slotNumber) {
+                    if(InvTweaksObfuscation.getSlotNumber(slot) == slotNumber) {
                         return i;
                     }
                     i++;
@@ -395,7 +392,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         for(ContainerSection section : slotRefs.keySet()) {
             if(section != ContainerSection.INVENTORY) {
                 for(Slot slot : slotRefs.get(section)) {
-                    if(getSlotNumber(slot) == slotNumber) {
+                    if(InvTweaksObfuscation.getSlotNumber(slot) == slotNumber) {
                         return section;
                     }
                 }
@@ -414,8 +411,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
     public ItemStack getItemStack(ContainerSection section, int index)
             throws NullPointerException, IndexOutOfBoundsException {
         int slot = indexToSlot(section, index);
-        if(slot >= 0 && slot < getSlots(container).size()) {
-            return getSlotStack(container, slot);
+        if(slot >= 0 && slot < container.inventorySlots.size()) {
+            return InvTweaksObfuscation.getSlotStack(container, slot);
         } else {
             return null;
         }
@@ -430,8 +427,8 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
             for(Slot slot : slotRefs.get(section)) {
                 // Use only standard slot (to make sure
                 // we can freely put and remove items there)
-                if(isBasicSlot(slot) && !hasStack(slot)) {
-                    return getSlotNumber(slot);
+                if(InvTweaksObfuscation.isBasicSlot(slot) && !slot.getHasStack()) {
+                    return InvTweaksObfuscation.getSlotNumber(slot);
                 }
             }
         }
@@ -452,7 +449,7 @@ public class InvTweaksContainerManager extends InvTweaksObfuscation {
         if(hasSection(section)) {
             Slot slot = slotRefs.get(section).get(index);
             if(slot != null) {
-                return getSlotNumber(slot);
+                return InvTweaksObfuscation.getSlotNumber(slot);
             } else {
                 return -1;
             }

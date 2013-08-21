@@ -274,14 +274,14 @@ public class InvTweaksObfuscation {
 
     // PlayerController members
 
-    public void clickInventory(PlayerControllerMP playerController, int windowId, int slot, int data, int action,
+    public static void clickInventory(PlayerControllerMP playerController, int windowId, int slot, int data, int action,
                                EntityPlayer entityPlayer) {
         InvTweaksMod.proxy.slotClick(playerController, windowId, slot, data, action, entityPlayer);
     }
 
     // Container members
 
-    public int getWindowId(Container container) {
+    public static int getWindowId(Container container) {
         return container.windowId;
     }
 
@@ -289,11 +289,11 @@ public class InvTweaksObfuscation {
         return container.inventorySlots;
     }
 
-    public Slot getSlot(Container container, int i) { // Slot
+    public static Slot getSlot(Container container, int i) { // Slot
         return (Slot) (getSlots(container).get(i));
     }
 
-    public ItemStack getSlotStack(Container container, int i) {
+    public static ItemStack getSlotStack(Container container, int i) {
         Slot slot = getSlot(container, i);
         return (slot == null) ? null : getStack(slot); // getStack
     }
@@ -304,12 +304,12 @@ public class InvTweaksObfuscation {
 
     // Slot members
 
-    public boolean hasStack(Slot slot) {
+    public static boolean hasStack(Slot slot) {
         return slot.getHasStack();
     }
 
     @SuppressWarnings("unchecked")
-    public int getSlotNumber(Slot slot) {
+    public static int getSlotNumber(Slot slot) {
         try {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots
             if(slot instanceof SlotCreativeInventory) {
@@ -326,7 +326,7 @@ public class InvTweaksObfuscation {
         return slot.slotNumber;
     }
 
-    public ItemStack getStack(Slot slot) {
+    public static ItemStack getStack(Slot slot) {
         return slot.getStack();
     }
 
@@ -478,35 +478,35 @@ public class InvTweaksObfuscation {
         return null;
     }
 
-    public boolean isGuiContainer(Object o) { // GuiContainer (abstract class)
+    public static boolean isGuiContainer(Object o) { // GuiContainer (abstract class)
         return o != null && o instanceof GuiContainer;
     }
 
-    public boolean isGuiInventoryCreative(Object o) { // GuiInventoryCreative
+    public static boolean isGuiInventoryCreative(Object o) { // GuiInventoryCreative
         return o != null && o.getClass().equals(GuiContainerCreative.class);
     }
 
-    public boolean isGuiEnchantmentTable(Object o) { // GuiEnchantmentTable
+    public static boolean isGuiEnchantmentTable(Object o) { // GuiEnchantmentTable
         return o != null && o.getClass().equals(GuiEnchantment.class);
     }
 
-    public boolean isGuiInventory(Object o) { // GuiInventory
+    public static boolean isGuiInventory(Object o) { // GuiInventory
         return o != null && o.getClass().equals(GuiInventory.class);
     }
 
-    public boolean isGuiButton(Object o) { // GuiButton
+    public static boolean isGuiButton(Object o) { // GuiButton
         return o != null && o instanceof GuiButton;
     }
 
-    public boolean isGuiEditSign(Object o) {
+    public static boolean isGuiEditSign(Object o) {
         return o != null && o.getClass().equals(GuiEditSign.class);
     }
 
-    public boolean isItemArmor(Object o) { // ItemArmor
+    public static boolean isItemArmor(Object o) { // ItemArmor
         return o != null && o instanceof ItemArmor;
     }
 
-    public boolean isBasicSlot(Object o) { // Slot
+    public static boolean isBasicSlot(Object o) { // Slot
         return o != null && (o.getClass().equals(Slot.class) || o.getClass().equals(SlotCreativeInventory.class));
     }
 

@@ -182,7 +182,7 @@ public class InvTweaksConfigManager {
     private boolean extractFile(ResourceLocation resource, File destination) {
         InputStream input;
         try {
-            input = mc.func_110442_L().func_110536_a(resource).func_110527_b();
+            input = mc.getResourceManager().getResource(resource).getInputStream();
 
             byte[] contents = new byte[input.available()];
             input.read(contents);

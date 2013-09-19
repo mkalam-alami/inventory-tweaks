@@ -242,7 +242,7 @@ public class InvTweaksObfuscation {
 
     public boolean hasTexture(ResourceLocation texture) {
         try {
-            mc.func_110442_L().func_110536_a(texture);
+            mc.getResourceManager().getResource(texture);
         } catch(IOException e) {
             return false;
         }
@@ -251,7 +251,7 @@ public class InvTweaksObfuscation {
 
     // Static access
     public static String getCurrentLanguage() {
-        return Minecraft.getMinecraft().func_135016_M().func_135041_c().func_135034_a();
+        return Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
     }
 
     // Classes

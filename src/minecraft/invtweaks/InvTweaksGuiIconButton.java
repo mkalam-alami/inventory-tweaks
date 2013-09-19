@@ -34,10 +34,10 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if(useCustomTexture) {
-            minecraft.func_110434_K().func_110577_a(resourceButtonCustom);
+            minecraft.getTextureManager().bindTexture(resourceButtonCustom);
             drawTexturedModalRect(xPosition, yPosition, (k - 1) * 10, 0, width, height);
         } else {
-            minecraft.func_110434_K().func_110577_a(resourceButtonDefault);
+            minecraft.getTextureManager().bindTexture(resourceButtonDefault);
             drawTexturedModalRect(xPosition, yPosition, 1, 46 + k * 20 + 1, width / 2, height / 2);
             drawTexturedModalRect(xPosition, yPosition + height / 2, 1, 46 + k * 20 + 20 - height / 2 - 1, width / 2,
                                   height / 2);

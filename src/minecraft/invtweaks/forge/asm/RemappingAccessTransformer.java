@@ -165,7 +165,7 @@ public class RemappingAccessTransformer implements IClassTransformer {
                 if(tokens.ttype == StreamTokenizer.TT_WORD) {
                     if("public".equals(tokens.sval)) {
                         newAccess = Opcodes.ACC_PUBLIC;
-                    } else if("protetected".equals(tokens.sval)) {
+                    } else if("protected".equals(tokens.sval)) {
                         newAccess = Opcodes.ACC_PROTECTED;
                     } else if("private".equals(tokens.sval)) {
                         newAccess = Opcodes.ACC_PRIVATE;

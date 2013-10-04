@@ -198,7 +198,6 @@
     <target name="cache-resources" depends="install-forge">
         <copy todir="${temp.dir}/mcp_data">
             <fileset dir="${mcp.dir}">
-                <include name="jars/libraries/"/>
                 <include name="jars/assets/"/>
             </fileset>
         </copy>

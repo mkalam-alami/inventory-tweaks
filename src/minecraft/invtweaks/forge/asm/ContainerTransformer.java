@@ -99,6 +99,7 @@ public class ContainerTransformer implements IClassTransformer {
             configClasses = CompatibilityConfigLoader.load("config/InvTweaksCompatibility.xml");
         } catch(Exception ex) {
             configClasses = new HashMap<String, ContainerInfo>();
+            ex.printStackTrace();
         }
     }
 

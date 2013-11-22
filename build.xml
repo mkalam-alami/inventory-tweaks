@@ -155,7 +155,7 @@
         <delete dir="${class.dir}" failonerror="no"/>
         <mkdir dir="${class.dir}"/>
         <javac srcdir="${src.dir}" destdir="${class.dir}" target="1.6" source="1.6"
-               classpathref="invtweaks.classpath" debug="true" debuglevel="lines,source" includeAntRuntime="false"/>
+               classpathref="invtweaks.classpath" debug="true" debuglevel="lines,vars,source" includeAntRuntime="false"/>
     </target>
 
     <target name="filter-src">

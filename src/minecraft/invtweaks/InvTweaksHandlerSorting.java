@@ -185,7 +185,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                         break;
                                     } else {
                                         stackToMove = moveResult;
-                                        j = -1;
+                                        j++;
                                     }
                                 }
                             }
@@ -485,8 +485,11 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 keywordOrder[i] = -1;
                 rulePriority[j] = priority;
                 keywordOrder[j] = getItemOrder(from);
-                containerMgr.move(i, j);
-                return j;
+                if(containerMgr.move(i, j)) {
+                    return j;
+                } else {
+                    return -1;
+                }
             }
 
             // Try to swap/merge
@@ -495,28 +498,35 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     keywordOrder[j] = keywordOrder[i];
                     rulePriority[j] = priority;
                     rulePriority[i] = -1;
-                    containerMgr.move(i, j);
+                    boolean success = containerMgr.move(i, j);
 
-                    ItemStack remains = containerMgr.getItemStack(i);
+                    if(success) {
+                        ItemStack remains = containerMgr.getItemStack(i);
 
-                    if(remains != null) {
-                        int dropSlot = i;
-                        if(lockPriorities[j] > lockPriorities[i]) {
-                            for(int k = 0; k < size; k++) {
-                                if(containerMgr.getItemStack(k) == null && lockPriorities[k] == 0) {
-                                    dropSlot = k;
-                                    break;
+                        if(remains != null) {
+                            int dropSlot = i;
+                            if(lockPriorities[j] > lockPriorities[i]) {
+                                for(int k = 0; k < size; k++) {
+                                    if(containerMgr.getItemStack(k) == null && lockPriorities[k] == 0) {
+                                        dropSlot = k;
+                                        break;
+                                    }
                                 }
                             }
+                            if(dropSlot != i) {
+                                if(!containerMgr.move(i, dropSlot)) {
+                                    // TODO: This is a potentially bad situation: One move succeeded, then the rest failed.
+                                    return -1;
+                                }
+                            }
+                            rulePriority[dropSlot] = -1;
+                            keywordOrder[dropSlot] = getItemOrder(remains);
+                            return dropSlot;
+                        } else {
+                            return j;
                         }
-                        if(dropSlot != i) {
-                            containerMgr.move(i, dropSlot);
-                        }
-                        rulePriority[dropSlot] = -1;
-                        keywordOrder[dropSlot] = getItemOrder(remains);
-                        return dropSlot;
                     } else {
-                        return j;
+                        return -1;
                     }
                 }
             }

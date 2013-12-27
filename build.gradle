@@ -1,0 +1,78 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge'
+
+version = "1.0"
+group = "inventorytweaks" // No stupid URL conventions
+archivesBaseName = "inventorytweaks"
+
+minecraft {
+    version = "1.6.4-9.11.1.964"
+    at 'src/minecraft/invtweaks_at_src.cfg'
+}
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/minecraft'
+        }
+        resources {
+            srcDir 'src/minecraft'
+            exclude '**/*.java'
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes 'FMLCorePlugin': 'invtweaks.forge.asm.FMLPlugin', 'FMLCorePluginContainsFMLMod': 'true'
+    }
+}
+
+task apiJar(type: Jar) {
+    dependsOn processResources
+
+    from sourceSets.main.allJava
+    include 'invtweaks/api/**'
+
+    appendix = 'api'
+}
+
+task deobfJar(type: Jar) {
+    dependsOn classes
+
+    from sourceSets.main.output
+
+    appendix = 'deobf'
+}
+
+artifacts {
+    archives apiJar
+    archives deobfJar
+}
+
+processResources
+{
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.png'
+
+//        expand ''
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*.png'
+    }
+}

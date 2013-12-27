@@ -174,7 +174,7 @@ public class InvTweaksObfuscation {
         try {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots
             if(slot instanceof SlotCreativeInventory) {
-                Slot underlyingSlot = SlotCreativeInventory.func_75240_a((SlotCreativeInventory) slot);
+                Slot underlyingSlot = ((SlotCreativeInventory)slot).theSlot;
                 if(underlyingSlot != null) {
                     return underlyingSlot.slotNumber;
                 } else {
@@ -243,7 +243,7 @@ public class InvTweaksObfuscation {
     public boolean hasTexture(ResourceLocation texture) {
         try {
             mc.getResourceManager().getResource(texture);
-        } catch(IOException e) {
+        } catch(/*IOException*/Exception e) { //FIXME: Java is stupid, the exception annotations just aren't being generated correctly at the moment.
             return false;
         }
         return true;

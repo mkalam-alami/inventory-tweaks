@@ -3,10 +3,10 @@ package invtweaks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 /**
  * Handles the (re)loading of the configuration, and all that is related to file extraction/moves.
@@ -94,7 +94,7 @@ public class InvTweaksConfigManager {
                 backupFile(InvTweaksConst.CONFIG_TREE_FILE);
             }
         } catch(Exception e) {
-            log.warning("Failed to check item tree version: " + e.getMessage());
+            log.warn("Failed to check item tree version: " + e.getMessage());
         }
 
         // Compatibility: File names check
@@ -143,7 +143,8 @@ public class InvTweaksConfigManager {
             config.load();
             shortcutsHandler.loadShortcuts();
 
-            log.setLevel(config.getLogLevel());
+            // TODO: Read log4j docs
+            //log.setLevel(config.getLogLevel());
             InvTweaks.logInGameStatic("invtweaks.loadconfig.done");
             showConfigErrors(config);
         } catch(FileNotFoundException e) {
@@ -155,7 +156,7 @@ public class InvTweaksConfigManager {
 
         if(error != null) {
             InvTweaks.logInGameErrorStatic(error, errorException);
-            log.severe(error);
+            log.error(error);
             config = null;
             return false;
         } else {
@@ -196,13 +197,13 @@ public class InvTweaksConfigManager {
                 return true;
             } catch (IOException e) {
                 InvTweaks.logInGameStatic("[16] The mod won't work, because " + destination + " creation failed!");
-                log.severe("Cannot create " + destination + " file: " + e.getMessage());
+                log.error("Cannot create " + destination + " file: " + e.getMessage());
                 return false;
             }
         } catch (IOException e) {
             InvTweaks.logInGameStatic("[15] The mod won't work, because " + resource + " extraction failed!");
 
-            log.severe("Cannot extract " + resource + " file: " + e.getMessage());
+            log.error("Cannot extract " + resource + " file: " + e.getMessage());
             return false;
         }
     }

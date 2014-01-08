@@ -6,7 +6,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.InvTweaksConst;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.ContainerCreative;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.inventory.Container;
@@ -27,8 +26,9 @@ public class VanillaSlotMaps {
         return slotRefs;
     }
 
+    /* FIXME: Cannot compile until SpecialSource update
     @SideOnly(Side.CLIENT)
-    public static boolean containerCreativeIsInventory(ContainerCreative container) {
+    public static boolean containerCreativeIsInventory(GuiContainerCreative.ContainerCreative container) {
         GuiScreen currentScreen = FMLClientHandler.instance().getClient().currentScreen;
         if(currentScreen instanceof GuiContainerCreative) {
             return ((GuiContainerCreative) currentScreen).getCurrentTabIndex() == CreativeTabs.tabInventory
@@ -37,9 +37,8 @@ public class VanillaSlotMaps {
             return false;
         }
     }
-
     @SideOnly(Side.CLIENT)
-    public static Map<ContainerSection, List<Slot>> containerCreativeSlots(ContainerCreative container) {
+    public static Map<ContainerSection, List<Slot>> containerCreativeSlots(GuiContainerCreative.ContainerCreative container) {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
 
         slotRefs.put(ContainerSection.ARMOR, container.inventorySlots.subList(5, 9));
@@ -49,7 +48,7 @@ public class VanillaSlotMaps {
 
         return slotRefs;
     }
-
+    */
     public static Map<ContainerSection, List<Slot>> containerChestDispenserSlots(Container container) {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
 

@@ -53,12 +53,13 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
         this.drawBackground = drawBackground;
     }
 
-    public void drawButton(Minecraft minecraft, int i, int j) {
+    @Override
+    public void func_146112_a(Minecraft minecraft, int i, int j) {
         if(this.drawBackground) {
-            super.drawButton(minecraft, i, j);
+            super.func_146112_a(minecraft, i, j);
         } else {
-            this.drawString(minecraft.fontRenderer, this.displayString, this.xPosition,
-                            this.yPosition + (this.height - 8) / 2, 0x999999);
+            this.drawString(minecraft.fontRenderer, this.field_146126_j, this.field_146128_h,
+                            this.field_146129_i + (this.field_146121_g - 8) / 2, 0x999999);
         }
 
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
@@ -88,8 +89,8 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
                         tooltipWidth = Math.max(fontRenderer.getStringWidth(line), tooltipWidth);
                     }
                 }
-                if(x + tooltipWidth > obf.getCurrentScreen().width) {
-                    x = obf.getCurrentScreen().width - tooltipWidth;
+                if(x + tooltipWidth > obf.getCurrentScreen().field_146294_l) {
+                    x = obf.getCurrentScreen().field_146294_l - tooltipWidth;
                 }
 
                 // Draw background
@@ -109,13 +110,13 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     }
 
     protected boolean isMouseOverButton(int i, int j) {
-        return i >= xPosition && j >= yPosition && i < (xPosition + width) && j < (yPosition + height);
+        return i >= field_146128_h && j >= field_146129_i && i < (field_146128_h + field_146120_f) && j < (field_146129_i + field_146121_g);
     }
 
     protected int getTextColor(int i, int j) {
 
         int textColor = 0xffe0e0e0;
-        if(!enabled) {
+        if(!field_146124_l) {
             textColor = 0xffa0a0a0;
         } else if(isMouseOverButton(i, j)) {
             textColor = 0xffffffa0;

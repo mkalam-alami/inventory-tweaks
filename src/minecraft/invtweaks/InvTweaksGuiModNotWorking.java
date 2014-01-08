@@ -4,9 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
-
-import java.util.logging.Logger;
-
+import org.apache.logging.log4j.Logger;
 
 /**
  * A help menu for the NoCheatPlus conflict.
@@ -24,7 +22,7 @@ public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
     public void drawScreen(int i, int j, float f) {
         super.drawScreen(i, j, f);
 
-        int x = width / 2;
+        int x = field_146294_l / 2;
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.bugsorting.pt1"), x, 80, 0xBBBBBB);
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.bugsorting.pt2"), x, 95, 0xBBBBBB);
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.bugsorting.pt3"), x, 110, 0xBBBBBB);
@@ -33,7 +31,7 @@ public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
 
     protected void actionPerformed(GuiButton guibutton) {
         // GuiButton
-        switch(guibutton.id) {
+        switch(guibutton.field_146127_k) {
             // Back to main settings screen
             case ID_DONE:
                 obf.displayGuiScreen(new InvTweaksGuiSettings(mc, parentScreen, config));

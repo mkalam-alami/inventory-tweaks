@@ -4,14 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.Point;
 
 import java.awt.*;
 import java.net.URL;
 import java.util.List;
-import java.util.logging.Logger;
-
 
 /**
  * The inventory and chest settings menu.
@@ -59,18 +58,18 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     public void initGui() {
         super.initGui();
 
-        List<Object> controlList = buttonList;
+        List<Object> controlList = field_146292_n;
         Point p = new Point();
         int i = 0;
 
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new GuiButton(ID_EDITRULES, p.getX() + 55, height / 6 + 96,
+        controlList.add(new GuiButton(ID_EDITRULES, p.getX() + 55, field_146295_m / 6 + 96,
                                       StatCollector.translateToLocal("invtweaks.settings.rulesfile")));
-        controlList.add(new GuiButton(ID_EDITTREE, p.getX() + 55, height / 6 + 120,
+        controlList.add(new GuiButton(ID_EDITTREE, p.getX() + 55, field_146295_m / 6 + 120,
                                       StatCollector.translateToLocal("invtweaks.settings.treefile")));
-        controlList.add(new GuiButton(ID_HELP, p.getX() + 55, height / 6 + 144,
+        controlList.add(new GuiButton(ID_HELP, p.getX() + 55, field_146295_m / 6 + 144,
                                       StatCollector.translateToLocal("invtweaks.settings.onlinehelp")));
 
         // Create settings buttons
@@ -87,7 +86,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         if(shortcuts.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: shortcuts not available
             // GuiButton
-            shortcutsBtn.enabled = false;
+            shortcutsBtn.field_146124_l = false;
             shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(" +
                                             StatCollector.translateToLocal("invtweaks.settings.disableci.tooltip") + ")");
         }
@@ -122,7 +121,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                                                               "invtweaks.settings.moreoptions.tooltip")));
 
         controlList
-                .add(new InvTweaksGuiTooltipButton(ID_BUG_SORTING, 5, this.height - 20, 100, 20, labelBugSorting, null,
+                .add(new InvTweaksGuiTooltipButton(ID_BUG_SORTING, 5, this.field_146295_m - 20, 100, 20, labelBugSorting, null,
                                                    false));
 
         String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
@@ -137,7 +136,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         if(middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: middle click not available
             // GuiButton
-            middleClickBtn.enabled = false;
+            middleClickBtn.field_146124_l = false;
             middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(" +
                                               StatCollector.translateToLocal("invtweaks.settings.disableci.tooltip"));
         }
@@ -149,16 +148,16 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                     GuiButton guiButton = (GuiButton) o;
                     // GuiButton
                     // GuiButton
-                    if(guiButton.id >= ID_EDITRULES && guiButton.id <= ID_HELP) {
+                    if(guiButton.field_146127_k >= ID_EDITRULES && guiButton.field_146127_k <= ID_HELP) {
                         // GuiButton
-                        guiButton.enabled = false;
+                        guiButton.field_146124_l = false;
                     }
                 }
             }
         }
 
         // Save control list
-        buttonList = controlList;
+        field_146292_n = controlList;
 
     }
 
@@ -166,11 +165,11 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         super.actionPerformed(guibutton);
 
         // GuiButton
-        switch(guibutton.id) {
+        switch(guibutton.field_146127_k) {
 
             // Switch sorting key
             case ID_SORTING_KEY:
-                sortMappingButton.displayString = StatCollector.translateToLocal("invtweaks.settings.key") + " > ??? <";
+                sortMappingButton.field_146126_j = StatCollector.translateToLocal("invtweaks.settings.key") + " > ??? <";
                 sortMappingEdition = true;
                 break;
 
@@ -245,7 +244,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         if(sortMappingEdition) {
             String keyName = Keyboard.getKeyName(keyCode);
             config.setProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY, keyName);
-            sortMappingButton.displayString = StatCollector.translateToLocal("invtweaks.settings.key") + " " + keyName;
+            sortMappingButton.field_146126_j = StatCollector.translateToLocal("invtweaks.settings.key") + " " + keyName;
         }
         super.keyTyped(c, keyCode);
     }

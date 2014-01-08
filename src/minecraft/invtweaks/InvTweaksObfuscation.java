@@ -17,17 +17,17 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Minecraft 1.3 Obfuscation layer
@@ -50,7 +50,7 @@ public class InvTweaksObfuscation {
 
     public void addChatMessage(String message) {
         if(mc.ingameGUI != null) {
-            mc.ingameGUI.getChatGUI().printChatMessage(message);
+            mc.ingameGUI.func_146158_b().func_146239_a(message);
         }
     }
 
@@ -71,7 +71,7 @@ public class InvTweaksObfuscation {
     }
 
     public void displayGuiScreen(GuiScreen parentScreen) {
-        mc.displayGuiScreen(parentScreen);
+        mc.func_147108_a(parentScreen);
     }
 
     public static int getDisplayWidth() {
@@ -149,7 +149,7 @@ public class InvTweaksObfuscation {
     }
 
     public boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1.isItemEqual(itemStack2) || (itemStack1.isItemStackDamageable() && itemStack1.itemID == itemStack2.itemID);
+        return itemStack1.isItemEqual(itemStack2) || (itemStack1.isItemStackDamageable() && itemStack1.getItem() == itemStack2.getItem());
     }
 
     public boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
@@ -171,19 +171,21 @@ public class InvTweaksObfuscation {
 
     @SuppressWarnings("unchecked")
     public static int getSlotNumber(Slot slot) {
+        /* FIXME: Cannot compile until SpecialSource update
         try {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots
-            if(slot instanceof SlotCreativeInventory) {
+            if(slot instanceof GuiContainerCreative.CreativeSlot) {
                 Slot underlyingSlot = ((SlotCreativeInventory)slot).theSlot;
                 if(underlyingSlot != null) {
                     return underlyingSlot.slotNumber;
                 } else {
-                    log.warning("Creative inventory: Failed to get real slot");
+                    log.warn("Creative inventory: Failed to get real slot");
                 }
             }
         } catch(Exception e) {
-            log.warning("Failed to access creative slot number");
+            log.warn("Failed to access creative slot number");
         }
+        */
         return slot.slotNumber;
     }
 
@@ -191,7 +193,7 @@ public class InvTweaksObfuscation {
     public static Slot getSlotAtMousePosition(GuiContainer guiContainer) {
         // Copied from GuiContainer
         if(guiContainer != null) {
-            Container container = guiContainer.inventorySlots;
+            Container container = guiContainer.field_147002_h;
 
             int x = getMouseX(guiContainer);
             int y = getMouseY(guiContainer);
@@ -216,8 +218,8 @@ public class InvTweaksObfuscation {
     private static boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int x, int y) {
         // Copied from GuiContainer
         if(guiContainer != null) {
-            x -= guiContainer.guiLeft;
-            y -= guiContainer.guiTop;
+            x -= guiContainer.field_147003_i;
+            y -= guiContainer.field_147009_r;
             return x >= slot.xDisplayPosition - 1 && x < slot.xDisplayPosition + 16 + 1 && y >= slot.yDisplayPosition - 1 && y < slot.yDisplayPosition + 16 + 1;
         } else {
             return false;
@@ -226,13 +228,13 @@ public class InvTweaksObfuscation {
 
     @SideOnly(Side.CLIENT)
     private static int getMouseX(GuiContainer guiContainer) {
-        return (Mouse.getEventX() * guiContainer.width) / getDisplayWidth();
+        return (Mouse.getEventX() * guiContainer.field_146294_l) / getDisplayWidth();
     }
 
     @SideOnly(Side.CLIENT)
     private static int getMouseY(GuiContainer guiContainer) {
-        return guiContainer.height -
-                (Mouse.getEventY() * guiContainer.height) / getDisplayHeight() - 1;
+        return guiContainer.field_146295_m -
+                (Mouse.getEventY() * guiContainer.field_146295_m) / getDisplayHeight() - 1;
     }
 
     public static int getSpecialChestRowSize(Container container) {
@@ -310,7 +312,8 @@ public class InvTweaksObfuscation {
     }
 
     public static boolean isBasicSlot(Object o) { // Slot
-        return o != null && (o.getClass().equals(Slot.class) || o.getClass().equals(SlotCreativeInventory.class));
+        // TODO: SpecialSource, class ATs, cannot compile
+        return o != null && (o.getClass().equals(Slot.class)/* || o.getClass().equals(GuiContainerCreative.CreativeSlot.class)*/);
     }
 
 }

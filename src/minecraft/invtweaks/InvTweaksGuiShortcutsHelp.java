@@ -27,24 +27,25 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
     public void initGui() {
         // Create Done button
         List<Object> controlList = new LinkedList<Object>();
-        controlList.add(new GuiButton(ID_DONE, width / 2 - 100, height / 6 + 168,
+        controlList.add(new GuiButton(ID_DONE, field_146294_l / 2 - 100, field_146295_m / 6 + 168,
                                       "Done"));
-        buttonList = controlList;
+        field_146292_n = controlList;
     }
 
+    @Override
     public void drawScreen(int i, int j, float f) {
 
         // Note: 0x0000EEFF = blue color (currently unused)
 
-        drawDefaultBackground();
+        func_146276_q_();
         drawCenteredString(obf.getFontRenderer(),
                            "WARNING: Since 1.3.1, shortcuts won't work as expected. Looking for a workaround...",
-                           width / 2, 5, 0xff0000);
+                           field_146294_l / 2, 5, 0xff0000);
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.shortcuts.title"),
-                           width / 2, 20, 0xffffff); // Gui.drawCenteredString
+                           field_146294_l / 2, 20, 0xffffff); // Gui.drawCenteredString
         String clickLabel = StatCollector.translateToLocal("invtweaks.help.shortcuts.click");
 
-        int y = height / 6 - 2;
+        int y = field_146295_m / 6 - 2;
 
         drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.onestack"),
                          "LSHIFT " + StatCollector.translateToLocal("invtweaks.help.shortcuts.or") + " RSHIFT + " +
@@ -98,7 +99,7 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
 
     protected void actionPerformed(GuiButton guibutton) {
         // GuiButton
-        switch(guibutton.id) {
+        switch(guibutton.field_146127_k) {
             case ID_DONE:
                 obf.displayGuiScreen(parentScreen);
                 break;
@@ -136,7 +137,7 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
                                                                                                  " " + StatCollector
                                                                                                          .translateToLocal(
                                                                                                                  "invtweaks.help.shortcuts.or") + " "),
-                       width / 2 - 30, y, color); // drawString
+                       field_146294_l / 2 - 30, y, color); // drawString
         }
     }
 

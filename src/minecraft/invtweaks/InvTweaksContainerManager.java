@@ -47,7 +47,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         GuiScreen currentScreen = mc.currentScreen;
         if(currentScreen instanceof GuiContainer) {
             guiContainer = (GuiContainer) currentScreen;
-            container = guiContainer.inventorySlots;
+            container = guiContainer.field_147002_h;
         } else {
             container = mc.thePlayer.inventoryContainer;
         }
@@ -125,7 +125,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         }
 
         // Use intermediate slot if we have to swap tools, maps, etc.
-        if(destStack != null && srcStack.itemID == destStack.itemID && (srcStack.getMaxStackSize() == 1 ||
+        if(destStack != null && srcStack.getItem() == destStack.getItem() && (srcStack.getMaxStackSize() == 1 ||
                 srcStack.hasTagCompound() || destStack.hasTagCompound())) {
             int intermediateSlot = getFirstEmptyUsableSlotNumber();
             ContainerSection intermediateSection = getSlotSection(intermediateSlot);

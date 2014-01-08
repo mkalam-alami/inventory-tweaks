@@ -1,17 +1,18 @@
 package invtweaks;
 
+import cpw.mods.fml.common.registry.GameData;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.util.*;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
-
 
 /**
  * @author Jimeo Wan
@@ -229,7 +230,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         } else if(container.hasSection(ContainerSection.BREWING_INGREDIENT)) {
                             ItemStack stack = slot.getStack();
                             if(stack != null) {
-                                if(stack.itemID == 373 /* Water Bottle/Potions */) {
+                                if(stack.getItem() == Item.field_150901_e.getObject("potion")) {
                                     orderedSections.add(ContainerSection.BREWING_BOTTLES);
                                 } else {
                                     orderedSections.add(ContainerSection.BREWING_INGREDIENT);

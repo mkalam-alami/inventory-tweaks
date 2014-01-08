@@ -3,17 +3,34 @@ package invtweaks.forge;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.FMLEmbeddedChannel;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
+import invtweaks.InvTweaksConst;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
+import invtweaks.network.ITMessageToMessageCodec;
+import invtweaks.network.handlers.ClickMessageHandler;
+import invtweaks.network.handlers.LoginMessageHandler;
+import invtweaks.network.handlers.SortingCompleteMessageHandler;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import java.util.EnumMap;
+
 public class CommonProxy implements InvTweaksAPI {
+    protected static EnumMap<Side, FMLEmbeddedChannel> invtweaksChannel;
+
     public void preInit(FMLPreInitializationEvent e) {
     }
 
     public void init(FMLInitializationEvent e) {
+        invtweaksChannel = NetworkRegistry.INSTANCE.newChannel(InvTweaksConst.INVTWEAKS_CHANNEL,
+                                                               new ITMessageToMessageCodec(),
+                                                               new ClickMessageHandler(),
+                                                               new LoginMessageHandler(),
+                                                               new SortingCompleteMessageHandler());
     }
 
     public void postInit(FMLPostInitializationEvent e) {

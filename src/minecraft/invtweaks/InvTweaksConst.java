@@ -3,10 +3,10 @@ package invtweaks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 
 public class InvTweaksConst {
 
@@ -17,9 +17,11 @@ public class InvTweaksConst {
     // Change only when the tree evolves significantly enough to need to override all configs
     public static final String TREE_VERSION = "1.6.0";
 
+    public static final String INVTWEAKS_CHANNEL = "InventoryTweaks";
+
     // Network Protocol version
     public static final byte PROTOCOL_VERSION = 1;
-    public static final byte PACKET_LOGIN = 0x55;
+    public static final byte PACKET_LOGIN = 0x00;
     public static final byte PACKET_CLICK = 0x01;
     public static final byte PACKET_SORTCOMPLETE = 0x02;
 
@@ -51,7 +53,7 @@ public class InvTweaksConst {
 
     // Global mod constants
     public static final String INGAME_LOG_PREFIX = "InvTweaks: ";
-    public static final Level DEFAULT_LOG_LEVEL = Level.WARNING;
+    public static final Level DEFAULT_LOG_LEVEL = Level.WARN;
     public static final Level DEBUG = Level.INFO;
     public static final int JIMEOWAN_ID = 54696386; // Used in GUIs
 

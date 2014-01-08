@@ -11,9 +11,11 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -27,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -39,7 +40,7 @@ import java.util.logging.Logger;
  *         Source code: <a href="https://github.com/kobata/inventory-tweaks">GitHub</a> License: MIT
  */
 public class InvTweaks extends InvTweaksObfuscation {
-    public static Logger log = Logger.getLogger("InvTweaks");
+    public static Logger log;
 
     private static InvTweaks instance;
 
@@ -89,7 +90,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     public InvTweaks(Minecraft mc) {
         super(mc);
 
-        log.setLevel(InvTweaksConst.DEFAULT_LOG_LEVEL);
+        //log.setLevel(InvTweaksConst.DEFAULT_LOG_LEVEL);
 
         // Store instance
         instance = this;
@@ -100,7 +101,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         if(cfgManager.makeSureConfigurationIsLoaded()) {
             log.info("Mod initialized");
         } else {
-            log.severe("Mod failed to initialize!");
+            log.error("Mod failed to initialize!");
         }
 
 
@@ -145,7 +146,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 mouseWasDown = true;
                 log.info(guiScreen.getClass().getName());
                 if(guiScreen instanceof GuiContainer) {
-                    log.info(((GuiContainer) guiScreen).inventorySlots.getClass().getName());
+                    log.info(((GuiContainer) guiScreen).field_147002_h.getClass().getName());
                 }
             }
             if(guiScreen instanceof GuiContainer) {
@@ -154,7 +155,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             // Copy some info about current selected stack for auto-refill
             ItemStack currentStack = getFocusedStack();
-            storedStackId = (currentStack == null) ? 0 : currentStack.itemID;
+            storedStackId = (currentStack == null) ? 0 : Item.func_150891_b(currentStack.getItem());
             storedStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
             if(!wasInGUI) {
                 wasInGUI = true;
@@ -176,8 +177,8 @@ public class InvTweaks extends InvTweaksObfuscation {
             // Check current GUI
             GuiScreen guiScreen = getCurrentScreen();
             if(guiScreen == null || (guiScreen instanceof GuiContainer && (isValidChest(
-                    ((GuiContainer) guiScreen).inventorySlots) || isValidInventory(
-                    ((GuiContainer) guiScreen).inventorySlots)))) {
+                    ((GuiContainer) guiScreen).field_147002_h) || isValidInventory(
+                    ((GuiContainer) guiScreen).field_147002_h)))) {
                 // Sorting!
                 handleSorting(guiScreen);
             }
@@ -222,7 +223,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 List<Integer> prefferedPositions = new LinkedList<Integer>();
                 IItemTree tree = config.getTree();
                 ItemStack stack = containerMgr.getItemStack(currentSlot);
-                List<IItemTreeItem> items = tree.getItems(stack.itemID, stack.getItemDamage());
+                List<IItemTreeItem> items = tree.getItems(Item.func_150891_b(stack.getItem()), stack.getItemDamage());
                 for(InvTweaksConfigSortingRule rule : config.getRules()) {
                     if(tree.matches(items, rule.getKeyword())) {
                         for(int slot : rule.getPreferredSlots()) {
@@ -284,7 +285,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             if(orderI == orderJ) {
                 // Items of same keyword orders can have different IDs,
                 // in the case of categories defined by a range of IDs
-                if(i.itemID == j.itemID) {
+                if(i.getItem() == j.getItem()) {
                     boolean iHasName = i.hasDisplayName();
                     boolean jHasName = j.hasDisplayName();
                     if(iHasName || jHasName) {
@@ -347,7 +348,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                         return jEnchs.size() - iEnchs.size();
                     }
                 } else {
-                    return j.itemID - i.itemID;
+                    return Item.func_150891_b(j.getItem()) - Item.func_150891_b(i.getItem());
                 }
             } else {
                 return orderI - orderJ;
@@ -559,7 +560,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void handleAutoRefill() {
 
         ItemStack currentStack = getFocusedStack();
-        int currentStackId = (currentStack == null) ? 0 : currentStack.itemID;
+        int currentStackId = (currentStack == null) ? 0 : Item.func_150891_b(currentStack.getItem());
         int currentStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
         InvTweaksConfig config = cfgManager.getConfig();
@@ -568,7 +569,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             if(storedFocusedSlot != focusedSlot) { // Filter selection change
                 storedFocusedSlot = focusedSlot;
-            } else if((currentStack == null || currentStack.itemID == 281 && storedStackId == 282)
+            } else if((currentStack == null || Item.func_150891_b(currentStack.getItem()) == 281 && storedStackId == 282)
                     // Handle eaten mushroom soup
                     && (getCurrentScreen() == null || // Filter open inventory or other window
                     isGuiEditSign(
@@ -622,7 +623,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                      .equals(InvTweaksConfig.VALUE_TRUE) && guiScreen instanceof GuiContainer) {
 
                 GuiContainer guiContainer = (GuiContainer) guiScreen;
-                Container container = guiContainer.inventorySlots;
+                Container container = guiContainer.field_147002_h;
 
                 if(!chestAlgorithmButtonDown) {
                     chestAlgorithmButtonDown = true;
@@ -705,7 +706,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         InvTweaksConfig config = cfgManager.getConfig();
 
-        Container container = guiScreen.inventorySlots;
+        Container container = guiScreen.field_147002_h;
 
         boolean isValidChest = isValidChest(container);
 
@@ -722,12 +723,12 @@ public class InvTweaks extends InvTweaksObfuscation {
             // Look for the mods buttons
             boolean customButtonsAdded = false;
 
-            List<Object> controlList = guiScreen.buttonList;
+            List<Object> controlList = guiScreen.field_146292_n;
             List<Object> toRemove = new ArrayList<Object>();
             for(Object o : controlList) {
                 if(isGuiButton(o)) {
                     GuiButton button = (GuiButton) o;
-                    if(button.id >= InvTweaksConst.JIMEOWAN_ID && button.id < (InvTweaksConst.JIMEOWAN_ID + 4)) {
+                    if(button.field_146127_k >= InvTweaksConst.JIMEOWAN_ID && button.field_146127_k < (InvTweaksConst.JIMEOWAN_ID + 4)) {
                         if(relayout) {
                             toRemove.add(button);
                         } else {
@@ -738,7 +739,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 }
             }
             controlList.removeAll(toRemove);
-            guiScreen.buttonList = controlList;
+            guiScreen.field_146292_n = controlList;
 
             if(!customButtonsAdded) {
 
@@ -749,8 +750,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                 // Inventory button
                 if(!isValidChest) {
                     controlList.add(new InvTweaksGuiSettingsButton(cfgManager, InvTweaksConst.JIMEOWAN_ID,
-                                                                   guiContainer.guiLeft + guiContainer.xSize - 15,
-                                                                   guiContainer.guiTop + 5, w, h, "...", StatCollector
+                                                                   guiContainer.field_147003_i + guiContainer.field_146999_f - 15,
+                                                                   guiContainer.field_147009_r + 5, w, h, "...", StatCollector
                             .translateToLocal("invtweaks.button.settings.tooltip"),
                                                                    customTextureAvailable));
                 }
@@ -761,13 +762,13 @@ public class InvTweaks extends InvTweaksObfuscation {
                     chestAlgorithmClickTimestamp = 0;
 
                     int id = InvTweaksConst.JIMEOWAN_ID,
-                            x = guiContainer.guiLeft + guiContainer.xSize - 16,
-                            y = guiContainer.guiTop + 5;
-                    boolean isChestWayTooBig = isLargeChest(guiContainer.inventorySlots);
+                            x = guiContainer.field_147003_i + guiContainer.field_146999_f - 16,
+                            y = guiContainer.field_147009_r + 5;
+                    boolean isChestWayTooBig = isLargeChest(guiContainer.field_147002_h);
 
                     // NotEnoughItems compatibility
                     if(isChestWayTooBig && isNEIEnabled) {
-                        x = guiContainer.guiLeft + guiContainer.xSize - 35;
+                        x = guiContainer.field_147003_i + guiContainer.field_146999_f - 35;
                         y += 50;
                     }
 
@@ -813,12 +814,12 @@ public class InvTweaks extends InvTweaksObfuscation {
         } else {
             // Remove "..." button from non-survival tabs of the creative screen
             if(isGuiInventoryCreative(guiScreen)) {
-                List<Object> controlList = guiScreen.buttonList;
+                List<Object> controlList = guiScreen.field_146292_n;
                 GuiButton buttonToRemove = null;
                 for(Object o : controlList) {
                     if(isGuiButton(o)) {
                         // GuiButton
-                        if(((GuiButton) o).id == InvTweaksConst.JIMEOWAN_ID) {
+                        if(((GuiButton) o).field_146127_k == InvTweaksConst.JIMEOWAN_ID) {
                             buttonToRemove = (GuiButton) o;
                             break;
                         }
@@ -865,7 +866,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void handleShortcuts(GuiContainer guiScreen) {
 
         // Check open GUI
-        if(!(isValidChest(guiScreen.inventorySlots) || isStandardInventory(guiScreen.inventorySlots))) {
+        if(!(isValidChest(guiScreen.field_147002_h) || isStandardInventory(guiScreen.field_147002_h))) {
             return;
         }
 
@@ -888,12 +889,12 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private int getItemOrder(ItemStack itemStack) {
         List<IItemTreeItem> items = cfgManager.getConfig().getTree()
-                                              .getItems(itemStack.itemID, itemStack.getItemDamage());
+                                              .getItems(Item.func_150891_b(itemStack.getItem()), itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
     private int getContainerRowSize(GuiContainer guiContainer) {
-        return getSpecialChestRowSize(guiContainer.inventorySlots);
+        return getSpecialChestRowSize(guiContainer.field_147002_h);
     }
 
     private boolean isSortingShortcutDown() {
@@ -959,7 +960,8 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void playClick() {
         if(!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
                       .equals(InvTweaksConfig.VALUE_FALSE)) {
-            mc.sndManager.playSoundFX("random.click", 0.6F, 1.8F);
+            // TODO: Figure out new sound system
+            //mc.func_147118_V().playSoundFX("random.click", 0.6F, 1.8F);
         }
     }
 

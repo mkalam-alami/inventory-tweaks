@@ -1,10 +1,10 @@
 package invtweaks;
 
+import org.apache.logging.log4j.Logger;
+
 import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.Vector;
-import java.util.logging.Logger;
-
 
 /**
  * Stores a whole configuration defined by rules. Several of them can be stored in the global configuration, as the mod

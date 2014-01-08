@@ -4,12 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.Point;
 
 import java.util.List;
-import java.util.logging.Logger;
-
 
 /**
  * The inventory and chest settings menu.
@@ -47,27 +46,27 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
     public void initGui() {
 
-        List<Object> controlList = buttonList;
+        List<Object> controlList = field_146292_n;
         Point p = new Point();
         moveToButtonCoords(1, p);
-        controlList.add(new GuiButton(ID_DONE, p.getX() + 55, height / 6 + 168,
+        controlList.add(new GuiButton(ID_DONE, p.getX() + 55, field_146295_m / 6 + 168,
                                       LABEL_DONE)); // GuiButton
 
         // Save control list
-        buttonList = controlList;
+        field_146292_n = controlList;
 
     }
 
     public void drawScreen(int i, int j, float f) {
-        drawDefaultBackground();
+        func_146276_q_();
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.title"),
-                           width / 2, 20, 0xffffff);
+                           field_146294_l / 2, 20, 0xffffff);
         super.drawScreen(i, j, f);
     }
 
     protected void actionPerformed(GuiButton guibutton) {
         // GuiButton
-        if(guibutton.id == ID_DONE) {
+        if(guibutton.field_146127_k == ID_DONE) {
             obf.displayGuiScreen(parentScreen);
         }
     }
@@ -79,14 +78,14 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     }
 
     protected void moveToButtonCoords(int buttonOrder, Point p) {
-        p.setX(width / 2 - 155 + ((buttonOrder + 1) % 2) * 160);
-        p.setY(height / 6 + (buttonOrder / 2) * 24);
+        p.setX(field_146294_l / 2 - 155 + ((buttonOrder + 1) % 2) * 160);
+        p.setY(field_146295_m / 6 + (buttonOrder / 2) * 24);
     }
 
     protected void toggleBooleanButton(GuiButton guibutton, String property, String label) {
         Boolean enabled = !Boolean.valueOf(config.getProperty(property));
         config.setProperty(property, enabled.toString());
-        guibutton.displayString = computeBooleanButtonLabel(property, label);
+        guibutton.field_146126_j = computeBooleanButtonLabel(property, label);
     }
 
     protected String computeBooleanButtonLabel(String property, String label) {

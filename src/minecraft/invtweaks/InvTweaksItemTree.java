@@ -1,15 +1,16 @@
 package invtweaks;
 
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import invtweaks.api.IItemTree;
 import invtweaks.api.IItemTreeCategory;
 import invtweaks.api.IItemTreeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Contains the whole hierarchy of categories and items, as defined in the XML item tree. Is used to recognize keywords
@@ -102,7 +103,7 @@ public class InvTweaksItemTree implements IItemTree {
         try {
             return getRootCategory().findKeywordDepth(keyword);
         } catch(NullPointerException e) {
-            log.severe("The root category is missing: " + e.getMessage());
+            log.error("The root category is missing: " + e.getMessage());
             return 0;
         }
     }
@@ -116,7 +117,7 @@ public class InvTweaksItemTree implements IItemTree {
             try {
                 return getRootCategory().findCategoryOrder(keyword);
             } catch(NullPointerException e) {
-                log.severe("The root category is missing: " + e.getMessage());
+                log.error("The root category is missing: " + e.getMessage());
                 return -1;
             }
         }
@@ -315,22 +316,23 @@ public class InvTweaksItemTree implements IItemTree {
         }
     }
 
+    //FIXME: This probably doesn't work with FML messing with ID on connection to servers.
     @Override
     public void registerOre(String category, String name, String oreName, int order) {
         for(ItemStack i : OreDictionary.getOres(oreName)) {
-            addItem(category, new InvTweaksItemTreeItem(name, i.itemID, i.getItemDamage(), order));
+            addItem(category, new InvTweaksItemTreeItem(name, Item.func_150891_b(i.getItem()), i.getItemDamage(), order));
         }
         oresRegistered.add(new OreDictInfo(category, name, oreName, order));
     }
 
     private List<OreDictInfo> oresRegistered = new ArrayList<OreDictInfo>();
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void oreRegistered(OreDictionary.OreRegisterEvent ev) {
         for(OreDictInfo ore : oresRegistered) {
             if(ore.oreName.equals(ev.Name)) {
                 addItem(ore.category,
-                        new InvTweaksItemTreeItem(ore.name, ev.Ore.itemID, ev.Ore.getItemDamage(), ore.order));
+                        new InvTweaksItemTreeItem(ore.name, Item.func_150891_b(ev.Ore.getItem()), ev.Ore.getItemDamage(), ore.order));
             }
         }
     }

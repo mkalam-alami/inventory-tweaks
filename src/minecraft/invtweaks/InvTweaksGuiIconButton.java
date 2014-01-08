@@ -26,25 +26,26 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
         this.useCustomTexture = useCustomTexture;
     }
 
-    public void drawButton(Minecraft minecraft, int i, int j) {
-        super.drawButton(minecraft, i, j);
+    @Override
+    public void func_146112_a(Minecraft minecraft, int i, int j) {
+        super.func_146112_a(minecraft, i, j);
 
         // Draw background (use the 4 corners of the texture to fit best its small size)
-        int k = getHoverState(isMouseOverButton(i, j));
+        int k = func_146114_a(isMouseOverButton(i, j));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if(useCustomTexture) {
             minecraft.getTextureManager().bindTexture(resourceButtonCustom);
-            drawTexturedModalRect(xPosition, yPosition, (k - 1) * 10, 0, width, height);
+            drawTexturedModalRect(field_146128_h, field_146129_i, (k - 1) * 10, 0, field_146120_f, field_146121_g);
         } else {
             minecraft.getTextureManager().bindTexture(resourceButtonDefault);
-            drawTexturedModalRect(xPosition, yPosition, 1, 46 + k * 20 + 1, width / 2, height / 2);
-            drawTexturedModalRect(xPosition, yPosition + height / 2, 1, 46 + k * 20 + 20 - height / 2 - 1, width / 2,
-                                  height / 2);
-            drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2 - 1, 46 + k * 20 + 1, width / 2,
-                                  height / 2);
-            drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2, 200 - width / 2 - 1,
-                                  46 + k * 20 + 19 - height / 2, width / 2, height / 2);
+            drawTexturedModalRect(field_146128_h, field_146129_i, 1, 46 + k * 20 + 1, field_146120_f / 2, field_146121_g / 2);
+            drawTexturedModalRect(field_146128_h, field_146129_i + field_146121_g / 2, 1, 46 + k * 20 + 20 - field_146121_g / 2 - 1, field_146120_f / 2,
+                                  field_146121_g / 2);
+            drawTexturedModalRect(field_146128_h + field_146120_f / 2, field_146129_i, 200 - field_146120_f / 2 - 1, 46 + k * 20 + 1, field_146120_f / 2,
+                                  field_146121_g / 2);
+            drawTexturedModalRect(field_146128_h + field_146120_f / 2, field_146129_i + field_146121_g / 2, 200 - field_146120_f / 2 - 1,
+                                  46 + k * 20 + 19 - field_146121_g / 2, field_146120_f / 2, field_146121_g / 2);
         }
 
     }

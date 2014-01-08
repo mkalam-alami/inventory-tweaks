@@ -1,4 +1,4 @@
-package invtweaks.forge;
+/*package invtweaks.forge;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -57,3 +57,4 @@ public class PacketHandler implements IPacketHandler {
         realPlayer.sendContainerAndContentsToPlayer(realPlayer.openContainer, arraylist);
     }
 }
+*/

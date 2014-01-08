@@ -3,10 +3,9 @@ package invtweaks;
 
 import invtweaks.api.IItemTreeCategory;
 import invtweaks.api.IItemTreeItem;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.logging.Logger;
-
 /**
  * Representation of a category in the item tree, i.e. a group of items.
  *

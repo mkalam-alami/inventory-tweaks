@@ -8,11 +8,11 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
 
 /**
  * Core of the sorting behaviour. Allows to move items in a container (inventory or chest) with respect to the mod's
@@ -130,7 +130,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         //// Sort remaining
         defaultSorting();
 
-        if(log.getLevel() == InvTweaksConst.DEBUG) {
+        if(log.isEnabled(InvTweaksConst.DEBUG)) {
             timer = System.nanoTime() - timer;
             log.info("Sorting done in " + timer + "ns");
         }
@@ -154,7 +154,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         for(InvTweaksConfigSortingRule rule : rules) {
             int rulePriority = rule.getPriority();
 
-            if(log.getLevel() == InvTweaksConst.DEBUG) {
+            if(log.isEnabled(InvTweaksConst.DEBUG)) {
                 log.info("Rule : " + rule.getKeyword() + "(" + rulePriority + ")");
             }
 
@@ -164,7 +164,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
                 // If the rule is strong enough to move the item and it matches the item, move it
                 if(hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
-                    List<IItemTreeItem> fromItems = tree.getItems(from.itemID, from.getItemDamage());
+                    List<IItemTreeItem> fromItems = tree.getItems(Item.func_150891_b(from.getItem()), from.getItemDamage());
                     if(tree.matches(fromItems, rule.getKeyword())) {
 
                         // Test preffered slots
@@ -180,7 +180,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                     break;
                                 } else {
                                     from = containerMgr.getItemStack(moveResult);
-                                    fromItems = tree.getItems(from.itemID, from.getItemDamage());
+                                    fromItems = tree.getItems(Item.func_150891_b(from.getItem()), from.getItemDamage());
                                     if(!tree.matches(fromItems, rule.getKeyword())) {
                                         break;
                                     } else {
@@ -313,7 +313,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         for(int i = 0; i < size; i++) {
             ItemStack stack = containerMgr.getItemStack(i);
             if(stack != null) {
-                List<Integer> item = Arrays.asList(stack.itemID, stack.getItemDamage());
+                List<Integer> item = Arrays.asList(Item.func_150891_b(stack.getItem()), stack.getItemDamage());
                 int[] count = itemCounts.get(item);
                 if(count == null) {
                     int[] newCount = {stack.stackSize, 1};
@@ -333,13 +333,13 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
             //skip hacked itemstacks that are larger than their max size
             //no idea why they would be here, but may as well account for them anyway
-            if(numPerSlot <= new ItemStack(item.get(0), 1, 0).getMaxStackSize()) {
+            if(numPerSlot <= new ItemStack(Item.func_150899_d(item.get(0)), 1, 0).getMaxStackSize()) {
                 //linkedlists to store which stacks have too many/few items
                 LinkedList<Integer> smallStacks = new LinkedList<Integer>();
                 LinkedList<Integer> largeStacks = new LinkedList<Integer>();
                 for(int i = 0; i < size; i++) {
                     ItemStack stack = containerMgr.getItemStack(i);
-                    if(stack != null && Arrays.asList(stack.itemID, stack.getItemDamage()).equals(item)) {
+                    if(stack != null && Arrays.asList(Item.func_150891_b(stack.getItem()), stack.getItemDamage()).equals(item)) {
                         int stackSize = stack.stackSize;
                         if(stackSize > numPerSlot) {
                             largeStacks.offer(i);
@@ -413,7 +413,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             remaining.addAll(nextRemaining);
         }
         if(iterations == 100) {
-            log.warning("Sorting takes too long, aborting.");
+            log.warn("Sorting takes too long, aborting.");
         }
 
     }
@@ -555,7 +555,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     }
 
     private int getItemOrder(ItemStack itemStack) {
-        List<IItemTreeItem> items = tree.getItems(itemStack.itemID, itemStack.getItemDamage());
+        List<IItemTreeItem> items = tree.getItems(Item.func_150891_b(itemStack.getItem()), itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
@@ -697,10 +697,10 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         for(int i = 0; i < size; i++) {
             ItemStack stack = containerMgr.getItemStack(i);
             if(stack != null) {
-                int itemSearchKey = stack.itemID * 100000 + ((stack.getMaxStackSize() != 1) ? stack.getItemDamage() : 0);
+                int itemSearchKey = Item.func_150891_b(stack.getItem()) * 100000 + ((stack.getMaxStackSize() != 1) ? stack.getItemDamage() : 0);
                 IItemTreeItem item = itemSearch.get(itemSearchKey);
                 if(item == null) {
-                    item = tree.getItems(stack.itemID, stack.getItemDamage()).get(0);
+                    item = tree.getItems(Item.func_150891_b(stack.getItem()), stack.getItemDamage()).get(0);
                     itemSearch.put(itemSearchKey, item);
                     stats.put(item, 1);
                 } else {

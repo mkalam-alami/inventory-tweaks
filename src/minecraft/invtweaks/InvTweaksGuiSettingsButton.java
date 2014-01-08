@@ -2,9 +2,9 @@ package invtweaks;
 
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
+import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
 
 /**
  * Button that opens the inventory & chest settings screen.
@@ -20,23 +20,25 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
         super(cfgManager, id, x, y, w, h, displayString, tooltip, useCustomTexture);
     }
 
-    public void drawButton(Minecraft minecraft, int i, int j) {
-        super.drawButton(minecraft, i, j);
+    @Override
+    public void func_146112_a(Minecraft minecraft, int i, int j) {
+        super.func_146112_a(minecraft, i, j);
 
         // Display string
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
-        drawCenteredString(obf.getFontRenderer(), displayString, xPosition + 5, yPosition - 1, getTextColor(i, j));
+        drawCenteredString(obf.getFontRenderer(), field_146126_j, field_146128_h + 5, field_146129_i - 1, getTextColor(i, j));
     }
 
     /**
      * Displays inventory settings GUI
      */
-    public boolean mousePressed(Minecraft minecraft, int i, int j) {
+    @Override
+    public boolean func_146116_c(Minecraft minecraft, int i, int j) {
 
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
         InvTweaksConfig config = cfgManager.getConfig();
 
-        if(super.mousePressed(minecraft, i, j)) {
+        if(super.func_146116_c(minecraft, i, j)) {
             // Put hold item down if necessary
             InvTweaksContainerSectionManager containerMgr;
 
@@ -56,7 +58,7 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
                     }
                 }
             } catch(Exception e) {
-                log.severe(e.getMessage());
+                log.error("mousePressed", e);
             }
 
             // Refresh config

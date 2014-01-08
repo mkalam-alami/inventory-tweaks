@@ -5,12 +5,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.util.Point;
 
 import java.awt.*;
 import java.util.List;
-import java.util.logging.Logger;
-
 
 /**
  * The inventory and chest advanced settings menu.
@@ -47,14 +46,14 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     public void initGui() {
         super.initGui();
 
-        List<Object> controlList = buttonList;
+        List<Object> controlList = field_146292_n;
         Point p = new Point();
         int i = 0;
 
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new GuiButton(ID_EDITSHORTCUTS, p.getX() + 55, height / 6 + 144,
+        controlList.add(new GuiButton(ID_EDITSHORTCUTS, p.getX() + 55, field_146295_m / 6 + 144,
                                       StatCollector.translateToLocal("invtweaks.settings.advanced.mappingsfile")));
 
         // Create settings buttons
@@ -106,23 +105,23 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                 if(obf.isGuiButton(o)) {
                     GuiButton button = (GuiButton) o;
                     // GuiButton
-                    if(button.id == ID_EDITSHORTCUTS) {
+                    if(button.field_146127_k == ID_EDITSHORTCUTS) {
                         // GuiButton
-                        button.enabled = false;
+                        button.field_146124_l = false;
                     }
                 }
             }
         }
 
         // Save control list
-        buttonList = controlList;
+        field_146292_n = controlList;
 
     }
 
     public void drawScreen(int i, int j, float f) {
         super.drawScreen(i, j, f);
 
-        int x = width / 2;
+        int x = field_146294_l / 2;
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt1"), x, 40, 0x999999);
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt2"), x, 50, 0x999999);
     }
@@ -130,7 +129,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     protected void actionPerformed(GuiButton guibutton) {
 
         // GuiButton
-        switch(guibutton.id) {
+        switch(guibutton.field_146127_k) {
 
             // Toggle auto-refill sound
             case ID_SORT_ON_PICKUP:

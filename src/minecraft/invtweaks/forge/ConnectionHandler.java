@@ -1,4 +1,4 @@
-package invtweaks.forge;
+/*package invtweaks.forge;
 
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
@@ -44,3 +44,4 @@ public class ConnectionHandler implements IConnectionHandler {
         InvTweaksMod.proxy.setServerHasInvTweaks(false);
     }
 }
+*/

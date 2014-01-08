@@ -1,8 +1,8 @@
 package invtweaks;
 
-import java.awt.*;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.Logger;
 
+import java.awt.*;
 
 /**
  * Stores a sorting rule, as a target plus a keyword. The target is provided as an array of preferred slots (ex: target

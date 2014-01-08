@@ -5,9 +5,13 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT'
     }
 }
 
@@ -17,7 +21,8 @@ if(!invtweaks_version) {
     invtweaks_version = "UNKNOWN"
 }
 
-build_number = System.getenv("BUILD_NUMBER")
+ext.build_number = System.getenv("BUILD_NUMBER")
+
 if(build_number)  {
     version = invtweaks_version + "-" + build_number
 } else {
@@ -27,8 +32,8 @@ group = "inventorytweaks" // No stupid URL conventions
 archivesBaseName = "InventoryTweaks"
 
 minecraft {
-    version = "1.6.4-9.11.1.964"
-    at 'src/minecraft/invtweaks_at_src.cfg'
+    version = "1.7.2-10.12.0.996"
+    at 'src/minecraft/invtweaks_at.cfg'
 }
 
 sourceCompatibility = 1.6

@@ -9,13 +9,14 @@ import java.util.Map;
 public class FMLPlugin implements IFMLLoadingPlugin {
     public static boolean runtimeDeobfEnabled = false;
 
-    public String[] getLibraryRequestClass() {
-        return new String[0];
+    @Override
+    public String[] getASMTransformerClass() {
+        return new String[] {"invtweaks.forge.asm.ContainerTransformer"};
     }
 
     @Override
-    public String[] getASMTransformerClass() {
-        return new String[] {/*"invtweaks.forge.asm.ITAccessTransformer", */"invtweaks.forge.asm.ContainerTransformer"};
+    public String getAccessTransformerClass() {
+        return "invtweaks.forge.asm.ITAccessTransformer";
     }
 
     @Override

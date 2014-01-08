@@ -1,28 +1,23 @@
 package invtweaks.forge;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.IPickupNotifier;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import invtweaks.InvTweaks;
 import invtweaks.InvTweaksConfig;
-import invtweaks.InvTweaksConst;
 import invtweaks.InvTweaksItemTreeLoader;
 import invtweaks.api.IItemTreeListener;
+import invtweaks.network.packets.ITPacketClick;
+import invtweaks.network.packets.ITPacketSortComplete;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet250CustomPayload;
 
-public class ClientProxy extends CommonProxy implements IPickupNotifier {
+public class ClientProxy extends CommonProxy {
     private InvTweaks instance;
     private ForgeClientTick clientTick;
     public boolean serverSupportEnabled = false;
@@ -39,11 +34,11 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
         // Instantiate mod core
         instance = new InvTweaks(mc);
         clientTick = new ForgeClientTick(instance);
-        TickRegistry.registerTickHandler(clientTick, Side.CLIENT);
-        GameRegistry.registerPickupHandler(this);
+        //TickRegistry.registerTickHandler(clientTick, Side.CLIENT);
+        //GameRegistry.registerPickupHandler(this);
     }
 
-    @Override
+    @SubscribeEvent
     public void notifyPickup(EntityItem item, EntityPlayer player) {
         instance.setItemPickupPending(true);
     }
@@ -51,8 +46,7 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
     @Override
     public void setServerAssistEnabled(boolean enabled) {
         serverSupportEnabled = serverSupportDetected && enabled;
-        InvTweaks.log
-                 .info("Server has support: " + serverSupportDetected + " support enabled: " + serverSupportEnabled);
+        //InvTweaks.log.info("Server has support: " + serverSupportDetected + " support enabled: " + serverSupportEnabled);
     }
 
     @Override
@@ -61,7 +55,7 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
         serverSupportEnabled = hasInvTweaks && !InvTweaks.getConfigManager().getConfig()
                                                          .getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP)
                                                          .equals(InvTweaksConfig.VALUE_FALSE);
-        InvTweaks.log.info("Server has support: " + hasInvTweaks + " support enabled: " + serverSupportEnabled);
+        //InvTweaks.log.info("Server has support: " + hasInvTweaks + " support enabled: " + serverSupportEnabled);
     }
 
     @Override
@@ -71,14 +65,16 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
         if(serverSupportEnabled) {
             player.openContainer.slotClick(slot, data, action, player);
 
-            ByteArrayDataOutput packetData = ByteStreams.newDataOutput();
+            invtweaksChannel.get(Side.CLIENT).writeOutbound(new ITPacketClick(slot, data, action));
+
+            /*ByteArrayDataOutput packetData = ByteStreams.newDataOutput();
             packetData.writeByte(InvTweaksConst.PACKET_CLICK);
             packetData.writeInt(slot);
             packetData.writeInt(data);
             packetData.writeInt(action);
 
             Packet250CustomPayload packet = PacketDispatcher.getPacket("InventoryTweaks", packetData.toByteArray());
-            PacketDispatcher.sendPacketToServer(packet);
+            PacketDispatcher.sendPacketToServer(packet);*/
         } else {
             playerController.windowClick(windowId, slot, data, action, player);
         }
@@ -87,9 +83,10 @@ public class ClientProxy extends CommonProxy implements IPickupNotifier {
     @Override
     public void sortComplete() {
         if(serverSupportEnabled) {
-            Packet250CustomPayload pkt = new Packet250CustomPayload("InventoryTweaks",
+            invtweaksChannel.get(Side.CLIENT).writeOutbound(new ITPacketSortComplete());
+        /*    Packet250CustomPayload pkt = new Packet250CustomPayload("InventoryTweaks",
                                                                     new byte[] {InvTweaksConst.PACKET_SORTCOMPLETE});
-            PacketDispatcher.sendPacketToServer(pkt);
+            PacketDispatcher.sendPacketToServer(pkt);*/
         }
     }
 

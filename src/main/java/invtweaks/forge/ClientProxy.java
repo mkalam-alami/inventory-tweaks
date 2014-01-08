@@ -1,9 +1,11 @@
 package invtweaks.forge;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.relauncher.Side;
 import invtweaks.InvTweaks;
 import invtweaks.InvTweaksConfig;
@@ -34,12 +36,14 @@ public class ClientProxy extends CommonProxy {
         // Instantiate mod core
         instance = new InvTweaks(mc);
         clientTick = new ForgeClientTick(instance);
+        FMLCommonHandler.instance().bus().register(clientTick);
+        FMLCommonHandler.instance().bus().register(this);
         //TickRegistry.registerTickHandler(clientTick, Side.CLIENT);
         //GameRegistry.registerPickupHandler(this);
     }
 
     @SubscribeEvent
-    public void notifyPickup(EntityItem item, EntityPlayer player) {
+    public void notifyPickup(PlayerEvent.ItemPickupEvent e) {
         instance.setItemPickupPending(true);
     }
 

@@ -1,9 +1,13 @@
 package invtweaks.forge;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
+import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import invtweaks.InvTweaksConst;
@@ -13,6 +17,7 @@ import invtweaks.network.ITMessageToMessageCodec;
 import invtweaks.network.handlers.ClickMessageHandler;
 import invtweaks.network.handlers.LoginMessageHandler;
 import invtweaks.network.handlers.SortingCompleteMessageHandler;
+import invtweaks.network.packets.ITPacketLogin;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,6 +35,9 @@ public class CommonProxy implements InvTweaksAPI {
                                           .newChannel(InvTweaksConst.INVTWEAKS_CHANNEL, new ITMessageToMessageCodec(),
                                                       new ClickMessageHandler(), new LoginMessageHandler(),
                                                       new SortingCompleteMessageHandler());
+
+
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     public void postInit(FMLPostInitializationEvent e) {
@@ -81,4 +89,14 @@ public class CommonProxy implements InvTweaksAPI {
         return 0;
     }
 
+    @SubscribeEvent
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent e) {
+        FMLEmbeddedChannel channel = invtweaksChannel.get(Side.SERVER);
+
+        channel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(
+                FMLOutboundHandler.OutboundTarget.PLAYER);
+        channel.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(e.player);
+
+        channel.writeOutbound(new ITPacketLogin());
+    }
 }

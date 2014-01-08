@@ -26,18 +26,21 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
+        super.preInit(e);
+
         InvTweaks.log = e.getModLog();
     }
 
     @Override
     public void init(FMLInitializationEvent e) {
+        super.init(e);
+
         Minecraft mc = FMLClientHandler.instance().getClient();
         // Instantiate mod core
         instance = new InvTweaks(mc);
         clientTick = new ForgeClientTick(instance);
 
         FMLCommonHandler.instance().bus().register(clientTick);
-        FMLCommonHandler.instance().bus().register(this);
     }
 
     @SubscribeEvent
@@ -57,7 +60,7 @@ public class ClientProxy extends CommonProxy {
         serverSupportEnabled = hasInvTweaks && !InvTweaks.getConfigManager().getConfig()
                                                          .getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP)
                                                          .equals(InvTweaksConfig.VALUE_FALSE);
-        //InvTweaks.log.info("Server has support: " + hasInvTweaks + " support enabled: " + serverSupportEnabled);
+        InvTweaks.log.info("Server has support: " + hasInvTweaks + " support enabled: " + serverSupportEnabled);
     }
 
     @Override

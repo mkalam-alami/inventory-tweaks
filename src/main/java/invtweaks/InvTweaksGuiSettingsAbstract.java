@@ -44,6 +44,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
         this.config = config;
     }
 
+    @Override
     public void initGui() {
 
         List<Object> controlList = field_146292_n;
@@ -57,6 +58,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
     }
 
+    @Override
     public void drawScreen(int i, int j, float f) {
         func_146276_q_();
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.title"),
@@ -64,13 +66,15 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
         super.drawScreen(i, j, f);
     }
 
-    protected void actionPerformed(GuiButton guibutton) {
+    @Override
+    protected void func_146284_a(GuiButton guibutton) {
         // GuiButton
         if(guibutton.field_146127_k == ID_DONE) {
             obf.displayGuiScreen(parentScreen);
         }
     }
 
+    @Override
     protected void keyTyped(char c, int keyCode) {
         if(keyCode == Keyboard.KEY_ESCAPE) {
             obf.displayGuiScreen(parentScreen);

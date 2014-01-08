@@ -19,6 +19,7 @@ public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
         super(mc, parentScreen, config);
     }
 
+    @Override
     public void drawScreen(int i, int j, float f) {
         super.drawScreen(i, j, f);
 
@@ -29,7 +30,8 @@ public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.bugsorting.pt4"), x, 150, 0xFFFF99);
     }
 
-    protected void actionPerformed(GuiButton guibutton) {
+    @Override
+    protected void func_146284_a(GuiButton guibutton) {
         // GuiButton
         switch(guibutton.field_146127_k) {
             // Back to main settings screen

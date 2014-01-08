@@ -43,6 +43,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         labelServerAssist = StatCollector.translateToLocal("invtweaks.settings.advanced.serverassist");
     }
 
+    @Override
     public void initGui() {
         super.initGui();
 
@@ -118,6 +119,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
     }
 
+    @Override
     public void drawScreen(int i, int j, float f) {
         super.drawScreen(i, j, f);
 
@@ -126,7 +128,8 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt2"), x, 50, 0x999999);
     }
 
-    protected void actionPerformed(GuiButton guibutton) {
+    @Override
+    protected void func_146284_a(GuiButton guibutton) {
 
         // GuiButton
         switch(guibutton.field_146127_k) {

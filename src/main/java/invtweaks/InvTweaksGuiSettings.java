@@ -55,6 +55,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         labelBugSorting = StatCollector.translateToLocal("invtweaks.help.bugsorting");
     }
 
+    @Override
     public void initGui() {
         super.initGui();
 
@@ -161,8 +162,9 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
     }
 
-    protected void actionPerformed(GuiButton guibutton) {
-        super.actionPerformed(guibutton);
+    @Override
+    protected void func_146284_a(GuiButton guibutton) {
+        super.func_146284_a(guibutton);
 
         // GuiButton
         switch(guibutton.field_146127_k) {
@@ -240,6 +242,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
     }
 
+    @Override
     protected void keyTyped(char c, int keyCode) {
         if(sortMappingEdition) {
             String keyName = Keyboard.getKeyName(keyCode);

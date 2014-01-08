@@ -2,6 +2,7 @@ package invtweaks;
 
 import invtweaks.api.IItemTreeItem;
 import net.minecraftforge.common.MinecraftForge;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 import java.io.*;
@@ -13,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -23,8 +22,7 @@ import java.util.logging.Logger;
  * @author Jimeo Wan
  */
 public class InvTweaksConfig {
-
-    private static final Logger log = Logger.getLogger("InvTweaks");
+    private static final Logger log = InvTweaks.log;
 
     public static final String PROP_VERSION = "version";
 
@@ -318,10 +316,6 @@ public class InvTweaksConfig {
      */
     public Vector<Integer> getLockedSlots() {
         return rulesets.get(currentRuleset).getLockedSlots();
-    }
-
-    public Level getLogLevel() {
-        return (rulesets.get(currentRuleset).isDebugEnabled()) ? Level.INFO : Level.WARNING;
     }
 
     public boolean isAutoRefillEnabled(int itemID, int itemDamage) {

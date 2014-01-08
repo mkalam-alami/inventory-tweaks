@@ -143,8 +143,6 @@ public class InvTweaksConfigManager {
             config.load();
             shortcutsHandler.loadShortcuts();
 
-            // TODO: Read log4j docs
-            //log.setLevel(config.getLogLevel());
             InvTweaks.logInGameStatic("invtweaks.loadconfig.done");
             showConfigErrors(config);
         } catch(FileNotFoundException e) {

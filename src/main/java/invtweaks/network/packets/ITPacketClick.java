@@ -7,7 +7,8 @@ public class ITPacketClick implements ITPacket {
     public int data;
     public int action;
 
-    public ITPacketClick() { }
+    public ITPacketClick() {
+    }
 
     public ITPacketClick(int _slot, int _data, int _action) {
         slot = _slot;

@@ -99,7 +99,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                                 // Item
                                 if((replacementStack == null || candidateStack.getItemDamage() > replacementStack
                                         .getItemDamage()) && (!refillBeforeBreak || candidateStack.getItem()
-                                                                                                  .getMaxDamage() - candidateStack.getItemDamage() > config
+                                                                                                  .getMaxDamage() - candidateStack
+                                        .getItemDamage() > config
                                         .getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD))) {
                                     replacementStack = candidateStack;
                                     replacementStackSlot = i;
@@ -185,7 +186,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     // In POLLING_DELAY ms, things might have changed
                     try {
                         ItemStack stack = containerMgr.getItemStack(i);
-                        if(stack != null && Item.func_150891_b(stack.getItem()) == expectedItemId || this.refillBeforeBreak) {
+                        if(stack != null && Item
+                                .func_150891_b(stack.getItem()) == expectedItemId || this.refillBeforeBreak) {
                             if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
                                 if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
                                           .equals(InvTweaksConfig.VALUE_FALSE)) {

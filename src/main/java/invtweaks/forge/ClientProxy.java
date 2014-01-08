@@ -15,7 +15,6 @@ import invtweaks.network.packets.ITPacketClick;
 import invtweaks.network.packets.ITPacketSortComplete;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -36,10 +35,9 @@ public class ClientProxy extends CommonProxy {
         // Instantiate mod core
         instance = new InvTweaks(mc);
         clientTick = new ForgeClientTick(instance);
+
         FMLCommonHandler.instance().bus().register(clientTick);
         FMLCommonHandler.instance().bus().register(this);
-        //TickRegistry.registerTickHandler(clientTick, Side.CLIENT);
-        //GameRegistry.registerPickupHandler(this);
     }
 
     @SubscribeEvent
@@ -70,15 +68,6 @@ public class ClientProxy extends CommonProxy {
             player.openContainer.slotClick(slot, data, action, player);
 
             invtweaksChannel.get(Side.CLIENT).writeOutbound(new ITPacketClick(slot, data, action));
-
-            /*ByteArrayDataOutput packetData = ByteStreams.newDataOutput();
-            packetData.writeByte(InvTweaksConst.PACKET_CLICK);
-            packetData.writeInt(slot);
-            packetData.writeInt(data);
-            packetData.writeInt(action);
-
-            Packet250CustomPayload packet = PacketDispatcher.getPacket("InventoryTweaks", packetData.toByteArray());
-            PacketDispatcher.sendPacketToServer(packet);*/
         } else {
             playerController.windowClick(windowId, slot, data, action, player);
         }
@@ -88,9 +77,6 @@ public class ClientProxy extends CommonProxy {
     public void sortComplete() {
         if(serverSupportEnabled) {
             invtweaksChannel.get(Side.CLIENT).writeOutbound(new ITPacketSortComplete());
-        /*    Packet250CustomPayload pkt = new Packet250CustomPayload("InventoryTweaks",
-                                                                    new byte[] {InvTweaksConst.PACKET_SORTCOMPLETE});
-            PacketDispatcher.sendPacketToServer(pkt);*/
         }
     }
 

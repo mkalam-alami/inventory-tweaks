@@ -50,8 +50,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
         List<Object> controlList = field_146292_n;
         Point p = new Point();
         moveToButtonCoords(1, p);
-        controlList.add(new GuiButton(ID_DONE, p.getX() + 55, field_146295_m / 6 + 168,
-                                      LABEL_DONE)); // GuiButton
+        controlList.add(new GuiButton(ID_DONE, p.getX() + 55, field_146295_m / 6 + 168, LABEL_DONE)); // GuiButton
 
         // Save control list
         field_146292_n = controlList;

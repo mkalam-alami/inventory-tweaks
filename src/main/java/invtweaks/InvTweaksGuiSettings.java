@@ -81,22 +81,23 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         String shortcuts = config.getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
         InvTweaksGuiTooltipButton shortcutsBtn = new InvTweaksGuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130,
                                                                                20, computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_SHORTCUTS, labelShortcuts), StatCollector
-                .translateToLocal("invtweaks.settings.shortcuts.tooltip"));
+                InvTweaksConfig.PROP_ENABLE_SHORTCUTS, labelShortcuts),
+                                                                               StatCollector.translateToLocal(
+                                                                                       "invtweaks.settings.shortcuts.tooltip"));
         controlList.add(shortcutsBtn);
         if(shortcuts.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: shortcuts not available
             // GuiButton
             shortcutsBtn.field_146124_l = false;
             shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(" +
-                                            StatCollector.translateToLocal("invtweaks.settings.disableci.tooltip") + ")");
+                                            StatCollector
+                                                    .translateToLocal("invtweaks.settings.disableci.tooltip") + ")");
         }
 
         moveToButtonCoords(i++, p);
         sortMappingButton = new InvTweaksGuiTooltipButton(ID_SORTING_KEY, p.getX(), p.getY(), StatCollector
                 .translateToLocal("invtweaks.settings.key") + " " +
-                config.getProperty(
-                                                                          InvTweaksConfig.PROP_KEY_SORT_INVENTORY));
+                config.getProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY));
         controlList.add(sortMappingButton);
 
         moveToButtonCoords(i++, p);
@@ -113,7 +114,8 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                                                                                 computeBooleanButtonLabel(
                                                                                         InvTweaksConfig.PROP_ENABLE_AUTO_REFILL,
                                                                                         labelAutoRefill), StatCollector
-                .translateToLocal("invtweaks.settings.autorefill.tooltip"));
+                                                                                        .translateToLocal(
+                                                                                                "invtweaks.settings.autorefill.tooltip"));
         controlList.add(autoRefillBtn);
 
         moveToButtonCoords(i++, p);
@@ -121,9 +123,8 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                                                       StatCollector.translateToLocal(
                                                               "invtweaks.settings.moreoptions.tooltip")));
 
-        controlList
-                .add(new InvTweaksGuiTooltipButton(ID_BUG_SORTING, 5, this.field_146295_m - 20, 100, 20, labelBugSorting, null,
-                                                   false));
+        controlList.add(new InvTweaksGuiTooltipButton(ID_BUG_SORTING, 5, this.field_146295_m - 20, 100, 20,
+                                                      labelBugSorting, null, false));
 
         String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
         moveToButtonCoords(i++, p);
@@ -171,7 +172,8 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
             // Switch sorting key
             case ID_SORTING_KEY:
-                sortMappingButton.field_146126_j = StatCollector.translateToLocal("invtweaks.settings.key") + " > ??? <";
+                sortMappingButton.field_146126_j = StatCollector
+                        .translateToLocal("invtweaks.settings.key") + " > ??? <";
                 sortMappingEdition = true;
                 break;
 

@@ -164,7 +164,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
                 // If the rule is strong enough to move the item and it matches the item, move it
                 if(hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
-                    List<IItemTreeItem> fromItems = tree.getItems(Item.func_150891_b(from.getItem()), from.getItemDamage());
+                    List<IItemTreeItem> fromItems = tree
+                            .getItems(Item.func_150891_b(from.getItem()), from.getItemDamage());
                     if(tree.matches(fromItems, rule.getKeyword())) {
 
                         // Test preffered slots
@@ -339,7 +340,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 LinkedList<Integer> largeStacks = new LinkedList<Integer>();
                 for(int i = 0; i < size; i++) {
                     ItemStack stack = containerMgr.getItemStack(i);
-                    if(stack != null && Arrays.asList(Item.func_150891_b(stack.getItem()), stack.getItemDamage()).equals(item)) {
+                    if(stack != null && Arrays.asList(Item.func_150891_b(stack.getItem()), stack.getItemDamage())
+                                              .equals(item)) {
                         int stackSize = stack.stackSize;
                         if(stackSize > numPerSlot) {
                             largeStacks.offer(i);
@@ -697,7 +699,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         for(int i = 0; i < size; i++) {
             ItemStack stack = containerMgr.getItemStack(i);
             if(stack != null) {
-                int itemSearchKey = Item.func_150891_b(stack.getItem()) * 100000 + ((stack.getMaxStackSize() != 1) ? stack.getItemDamage() : 0);
+                int itemSearchKey = Item.func_150891_b(stack.getItem()) * 100000 + ((stack
+                        .getMaxStackSize() != 1) ? stack.getItemDamage() : 0);
                 IItemTreeItem item = itemSearch.get(itemSearchKey);
                 if(item == null) {
                     item = tree.getItems(Item.func_150891_b(stack.getItem()), stack.getItemDamage()).get(0);

@@ -39,13 +39,15 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
             drawTexturedModalRect(field_146128_h, field_146129_i, (k - 1) * 10, 0, field_146120_f, field_146121_g);
         } else {
             minecraft.getTextureManager().bindTexture(resourceButtonDefault);
-            drawTexturedModalRect(field_146128_h, field_146129_i, 1, 46 + k * 20 + 1, field_146120_f / 2, field_146121_g / 2);
-            drawTexturedModalRect(field_146128_h, field_146129_i + field_146121_g / 2, 1, 46 + k * 20 + 20 - field_146121_g / 2 - 1, field_146120_f / 2,
+            drawTexturedModalRect(field_146128_h, field_146129_i, 1, 46 + k * 20 + 1, field_146120_f / 2,
                                   field_146121_g / 2);
-            drawTexturedModalRect(field_146128_h + field_146120_f / 2, field_146129_i, 200 - field_146120_f / 2 - 1, 46 + k * 20 + 1, field_146120_f / 2,
-                                  field_146121_g / 2);
-            drawTexturedModalRect(field_146128_h + field_146120_f / 2, field_146129_i + field_146121_g / 2, 200 - field_146120_f / 2 - 1,
-                                  46 + k * 20 + 19 - field_146121_g / 2, field_146120_f / 2, field_146121_g / 2);
+            drawTexturedModalRect(field_146128_h, field_146129_i + field_146121_g / 2, 1,
+                                  46 + k * 20 + 20 - field_146121_g / 2 - 1, field_146120_f / 2, field_146121_g / 2);
+            drawTexturedModalRect(field_146128_h + field_146120_f / 2, field_146129_i, 200 - field_146120_f / 2 - 1,
+                                  46 + k * 20 + 1, field_146120_f / 2, field_146121_g / 2);
+            drawTexturedModalRect(field_146128_h + field_146120_f / 2, field_146129_i + field_146121_g / 2,
+                                  200 - field_146120_f / 2 - 1, 46 + k * 20 + 19 - field_146121_g / 2,
+                                  field_146120_f / 2, field_146121_g / 2);
         }
 
     }

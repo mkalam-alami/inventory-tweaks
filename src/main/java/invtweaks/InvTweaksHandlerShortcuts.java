@@ -1,6 +1,5 @@
 package invtweaks;
 
-import cpw.mods.fml.common.registry.GameData;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -466,7 +465,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             for(Slot slot : container.getSlots(shortcut.toSection)) {
                 if(slot.getHasStack()) {
                     ItemStack stack = slot.getStack();
-                    if(!stack.hasTagCompound() && stack.isItemEqual(shortcut.fromStack) && stack.stackSize < stack.getMaxStackSize()) {
+                    if(!stack.hasTagCompound() && stack.isItemEqual(shortcut.fromStack) && stack.stackSize < stack
+                            .getMaxStackSize()) {
                         result = i;
                         break;
                     }

@@ -188,7 +188,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      *                    much as possible from the stack size. If not all can be moved to the destination, only moves
      *                    as much as possible.
      * @return false if the destination slot is already occupied by a different item (meaning items cannot be moved to
-     *         destination).
+     * destination).
      * @throws TimeoutException
      */
     // TODO: Server helper directly implementing this.
@@ -262,9 +262,9 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         int slot = indexToSlot(section, index);
         if(slot != -1) {
             int data = (rightClick) ? 1 : 0;
-            InvTweaksMod
-                    .proxy.slotClick(InvTweaks.getInstance().getPlayerController(), container.windowId, slot, data, 0,
-                                     InvTweaks.getInstance().getThePlayer());
+            InvTweaksMod.proxy
+                        .slotClick(InvTweaks.getInstance().getPlayerController(), container.windowId, slot, data, 0,
+                                   InvTweaks.getInstance().getThePlayer());
         }
 
         if(clickDelay > 0) {

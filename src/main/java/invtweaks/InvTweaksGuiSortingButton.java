@@ -30,16 +30,22 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
         // Display symbol
         int textColor = getTextColor(i, j);
         if(field_146126_j.equals("h")) {
-            drawRect(field_146128_h + 3, field_146129_i + 3, field_146128_h + field_146120_f - 3, field_146129_i + 4, textColor);
-            drawRect(field_146128_h + 3, field_146129_i + 6, field_146128_h + field_146120_f - 3, field_146129_i + 7, textColor);
+            drawRect(field_146128_h + 3, field_146129_i + 3, field_146128_h + field_146120_f - 3, field_146129_i + 4,
+                     textColor);
+            drawRect(field_146128_h + 3, field_146129_i + 6, field_146128_h + field_146120_f - 3, field_146129_i + 7,
+                     textColor);
         } else if(field_146126_j.equals("v")) {
-            drawRect(field_146128_h + 3, field_146129_i + 3, field_146128_h + 4, field_146129_i + field_146121_g - 3, textColor);
-            drawRect(field_146128_h + 6, field_146129_i + 3, field_146128_h + 7, field_146129_i + field_146121_g - 3, textColor);
+            drawRect(field_146128_h + 3, field_146129_i + 3, field_146128_h + 4, field_146129_i + field_146121_g - 3,
+                     textColor);
+            drawRect(field_146128_h + 6, field_146129_i + 3, field_146128_h + 7, field_146129_i + field_146121_g - 3,
+                     textColor);
         } else {
-            drawRect(field_146128_h + 3, field_146129_i + 3, field_146128_h + field_146120_f - 3, field_146129_i + 4, textColor);
+            drawRect(field_146128_h + 3, field_146129_i + 3, field_146128_h + field_146120_f - 3, field_146129_i + 4,
+                     textColor);
             drawRect(field_146128_h + 5, field_146129_i + 4, field_146128_h + 6, field_146129_i + 5, textColor);
             drawRect(field_146128_h + 4, field_146129_i + 5, field_146128_h + 5, field_146129_i + 6, textColor);
-            drawRect(field_146128_h + 3, field_146129_i + 6, field_146128_h + field_146120_f - 3, field_146129_i + 7, textColor);
+            drawRect(field_146128_h + 3, field_146129_i + 6, field_146128_h + field_146120_f - 3, field_146129_i + 7,
+                     textColor);
         }
     }
 

@@ -195,12 +195,12 @@ public class InvTweaksConfigManager {
                 f.close();
 
                 return true;
-            } catch (IOException e) {
+            } catch(IOException e) {
                 InvTweaks.logInGameStatic("[16] The mod won't work, because " + destination + " creation failed!");
                 log.error("Cannot create " + destination + " file: " + e.getMessage());
                 return false;
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             InvTweaks.logInGameStatic("[15] The mod won't work, because " + resource + " extraction failed!");
 
             log.error("Cannot extract " + resource + " file: " + e.getMessage());

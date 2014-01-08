@@ -6,6 +6,7 @@ import invtweaks.api.IItemTreeItem;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+
 /**
  * Representation of a category in the item tree, i.e. a group of items.
  *

@@ -26,11 +26,10 @@ public class CommonProxy implements InvTweaksAPI {
     }
 
     public void init(FMLInitializationEvent e) {
-        invtweaksChannel = NetworkRegistry.INSTANCE.newChannel(InvTweaksConst.INVTWEAKS_CHANNEL,
-                                                               new ITMessageToMessageCodec(),
-                                                               new ClickMessageHandler(),
-                                                               new LoginMessageHandler(),
-                                                               new SortingCompleteMessageHandler());
+        invtweaksChannel = NetworkRegistry.INSTANCE
+                                          .newChannel(InvTweaksConst.INVTWEAKS_CHANNEL, new ITMessageToMessageCodec(),
+                                                      new ClickMessageHandler(), new LoginMessageHandler(),
+                                                      new SortingCompleteMessageHandler());
     }
 
     public void postInit(FMLPostInitializationEvent e) {

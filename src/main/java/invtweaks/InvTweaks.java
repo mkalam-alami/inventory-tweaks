@@ -373,8 +373,8 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     public void logInGame(String message, boolean alreadyTranslated) {
-        String formattedMsg = buildlogString(Level.INFO, (alreadyTranslated) ? message : StatCollector
-                .translateToLocal(message));
+        String formattedMsg = buildlogString(Level.INFO,
+                                             (alreadyTranslated) ? message : StatCollector.translateToLocal(message));
         addChatMessage(formattedMsg);
         log.info(formattedMsg);
     }
@@ -499,8 +499,8 @@ public class InvTweaks extends InvTweaksObfuscation {
             }
 
             if(newRuleset != null) {
-                logInGame(String.format(StatCollector.translateToLocal("invtweaks.loadconfig.enabled"),
-                                        newRuleset), true);
+                logInGame(String.format(StatCollector.translateToLocal("invtweaks.loadconfig.enabled"), newRuleset),
+                          true);
                 // Hack to prevent 2nd way to switch configs from being enabled
                 sortingKeyPressedDate = Integer.MAX_VALUE;
             }
@@ -516,8 +516,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                 String newRuleset = config.switchConfig();
                 // Log only if there is more than 1 ruleset
                 if(previousRuleset != null && newRuleset != null && !previousRuleset.equals(newRuleset)) {
-                    logInGame(String.format(StatCollector.translateToLocal("invtweaks.loadconfig.enabled"),
-                                            newRuleset), true);
+                    logInGame(String.format(StatCollector.translateToLocal("invtweaks.loadconfig.enabled"), newRuleset),
+                              true);
                     handleSorting(currentScreen);
                 }
                 sortingKeyPressedDate = currentTime;
@@ -569,7 +569,8 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             if(storedFocusedSlot != focusedSlot) { // Filter selection change
                 storedFocusedSlot = focusedSlot;
-            } else if((currentStack == null || Item.func_150891_b(currentStack.getItem()) == 281 && storedStackId == 282)
+            } else if((currentStack == null || Item
+                    .func_150891_b(currentStack.getItem()) == 281 && storedStackId == 282)
                     // Handle eaten mushroom soup
                     && (getCurrentScreen() == null || // Filter open inventory or other window
                     isGuiEditSign(
@@ -702,17 +703,15 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private boolean wasNEIEnabled = false;
 
-    private void handleGUILayout(GuiContainer guiScreen) {
+    private void handleGUILayout(GuiContainer guiContainer) {
 
         InvTweaksConfig config = cfgManager.getConfig();
 
-        Container container = guiScreen.field_147002_h;
+        Container container = guiContainer.field_147002_h;
 
         boolean isValidChest = isValidChest(container);
 
-        if(isValidChest || (isStandardInventory(container) && !isGuiEnchantmentTable(guiScreen))) {
-
-            GuiContainer guiContainer = (GuiContainer) guiScreen;
+        if(isValidChest || (isStandardInventory(container) && !isGuiEnchantmentTable(guiContainer))) {
             int w = 10, h = 10;
 
             // Re-layout when NEI changes states.
@@ -723,7 +722,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             // Look for the mods buttons
             boolean customButtonsAdded = false;
 
-            List<Object> controlList = guiScreen.field_146292_n;
+            List<Object> controlList = guiContainer.field_146292_n;
             List<Object> toRemove = new ArrayList<Object>();
             for(Object o : controlList) {
                 if(isGuiButton(o)) {
@@ -739,7 +738,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 }
             }
             controlList.removeAll(toRemove);
-            guiScreen.field_146292_n = controlList;
+            guiContainer.field_146292_n = controlList;
 
             if(!customButtonsAdded) {
 
@@ -751,8 +750,9 @@ public class InvTweaks extends InvTweaksObfuscation {
                 if(!isValidChest) {
                     controlList.add(new InvTweaksGuiSettingsButton(cfgManager, InvTweaksConst.JIMEOWAN_ID,
                                                                    guiContainer.field_147003_i + guiContainer.field_146999_f - 15,
-                                                                   guiContainer.field_147009_r + 5, w, h, "...", StatCollector
-                            .translateToLocal("invtweaks.button.settings.tooltip"),
+                                                                   guiContainer.field_147009_r + 5, w, h, "...",
+                                                                   StatCollector.translateToLocal(
+                                                                           "invtweaks.button.settings.tooltip"),
                                                                    customTextureAvailable));
                 }
 
@@ -813,8 +813,8 @@ public class InvTweaks extends InvTweaksObfuscation {
             }
         } else {
             // Remove "..." button from non-survival tabs of the creative screen
-            if(isGuiInventoryCreative(guiScreen)) {
-                List<Object> controlList = guiScreen.field_146292_n;
+            if(isGuiInventoryCreative(guiContainer)) {
+                List<Object> controlList = guiContainer.field_146292_n;
                 GuiButton buttonToRemove = null;
                 for(Object o : controlList) {
                     if(isGuiButton(o)) {
@@ -888,8 +888,8 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private int getItemOrder(ItemStack itemStack) {
-        List<IItemTreeItem> items = cfgManager.getConfig().getTree()
-                                              .getItems(Item.func_150891_b(itemStack.getItem()), itemStack.getItemDamage());
+        List<IItemTreeItem> items = cfgManager.getConfig().getTree().getItems(Item.func_150891_b(itemStack.getItem()),
+                                                                              itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 

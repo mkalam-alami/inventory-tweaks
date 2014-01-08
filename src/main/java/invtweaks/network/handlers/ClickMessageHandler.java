@@ -1,7 +1,6 @@
 package invtweaks.network.handlers;
 
 import invtweaks.network.packets.ITPacketClick;
-import invtweaks.network.packets.ITPacketLogin;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 

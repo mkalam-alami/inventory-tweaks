@@ -27,8 +27,7 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
     public void initGui() {
         // Create Done button
         List<Object> controlList = new LinkedList<Object>();
-        controlList.add(new GuiButton(ID_DONE, field_146294_l / 2 - 100, field_146295_m / 6 + 168,
-                                      "Done"));
+        controlList.add(new GuiButton(ID_DONE, field_146294_l / 2 - 100, field_146295_m / 6 + 168, "Done"));
         field_146292_n = controlList;
     }
 
@@ -52,11 +51,13 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
                                  clickLabel, 0x00FFFF00, y);
         y += 12;
         drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_UP, obf.getKeyBindingForwardKeyCode(),
-                                                StatCollector.translateToLocal("invtweaks.help.shortcuts.forward")) + " + " + clickLabel,
+                                                StatCollector.translateToLocal(
+                                                        "invtweaks.help.shortcuts.forward")) + " + " + clickLabel,
                          0x00FFFF00, y);
         y += 12;
         drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_DOWN, obf.getKeyBindingBackKeyCode(),
-                                                StatCollector.translateToLocal("invtweaks.help.shortcuts.backwards")) + " + " + clickLabel,
+                                                StatCollector.translateToLocal(
+                                                        "invtweaks.help.shortcuts.backwards")) + " + " + clickLabel,
                          0x00FFFF00, y);
         y += 12;
         drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.oneitem"),
@@ -72,8 +73,8 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
                          y);
         y += 19;
 
-        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.hotbar"),
-                         "0-9 + " + clickLabel, 0x0000FF33, y);
+        drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.hotbar"), "0-9 + " + clickLabel,
+                         0x0000FF33, y);
         y += 12;
         drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.emptyslot"),
                          StatCollector.translateToLocal("invtweaks.help.shortcuts.rightclick"), 0x0000FF33, y);
@@ -133,10 +134,8 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
     private void drawShortcutLine(String label, String value, int color, int y) {
         drawString(obf.getFontRenderer(), label, 30, y, -1); // drawString
         if(value != null) {
-            drawString(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value.replaceAll(", ",
-                                                                                                 " " + StatCollector
-                                                                                                         .translateToLocal(
-                                                                                                                 "invtweaks.help.shortcuts.or") + " "),
+            drawString(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value
+                    .replaceAll(", ", " " + StatCollector.translateToLocal("invtweaks.help.shortcuts.or") + " "),
                        field_146294_l / 2 - 30, y, color); // drawString
         }
     }

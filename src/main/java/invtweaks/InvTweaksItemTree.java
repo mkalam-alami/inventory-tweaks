@@ -320,7 +320,8 @@ public class InvTweaksItemTree implements IItemTree {
     @Override
     public void registerOre(String category, String name, String oreName, int order) {
         for(ItemStack i : OreDictionary.getOres(oreName)) {
-            addItem(category, new InvTweaksItemTreeItem(name, Item.func_150891_b(i.getItem()), i.getItemDamage(), order));
+            addItem(category,
+                    new InvTweaksItemTreeItem(name, Item.func_150891_b(i.getItem()), i.getItemDamage(), order));
         }
         oresRegistered.add(new OreDictInfo(category, name, oreName, order));
     }
@@ -331,8 +332,8 @@ public class InvTweaksItemTree implements IItemTree {
     public void oreRegistered(OreDictionary.OreRegisterEvent ev) {
         for(OreDictInfo ore : oresRegistered) {
             if(ore.oreName.equals(ev.Name)) {
-                addItem(ore.category,
-                        new InvTweaksItemTreeItem(ore.name, Item.func_150891_b(ev.Ore.getItem()), ev.Ore.getItemDamage(), ore.order));
+                addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.func_150891_b(ev.Ore.getItem()),
+                                                                ev.Ore.getItemDamage(), ore.order));
             }
         }
     }

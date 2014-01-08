@@ -82,13 +82,14 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(),
                                                       computeBooleanButtonLabel(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS,
                                                                                 labelChestButtons), StatCollector
-                .translateToLocal("invtweaks.settings.chestbuttons.tooltip")));
+                                                              .translateToLocal(
+                                                                      "invtweaks.settings.chestbuttons.tooltip")));
 
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(),
                                                                                     p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor), StatCollector
-                .translateToLocal("invtweaks.settings.advanced.autoequip.tooltip"));
+                InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor), StatCollector.translateToLocal(
+                "invtweaks.settings.advanced.autoequip.tooltip"));
         controlList.add(autoEquipArmorBtn);
 
         moveToButtonCoords(i++, p);
@@ -124,8 +125,10 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         super.drawScreen(i, j, f);
 
         int x = field_146294_l / 2;
-        drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt1"), x, 40, 0x999999);
-        drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt2"), x, 50, 0x999999);
+        drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt1"),
+                           x, 40, 0x999999);
+        drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt2"),
+                           x, 50, 0x999999);
     }
 
     @Override

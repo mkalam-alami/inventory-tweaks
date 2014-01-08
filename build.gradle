@@ -33,23 +33,11 @@ archivesBaseName = "InventoryTweaks"
 
 minecraft {
     version = "1.7.2-10.12.0.996"
-    at 'src/minecraft/invtweaks_at.cfg'
+    at 'src/main/resources/invtweaks_at.cfg'
 }
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
-
-sourceSets {
-    main {
-        java {
-            srcDir 'src/minecraft'
-        }
-        resources {
-            srcDir 'src/minecraft'
-            exclude '**/*.java'
-        }
-    }
-}
 
 jar {
     manifest {

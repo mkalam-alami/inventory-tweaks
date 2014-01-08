@@ -60,7 +60,7 @@ public class ClientProxy extends CommonProxy {
         serverSupportEnabled = hasInvTweaks && !InvTweaks.getConfigManager().getConfig()
                                                          .getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP)
                                                          .equals(InvTweaksConfig.VALUE_FALSE);
-        InvTweaks.log.info("Server has support: " + hasInvTweaks + " support enabled: " + serverSupportEnabled);
+        //InvTweaks.log.info("Server has support: " + hasInvTweaks + " support enabled: " + serverSupportEnabled);
     }
 
     @Override

@@ -25,6 +25,7 @@ invtweaks.settings.disableci=Disabilitare CI
 invtweaks.settings.disableci.tooltip=In conflitto con 'Convenient Inventory'
 invtweaks.settings.middleclick=Click centrale
 invtweaks.settings.chestbuttons=Pulsanti nelle cassapanche
+invtweaks.settings.chestbuttons.tooltip=Aggiunge tre pulsanti sulle ceste per ordinarle
 invtweaks.settings.shortcuts=Tasti di scelta rapida
 invtweaks.settings.autorefill=Ricarica automatica
 invtweaks.settings.beforebreak=Riparazione amichevole

@@ -21,7 +21,7 @@ public class InvTweaksConst {
         try {
             version.load(InvTweaksConst.class.getResourceAsStream("version.properties"));
             loaded = true;
-        } catch(IOException e) {
+        } catch(Throwable e) {
         }
 
         if(loaded) {

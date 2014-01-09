@@ -48,6 +48,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                                           .equals(InvTweaksConfig.VALUE_TRUE);
         boolean hasSubtypes = false;
 
+        // TODO: ID Changes
         Item original = Item.func_150899_d(wantedId);
         if(original != null) {
             hasSubtypes = original.getHasSubtypes();
@@ -93,6 +94,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 for(int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                     candidateStack = container.getItemStack(i);
                     if(candidateStack != null) {
+                        // TODO: ID Changes
                         List<IItemTreeItem> candidateItems = tree
                                 .getItems(Item.func_150891_b(candidateStack.getItem()), candidateStack.getItemDamage());
                         if(tree.matches(candidateItems, rule.getKeyword())) {
@@ -123,6 +125,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
         else {
             for(int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                 candidateStack = container.getItemStack(i);
+                // TODO: ID Changes
                 if(candidateStack != null &&
                         Item.func_150891_b(candidateStack.getItem()) == wantedId &&
                         candidateStack.getItemDamage() == wantedDamage) {
@@ -157,6 +160,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     this.targetedSlot = currentItem;
                     if(i != -1) {
                         this.i = i;
+                        // TODO: ID Changes
                         this.expectedItemId = Item.func_150891_b(containerMgr.getItemStack(i).getItem());
                     } else {
                         this.i = containerMgr.getFirstEmptyIndex();
@@ -188,6 +192,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     // In POLLING_DELAY ms, things might have changed
                     try {
                         ItemStack stack = containerMgr.getItemStack(i);
+                        // TODO: ID Changes
                         if(stack != null && Item
                                 .func_150891_b(stack.getItem()) == expectedItemId || this.refillBeforeBreak) {
                             if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {

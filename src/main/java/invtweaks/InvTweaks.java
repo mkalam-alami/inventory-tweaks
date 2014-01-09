@@ -156,6 +156,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             // Copy some info about current selected stack for auto-refill
             ItemStack currentStack = getFocusedStack();
+            // TODO: ID Changes
             storedStackId = (currentStack == null) ? 0 : Item.func_150891_b(currentStack.getItem());
             storedStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
             if(!wasInGUI) {
@@ -224,6 +225,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 List<Integer> prefferedPositions = new LinkedList<Integer>();
                 IItemTree tree = config.getTree();
                 ItemStack stack = containerMgr.getItemStack(currentSlot);
+                // TODO: ID Changes
                 List<IItemTreeItem> items = tree.getItems(Item.func_150891_b(stack.getItem()), stack.getItemDamage());
                 for(InvTweaksConfigSortingRule rule : config.getRules()) {
                     if(tree.matches(items, rule.getKeyword())) {
@@ -349,6 +351,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                         return jEnchs.size() - iEnchs.size();
                     }
                 } else {
+                    // TODO: ID Changes
                     return Item.func_150891_b(j.getItem()) - Item.func_150891_b(i.getItem());
                 }
             } else {
@@ -561,6 +564,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void handleAutoRefill() {
 
         ItemStack currentStack = getFocusedStack();
+        // TODO: ID Changes
         int currentStackId = (currentStack == null) ? 0 : Item.func_150891_b(currentStack.getItem());
         int currentStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
@@ -572,6 +576,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 storedFocusedSlot = focusedSlot;
             } else if((currentStack == null || Item
                     .func_150891_b(currentStack.getItem()) == 281 && storedStackId == 282)
+                    // TODO: ^ ID Changes
                     // Handle eaten mushroom soup
                     && (getCurrentScreen() == null || // Filter open inventory or other window
                     isGuiEditSign(
@@ -889,6 +894,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private int getItemOrder(ItemStack itemStack) {
+        // TODO: ID Changes
         List<IItemTreeItem> items = cfgManager.getConfig().getTree().getItems(Item.func_150891_b(itemStack.getItem()),
                                                                               itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;

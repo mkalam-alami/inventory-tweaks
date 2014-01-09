@@ -164,6 +164,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
                 // If the rule is strong enough to move the item and it matches the item, move it
                 if(hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
+                    // TODO: ID Changes
                     List<IItemTreeItem> fromItems = tree
                             .getItems(Item.func_150891_b(from.getItem()), from.getItemDamage());
                     if(tree.matches(fromItems, rule.getKeyword())) {
@@ -181,6 +182,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                     break;
                                 } else {
                                     from = containerMgr.getItemStack(moveResult);
+                                    // TODO: ID Changes
                                     fromItems = tree.getItems(Item.func_150891_b(from.getItem()), from.getItemDamage());
                                     if(!tree.matches(fromItems, rule.getKeyword())) {
                                         break;
@@ -314,6 +316,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         for(int i = 0; i < size; i++) {
             ItemStack stack = containerMgr.getItemStack(i);
             if(stack != null) {
+                // TODO: ID Changes
                 List<Integer> item = Arrays.asList(Item.func_150891_b(stack.getItem()), stack.getItemDamage());
                 int[] count = itemCounts.get(item);
                 if(count == null) {
@@ -334,12 +337,14 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
             //skip hacked itemstacks that are larger than their max size
             //no idea why they would be here, but may as well account for them anyway
+            // TODO: ID Changes
             if(numPerSlot <= new ItemStack(Item.func_150899_d(item.get(0)), 1, 0).getMaxStackSize()) {
                 //linkedlists to store which stacks have too many/few items
                 LinkedList<Integer> smallStacks = new LinkedList<Integer>();
                 LinkedList<Integer> largeStacks = new LinkedList<Integer>();
                 for(int i = 0; i < size; i++) {
                     ItemStack stack = containerMgr.getItemStack(i);
+                    // TODO: ID Changes
                     if(stack != null && Arrays.asList(Item.func_150891_b(stack.getItem()), stack.getItemDamage())
                                               .equals(item)) {
                         int stackSize = stack.stackSize;
@@ -557,6 +562,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     }
 
     private int getItemOrder(ItemStack itemStack) {
+        // TODO: ID Changes
         List<IItemTreeItem> items = tree.getItems(Item.func_150891_b(itemStack.getItem()), itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
@@ -699,10 +705,12 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         for(int i = 0; i < size; i++) {
             ItemStack stack = containerMgr.getItemStack(i);
             if(stack != null) {
+                // TODO: ID Changes
                 int itemSearchKey = Item.func_150891_b(stack.getItem()) * 100000 + ((stack
                         .getMaxStackSize() != 1) ? stack.getItemDamage() : 0);
                 IItemTreeItem item = itemSearch.get(itemSearchKey);
                 if(item == null) {
+                    // TODO: ID Changes
                     item = tree.getItems(Item.func_150891_b(stack.getItem()), stack.getItemDamage()).get(0);
                     itemSearch.put(itemSearchKey, item);
                     stats.put(item, 1);

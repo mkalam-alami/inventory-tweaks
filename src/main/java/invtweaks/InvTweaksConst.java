@@ -65,7 +65,7 @@ public class InvTweaksConst {
     public static final ResourceLocation DEFAULT_CONFIG_FILE = new ResourceLocation(INVTWEAKS_RESOURCE_DOMAIN,
                                                                                     "DefaultConfig.dat");
     public static final ResourceLocation DEFAULT_CONFIG_TREE_FILE = new ResourceLocation(INVTWEAKS_RESOURCE_DOMAIN,
-                                                                                         "DefaultTree.dat");
+                                                                                         "ItemTree.xml");
 
     public static final String HELP_URL = "http://inventory-tweaks.readthedocs.org";
 

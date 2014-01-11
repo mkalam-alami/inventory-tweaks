@@ -10,6 +10,7 @@ import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.InvTweaksConst;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
@@ -58,6 +59,7 @@ public class CommonProxy implements InvTweaksAPI {
      * 5: Spread items (Drag behavior)
      * 6: Merge all valid items with held item
      */
+    @SideOnly(Side.CLIENT)
     public void slotClick(PlayerControllerMP playerController, int windowId, int slot, int data, int action,
                           EntityPlayer player) {
     }

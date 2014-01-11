@@ -39,9 +39,9 @@ public interface IItemTree {
 
     IItemTreeCategory getCategory(String keyword);
 
-    boolean isItemUnknown(int id, int damage);
+    boolean isItemUnknown(String id, int damage);
 
-    List<IItemTreeItem> getItems(int id, int damage);
+    List<IItemTreeItem> getItems(String id, int damage);
 
     List<IItemTreeItem> getItems(String name);
 
@@ -57,7 +57,7 @@ public interface IItemTree {
 
     void addCategory(String parentCategory, IItemTreeCategory newCategory) throws NullPointerException;
 
-    IItemTreeItem addItem(String parentCategory, String name, int id, int damage, int order)
+    IItemTreeItem addItem(String parentCategory, String name, String id, int damage, int order)
             throws NullPointerException;
 
     void addItem(String parentCategory, IItemTreeItem newItem) throws NullPointerException;

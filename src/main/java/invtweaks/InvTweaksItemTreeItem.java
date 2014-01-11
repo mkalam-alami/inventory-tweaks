@@ -10,7 +10,7 @@ import invtweaks.api.IItemTreeItem;
 public class InvTweaksItemTreeItem implements IItemTreeItem {
 
     private String name;
-    private int id;
+    private String id;
     private int damage;
     private int order;
 
@@ -20,7 +20,7 @@ public class InvTweaksItemTreeItem implements IItemTreeItem {
      * @param damage The item variant or InvTweaksConst.DAMAGE_WILDCARD
      * @param order  The item order while sorting
      */
-    public InvTweaksItemTreeItem(String name, int id, int damage, int order) {
+    public InvTweaksItemTreeItem(String name, String id, int damage, int order) {
         this.name = name;
         this.id = id;
         this.damage = damage;
@@ -33,7 +33,7 @@ public class InvTweaksItemTreeItem implements IItemTreeItem {
     }
 
     @Override
-    public int getId() {
+    public String getId() {
         return id;
     }
 

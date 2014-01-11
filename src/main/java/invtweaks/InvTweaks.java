@@ -10,6 +10,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -61,7 +62,8 @@ public class InvTweaks extends InvTweaksObfuscation {
      * Various information concerning the context, stored on each tick to allow for certain features (auto-refill,
      * sorting on pick up...)
      */
-    private int storedStackId = 0, storedStackDamage = InvTweaksConst.DAMAGE_WILDCARD, storedFocusedSlot = -1;
+    private String storedStackId = null;
+    private int storedStackDamage = InvTweaksConst.DAMAGE_WILDCARD, storedFocusedSlot = -1;
     private ItemStack[] hotbarClone = new ItemStack[InvTweaksConst.INVENTORY_HOTBAR_SIZE];
     private boolean hadFocus = true, mouseWasDown = false;
 
@@ -157,7 +159,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             // Copy some info about current selected stack for auto-refill
             ItemStack currentStack = getFocusedStack();
             // TODO: ID Changes
-            storedStackId = (currentStack == null) ? 0 : Item.func_150891_b(currentStack.getItem());
+            storedStackId = (currentStack == null) ? null : Item.field_150901_e.func_148750_c(currentStack.getItem());
             storedStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
             if(!wasInGUI) {
                 wasInGUI = true;
@@ -226,7 +228,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 IItemTree tree = config.getTree();
                 ItemStack stack = containerMgr.getItemStack(currentSlot);
                 // TODO: ID Changes
-                List<IItemTreeItem> items = tree.getItems(Item.func_150891_b(stack.getItem()), stack.getItemDamage());
+                List<IItemTreeItem> items = tree.getItems(Item.field_150901_e.func_148750_c(stack.getItem()), stack.getItemDamage());
                 for(InvTweaksConfigSortingRule rule : config.getRules()) {
                     if(tree.matches(items, rule.getKeyword())) {
                         for(int slot : rule.getPreferredSlots()) {
@@ -556,7 +558,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         // This needs to be remembered so that the
         // auto-refill feature doesn't trigger
         if(selectedItem != null && mainInventory[focusedSlot] == null) {
-            storedStackId = 0;
+            storedStackId = null;
         }
 
     }
@@ -565,24 +567,23 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         ItemStack currentStack = getFocusedStack();
         // TODO: ID Changes
-        int currentStackId = (currentStack == null) ? 0 : Item.func_150891_b(currentStack.getItem());
+        String currentStackId = (currentStack == null) ? null : Item.field_150901_e.func_148750_c(currentStack.getItem());
         int currentStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
         InvTweaksConfig config = cfgManager.getConfig();
 
-        if(currentStackId != storedStackId || currentStackDamage != storedStackDamage) {
+        if(!currentStackId.equals(storedStackId) || currentStackDamage != storedStackDamage) {
 
             if(storedFocusedSlot != focusedSlot) { // Filter selection change
                 storedFocusedSlot = focusedSlot;
-            } else if((currentStack == null || Item
-                    .func_150891_b(currentStack.getItem()) == 281 && storedStackId == 282)
+            } else if((currentStack == null || currentStack.getItem() == Items.bowl && storedStackId.equals("mushroom_stew"))
                     // TODO: ^ ID Changes
                     // Handle eaten mushroom soup
                     && (getCurrentScreen() == null || // Filter open inventory or other window
                     isGuiEditSign(
                             getCurrentScreen()))) { // TODO: This should be more expandable on 'equivalent' items (API?) and allowed GUIs
 
-                if(config.isAutoRefillEnabled(storedStackId, storedStackId)) {
+                if(config.isAutoRefillEnabled(storedStackId, storedStackDamage)) {
                     try {
                         cfgManager.getAutoRefillHandler().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
                     } catch(Exception e) {
@@ -596,7 +597,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 if(canToolBeReplaced(currentStackDamage, itemMaxDamage, autoRefillThreshhold) && config
                         .getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
                         .equals(InvTweaksConfig.VALUE_TRUE) && config
-                        .isAutoRefillEnabled(storedStackId, storedStackId)) {
+                        .isAutoRefillEnabled(storedStackId, storedStackDamage)) {
                     // Trigger auto-refill before the tool breaks
                     try {
                         cfgManager.getAutoRefillHandler().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
@@ -895,7 +896,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private int getItemOrder(ItemStack itemStack) {
         // TODO: ID Changes
-        List<IItemTreeItem> items = cfgManager.getConfig().getTree().getItems(Item.func_150891_b(itemStack.getItem()),
+        List<IItemTreeItem> items = cfgManager.getConfig().getTree().getItems(Item.field_150901_e.func_148750_c(itemStack.getItem()),
                                                                               itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }

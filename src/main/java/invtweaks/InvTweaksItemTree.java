@@ -33,7 +33,7 @@ public class InvTweaksItemTree implements IItemTree {
     /**
      * Items stored by ID. A same ID can hold several names.
      */
-    private Map<Integer, Vector<IItemTreeItem>> itemsById = new HashMap<Integer, Vector<IItemTreeItem>>(500);
+    private Map<String, Vector<IItemTreeItem>> itemsById = new HashMap<String, Vector<IItemTreeItem>>(500);
     private static Vector<IItemTreeItem> defaultItems = null;
 
     /**
@@ -51,7 +51,7 @@ public class InvTweaksItemTree implements IItemTree {
 
         if(defaultItems == null) {
             defaultItems = new Vector<IItemTreeItem>();
-            defaultItems.add(new InvTweaksItemTreeItem(UNKNOWN_ITEM, -1, InvTweaksConst.DAMAGE_WILDCARD,
+            defaultItems.add(new InvTweaksItemTreeItem(UNKNOWN_ITEM, null, InvTweaksConst.DAMAGE_WILDCARD,
                                                        Integer.MAX_VALUE));
         }
 
@@ -162,12 +162,12 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
-    public boolean isItemUnknown(int id, int damage) {
+    public boolean isItemUnknown(String id, int damage) {
         return itemsById.get(id) == null;
     }
 
     @Override
-    public List<IItemTreeItem> getItems(int id, int damage) {
+    public List<IItemTreeItem> getItems(String id, int damage) {
         List<IItemTreeItem> items = itemsById.get(id);
         List<IItemTreeItem> filteredItems = new ArrayList<IItemTreeItem>();
         if(items != null) {
@@ -185,10 +185,10 @@ public class InvTweaksItemTree implements IItemTree {
 
         // If there's no matching item, create new ones
         if(filteredItems.isEmpty()) {
-            IItemTreeItem newItemId = new InvTweaksItemTreeItem(String.format("%d-%d", id, damage), id, damage,
-                                                                5000 + id * 16 + damage);
-            IItemTreeItem newItemDamage = new InvTweaksItemTreeItem(Integer.toString(id), id,
-                                                                    InvTweaksConst.DAMAGE_WILDCARD, 5000 + id * 16);
+            IItemTreeItem newItemId = new InvTweaksItemTreeItem(String.format("%s-%d", id, damage), id, damage,
+                                                                5000/*TODO: What to do here with non-int IDs + id * 16*/ + damage);
+            IItemTreeItem newItemDamage = new InvTweaksItemTreeItem(id, id,
+                                                                    InvTweaksConst.DAMAGE_WILDCARD, 5000/*TODO: What to do here with non-int IDs + id * 16*/);
             addItem(getRootCategory().getName(), newItemId);
             addItem(getRootCategory().getName(), newItemDamage);
             filteredItems.add(newItemId);
@@ -239,7 +239,7 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
-    public IItemTreeItem addItem(String parentCategory, String name, int id, int damage, int order)
+    public IItemTreeItem addItem(String parentCategory, String name, String id, int damage, int order)
             throws NullPointerException {
         InvTweaksItemTreeItem addedItem = new InvTweaksItemTreeItem(name, id, damage, order);
         addItem(parentCategory, addedItem);
@@ -322,7 +322,7 @@ public class InvTweaksItemTree implements IItemTree {
         for(ItemStack i : OreDictionary.getOres(oreName)) {
             // TODO: ID Changes
             addItem(category,
-                    new InvTweaksItemTreeItem(name, Item.func_150891_b(i.getItem()), i.getItemDamage(), order));
+                    new InvTweaksItemTreeItem(name, Item.field_150901_e.func_148750_c(i.getItem()), i.getItemDamage(), order));
         }
         oresRegistered.add(new OreDictInfo(category, name, oreName, order));
     }
@@ -334,7 +334,7 @@ public class InvTweaksItemTree implements IItemTree {
         for(OreDictInfo ore : oresRegistered) {
             if(ore.oreName.equals(ev.Name)) {
                 // TODO: ID Changes
-                addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.func_150891_b(ev.Ore.getItem()),
+                addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.field_150901_e.func_148750_c(ev.Ore.getItem()),
                                                                 ev.Ore.getItemDamage(), ore.order));
             }
         }

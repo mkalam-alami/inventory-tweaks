@@ -38,7 +38,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
      *
      * @throws Exception
      */
-    public void autoRefillSlot(int slot, int wantedId, int wantedDamage) throws Exception {
+    public void autoRefillSlot(int slot, String wantedId, int wantedDamage) throws Exception {
 
         InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(mc,
                                                                                           ContainerSection.INVENTORY);
@@ -49,7 +49,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
         boolean hasSubtypes = false;
 
         // TODO: ID Changes
-        Item original = Item.func_150899_d(wantedId);
+        Item original = (Item)Item.field_150901_e.getObject(wantedId);
         if(original != null) {
             hasSubtypes = original.getHasSubtypes();
         }
@@ -96,7 +96,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     if(candidateStack != null) {
                         // TODO: ID Changes
                         List<IItemTreeItem> candidateItems = tree
-                                .getItems(Item.func_150891_b(candidateStack.getItem()), candidateStack.getItemDamage());
+                                .getItems(Item.field_150901_e.func_148750_c(candidateStack.getItem()), candidateStack.getItemDamage());
                         if(tree.matches(candidateItems, rule.getKeyword())) {
                             // Choose tool of highest damage value
                             if(candidateStack.getMaxStackSize() == 1) {
@@ -127,7 +127,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 candidateStack = container.getItemStack(i);
                 // TODO: ID Changes
                 if(candidateStack != null &&
-                        Item.func_150891_b(candidateStack.getItem()) == wantedId &&
+                        Item.field_150901_e.func_148750_c(candidateStack.getItem()).equals(wantedId) &&
                         candidateStack.getItemDamage() == wantedDamage) {
                     replacementStack = candidateStack;
                     replacementStackSlot = i;

@@ -318,7 +318,7 @@ public class InvTweaksConfig {
         return rulesets.get(currentRuleset).getLockedSlots();
     }
 
-    public boolean isAutoRefillEnabled(int itemID, int itemDamage) {
+    public boolean isAutoRefillEnabled(String itemID, int itemDamage) {
         if(!getProperty(PROP_ENABLE_AUTO_REFILL).equals(VALUE_FALSE)) {
             List<IItemTreeItem> items = tree.getItems(itemID, itemDamage);
             Vector<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();

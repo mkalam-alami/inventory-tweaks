@@ -166,7 +166,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 if(hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
                     // TODO: ID Changes
                     List<IItemTreeItem> fromItems = tree
-                            .getItems(Item.func_150891_b(from.getItem()), from.getItemDamage());
+                            .getItems(Item.field_150901_e.func_148750_c(from.getItem()), from.getItemDamage());
                     if(tree.matches(fromItems, rule.getKeyword())) {
 
                         // Test preffered slots
@@ -183,7 +183,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                 } else {
                                     from = containerMgr.getItemStack(moveResult);
                                     // TODO: ID Changes
-                                    fromItems = tree.getItems(Item.func_150891_b(from.getItem()), from.getItemDamage());
+                                    fromItems = tree.getItems(Item.field_150901_e.func_148750_c(from.getItem()), from.getItemDamage());
                                     if(!tree.matches(fromItems, rule.getKeyword())) {
                                         break;
                                     } else {
@@ -563,7 +563,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     private int getItemOrder(ItemStack itemStack) {
         // TODO: ID Changes
-        List<IItemTreeItem> items = tree.getItems(Item.func_150891_b(itemStack.getItem()), itemStack.getItemDamage());
+        List<IItemTreeItem> items = tree.getItems(Item.field_150901_e.func_148750_c(itemStack.getItem()), itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
@@ -711,7 +711,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 IItemTreeItem item = itemSearch.get(itemSearchKey);
                 if(item == null) {
                     // TODO: ID Changes
-                    item = tree.getItems(Item.func_150891_b(stack.getItem()), stack.getItemDamage()).get(0);
+                    item = tree.getItems(Item.field_150901_e.func_148750_c(stack.getItem()), stack.getItemDamage()).get(0);
                     itemSearch.put(itemSearchKey, item);
                     stats.put(item, 1);
                 } else {

@@ -114,21 +114,32 @@
             </stones>
             <oreBlock>
                 <coalOreBlock id="coal_ore"/>
-                <redstoneOreBlock min="73" max="74"/>
+                <redstoneOreBlock>
+                    <unlitRedstoneOreBlock id="redstone_ore"/>
+                    <litRedstoneOreBlock id="lit_redstone_ore"/>
+                </redstoneOreBlock>
                 <lapisLazuliOreBlock id="lapis_ore"/>
                 <diamondOreBlock id="diamond_ore"/>
                 <emeraldOreBlock id="emerald_ore"/>
             </oreBlock>
-            <dirt id="dirt"/>
+            <dirt id="dirt">
+                <grasslessDirt id="dirt" damage="1"/>
+                <podzol id="dirt" damage="2"/>
+            </dirt>
             <wood>
                 <oakWood id="log" damage="0"/>
                 <birchWood id="log" damage="1"/>
                 <spruceWood id="log" damage="2"/>
                 <jungleWood id="log" damage="3"/>
+                <acaciaWood id="log2" damage="0"/>
+                <darkOakWood id="log2" damage="1"/>
                 <woodDict oreDictName="logWood"/>
             </wood>
             <sands>
-                <sand id="sand"/>
+                <sand id="sand">
+                    <plainSand id="sand" damage="0"/>
+                    <redSand id="sand" damage="1"/>
+                </sand>
                 <sandstone>
                     <classicSandstone id="sandstone" damage="0"/>
                     <creeperSandstone id="sandstone" damage="1"/>
@@ -154,6 +165,7 @@
             <farmland id="farmland"/>
             <snow id="snow"/>
             <ice id="ice"/>
+            <packedIce id="packed_ice"/>
             <liquid>
                 <water id="flowing_water"/>
                 <water id="water"/>
@@ -234,6 +246,8 @@
                     <sprucePlank id="planks" damage="1"/>
                     <birchPlank id="planks" damage="2"/>
                     <junglePlank id="planks" damage="3"/>
+                    <acaciaPlank id="planks" damage="4"/>
+                    <darkOakPlank id="planks" damage="5"/>
                     <woodenPlankDict oreDictName="plankWood"/>
                 </woodenPlank>
                 <bricks>
@@ -273,6 +287,48 @@
                     <glassBlock id="glass"/>
                     <glassPane id="glass_pane"/>
                 </glass>
+                <stainedGlass>
+                    <stainedGlassBlock id="stained_glass">
+                        <whiteStainedGlassBlock id="stained_glass" damage="0"/>
+                        <orangeStainedGlassBlock id="stained_glass" damage="1"/>
+                        <magentaStainedGlassBlock id="stained_glass" damage="2"/>
+                        <lightBlueStainedGlassBlock id="stained_glass" damage="3"/>
+                        <yellowStainedGlassBlock id="stained_glass" damage="4"/>
+                        <lightGreenStainedGlassBlock id="stained_glass" damage="5"/>
+                        <limeStainedGlassBlock id="stained_glass" damage="5"/>
+                        <pinkStainedGlassBlock id="stained_glass" damage="6"/>
+                        <grayStainedGlassBlock id="stained_glass" damage="7"/>
+                        <lightGrayStainedGlassBlock id="stained_glass" damage="8"/>
+                        <cyanStainedGlassBlock id="stained_glass" damage="9"/>
+                        <purpleStainedGlassBlock id="stained_glass" damage="10"/>
+                        <blueStainedGlassBlock id="stained_glass" damage="11"/>
+                        <brownStainedGlassBlock id="stained_glass" damage="12"/>
+                        <greenStainedGlassBlock id="stained_glass" damage="13"/>
+                        <darkGreenStainedGlassBlock id="stained_glass" damage="13"/>
+                        <redStainedGlassBlock id="stained_glass" damage="14"/>
+                        <blackStainedGlassBlock id="stained_glass" damage="15"/>
+                    </stainedGlassBlock>
+                    <stainedGlassPane id="stained_glass_pane">
+                        <whiteStainedGlassPane id="stained_glass_pane" damage="0"/>
+                        <orangeStainedGlassPane id="stained_glass_pane" damage="1"/>
+                        <magentaStainedGlassPane id="stained_glass_pane" damage="2"/>
+                        <lightBlueStainedGlassPane id="stained_glass_pane" damage="3"/>
+                        <yellowStainedGlassPane id="stained_glass_pane" damage="4"/>
+                        <lightGreenStainedGlassPane id="stained_glass_pane" damage="5"/>
+                        <limeStainedGlassPane id="stained_glass_pane" damage="5"/>
+                        <pinkStainedGlassPane id="stained_glass_pane" damage="6"/>
+                        <grayStainedGlassPane id="stained_glass_pane" damage="7"/>
+                        <lightGrayStainedGlassPane id="stained_glass_pane" damage="8"/>
+                        <cyanStainedGlassPane id="stained_glass_pane" damage="9"/>
+                        <purpleStainedGlassPane id="stained_glass_pane" damage="10"/>
+                        <blueStainedGlassPane id="stained_glass_pane" damage="11"/>
+                        <brownStainedGlassPane id="stained_glass_pane" damage="12"/>
+                        <greenStainedGlassPane id="stained_glass_pane" damage="13"/>
+                        <darkGreenStainedGlassPane id="stained_glass_pane" damage="13"/>
+                        <redStainedGlassPane id="stained_glass_pane" damage="14"/>
+                        <blackStainedGlassPane id="stained_glass_pane" damage="15"/>
+                    </stainedGlassPane>
+                </stainedGlass>
                 <ironBars id="iron_bars"/>
                 <stairs>
                     <woodenStairs>
@@ -280,6 +336,8 @@
                         <spruceWoodStairs id="spruce_stairs"/>
                         <birchWoodStairs id="birch_stairs"/>
                         <jungleWoodStairs id="jungle_stairs"/>
+                        <acaciaWoodStairs id="acacia_stairs"/>
+                        <darkOakWoodStairs id="dark_oak_stairs"/>
                         <woodenStairsDict oreDictName="stairWood"/>
                     </woodenStairs>
                     <cobblestoneStairs id="stone_stairs"/>
@@ -541,6 +599,7 @@
                 <storageMinecart id="chest_minecart"/>
                 <tntMinecart id="tnt_minecart"/>
                 <hopperMinecart id="hopper_minecart"/>
+                <commandBlockMinecart id="command_block_minecart"/>
             </minecarts>
             <saddle id="saddle"/>
         </vehicle>
@@ -557,7 +616,20 @@
             <itemFrame id="item_frame"/>
             <frame id="item_frame"/>
             <head id="skull"/>
-            <musicDisc min="2256" max="2266"/>
+            <musicDisc>
+                <musicDisc13 id="record_13"/>
+                <musicDiscCat id="record_cat"/>
+                <musicDiscBlocks id="record_blocks"/>
+                <musicDiscChirp id="record_chirp"/>
+                <musicDiscFar id="record_far"/>
+                <musicDiscMall id="record_mall"/>
+                <musicDiscMellohi id="record_mellohi"/>
+                <musicDiscStal id="record_stal"/>
+                <musicDiscStrad id="record_strad"/>
+                <musicDiscWard id="record_ward"/>
+                <musicDisc11 id="record_11"/>
+                <musicDiskWait id="record_wait"/>
+            </musicDisc>
             <flowerPotBlock id="flower_pot"/>
             <headBlock id="skull"/>
         </decoration>
@@ -566,7 +638,8 @@
                 <mushroomStew id="mushroom_stew"/>
                 <cookedFood>
                     <cookedPorkchop id="cooked_porkchop"/>
-                    <cookedFish id="cooked_fished"/>
+                    <cookedFish id="cooked_fished" damage="0"/>
+                    <cookedSalmon id="cooked_fished" damage="1"/>
                     <steak id="cooked_beef"/>
                     <cookedChicken id="cooked_chicken"/>
                     <bakedPotato id="baked_potato"/>
@@ -585,7 +658,9 @@
                 <cookie id="cookie"/>
                 <rawFood>
                     <rawPorkchop id="porkchop"/>
-                    <rawFish id="fish"/>
+                    <rawFish id="fish" damage="0"/>
+                    <rawSalmon id="fish" damage="1"/>
+                    <clownfish id="fish" damage="2"/>
                     <rawBeef id="beef"/>
                     <rawChicken id="chicken"/>
                     <potato id="potato"/>
@@ -596,6 +671,7 @@
                 <spiderEye id="spider_eye"/>
                 <poisonedPotato id="poisonous_potato"/>
                 <poisonousPotato id="poisonous_potato"/>
+                <pufferfish id="fish" damage="3"/>
             </poisonedFood>
             <unedibleFood>
                 <cake id="cake"/>
@@ -607,12 +683,33 @@
             <flower>
                 <flowerYellow id="yellow_flower"/>
                 <dandelion id="yellow_flower"/>
-                <flowerRed id="red_flower"/>
-                <rose id="red_flower"/>
-                <dandelionBlock id="golden_rail"/>
-                <flowerYellowBlock id="golden_rail"/>
-                <roseBlock id="detector_rail"/>
-                <flowerRedBlock id="detector_rail"/>
+                <flowerRed>
+                    <poppy id="red_flower" damage="0"/>
+                    <tulipRed id="red_flower" damage="4"/>
+                </flowerRed>
+                <flowerLightBlue id="red_flower" damage="1"/>
+                <blueOrchid id="red_flower" damage="1"/>
+                <flowerMagenta id="red_flower" damage="2"/>
+                <allium id="red_flower" damage="2"/>
+                <flowerLightGray>
+                    <azureBluet id="red_flower" damage="3"/>
+                    <tulipWhite id="red_flower" damage="6"/>
+                </flowerLightGray>
+                <flowerOrange id="red_flower" damage="5"/>
+                <flowerPink id="red_flower" damage="7"/>
+                <tulip>
+                    <tulipRed id="red_flower" damage="4"/>
+                    <tulipWhite id="red_flower" damage="6"/>
+                    <tulipOrange id="red_flower" damage="5"/>
+                    <tulipPink id="red_flower" damage="7"/>
+                </tulip>
+                <doublePlant id="double_plant">
+                    <sunflower id="double_plant" damage="0"/>
+                    <lilac id="double_plant" damage="1"/>
+                    <!-- 2 is double-height tallgrass, 3 is large fern -->
+                    <roseBush id="double_plant" damage="4"/>
+                    <peony id="double_plant" damage="5"/>
+                </doublePlant>
             </flower>
             <mushroom>
                 <mushroomBrown id="brown_mushroom"/>
@@ -623,6 +720,8 @@
                 <spruceSapling id="sapling" damage="1"/>
                 <birchSapling id="sapling" damage="2"/>
                 <jungleSapling id="sapling" damage="3"/>
+                <acaciaSapling id="sapling" damage="4"/>
+                <darkOakSapling id="sapling" damage="5"/>
                 <saplingDict oreDictName="treeSapling"/>
             </sapling>
             <leaves id="leaves">
@@ -630,6 +729,8 @@
                 <spruceLeaves id="leaves" damage="1"/>
                 <birchLeaves id="leaves" damage="2"/>
                 <jungleLeaves id="leaves" damage="3"/>
+                <acaciaLeaves id="leaves2" damage="0"/>
+                <darkOakLeaves id="leaves2" damage="1"/>
                 <leavesDict oreDictName="treeLeaves"/>
             </leaves>
             <seed>

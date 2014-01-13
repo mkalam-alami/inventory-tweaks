@@ -1,6 +1,7 @@
 package invtweaks;
 
 import invtweaks.api.IItemTreeItem;
+import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * Representation of an item in the item tree.
@@ -56,7 +57,7 @@ public class InvTweaksItemTreeItem implements IItemTreeItem {
             return false;
         }
         IItemTreeItem item = (IItemTreeItem) o;
-        return id == item.getId() && (damage == InvTweaksConst.DAMAGE_WILDCARD || damage == item.getDamage());
+        return ObjectUtils.equals(id, item.getId()) && (damage == InvTweaksConst.DAMAGE_WILDCARD || damage == item.getDamage());
     }
 
     public String toString() {

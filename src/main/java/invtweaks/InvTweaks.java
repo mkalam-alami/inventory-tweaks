@@ -17,6 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -572,7 +573,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
         InvTweaksConfig config = cfgManager.getConfig();
 
-        if(!currentStackId.equals(storedStackId) || currentStackDamage != storedStackDamage) {
+        if(!ObjectUtils.equals(currentStackId, storedStackId) || currentStackDamage != storedStackDamage) {
 
             if(storedFocusedSlot != focusedSlot) { // Filter selection change
                 storedFocusedSlot = focusedSlot;

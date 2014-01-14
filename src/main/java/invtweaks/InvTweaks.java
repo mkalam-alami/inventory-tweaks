@@ -354,8 +354,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                         return jEnchs.size() - iEnchs.size();
                     }
                 } else {
-                    // TODO: ID Changes
-                    return Item.func_150891_b(j.getItem()) - Item.func_150891_b(i.getItem());
+                    return ObjectUtils.compare(Item.field_150901_e.func_148750_c(i.getItem()),
+                                               Item.field_150901_e.func_148750_c(j.getItem()));
                 }
             } else {
                 return orderI - orderJ;

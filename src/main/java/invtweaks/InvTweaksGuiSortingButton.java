@@ -24,27 +24,27 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
     }
 
     @Override
-    public void func_146112_a(Minecraft minecraft, int i, int j) {
-        super.func_146112_a(minecraft, i, j);
+    public void drawButton(Minecraft minecraft, int i, int j) {
+        super.drawButton(minecraft, i, j);
 
         // Display symbol
         int textColor = getTextColor(i, j);
-        if(field_146126_j.equals("h")) {
-            drawRect(field_146128_h + 3, field_146129_i + 3, field_146128_h + field_146120_f - 3, field_146129_i + 4,
+        if(displayString.equals("h")) {
+            drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4,
                      textColor);
-            drawRect(field_146128_h + 3, field_146129_i + 6, field_146128_h + field_146120_f - 3, field_146129_i + 7,
+            drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7,
                      textColor);
-        } else if(field_146126_j.equals("v")) {
-            drawRect(field_146128_h + 3, field_146129_i + 3, field_146128_h + 4, field_146129_i + field_146121_g - 3,
+        } else if(displayString.equals("v")) {
+            drawRect(xPosition + 3, yPosition + 3, xPosition + 4, yPosition + height - 3,
                      textColor);
-            drawRect(field_146128_h + 6, field_146129_i + 3, field_146128_h + 7, field_146129_i + field_146121_g - 3,
+            drawRect(xPosition + 6, yPosition + 3, xPosition + 7, yPosition + height - 3,
                      textColor);
         } else {
-            drawRect(field_146128_h + 3, field_146129_i + 3, field_146128_h + field_146120_f - 3, field_146129_i + 4,
+            drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4,
                      textColor);
-            drawRect(field_146128_h + 5, field_146129_i + 4, field_146128_h + 6, field_146129_i + 5, textColor);
-            drawRect(field_146128_h + 4, field_146129_i + 5, field_146128_h + 5, field_146129_i + 6, textColor);
-            drawRect(field_146128_h + 3, field_146129_i + 6, field_146128_h + field_146120_f - 3, field_146129_i + 7,
+            drawRect(xPosition + 5, yPosition + 4, xPosition + 6, yPosition + 5, textColor);
+            drawRect(xPosition + 4, yPosition + 5, xPosition + 5, yPosition + 6, textColor);
+            drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7,
                      textColor);
         }
     }
@@ -53,8 +53,8 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
      * Sort container
      */
     @Override
-    public boolean func_146116_c(Minecraft minecraft, int i, int j) {
-        if(super.func_146116_c(minecraft, i, j)) {
+    public boolean mousePressed(Minecraft minecraft, int i, int j) {
+        if(super.mousePressed(minecraft, i, j)) {
             try {
                 new InvTweaksHandlerSorting(minecraft, cfgManager.getConfig(), section, algorithm, rowSize).sort();
             } catch(Exception e) {

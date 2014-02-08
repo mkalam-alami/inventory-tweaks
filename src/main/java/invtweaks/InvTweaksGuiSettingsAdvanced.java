@@ -47,14 +47,14 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     public void initGui() {
         super.initGui();
 
-        List<Object> controlList = field_146292_n;
+        List<Object> controlList = buttonList;
         Point p = new Point();
         int i = 0;
 
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new GuiButton(ID_EDITSHORTCUTS, p.getX() + 55, field_146295_m / 6 + 144,
+        controlList.add(new GuiButton(ID_EDITSHORTCUTS, p.getX() + 55, height / 6 + 144,
                                       StatCollector.translateToLocal("invtweaks.settings.advanced.mappingsfile")));
 
         // Create settings buttons
@@ -107,16 +107,16 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                 if(obf.isGuiButton(o)) {
                     GuiButton button = (GuiButton) o;
                     // GuiButton
-                    if(button.field_146127_k == ID_EDITSHORTCUTS) {
+                    if(button.id == ID_EDITSHORTCUTS) {
                         // GuiButton
-                        button.field_146124_l = false;
+                        button.enabled = false;
                     }
                 }
             }
         }
 
         // Save control list
-        field_146292_n = controlList;
+        buttonList = controlList;
 
     }
 
@@ -124,7 +124,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     public void drawScreen(int i, int j, float f) {
         super.drawScreen(i, j, f);
 
-        int x = field_146294_l / 2;
+        int x = width / 2;
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt1"),
                            x, 40, 0x999999);
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt2"),
@@ -132,10 +132,10 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     }
 
     @Override
-    protected void func_146284_a(GuiButton guibutton) {
+    protected void actionPerformed(GuiButton guibutton) {
 
         // GuiButton
-        switch(guibutton.field_146127_k) {
+        switch(guibutton.id) {
 
             // Toggle auto-refill sound
             case ID_SORT_ON_PICKUP:

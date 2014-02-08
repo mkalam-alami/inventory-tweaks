@@ -59,18 +59,18 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     public void initGui() {
         super.initGui();
 
-        List<Object> controlList = field_146292_n;
+        List<Object> controlList = buttonList;
         Point p = new Point();
         int i = 0;
 
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new GuiButton(ID_EDITRULES, p.getX() + 55, field_146295_m / 6 + 96,
+        controlList.add(new GuiButton(ID_EDITRULES, p.getX() + 55, height / 6 + 96,
                                       StatCollector.translateToLocal("invtweaks.settings.rulesfile")));
-        controlList.add(new GuiButton(ID_EDITTREE, p.getX() + 55, field_146295_m / 6 + 120,
+        controlList.add(new GuiButton(ID_EDITTREE, p.getX() + 55, height / 6 + 120,
                                       StatCollector.translateToLocal("invtweaks.settings.treefile")));
-        controlList.add(new GuiButton(ID_HELP, p.getX() + 55, field_146295_m / 6 + 144,
+        controlList.add(new GuiButton(ID_HELP, p.getX() + 55, height / 6 + 144,
                                       StatCollector.translateToLocal("invtweaks.settings.onlinehelp")));
 
         // Create settings buttons
@@ -88,7 +88,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         if(shortcuts.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: shortcuts not available
             // GuiButton
-            shortcutsBtn.field_146124_l = false;
+            shortcutsBtn.enabled = false;
             shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(" +
                                             StatCollector
                                                     .translateToLocal("invtweaks.settings.disableci.tooltip") + ")");
@@ -123,7 +123,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                                                       StatCollector.translateToLocal(
                                                               "invtweaks.settings.moreoptions.tooltip")));
 
-        controlList.add(new InvTweaksGuiTooltipButton(ID_BUG_SORTING, 5, this.field_146295_m - 20, 100, 20,
+        controlList.add(new InvTweaksGuiTooltipButton(ID_BUG_SORTING, 5, this.height - 20, 100, 20,
                                                       labelBugSorting, null, false));
 
         String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
@@ -138,7 +138,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         if(middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             // Convenient Inventory compatibility: middle click not available
             // GuiButton
-            middleClickBtn.field_146124_l = false;
+            middleClickBtn.enabled = false;
             middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(" +
                                               StatCollector.translateToLocal("invtweaks.settings.disableci.tooltip"));
         }
@@ -150,29 +150,29 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                     GuiButton guiButton = (GuiButton) o;
                     // GuiButton
                     // GuiButton
-                    if(guiButton.field_146127_k >= ID_EDITRULES && guiButton.field_146127_k <= ID_HELP) {
+                    if(guiButton.id >= ID_EDITRULES && guiButton.id <= ID_HELP) {
                         // GuiButton
-                        guiButton.field_146124_l = false;
+                        guiButton.enabled = false;
                     }
                 }
             }
         }
 
         // Save control list
-        field_146292_n = controlList;
+        buttonList = controlList;
 
     }
 
     @Override
-    protected void func_146284_a(GuiButton guibutton) {
-        super.func_146284_a(guibutton);
+    protected void actionPerformed(GuiButton guibutton) {
+        super.actionPerformed(guibutton);
 
         // GuiButton
-        switch(guibutton.field_146127_k) {
+        switch(guibutton.id) {
 
             // Switch sorting key
             case ID_SORTING_KEY:
-                sortMappingButton.field_146126_j = StatCollector
+                sortMappingButton.displayString = StatCollector
                         .translateToLocal("invtweaks.settings.key") + " > ??? <";
                 sortMappingEdition = true;
                 break;
@@ -249,7 +249,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         if(sortMappingEdition) {
             String keyName = Keyboard.getKeyName(keyCode);
             config.setProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY, keyName);
-            sortMappingButton.field_146126_j = StatCollector.translateToLocal("invtweaks.settings.key") + " " + keyName;
+            sortMappingButton.displayString = StatCollector.translateToLocal("invtweaks.settings.key") + " " + keyName;
         }
         super.keyTyped(c, keyCode);
     }

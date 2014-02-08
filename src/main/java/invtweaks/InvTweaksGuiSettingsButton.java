@@ -21,12 +21,12 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
     }
 
     @Override
-    public void func_146112_a(Minecraft minecraft, int i, int j) {
-        super.func_146112_a(minecraft, i, j);
+    public void drawButton(Minecraft minecraft, int i, int j) {
+        super.drawButton(minecraft, i, j);
 
         // Display string
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
-        drawCenteredString(obf.getFontRenderer(), field_146126_j, field_146128_h + 5, field_146129_i - 1,
+        drawCenteredString(obf.getFontRenderer(), displayString, xPosition + 5, yPosition - 1,
                            getTextColor(i, j));
     }
 
@@ -34,12 +34,12 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
      * Displays inventory settings GUI
      */
     @Override
-    public boolean func_146116_c(Minecraft minecraft, int i, int j) {
+    public boolean mousePressed(Minecraft minecraft, int i, int j) {
 
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
         InvTweaksConfig config = cfgManager.getConfig();
 
-        if(super.func_146116_c(minecraft, i, j)) {
+        if(super.mousePressed(minecraft, i, j)) {
             // Put hold item down if necessary
             InvTweaksContainerSectionManager containerMgr;
 

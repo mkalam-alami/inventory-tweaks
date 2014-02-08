@@ -17,7 +17,7 @@ public class ClickMessageHandler extends SimpleChannelInboundHandler<ITPacketCli
 
         if(handler instanceof NetHandlerPlayServer) {
             NetHandlerPlayServer serverHandler = (NetHandlerPlayServer)handler;
-            EntityPlayerMP player = serverHandler.field_147369_b;
+            EntityPlayerMP player = serverHandler.playerEntity;
 
             player.openContainer.slotClick(msg.slot, msg.data, msg.action, player);
         }

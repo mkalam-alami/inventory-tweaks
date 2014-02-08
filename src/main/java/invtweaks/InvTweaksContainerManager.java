@@ -47,7 +47,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         GuiScreen currentScreen = mc.currentScreen;
         if(currentScreen instanceof GuiContainer) {
             guiContainer = (GuiContainer) currentScreen;
-            container = guiContainer.field_147002_h;
+            container = guiContainer.inventorySlots;
         } else {
             container = mc.thePlayer.inventoryContainer;
         }

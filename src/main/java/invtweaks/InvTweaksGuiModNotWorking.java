@@ -23,7 +23,7 @@ public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
     public void drawScreen(int i, int j, float f) {
         super.drawScreen(i, j, f);
 
-        int x = field_146294_l / 2;
+        int x = width / 2;
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.bugsorting.pt1"), x,
                            80, 0xBBBBBB);
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.bugsorting.pt2"), x,
@@ -35,9 +35,9 @@ public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
     }
 
     @Override
-    protected void func_146284_a(GuiButton guibutton) {
+    protected void actionPerformed(GuiButton guibutton) {
         // GuiButton
-        switch(guibutton.field_146127_k) {
+        switch(guibutton.id) {
             // Back to main settings screen
             case ID_DONE:
                 obf.displayGuiScreen(new InvTweaksGuiSettings(mc, parentScreen, config));

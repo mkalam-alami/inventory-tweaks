@@ -322,7 +322,7 @@ public class InvTweaksItemTree implements IItemTree {
         for(ItemStack i : OreDictionary.getOres(oreName)) {
             // TODO: ID Changes
             addItem(category,
-                    new InvTweaksItemTreeItem(name, Item.field_150901_e.func_148750_c(i.getItem()), i.getItemDamage(), order));
+                    new InvTweaksItemTreeItem(name, Item.itemRegistry.getNameForObject(i.getItem()), i.getItemDamage(), order));
         }
         oresRegistered.add(new OreDictInfo(category, name, oreName, order));
     }
@@ -334,7 +334,7 @@ public class InvTweaksItemTree implements IItemTree {
         for(OreDictInfo ore : oresRegistered) {
             if(ore.oreName.equals(ev.Name)) {
                 // TODO: ID Changes
-                addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.field_150901_e.func_148750_c(ev.Ore.getItem()),
+                addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.itemRegistry.getNameForObject(ev.Ore.getItem()),
                                                                 ev.Ore.getItemDamage(), ore.order));
             }
         }

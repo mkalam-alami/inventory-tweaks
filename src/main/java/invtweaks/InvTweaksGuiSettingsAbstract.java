@@ -47,28 +47,28 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     @Override
     public void initGui() {
 
-        List<Object> controlList = field_146292_n;
+        List<Object> controlList = buttonList;
         Point p = new Point();
         moveToButtonCoords(1, p);
-        controlList.add(new GuiButton(ID_DONE, p.getX() + 55, field_146295_m / 6 + 168, LABEL_DONE)); // GuiButton
+        controlList.add(new GuiButton(ID_DONE, p.getX() + 55, height / 6 + 168, LABEL_DONE)); // GuiButton
 
         // Save control list
-        field_146292_n = controlList;
+        buttonList = controlList;
 
     }
 
     @Override
     public void drawScreen(int i, int j, float f) {
-        func_146276_q_();
+        drawDefaultBackground();
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.title"),
-                           field_146294_l / 2, 20, 0xffffff);
+                           width / 2, 20, 0xffffff);
         super.drawScreen(i, j, f);
     }
 
     @Override
-    protected void func_146284_a(GuiButton guibutton) {
+    protected void actionPerformed(GuiButton guibutton) {
         // GuiButton
-        if(guibutton.field_146127_k == ID_DONE) {
+        if(guibutton.id == ID_DONE) {
             obf.displayGuiScreen(parentScreen);
         }
     }
@@ -81,14 +81,14 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     }
 
     protected void moveToButtonCoords(int buttonOrder, Point p) {
-        p.setX(field_146294_l / 2 - 155 + ((buttonOrder + 1) % 2) * 160);
-        p.setY(field_146295_m / 6 + (buttonOrder / 2) * 24);
+        p.setX(width / 2 - 155 + ((buttonOrder + 1) % 2) * 160);
+        p.setY(height / 6 + (buttonOrder / 2) * 24);
     }
 
     protected void toggleBooleanButton(GuiButton guibutton, String property, String label) {
         Boolean enabled = !Boolean.valueOf(config.getProperty(property));
         config.setProperty(property, enabled.toString());
-        guibutton.field_146126_j = computeBooleanButtonLabel(property, label);
+        guibutton.displayString = computeBooleanButtonLabel(property, label);
     }
 
     protected String computeBooleanButtonLabel(String property, String label) {

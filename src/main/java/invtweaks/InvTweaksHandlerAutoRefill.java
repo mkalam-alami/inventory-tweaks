@@ -48,8 +48,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                                           .equals(InvTweaksConfig.VALUE_TRUE);
         boolean hasSubtypes = false;
 
-        // TODO: ID Changes
-        Item original = (Item)Item.field_150901_e.getObject(wantedId);
+        Item original = (Item)Item.itemRegistry.getObject(wantedId);
         if(original != null) {
             hasSubtypes = original.getHasSubtypes();
         }
@@ -94,9 +93,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 for(int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                     candidateStack = container.getItemStack(i);
                     if(candidateStack != null) {
-                        // TODO: ID Changes
                         List<IItemTreeItem> candidateItems = tree
-                                .getItems(Item.field_150901_e.func_148750_c(candidateStack.getItem()), candidateStack.getItemDamage());
+                                .getItems(Item.itemRegistry.getNameForObject(candidateStack.getItem()), candidateStack.getItemDamage());
                         if(tree.matches(candidateItems, rule.getKeyword())) {
                             // Choose tool of highest damage value
                             if(candidateStack.getMaxStackSize() == 1) {
@@ -125,9 +123,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
         else {
             for(int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                 candidateStack = container.getItemStack(i);
-                // TODO: ID Changes
                 if(candidateStack != null &&
-                        Item.field_150901_e.func_148750_c(candidateStack.getItem()).equals(wantedId) &&
+                        Item.itemRegistry.getNameForObject(candidateStack.getItem()).equals(wantedId) &&
                         candidateStack.getItemDamage() == wantedDamage) {
                     replacementStack = candidateStack;
                     replacementStackSlot = i;
@@ -161,7 +158,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     if(i != -1) {
                         this.i = i;
                         // TODO: ID Changes
-                        this.expectedItemId = Item.func_150891_b(containerMgr.getItemStack(i).getItem());
+                        this.expectedItemId = Item.getIdFromItem(containerMgr.getItemStack(i).getItem());
                     } else {
                         this.i = containerMgr.getFirstEmptyIndex();
                         this.expectedItemId = -1;
@@ -194,11 +191,11 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                         ItemStack stack = containerMgr.getItemStack(i);
                         // TODO: ID Changes
                         if(stack != null && Item
-                                .func_150891_b(stack.getItem()) == expectedItemId || this.refillBeforeBreak) {
+                                .getIdFromItem(stack.getItem()) == expectedItemId || this.refillBeforeBreak) {
                             if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
                                 if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
                                           .equals(InvTweaksConfig.VALUE_FALSE)) {
-                                    mc.func_147118_V().func_147682_a(PositionedSoundRecord.func_147674_a(
+                                    mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(
                                             new ResourceLocation("mob.chicken.plop"), 1.0F));
                                 }
                                 // If item are swapped (like for mushroom soups),

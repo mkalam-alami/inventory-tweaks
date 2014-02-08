@@ -229,7 +229,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         } else if(container.hasSection(ContainerSection.BREWING_INGREDIENT)) {
                             ItemStack stack = slot.getStack();
                             if(stack != null) {
-                                if(stack.getItem() == Item.field_150901_e.getObject("potion")) {
+                                if(stack.getItem() == Item.itemRegistry.getObject("potion")) {
                                     orderedSections.add(ContainerSection.BREWING_BOTTLES);
                                 } else {
                                     orderedSections.add(ContainerSection.BREWING_INGREDIENT);

@@ -166,7 +166,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 if(hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
                     // TODO: ID Changes
                     List<IItemTreeItem> fromItems = tree
-                            .getItems(Item.field_150901_e.func_148750_c(from.getItem()), from.getItemDamage());
+                            .getItems(Item.itemRegistry.getNameForObject(from.getItem()), from.getItemDamage());
                     if(tree.matches(fromItems, rule.getKeyword())) {
 
                         // Test preffered slots
@@ -183,7 +183,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                 } else {
                                     from = containerMgr.getItemStack(moveResult);
                                     // TODO: ID Changes
-                                    fromItems = tree.getItems(Item.field_150901_e.func_148750_c(from.getItem()), from.getItemDamage());
+                                    fromItems = tree.getItems(Item.itemRegistry.getNameForObject(from.getItem()), from.getItemDamage());
                                     if(!tree.matches(fromItems, rule.getKeyword())) {
                                         break;
                                     } else {
@@ -317,7 +317,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             ItemStack stack = containerMgr.getItemStack(i);
             if(stack != null) {
                 // TODO: ID Changes
-                List<Integer> item = Arrays.asList(Item.func_150891_b(stack.getItem()), stack.getItemDamage());
+                List<Integer> item = Arrays.asList(Item.getIdFromItem(stack.getItem()), stack.getItemDamage());
                 int[] count = itemCounts.get(item);
                 if(count == null) {
                     int[] newCount = {stack.stackSize, 1};
@@ -338,14 +338,14 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             //skip hacked itemstacks that are larger than their max size
             //no idea why they would be here, but may as well account for them anyway
             // TODO: ID Changes
-            if(numPerSlot <= new ItemStack(Item.func_150899_d(item.get(0)), 1, 0).getMaxStackSize()) {
+            if(numPerSlot <= new ItemStack(Item.getItemById(item.get(0)), 1, 0).getMaxStackSize()) {
                 //linkedlists to store which stacks have too many/few items
                 LinkedList<Integer> smallStacks = new LinkedList<Integer>();
                 LinkedList<Integer> largeStacks = new LinkedList<Integer>();
                 for(int i = 0; i < size; i++) {
                     ItemStack stack = containerMgr.getItemStack(i);
                     // TODO: ID Changes
-                    if(stack != null && Arrays.asList(Item.func_150891_b(stack.getItem()), stack.getItemDamage())
+                    if(stack != null && Arrays.asList(Item.getIdFromItem(stack.getItem()), stack.getItemDamage())
                                               .equals(item)) {
                         int stackSize = stack.stackSize;
                         if(stackSize > numPerSlot) {
@@ -563,7 +563,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     private int getItemOrder(ItemStack itemStack) {
         // TODO: ID Changes
-        List<IItemTreeItem> items = tree.getItems(Item.field_150901_e.func_148750_c(itemStack.getItem()), itemStack.getItemDamage());
+        List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(itemStack.getItem()), itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
@@ -706,12 +706,12 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             ItemStack stack = containerMgr.getItemStack(i);
             if(stack != null) {
                 // TODO: ID Changes
-                int itemSearchKey = Item.func_150891_b(stack.getItem()) * 100000 + ((stack
+                int itemSearchKey = Item.getIdFromItem(stack.getItem()) * 100000 + ((stack
                         .getMaxStackSize() != 1) ? stack.getItemDamage() : 0);
                 IItemTreeItem item = itemSearch.get(itemSearchKey);
                 if(item == null) {
                     // TODO: ID Changes
-                    item = tree.getItems(Item.field_150901_e.func_148750_c(stack.getItem()), stack.getItemDamage()).get(0);
+                    item = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getItemDamage()).get(0);
                     itemSearch.put(itemSearchKey, item);
                     stats.put(item, 1);
                 } else {

@@ -17,7 +17,7 @@ public class SortingCompleteMessageHandler extends SimpleChannelInboundHandler<I
 
         if(handler instanceof NetHandlerPlayServer) {
             NetHandlerPlayServer serverHandler = (NetHandlerPlayServer)handler;
-            EntityPlayerMP player = serverHandler.field_147369_b;
+            EntityPlayerMP player = serverHandler.playerEntity;
 
             player.sendContainerToPlayer(player.openContainer);
         }

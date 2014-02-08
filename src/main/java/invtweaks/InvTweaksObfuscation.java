@@ -22,6 +22,7 @@ import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Mouse;
@@ -52,7 +53,7 @@ public class InvTweaksObfuscation {
 
     public void addChatMessage(String message) {
         if(mc.ingameGUI != null) {
-            mc.ingameGUI.func_146158_b().func_146239_a(message);
+            mc.ingameGUI.getChatGUI().printChatMessage(new ChatComponentText(message));
         }
     }
 
@@ -73,7 +74,7 @@ public class InvTweaksObfuscation {
     }
 
     public void displayGuiScreen(GuiScreen parentScreen) {
-        mc.func_147108_a(parentScreen);
+        mc.displayGuiScreen(parentScreen);
     }
 
     public static int getDisplayWidth() {
@@ -196,7 +197,7 @@ public class InvTweaksObfuscation {
     public static Slot getSlotAtMousePosition(GuiContainer guiContainer) {
         // Copied from GuiContainer
         if(guiContainer != null) {
-            Container container = guiContainer.field_147002_h;
+            Container container = guiContainer.inventorySlots;
 
             int x = getMouseX(guiContainer);
             int y = getMouseY(guiContainer);
@@ -221,8 +222,8 @@ public class InvTweaksObfuscation {
     private static boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int x, int y) {
         // Copied from GuiContainer
         if(guiContainer != null) {
-            x -= guiContainer.field_147003_i;
-            y -= guiContainer.field_147009_r;
+            x -= guiContainer.guiLeft;
+            y -= guiContainer.guiTop;
             return x >= slot.xDisplayPosition - 1 && x < slot.xDisplayPosition + 16 + 1 && y >= slot.yDisplayPosition - 1 && y < slot.yDisplayPosition + 16 + 1;
         } else {
             return false;
@@ -231,13 +232,13 @@ public class InvTweaksObfuscation {
 
     @SideOnly(Side.CLIENT)
     private static int getMouseX(GuiContainer guiContainer) {
-        return (Mouse.getEventX() * guiContainer.field_146294_l) / getDisplayWidth();
+        return (Mouse.getEventX() * guiContainer.width) / getDisplayWidth();
     }
 
     @SideOnly(Side.CLIENT)
     private static int getMouseY(GuiContainer guiContainer) {
-        return guiContainer.field_146295_m -
-                (Mouse.getEventY() * guiContainer.field_146295_m) / getDisplayHeight() - 1;
+        return guiContainer.height -
+                (Mouse.getEventY() * guiContainer.height) / getDisplayHeight() - 1;
     }
 
     public static int getSpecialChestRowSize(Container container) {

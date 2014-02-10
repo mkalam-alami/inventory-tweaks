@@ -13,7 +13,7 @@ import net.minecraft.network.NetHandlerPlayServer;
 public class SortingCompleteMessageHandler extends SimpleChannelInboundHandler<ITPacketSortComplete> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ITPacketSortComplete msg) throws Exception {
-        INetHandler handler = ctx.attr(NetworkRegistry.NET_HANDLER).get();
+        INetHandler handler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
 
         if(handler instanceof NetHandlerPlayServer) {
             NetHandlerPlayServer serverHandler = (NetHandlerPlayServer)handler;

@@ -13,7 +13,7 @@ import net.minecraft.network.NetHandlerPlayServer;
 public class ClickMessageHandler extends SimpleChannelInboundHandler<ITPacketClick> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ITPacketClick msg) throws Exception {
-        INetHandler handler = ctx.attr(NetworkRegistry.NET_HANDLER).get();
+        INetHandler handler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
 
         if(handler instanceof NetHandlerPlayServer) {
             NetHandlerPlayServer serverHandler = (NetHandlerPlayServer)handler;

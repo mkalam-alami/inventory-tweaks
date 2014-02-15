@@ -7,6 +7,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
@@ -147,9 +148,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
                 private InvTweaksContainerSectionManager containerMgr;
                 private int targetedSlot;
-                private int i
-                        ,
-                        expectedItemId;
+                private int i;
+                private String expectedItemId;
                 private boolean refillBeforeBreak;
 
                 public Runnable init(Minecraft mc, int i, int currentItem, boolean refillBeforeBreak) throws Exception {
@@ -157,11 +157,10 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     this.targetedSlot = currentItem;
                     if(i != -1) {
                         this.i = i;
-                        // TODO: ID Changes
-                        this.expectedItemId = Item.getIdFromItem(containerMgr.getItemStack(i).getItem());
+                        this.expectedItemId = Item.itemRegistry.getNameForObject(containerMgr.getItemStack(i).getItem());
                     } else {
                         this.i = containerMgr.getFirstEmptyIndex();
-                        this.expectedItemId = -1;
+                        this.expectedItemId = null;
                     }
                     this.refillBeforeBreak = refillBeforeBreak;
                     return this;
@@ -189,9 +188,9 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     // In POLLING_DELAY ms, things might have changed
                     try {
                         ItemStack stack = containerMgr.getItemStack(i);
-                        // TODO: ID Changes
-                        if(stack != null && Item
-                                .getIdFromItem(stack.getItem()) == expectedItemId || this.refillBeforeBreak) {
+
+                        if(stack != null && StringUtils.equals(Item.itemRegistry.getNameForObject(stack.getItem()),
+                                                        expectedItemId) || this.refillBeforeBreak) {
                             if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
                                 if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
                                           .equals(InvTweaksConfig.VALUE_FALSE)) {

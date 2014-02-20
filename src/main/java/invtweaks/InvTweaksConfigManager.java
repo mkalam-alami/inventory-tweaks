@@ -115,12 +115,12 @@ public class InvTweaksConfigManager {
         if(!InvTweaksConst.CONFIG_RULES_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE,
                                                                      InvTweaksConst.CONFIG_RULES_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_RULES_FILE + " " +
-                                              StatCollector.translateToLocal("invtweaks.loadconfig.invalidkeywords"));
+                                              StatCollector.translateToLocal("invtweaks.loadconfig.filemissing"));
         }
         if(!InvTweaksConst.CONFIG_TREE_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE,
                                                                     InvTweaksConst.CONFIG_TREE_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_TREE_FILE + " " +
-                                              StatCollector.translateToLocal("invtweaks.loadconfig.invalidkeywords"));
+                                              StatCollector.translateToLocal("invtweaks.loadconfig.filemissing"));
         }
 
         storedConfigLastModified = computeConfigLastModified();

@@ -63,7 +63,7 @@ public class InvTweaksMod implements InvTweaksAPI {
 
     @Override
     public int compareItems(ItemStack i, ItemStack j) {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return proxy.compareItems(i, j);
     }
 
     // Helper for ASM transform of GuiTextField to disable sorting on focus.

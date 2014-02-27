@@ -57,6 +57,13 @@ public class InvTweaksObfuscation {
         }
     }
 
+    public static String getNamespacedID(String id) {
+        if(id.indexOf(':') == -1) {
+            return "minecraft:" + id;
+        }
+        return id;
+    }
+
     public EntityPlayer getThePlayer() {
         return mc.thePlayer;
     }

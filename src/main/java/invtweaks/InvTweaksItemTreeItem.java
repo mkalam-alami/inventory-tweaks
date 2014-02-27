@@ -23,7 +23,7 @@ public class InvTweaksItemTreeItem implements IItemTreeItem {
      */
     public InvTweaksItemTreeItem(String name, String id, int damage, int order) {
         this.name = name;
-        this.id = id;
+        this.id = InvTweaksObfuscation.getNamespacedID(id);
         this.damage = damage;
         this.order = order;
     }

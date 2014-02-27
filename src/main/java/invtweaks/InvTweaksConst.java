@@ -33,7 +33,7 @@ public class InvTweaksConst {
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs
-    public static final String TREE_VERSION = "1.6.0";
+    public static final String TREE_VERSION = "1.7.0";
 
     public static final String INVTWEAKS_CHANNEL = "InventoryTweaks";
 

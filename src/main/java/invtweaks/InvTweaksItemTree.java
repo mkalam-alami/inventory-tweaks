@@ -169,6 +169,10 @@ public class InvTweaksItemTree implements IItemTree {
 
     @Override
     public List<IItemTreeItem> getItems(String id, int damage) {
+        if(id == null) {
+            return new ArrayList<IItemTreeItem>();
+        }
+
         List<IItemTreeItem> items = itemsById.get(id);
         List<IItemTreeItem> filteredItems = new ArrayList<IItemTreeItem>();
         if(items != null) {

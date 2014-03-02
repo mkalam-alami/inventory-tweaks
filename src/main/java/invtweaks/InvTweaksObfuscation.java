@@ -58,7 +58,9 @@ public class InvTweaksObfuscation {
     }
 
     public static String getNamespacedID(String id) {
-        if(id.indexOf(':') == -1) {
+        if(id == null) {
+            return null;
+        } else if(id.indexOf(':') == -1) {
             return "minecraft:" + id;
         }
         return id;

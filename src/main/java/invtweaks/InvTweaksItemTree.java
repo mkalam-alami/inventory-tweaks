@@ -77,9 +77,8 @@ public class InvTweaksItemTree implements IItemTree {
         }
 
         // The keyword is an item
-        String keywordID = InvTweaksObfuscation.getNamespacedID(keyword);
         for(IItemTreeItem item : items) {
-            if(item.getName() != null && item.getName().equals(keywordID)) {
+            if(item.getName() != null && item.getName().equals(keyword)) {
                 return true;
             }
         }

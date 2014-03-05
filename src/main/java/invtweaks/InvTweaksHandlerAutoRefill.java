@@ -70,7 +70,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 if(!hasSubtypes || (item.getDamage() == wantedDamage)) {
                     // Since we search a matching item using rules,
                     // create a fake one that matches the exact item first
-                    matchingRules.add(new InvTweaksConfigSortingRule(tree, "D" + (slot - 27), item.getName(),
+                    matchingRules.add(new InvTweaksConfigSortingRule(tree, "D" + (slot - 26), item.getName(),
                                                                      InvTweaksConst.INVENTORY_SIZE,
                                                                      InvTweaksConst.INVENTORY_ROW_SIZE));
                 }

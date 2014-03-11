@@ -77,10 +77,12 @@ public enum ContainerSection {
     ENCHANTMENT,
     /**
      * The three bottles slots in brewing tables
+     * NOTE: Do not use without also using BREWING_INGREDIENT.
      */
     BREWING_BOTTLES,
     /**
      * The top slot in brewing tables
+     * NOTE: Do not use without also using BREWING_BOTTLES.
      */
     BREWING_INGREDIENT
 }

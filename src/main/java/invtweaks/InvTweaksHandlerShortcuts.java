@@ -227,9 +227,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         } else if(container.hasSection(ContainerSection.FURNACE_IN)) {
                             orderedSections.add(ContainerSection.FURNACE_IN);
                         } else if(container.hasSection(ContainerSection.BREWING_INGREDIENT)) {
-                            ItemStack stack = slot.getStack();
-                            if(stack != null) {
-                                if(stack.getItem() == Item.itemRegistry.getObject("potion")) {
+                            if(shortcutConfig.fromStack != null) {
+                                if(shortcutConfig.fromStack.getItem() == Item.itemRegistry.getObject("potion")) {
                                     orderedSections.add(ContainerSection.BREWING_BOTTLES);
                                 } else {
                                     orderedSections.add(ContainerSection.BREWING_INGREDIENT);

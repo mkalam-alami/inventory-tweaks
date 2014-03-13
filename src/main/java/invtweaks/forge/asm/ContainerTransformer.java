@@ -70,11 +70,6 @@ public class ContainerTransformer implements IClassTransformer {
                                                                                                 "containerChestDispenserSlots")));
 
         // Mod compatibility
-        // Iron Chests
-        ContainerInfo ironChestsInfo = new ContainerInfo(false, false, true, true);
-        // TODO Iron Chest row size method. (Needs to be injected because it exists on the GUI, although the container has the info needed)
-        compatibilityClasses.put("cpw.mods.ironchest.ContainerIronChestBase", ironChestsInfo);
-
         // Equivalent Exchange 3
         compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerAlchemicalBag",
                                  new ContainerInfo(false, false, true, true, (short) 13));
@@ -85,7 +80,7 @@ public class ContainerTransformer implements IClassTransformer {
                                                    getCompatiblitySlotMapInfo("ee3PortableCraftingSlots")));
 
         // Ender Storage
-        // TODO blahblah see above. A bit less important because it's a config setting and 2 of 3 options give rowsize 9.
+        // TODO Row size method. A bit less important because it's a config setting and 2 of 3 options give rowsize 9.
         compatibilityClasses.put("codechicken.enderstorage.storage.item.ContainerEnderItemStorage",
                                  new ContainerInfo(false, false, true));
 

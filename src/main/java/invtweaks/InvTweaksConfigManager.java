@@ -147,15 +147,43 @@ public class InvTweaksConfigManager {
             showConfigErrors(config);
         } catch(FileNotFoundException e) {
             error = "Config file not found";
+            errorException = e;
         } catch(Exception e) {
             error = "Error while loading config";
             errorException = e;
         }
 
         if(error != null) {
-            InvTweaks.logInGameErrorStatic(error, errorException);
             log.error(error);
-            config = null;
+            InvTweaks.logInGameErrorStatic(error, errorException);
+
+            try {
+                // TODO: Refactor this so I'm not just copying the code from above.
+                // The purpose of this is to try to deal with any errors in their config files
+                // Because things crash if config is null
+                backupFile(InvTweaksConst.CONFIG_TREE_FILE);
+                backupFile(InvTweaksConst.CONFIG_RULES_FILE);
+                backupFile(InvTweaksConst.CONFIG_PROPS_FILE);
+
+                config = new InvTweaksConfig(InvTweaksConst.CONFIG_RULES_FILE, InvTweaksConst.CONFIG_TREE_FILE);
+                autoRefillHandler = new InvTweaksHandlerAutoRefill(mc, config);
+                shortcutsHandler = new InvTweaksHandlerShortcuts(mc, config);
+
+                config.load();
+                shortcutsHandler.loadShortcuts();
+            } catch(Exception e) {
+                // But if this fails too there's not much point in trying again
+                config = null;
+                autoRefillHandler = null;
+                shortcutsHandler = null;
+
+                if(e.getCause() == null) {
+                    e.initCause(errorException);
+                }
+
+                throw new Error("InvTweaks config load failed", e);
+            }
+
             return false;
         } else {
             return true;

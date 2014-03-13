@@ -165,6 +165,9 @@ public class InvTweaksConfigManager {
                 backupFile(InvTweaksConst.CONFIG_RULES_FILE);
                 backupFile(InvTweaksConst.CONFIG_PROPS_FILE);
 
+                extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE, InvTweaksConst.CONFIG_RULES_FILE);
+                extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE, InvTweaksConst.CONFIG_TREE_FILE);
+
                 config = new InvTweaksConfig(InvTweaksConst.CONFIG_RULES_FILE, InvTweaksConst.CONFIG_TREE_FILE);
                 autoRefillHandler = new InvTweaksHandlerAutoRefill(mc, config);
                 shortcutsHandler = new InvTweaksHandlerShortcuts(mc, config);

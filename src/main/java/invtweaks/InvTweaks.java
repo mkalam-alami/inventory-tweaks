@@ -379,17 +379,39 @@ public class InvTweaks extends InvTweaksObfuscation {
         logInGame(message, false);
     }
 
+    private List<String> queuedMessages = new ArrayList<String>();
+
+    public void printQueuedMessages() {
+        if(mc.ingameGUI != null && !queuedMessages.isEmpty()) {
+            for(String s : queuedMessages) {
+                addChatMessage(s);
+            }
+            queuedMessages.clear();
+        }
+    }
+
     public void logInGame(String message, boolean alreadyTranslated) {
         String formattedMsg = buildlogString(Level.INFO,
                                              (alreadyTranslated) ? message : StatCollector.translateToLocal(message));
-        addChatMessage(formattedMsg);
+
+        if(mc.ingameGUI == null) {
+            queuedMessages.add(formattedMsg);
+        } else {
+            addChatMessage(formattedMsg);
+        }
+
         log.info(formattedMsg);
     }
 
     public void logInGameError(String message, Exception e) {
         e.printStackTrace();
         String formattedMsg = buildlogString(Level.SEVERE, StatCollector.translateToLocal(message), e);
-        addChatMessage(formattedMsg);
+
+        if(mc.ingameGUI == null) {
+            queuedMessages.add(formattedMsg);
+        } else {
+            addChatMessage(formattedMsg);
+        }
     }
 
     public static void logInGameStatic(String message) {
@@ -424,6 +446,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private boolean onTick() {
+        printQueuedMessages();
 
         tickNumber++;
 

@@ -165,8 +165,8 @@ First steps
 This file is where are stored the keywords you can use to create rules. It also specifies the item order in the categories. It can be modified as you want, giving you the opportunity to make custom keywords for your rules::
 
    <myCategory>
-     <dirt id="3" />
-     <cake id="354" />
+     <dirt id="dirt" />
+     <cake id="cake" />
    </myCategory>
 
 Now, if you create a rule using the "*myCategory*" keyword, it will match only dirt and cake.
@@ -175,7 +175,7 @@ Now, if you create a rule using the "*myCategory*" keyword, it will match only d
 
   * Here, you don't need to remove "dirt" and "cake" from their default categories.
   * It's recommended to add any custom category to the top of the item tree, just below the ``<stuff>`` tag.
-  * Within a category, the order of the items determines which item is preffered. For instance, if you make a ``D1 sword`` rules, iron swords will be picked first, since it appears first in the item tree. Feel free to tweak that!
+  * Within a category, the order of the items determines which item is preferred. For instance, if you make a ``D1 sword`` rules, iron swords will be picked first, since it appears first in the item tree. Feel free to tweak that!
 
 Items defined by IDs and damage
 -------------------------------
@@ -183,20 +183,10 @@ Items defined by IDs and damage
 Some items are not only defined by IDs, but also by specific "damage values"::
 
    <sexyWools>
-     <magentaWool id="35" damage="2" />
-     <pinkWool id="35" damage="6" />
-     <purpleWool id="35" damage="10" />
+     <magentaWool id="wool" damage="2" />
+     <pinkWool id="wool" damage="6" />
+     <purpleWool id="wool" damage="10" />
    </sexyWools>
-
-Categories defined by id ranges
--------------------------------
-
-You can also define categories by entering a range of IDs. Useful for mods::
-
-   <camelOre>
-     <camelOreBlocks min="96" max="158" />
-     <camelOreItems min="358" max="443" />
-   </camelOre>
 
 Categories defined by Forge ore Dictionary Names
 -------------------------------
@@ -228,9 +218,9 @@ If you're having troubles making the mod work, or can't manage how to customize 
 
 * **I can't sort items from my mods like I want!**
 
-Currently, you have two solutions, the first being to make rules according to the item ID (e.g. ``D1 489`` or ``D1 489-5`` for a specific damage value).
+Currently, you have two solutions, the first being to make rules according to the item ID (e.g. ``D1 somemod:someItem`` or ``D1 somemod:someItem-5`` for a specific damage value).
 
-Second solution, edit the *InvTweaksTree.txt* file from the config folder, to manually add the items you want to sort. Each item is defined by its ID, and the easiest way to find out which item is which ID is to use something like the `Not Enough Items <http://www.minecraftforum.net/topic/909223-/>`_ mod. You can gain time by defining item categories by ID ranges, look for that in the advanced documentation.
+Second solution, edit the *InvTweaksTree.txt* file from the config folder, to manually add the items you want to sort. Each item is defined by its ID, and the easiest way to find out which item is which ID is to use something like the `Not Enough Items <http://www.minecraftforum.net/topic/909223-/>`_ mod.
   
 * **The last update broke my InvTweaksTree.txt file!**
 

@@ -2,6 +2,13 @@
 
 Latest changes
 ==============
+`1.57 (1.7.2) <http://build.technicpack.net/job/Inventory-Tweaks/116/artifact/build/libs/InventoryTweaks-1.57-116.jar>`_
+ * Updated to MC 1.7.2 (With many internal changes to support the update)
+ * Use ID names, instead on numerical IDs for blocks/items in config files.
+ * Messages during the loading process will now display as chat messages the first time you load a game.
+ * Rule-based sorting should no longer freeze the game in specific situations.
+ * Using IDs in custom rules may or may not work.
+
 `1.56 (1.6.2) <http://build.technicpack.net/job/Inventory-Tweaks/77/artifact/build/out/InventoryTweaks-MC1.6.2-1.56-b77.jar>`_
  * Fix loading on Forge build 831 and above.
  * Removed the attempt to register tools from Forge's internal maps, it wasn't very precise.

@@ -202,6 +202,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         InvTweaksConfig config = cfgManager.getConfig();
         // Handle option to disable this feature
         if(cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP).equals("false")) {
+            itemPickupPending = false;
             return;
         }
 

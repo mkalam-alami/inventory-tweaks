@@ -202,13 +202,14 @@ You can also define categories by entering an ore dictionary name. Useful for mo
 Adding configured compatibility info
 ======================
 Additional compatibility info can be added to the file 'config/InvTweaksCompatibility.xml'.
+**This file does not exist by default, create it if you need to use it.**
 This will not work with all mods, as it is only capable of the most basic info required.
 Ask mod authors for API compatibility if their containers do not behave correctly.
 The format for entries is fairly simple::
 
    <root>
-      <chest class="mod.container.MyChestContainer" row_size="9" large_chest="false"> <!-- Chests to show the sorting modes buttons on -->
-      <inventory class="mod.container.MyInventoryContainer" disable_buttons="false"> <!-- Other inventories to show just the options button on -->
+      <chest class="mod.container.MyChestContainer" row_size="9" large_chest="false"/> <!-- Chests to show the sorting modes buttons on -->
+      <inventory class="mod.container.MyInventoryContainer" disable_buttons="false"/> <!-- Other inventories to show just the options button on -->
    </root>
 
 F.A.Q.

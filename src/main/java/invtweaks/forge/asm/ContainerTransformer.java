@@ -109,6 +109,11 @@ public class ContainerTransformer implements IClassTransformer {
             lateInit();
         }
 
+        // Sanity checking so it doesn't look like this mod caused crashes when things were missing.
+        if(bytes == null || bytes.length == 0) {
+            return bytes;
+        }
+
         ClassReader cr = new ClassReader(bytes);
         ClassNode cn = new ClassNode(Opcodes.ASM4);
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);

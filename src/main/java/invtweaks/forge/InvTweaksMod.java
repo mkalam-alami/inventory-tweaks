@@ -18,7 +18,8 @@ import net.minecraft.item.ItemStack;
  *         Source code: <a href="https://github.com/kobata/inventory-tweaks">GitHub</a> License: MIT
  */
 @Mod(modid = "inventorytweaks",
-     dependencies = "required-after:FML@[7.2.0,);required-after:Forge@[10.12.1,)")
+     dependencies = "required-after:FML@[7.2.0,);required-after:Forge@[10.12.1,)",
+        acceptableRemoteVersions="*")
 public class InvTweaksMod implements InvTweaksAPI {
     @Mod.Instance
     public static InvTweaksMod instance;

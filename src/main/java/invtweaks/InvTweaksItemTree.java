@@ -320,12 +320,15 @@ public class InvTweaksItemTree implements IItemTree {
         }
     }
 
-    //FIXME: This probably doesn't work with FML messing with ID on connection to servers.
     @Override
     public void registerOre(String category, String name, String oreName, int order) {
         for(ItemStack i : OreDictionary.getOres(oreName)) {
-            addItem(category,
-                    new InvTweaksItemTreeItem(name, Item.itemRegistry.getNameForObject(i.getItem()), i.getItemDamage(), order));
+            if(i != null) {
+                addItem(category,
+                        new InvTweaksItemTreeItem(name, Item.itemRegistry.getNameForObject(i.getItem()), i.getItemDamage(), order));
+            } else {
+                log.warn(String.format("An OreDictionary entry for %s is null", oreName));
+            }
         }
         oresRegistered.add(new OreDictInfo(category, name, oreName, order));
     }
@@ -336,8 +339,12 @@ public class InvTweaksItemTree implements IItemTree {
     public void oreRegistered(OreDictionary.OreRegisterEvent ev) {
         for(OreDictInfo ore : oresRegistered) {
             if(ore.oreName.equals(ev.Name)) {
-                addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.itemRegistry.getNameForObject(ev.Ore.getItem()),
-                                                                ev.Ore.getItemDamage(), ore.order));
+                if(ev.Ore.getItem() != null) {
+                    addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.itemRegistry.getNameForObject(ev.Ore.getItem()),
+                            ev.Ore.getItemDamage(), ore.order));
+                } else {
+                    log.warn(String.format("An OreDictionary entry for %s is null", ev.Name));
+                }
             }
         }
     }

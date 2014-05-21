@@ -12,6 +12,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -92,6 +93,8 @@ public class ContainerTransformer implements IClassTransformer {
 
         try {
             configClasses = CompatibilityConfigLoader.load("config/InvTweaksCompatibility.xml");
+        } catch(FileNotFoundException ex) {
+            configClasses = new HashMap<String, ContainerInfo>();
         } catch(Exception ex) {
             configClasses = new HashMap<String, ContainerInfo>();
             ex.printStackTrace();

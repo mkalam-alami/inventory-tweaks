@@ -33,7 +33,7 @@ archivesBaseName = "InventoryTweaks"
 
 ext.mcversion = "1.7.2"
 minecraft {
-    version = "1.7.2-10.12.1.1060"
+    version = "1.7.2-10.12.1.1110"
     at 'src/main/resources/invtweaks_at.cfg'
 }
 

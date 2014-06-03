@@ -1,9 +1,9 @@
 package invtweaks;
 
 import invtweaks.api.IItemTreeItem;
+import invtweaks.forge.ClientProxy;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.input.Keyboard;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -34,6 +34,8 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_AUTO_REFILL = "enableAutoRefill";
     public static final String PROP_AUTO_REFILL_BEFORE_BREAK = "autoRefillBeforeBreak";
     public static final String PROP_AUTO_REFILL_DAMAGE_THRESHHOLD = "autoRefillDamageThreshhold";
+
+    @Deprecated
     public static final String PROP_KEY_SORT_INVENTORY = "keySortInventory";
 
     // Shortcuts
@@ -74,7 +76,6 @@ public class InvTweaksConfig {
     private int currentRuleset = 0;
     private String currentRulesetName = null;
     private Vector<String> invalidKeywords;
-    private int sortKeyCode;
 
     private long storedConfigLastModified;
 
@@ -85,6 +86,7 @@ public class InvTweaksConfig {
     public InvTweaksConfig(File rulesFile, File treeFile) {
         this.rulesFile = rulesFile;
         this.treeFile = treeFile;
+
         reset();
     }
 
@@ -213,9 +215,6 @@ public class InvTweaksConfig {
             } catch(IOException e) {
                 InvTweaks.logInGameStatic("Failed to save config file " + InvTweaksConst.CONFIG_PROPS_FILE);
             }
-
-            // Update sort key
-            sortKeyCode = Keyboard.getKeyIndex(getProperty(PROP_KEY_SORT_INVENTORY));
         }
     }
 
@@ -452,7 +451,6 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_SHORTCUTS, VALUE_TRUE);
         properties.put(PROP_ENABLE_AUTO_EQUIP_ARMOR, VALUE_FALSE);
         properties.put(PROP_ENABLE_SERVER_ITEMSWAP, VALUE_TRUE);
-        properties.put(PROP_KEY_SORT_INVENTORY, "R");
 
         properties.put(PROP_SHORTCUT_ALL_ITEMS, "LCONTROL+LSHIFT, RCONTROL+RSHIFT");
         properties.put(PROP_SHORTCUT_EVERYTHING, "SPACE");
@@ -481,6 +479,7 @@ public class InvTweaksConfig {
         newProperties.remove(PROP_OBSOLETE_ENABLE_SORTING_SOUND);
         newProperties.remove(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND);
         newProperties.remove(PROP_OBSOLETE_SHORTCUT_ONE_STACK);
+        newProperties.remove(PROP_KEY_SORT_INVENTORY);
 
         // XXX 1.34 update: force shortcuts reset
         if(newProperties.get(PROP_VERSION) != null) {
@@ -517,7 +516,7 @@ public class InvTweaksConfig {
     }
 
     public int getSortKeyCode() {
-        return sortKeyCode;
+        return ClientProxy.KEYBINDING_SORT.getKeyCode();
     }
 
 }

@@ -27,8 +27,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private final static int ID_SHORTCUTS_HELP = 4;
     private final static int ID_AUTO_REFILL = 5;
     private final static int ID_MORE_OPTIONS = 6;
-    private final static int ID_SORTING_KEY = 7;
-    private final static int ID_BUG_SORTING = 8;
+    private final static int ID_BUG_SORTING = 7;
     private final static int ID_EDITRULES = 100;
     private final static int ID_EDITTREE = 101;
     private final static int ID_HELP = 102;
@@ -93,12 +92,6 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                                             StatCollector
                                                     .translateToLocal("invtweaks.settings.disableci.tooltip") + ")");
         }
-
-        moveToButtonCoords(i++, p);
-        sortMappingButton = new InvTweaksGuiTooltipButton(ID_SORTING_KEY, p.getX(), p.getY(), StatCollector
-                .translateToLocal("invtweaks.settings.key") + " " +
-                config.getProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY));
-        controlList.add(sortMappingButton);
 
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton beforeBreakBtn = new InvTweaksGuiTooltipButton(ID_BEFORE_BREAK, p.getX(), p.getY(),
@@ -169,14 +162,6 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
         // GuiButton
         switch(guibutton.id) {
-
-            // Switch sorting key
-            case ID_SORTING_KEY:
-                sortMappingButton.displayString = StatCollector
-                        .translateToLocal("invtweaks.settings.key") + " > ??? <";
-                sortMappingEdition = true;
-                break;
-
             // Toggle middle click shortcut
             case ID_MIDDLE_CLICK:
                 toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, labelMiddleClick);
@@ -243,15 +228,4 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         }
 
     }
-
-    @Override
-    protected void keyTyped(char c, int keyCode) {
-        if(sortMappingEdition) {
-            String keyName = Keyboard.getKeyName(keyCode);
-            config.setProperty(InvTweaksConfig.PROP_KEY_SORT_INVENTORY, keyName);
-            sortMappingButton.displayString = StatCollector.translateToLocal("invtweaks.settings.key") + " " + keyName;
-        }
-        super.keyTyped(c, keyCode);
-    }
-
 }

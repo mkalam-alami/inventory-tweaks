@@ -1,6 +1,7 @@
 package invtweaks.forge;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -15,10 +16,14 @@ import invtweaks.network.packets.ITPacketClick;
 import invtweaks.network.packets.ITPacketSortComplete;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.input.Keyboard;
 
 public class ClientProxy extends CommonProxy {
+    public static final KeyBinding KEYBINDING_SORT = new KeyBinding("invtweaks.key.sort", Keyboard.KEY_R, "invtweaks.key.category");
+
     private InvTweaks instance;
     private ForgeClientTick clientTick;
     public boolean serverSupportEnabled = false;
@@ -41,6 +46,8 @@ public class ClientProxy extends CommonProxy {
         clientTick = new ForgeClientTick(instance);
 
         FMLCommonHandler.instance().bus().register(clientTick);
+
+        ClientRegistry.registerKeyBinding(KEYBINDING_SORT);
     }
 
     @SubscribeEvent

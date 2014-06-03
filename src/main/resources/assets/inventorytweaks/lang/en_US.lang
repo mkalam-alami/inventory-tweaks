@@ -80,3 +80,5 @@ invtweaks.help.shortcuts.backward=(Backwards)
 invtweaks.keyboardfix.error=[12] I'm having troubles with the keyboard
 invtweaks.keyboardfix.recover=Ok it's repaired, sorry about that.
 invtweaks.modcompat.ci.error=[13] Failed to manage 'Convenient Inventory' compatibility
+invtweaks.key.category=Inventory Tweaks
+invtweaks.key.sort=Inventory Sorting

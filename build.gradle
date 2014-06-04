@@ -23,11 +23,11 @@ if(!invtweaks_version) {
 /*
  * Gets the version name from the latest Git tag
  */
-def getGitCommit = { ->
+def getGitCommitHash = { ->
     try {
         def stdout = new ByteArrayOutputStream()
         exec {
-            commandLine 'git', 'describe', '--always', '--dirty'
+            commandLine 'git', 'rev-parse', '--short', 'HEAD'
             standardOutput = stdout
         }
         return stdout.toString().trim()
@@ -36,7 +36,30 @@ def getGitCommit = { ->
     }
 }
 
-ext.git_version = getGitCommit()
+def getGitDirtyIndex = { ->
+    try {
+        return exec {
+            commandLine 'git', 'diff-index', '--quiet', '--cached', 'HEAD'
+            ignoreExitValue = true
+        }.exitValue == 1
+    } catch(ignored) {
+        return false;
+    }
+}
+
+def getGitDirtyFiles = { ->
+    try {
+        return exec {
+            commandLine 'git', 'diff-files', '--quiet'
+            ignoreExitValue = true
+        }.exitValue == 1
+    } catch(ignored) {
+        return false;
+    }
+}
+
+ext.git_version = getGitCommitHash()
+ext.git_dirty = getGitDirtyIndex() || getGitDirtyFiles()
 
 ext.build_number = System.getenv("BUILD_NUMBER")
 
@@ -48,6 +71,9 @@ if(build_number)  {
 
 if(git_version)  {
     ext.internal_version = version + "-" + git_version
+    if(git_dirty) {
+        ext.internal_version += "-dirty"
+    }
 } else {
     ext.internal_version = version
 }

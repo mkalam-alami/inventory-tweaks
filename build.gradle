@@ -20,9 +20,7 @@ apply plugin: 'forge'
 if(!invtweaks_version) {
     invtweaks_version = "UNKNOWN"
 }
-/*
- * Gets the version name from the latest Git tag
- */
+
 def getGitCommitHash = { ->
     try {
         def stdout = new ByteArrayOutputStream()

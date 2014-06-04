@@ -1,5 +1,6 @@
 # Builds & binaries
 build/
+run/
 bin/
 target/
 lib/
@@ -18,6 +19,8 @@ launcher/
 .project
 .settings
 .pydevproject
+.idea/
+*.iml
 
 # MCP Files
 docs/

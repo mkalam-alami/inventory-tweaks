@@ -12,24 +12,7 @@ import java.util.Properties;
 public class InvTweaksConst {
 
     // Mod version
-    public static final String MOD_VERSION;
-
-    static {
-        boolean loaded = false;
-        Properties version = new Properties();
-
-        try {
-            version.load(InvTweaksConst.class.getResourceAsStream("version.properties"));
-            loaded = true;
-        } catch(Throwable e) {
-        }
-
-        if(loaded) {
-            MOD_VERSION = version.getProperty("invtweaks.version");
-        } else {
-            MOD_VERSION = "UNKNOWN";
-        }
-    }
+    public static final String MOD_VERSION = "@VERSION@";
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs

@@ -20,6 +20,23 @@ apply plugin: 'forge'
 if(!invtweaks_version) {
     invtweaks_version = "UNKNOWN"
 }
+/*
+ * Gets the version name from the latest Git tag
+ */
+def getGitCommit = { ->
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'describe', '--always', '--dirty'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    } catch(ignored) {
+        return null;
+    }
+}
+
+ext.git_version = getGitCommit()
 
 ext.build_number = System.getenv("BUILD_NUMBER")
 
@@ -28,6 +45,13 @@ if(build_number)  {
 } else {
     version = invtweaks_version
 }
+
+if(git_version)  {
+    ext.internal_version = version + "-" + git_version
+} else {
+    ext.internal_version = version
+}
+
 group = "inventorytweaks" // No stupid URL conventions
 archivesBaseName = "InventoryTweaks"
 
@@ -35,6 +59,9 @@ ext.mcversion = "1.7.2"
 minecraft {
     version = "1.7.2-10.12.1.1110"
     at 'src/main/resources/invtweaks_at.cfg'
+
+    replace "@VERSION@", project.internal_version
+    replaceIn "InvTweaksConst.java"
 }
 
 sourceCompatibility = 1.6
@@ -75,14 +102,13 @@ artifacts {
 
 processResources
 {
-    inputs.property "version", version
-    inputs.property "mcversion", mcversion
+    inputs.property "version", internal_version
 
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*.png'
         exclude '**/*_at.cfg'
 
-        expand version: version, mcversion: mcversion
+        expand version: internal_version
     }
     from(sourceSets.main.resources.srcDirs) {
         include '**/*.png'

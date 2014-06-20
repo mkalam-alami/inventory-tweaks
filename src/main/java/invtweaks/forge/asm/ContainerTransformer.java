@@ -31,6 +31,7 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String SLOT_MAPS_MODCOMPAT_CLASS = "invtweaks/containers/CompatibilitySlotMaps";
     public static final String ANNOTATION_CHEST_CONTAINER = "Linvtweaks/api/container/ChestContainer;";
     public static final String ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK = "Linvtweaks/api/container/ChestContainer$RowSizeCallback;";
+    public static final String ANNOTATION_CHEST_CONTAINER_LARGE_CALLBACK = "Linvtweaks/api/container/ChestContainer$IsLargeCallback;";
     public static final String ANNOTATION_INVENTORY_CONTAINER = "Linvtweaks/api/container/InventoryContainer;";
     public static final String ANNOTATION_CONTAINER_SECTION_CALLBACK = "Linvtweaks/api/container/ContainerSectionCallback;";
 
@@ -211,11 +212,18 @@ public class ContainerTransformer implements IClassTransformer {
 
                         apiInfo = new ContainerInfo(false, false, true, isLargeChest, rowSize);
 
-                        MethodNode method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK);
+                        MethodNode row_method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK);
 
-                        if(method != null) {
-                            apiInfo.rowSizeMethod = new MethodInfo(Type.getMethodType(method.desc),
-                                                                   Type.getObjectType(cn.name), method.name);
+                        if(row_method != null) {
+                            apiInfo.rowSizeMethod = new MethodInfo(Type.getMethodType(row_method.desc),
+                                                                   Type.getObjectType(cn.name), row_method.name);
+                        }
+
+                        MethodNode large_method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_LARGE_CALLBACK);
+
+                        if(large_method != null) {
+                            apiInfo.largeChestMethod = new MethodInfo(Type.getMethodType(large_method.desc),
+                                    Type.getObjectType(cn.name), large_method.name);
                         }
                     } else if(ANNOTATION_INVENTORY_CONTAINER.equals(annotation.desc)) {
                         boolean showOptions = true;
@@ -297,7 +305,20 @@ public class ContainerTransformer implements IClassTransformer {
         ASMHelper.generateBooleanMethodConst(clazz, STANDARD_INVENTORY_METHOD, info.standardInventory);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, info.validInventory);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, info.validChest);
-        ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, info.largeChest);
+
+        if(info.largeChestMethod != null) {
+            if(info.largeChestMethod.isStatic) {
+                ASMHelper.generateForwardingToStaticMethod(clazz, LARGE_CHEST_METHOD, info.largeChestMethod.methodName,
+                        info.largeChestMethod.methodType.getReturnType(),
+                        info.largeChestMethod.methodClass,
+                        info.largeChestMethod.methodType.getArgumentTypes()[0]);
+            } else {
+                ASMHelper.generateSelfForwardingMethod(clazz, LARGE_CHEST_METHOD, info.largeChestMethod.methodName,
+                        info.largeChestMethod.methodType.getReturnType());
+            }
+        } else {
+            ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, info.largeChest);
+        }
 
         if(info.rowSizeMethod != null) {
             if(info.rowSizeMethod.isStatic) {

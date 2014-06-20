@@ -1,6 +1,7 @@
 package invtweaks;
 
 import invtweaks.api.IItemTreeItem;
+import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
@@ -39,7 +40,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     public static final int ALGORITHM_EVEN_STACKS = 4;
 
     private InvTweaksContainerSectionManager containerMgr;
-    private int algorithm;
+    private SortingMethod algorithm;
     private int size;
     private boolean sortArmorParts;
 
@@ -50,7 +51,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private int[] lockPriorities;
     private boolean[] frozenSlots;
 
-    public InvTweaksHandlerSorting(Minecraft mc, InvTweaksConfig config, ContainerSection section, int algorithm,
+    public InvTweaksHandlerSorting(Minecraft mc, InvTweaksConfig config, ContainerSection section, SortingMethod algorithm,
                                    int rowSize) throws Exception {
         super(mc);
 
@@ -82,13 +83,13 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         if(section == ContainerSection.INVENTORY) {
             this.lockPriorities = config.getLockPriorities();
             this.frozenSlots = config.getFrozenSlots();
-            this.algorithm = ALGORITHM_INVENTORY;
+            this.algorithm = SortingMethod.INVENTORY;
         } else {
             this.lockPriorities = DEFAULT_LOCK_PRIORITIES;
             this.frozenSlots = DEFAULT_FROZEN_SLOTS;
             this.algorithm = algorithm;
-            if(algorithm != ALGORITHM_DEFAULT) {
-                computeLineSortingRules(rowSize, algorithm == ALGORITHM_HORIZONTAL);
+            if(algorithm != SortingMethod.DEFAULT) {
+                computeLineSortingRules(rowSize, algorithm == SortingMethod.HORIZONTAL);
             }
         }
 
@@ -105,7 +106,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    public void sort() throws TimeoutException {
+    public void sort() {
         long timer = System.nanoTime();
         InvTweaksContainerManager globalContainer = new InvTweaksContainerManager(mc);
 
@@ -119,10 +120,10 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             }
         }
 
-        if(algorithm != ALGORITHM_DEFAULT) {
-            if(algorithm == ALGORITHM_EVEN_STACKS) {
+        if(algorithm != SortingMethod.DEFAULT) {
+            if(algorithm == SortingMethod.EVEN_STACKS) {
                 sortEvenStacks();
-            } else if(algorithm == ALGORITHM_INVENTORY) {
+            } else if(algorithm == SortingMethod.INVENTORY) {
                 sortInventory(globalContainer);
             }
             sortWithRules();
@@ -147,7 +148,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         InvTweaksMod.proxy.sortComplete();
     }
 
-    private void sortWithRules() throws TimeoutException {
+    private void sortWithRules() {
         //// Apply rules
         log.info("Applying rules.");
 
@@ -207,7 +208,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    private void sortInventory(InvTweaksContainerManager globalContainer) throws TimeoutException {
+    private void sortInventory(InvTweaksContainerManager globalContainer) {
         //// Move items out of the crafting slots
         log.info("Handling crafting slots.");
         if(globalContainer.hasSection(ContainerSection.CRAFTING_IN)) {
@@ -231,7 +232,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         sortMergeArmor(globalContainer);
     }
 
-    private void sortMergeArmor(InvTweaksContainerManager globalContainer) throws TimeoutException {
+    private void sortMergeArmor(InvTweaksContainerManager globalContainer) {
         //// Merge stacks to fill the ones in locked slots
         //// + Move armor parts to the armor slots
         log.info("Merging stacks.");
@@ -252,7 +253,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    private void mergeItem(int i, ItemStack from) throws TimeoutException {
+    private void mergeItem(int i, ItemStack from) {
         int j = 0;
         for(Integer lockPriority : lockPriorities) {
             if(lockPriority > 0) {
@@ -307,7 +308,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    private void sortEvenStacks() throws TimeoutException {
+    private void sortEvenStacks() {
         log.info("Distributing items.");
 
         //item and slot counts for each unique item
@@ -387,7 +388,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    private void defaultSorting() throws TimeoutException {
+    private void defaultSorting() {
         log.info("Default sorting.");
 
         ArrayList<Integer> remaining = new ArrayList<Integer>(), nextRemaining = new ArrayList<Integer>();
@@ -466,7 +467,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
      * @return -1 if it failed, j if the stacks were merged into one, n if the j stack has been moved to the n slot.
      * @throws TimeoutException
      */
-    private int move(int i, int j, int priority) throws TimeoutException {
+    private int move(int i, int j, int priority) {
         ItemStack from = containerMgr.getItemStack(i), to = containerMgr.getItemStack(j);
 
         if(from == null || frozenSlots[j] || frozenSlots[i]) {

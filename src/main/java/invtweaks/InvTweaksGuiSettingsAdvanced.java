@@ -47,6 +47,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     public void initGui() {
         super.initGui();
 
+        @SuppressWarnings("unchecked")
         List<Object> controlList = buttonList;
         Point p = new Point();
         int i = 0;

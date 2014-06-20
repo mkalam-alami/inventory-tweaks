@@ -1,5 +1,6 @@
 package invtweaks;
 
+import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 
@@ -12,11 +13,11 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
 
     private final ContainerSection section = ContainerSection.CHEST;
 
-    private int algorithm;
+    private SortingMethod algorithm;
     private int rowSize;
 
     public InvTweaksGuiSortingButton(InvTweaksConfigManager cfgManager, int id, int x, int y, int w, int h,
-                                     String displayString, String tooltip, int algorithm, int rowSize,
+                                     String displayString, String tooltip, SortingMethod algorithm, int rowSize,
                                      boolean useCustomTexture) {
         super(cfgManager, id, x, y, w, h, displayString, tooltip, useCustomTexture);
         this.algorithm = algorithm;

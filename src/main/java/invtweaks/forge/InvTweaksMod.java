@@ -7,6 +7,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
+import invtweaks.api.SortingMethod;
+import invtweaks.api.container.ContainerSection;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -66,6 +68,9 @@ public class InvTweaksMod implements InvTweaksAPI {
     public int compareItems(ItemStack i, ItemStack j) {
         return proxy.compareItems(i, j);
     }
+
+    @Override
+    public void sort(ContainerSection section, SortingMethod method) { proxy.sort(section, method); }
 
     // Helper for ASM transform of GuiTextField to disable sorting on focus.
     public static void setTextboxModeStatic(boolean enabled) {

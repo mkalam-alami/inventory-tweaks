@@ -37,11 +37,11 @@ public class InvTweaksContainerSectionManager {
         }
     }
 
-    public boolean move(int srcIndex, int destIndex) throws TimeoutException {
+    public boolean move(int srcIndex, int destIndex) {
         return containerMgr.move(section, srcIndex, section, destIndex);
     }
 
-    public boolean moveSome(int srcIndex, int destIndex, int amount) throws TimeoutException {
+    public boolean moveSome(int srcIndex, int destIndex, int amount) {
         return containerMgr.moveSome(section, srcIndex, section, destIndex, amount);
     }
 

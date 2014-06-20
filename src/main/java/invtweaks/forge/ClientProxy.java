@@ -8,16 +8,18 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.relauncher.Side;
-import invtweaks.InvTweaks;
-import invtweaks.InvTweaksConfig;
-import invtweaks.InvTweaksItemTreeLoader;
+import invtweaks.*;
 import invtweaks.api.IItemTreeListener;
+import invtweaks.api.SortingMethod;
+import invtweaks.api.container.ContainerSection;
 import invtweaks.network.packets.ITPacketClick;
 import invtweaks.network.packets.ITPacketSortComplete;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 
@@ -113,5 +115,22 @@ public class ClientProxy extends CommonProxy {
     @Override
     public int compareItems(ItemStack i, ItemStack j) {
         return instance.compareItems(i, j);
+    }
+
+    @Override
+    public void sort(ContainerSection section, SortingMethod method) {
+        // TODO: This seems like something useful enough to be a util method somewhere.
+        Minecraft mc = FMLClientHandler.instance().getClient();
+        Container currentContainer = mc.thePlayer.inventoryContainer;
+        if(mc.currentScreen instanceof GuiContainer) {
+            currentContainer = ((GuiContainer) mc.currentScreen).inventorySlots;
+        }
+
+        try {
+            new InvTweaksHandlerSorting(mc, instance.getConfigManager().getConfig(), section, method, InvTweaksObfuscation.getSpecialChestRowSize(currentContainer)).sort();
+        } catch(Exception e) {
+            InvTweaks.logInGameErrorStatic("invtweaks.sort.chest.error", e);
+            e.printStackTrace();
+        }
     }
 }

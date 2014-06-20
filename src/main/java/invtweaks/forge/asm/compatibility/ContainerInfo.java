@@ -11,6 +11,7 @@ public class ContainerInfo {
     public short rowSize = 9;
     public MethodInfo slotMapMethod = ContainerTransformer.getVanillaSlotMapInfo("unknownContainerSlots");
     public MethodInfo rowSizeMethod = null;
+    public MethodInfo largeChestMethod = null;
 
     public ContainerInfo() {
     }

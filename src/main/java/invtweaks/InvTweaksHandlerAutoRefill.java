@@ -214,10 +214,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     } catch(NullPointerException e) {
                         // Nothing: Due to multithreading +
                         // unsafe accesses, NPE may (very rarely) occur (?).
-                    } catch(TimeoutException e) {
-                        log.error("Failed to trigger autoreplace: " + e.getMessage());
                     }
-
                 }
 
             }.init(mc, replacementStackSlot, slot, refillBeforeBreak)).start();

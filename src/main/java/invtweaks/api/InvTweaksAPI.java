@@ -22,6 +22,7 @@
 
 package invtweaks.api;
 
+import invtweaks.api.container.ContainerSection;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -72,4 +73,12 @@ public interface InvTweaksAPI {
      * @return A value with a sign representing the relative order of the item stacks
      */
     int compareItems(ItemStack i, ItemStack j);
+
+    /**
+     * Initiate a sort as if the player had clicked on a sorting button or pressed the sort key.
+     *
+     * @param section
+     * @param method
+     */
+    void sort(ContainerSection section, SortingMethod method);
 }

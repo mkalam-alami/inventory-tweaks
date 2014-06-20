@@ -3,6 +3,7 @@ package invtweaks;
 import cpw.mods.fml.common.Loader;
 import invtweaks.api.IItemTree;
 import invtweaks.api.IItemTreeItem;
+import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -55,7 +56,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     /**
      * Attributes to remember the status of chest sorting while using middle clicks.
      */
-    private int chestAlgorithm = InvTweaksHandlerSorting.ALGORITHM_DEFAULT;
+    private SortingMethod chestAlgorithm = SortingMethod.DEFAULT;
     private long chestAlgorithmClickTimestamp = 0;
     private boolean chestAlgorithmButtonDown = false;
 
@@ -242,21 +243,17 @@ public class InvTweaks extends InvTweaksObfuscation {
                 // Find best slot for stack
                 boolean hasToBeMoved = true;
                 for(int newSlot : prefferedPositions) {
-                    try {
-                        // Already in the best slot!
-                        if(newSlot == currentSlot) {
-                            hasToBeMoved = false;
+                    // Already in the best slot!
+                    if(newSlot == currentSlot) {
+                        hasToBeMoved = false;
+                        break;
+                    }
+                    // Is the slot available?
+                    else if(containerMgr.getItemStack(newSlot) == null) {
+                        // TODO: Check rule level before to move
+                        if(containerMgr.move(currentSlot, newSlot)) {
                             break;
                         }
-                        // Is the slot available?
-                        else if(containerMgr.getItemStack(newSlot) == null) {
-                            // TODO: Check rule level before to move
-                            if(containerMgr.move(currentSlot, newSlot)) {
-                                break;
-                            }
-                        }
-                    } catch(TimeoutException e) {
-                        logInGameError("Failed to move picked up stack", e);
                     }
                 }
 
@@ -571,7 +568,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         // Sorting
         try {
             new InvTweaksHandlerSorting(mc, cfgManager.getConfig(), ContainerSection.INVENTORY,
-                                        InvTweaksHandlerSorting.ALGORITHM_INVENTORY, InvTweaksConst.INVENTORY_ROW_SIZE)
+                    SortingMethod.INVENTORY, InvTweaksConst.INVENTORY_ROW_SIZE)
                     .sort();
         } catch(Exception e) {
             logInGameError("invtweaks.sort.inventory.error", e);
@@ -682,7 +679,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                             long timestamp = System.currentTimeMillis();
                             if(timestamp - chestAlgorithmClickTimestamp > InvTweaksConst.CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
-                                chestAlgorithm = InvTweaksHandlerSorting.ALGORITHM_DEFAULT;
+                                chestAlgorithm = SortingMethod.DEFAULT;
                             }
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(), ContainerSection.CHEST,
@@ -691,14 +688,15 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 logInGameError("invtweaks.sort.chest.error", e);
                                 e.printStackTrace();
                             }
-                            chestAlgorithm = (chestAlgorithm + 1) % 3;
+                            // TODO: Better replacement for this.
+                            chestAlgorithm = SortingMethod.values()[(chestAlgorithm.ordinal() + 1) % 3];
                             chestAlgorithmClickTimestamp = timestamp;
 
                         } else if(ContainerSection.CRAFTING_IN.equals(target) || ContainerSection.CRAFTING_IN_PERSISTENT
                                                                                                  .equals(target)) {
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(), target,
-                                                            InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
+                                                            SortingMethod.EVEN_STACKS,
                                                             (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
                             } catch(Exception e) {
                                 logInGameError("invtweaks.sort.crafting.error", e);
@@ -716,7 +714,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                             // Crafting stacks evening
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(), target,
-                                                            InvTweaksHandlerSorting.ALGORITHM_EVEN_STACKS,
+                                                            SortingMethod.EVEN_STACKS,
                                                             (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
                             } catch(Exception e) {
                                 logInGameError("invtweaks.sort.crafting.error", e);
@@ -755,7 +753,9 @@ public class InvTweaks extends InvTweaksObfuscation {
             // Look for the mods buttons
             boolean customButtonsAdded = false;
 
+            @SuppressWarnings("unchecked")
             List<Object> controlList = guiContainer.buttonList;
+            @SuppressWarnings("unchecked")
             List<Object> toRemove = new ArrayList<Object>();
             for(Object o : controlList) {
                 if(isGuiButton(o)) {
@@ -823,21 +823,21 @@ public class InvTweaks extends InvTweaksObfuscation {
                                                                          (isChestWayTooBig) ? y + 12 : y, w, h, "h",
                                                                          StatCollector.translateToLocal(
                                                                                  "invtweaks.button.chest3.tooltip"),
-                                                                         InvTweaksHandlerSorting.ALGORITHM_HORIZONTAL,
+                                                                         SortingMethod.HORIZONTAL,
                                                                          rowSize, customTextureAvailable);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 25,
                                                                (isChestWayTooBig) ? y + 25 : y, w, h, "v", StatCollector
                                 .translateToLocal("invtweaks.button.chest2.tooltip"),
-                                                               InvTweaksHandlerSorting.ALGORITHM_VERTICAL, rowSize,
+                                                               SortingMethod.VERTICAL, rowSize,
                                                                customTextureAvailable);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 37,
                                                                (isChestWayTooBig) ? y + 38 : y, w, h, "s", StatCollector
                                 .translateToLocal("invtweaks.button.chest1.tooltip"),
-                                                               InvTweaksHandlerSorting.ALGORITHM_DEFAULT, rowSize,
+                                                               SortingMethod.DEFAULT, rowSize,
                                                                customTextureAvailable);
                         controlList.add(button);
 
@@ -847,6 +847,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         } else {
             // Remove "..." button from non-survival tabs of the creative screen
             if(isGuiInventoryCreative(guiContainer)) {
+                @SuppressWarnings("unchecked")
                 List<Object> controlList = guiContainer.buttonList;
                 GuiButton buttonToRemove = null;
                 for(Object o : controlList) {

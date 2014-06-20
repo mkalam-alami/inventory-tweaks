@@ -71,6 +71,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         }
 
         // TODO: Detect if there is a big enough unassigned section for inventory.
+        @SuppressWarnings("unchecked")
         List<Slot> slots = (List<Slot>) container.inventorySlots;
         int size = slots.size();
         if(size >= InvTweaksConst.INVENTORY_SIZE && !slotRefs.containsKey(ContainerSection.INVENTORY)) {

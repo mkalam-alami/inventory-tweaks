@@ -14,6 +14,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.InvTweaksConst;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
+import invtweaks.api.SortingMethod;
+import invtweaks.api.container.ContainerSection;
 import invtweaks.network.ITMessageToMessageCodec;
 import invtweaks.network.handlers.ClickMessageHandler;
 import invtweaks.network.handlers.LoginMessageHandler;
@@ -89,6 +91,10 @@ public class CommonProxy implements InvTweaksAPI {
     @Override
     public int compareItems(ItemStack i, ItemStack j) {
         return 0;
+    }
+
+    @Override
+    public void sort(ContainerSection section, SortingMethod method) {
     }
 
     @SubscribeEvent

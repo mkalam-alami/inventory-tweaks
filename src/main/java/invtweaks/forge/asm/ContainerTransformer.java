@@ -1,5 +1,6 @@
 package invtweaks.forge.asm;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import invtweaks.forge.asm.compatibility.CompatibilityConfigLoader;
@@ -23,7 +24,7 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String VALID_INVENTORY_METHOD = "invtweaks$validInventory";
     public static final String VALID_CHEST_METHOD = "invtweaks$validChest";
     public static final String LARGE_CHEST_METHOD = "invtweaks$largeChest";
-    public static final String STANDARD_INVENTORY_METHOD = "invtweaks$standardInventory";
+    public static final String SHOW_BUTTONS_METHOD = "invtweaks$showButtons";
     public static final String ROW_SIZE_METHOD = "invtweaks$rowSize";
     public static final String SLOT_MAP_METHOD = "invtweaks$slotMap";
     public static final String CONTAINER_CLASS_INTERNAL = "net/minecraft/inventory/Container";
@@ -162,8 +163,8 @@ public class ContainerTransformer implements IClassTransformer {
                     ASMHelper.replaceSelfForwardingMethod(method, VALID_CHEST_METHOD, containertype);
                 } else if("isValidInventory".equals(method.name)) {
                     ASMHelper.replaceSelfForwardingMethod(method, VALID_INVENTORY_METHOD, containertype);
-                } else if("isStandardInventory".equals(method.name)) {
-                    ASMHelper.replaceSelfForwardingMethod(method, STANDARD_INVENTORY_METHOD, containertype);
+                } else if("showButtons".equals(method.name)) {
+                    ASMHelper.replaceSelfForwardingMethod(method, SHOW_BUTTONS_METHOD, containertype);
                 } else if("getSpecialChestRowSize".equals(method.name)) {
                     ASMHelper.replaceSelfForwardingMethod(method, ROW_SIZE_METHOD, containertype);
                 } else if("getContainerSlotMap".equals(method.name)) {
@@ -196,6 +197,7 @@ public class ContainerTransformer implements IClassTransformer {
                     if(ANNOTATION_CHEST_CONTAINER.equals(annotation.desc)) {
                         short rowSize = 9;
                         boolean isLargeChest = false;
+                        boolean showButtons = true;
 
                         if(annotation.values != null) {
                             for(int i = 0; i < annotation.values.size(); i += 2) {
@@ -206,11 +208,13 @@ public class ContainerTransformer implements IClassTransformer {
                                     rowSize = (short) ((Integer) value).intValue();
                                 } else if("isLargeChest".equals(valueName)) {
                                     isLargeChest = (Boolean) value;
+                                } else if("showButtons".equals(valueName)) {
+                                    showButtons = (Boolean) value;
                                 }
                             }
                         }
 
-                        apiInfo = new ContainerInfo(false, false, true, isLargeChest, rowSize);
+                        apiInfo = new ContainerInfo(showButtons, false, true, isLargeChest, rowSize);
 
                         MethodNode row_method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK);
 
@@ -302,7 +306,7 @@ public class ContainerTransformer implements IClassTransformer {
      * @param info  Information used to alter class
      */
     public static void transformContainer(ClassNode clazz, ContainerInfo info) {
-        ASMHelper.generateBooleanMethodConst(clazz, STANDARD_INVENTORY_METHOD, info.standardInventory);
+        ASMHelper.generateBooleanMethodConst(clazz, SHOW_BUTTONS_METHOD, info.showButtons);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, info.validInventory);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, info.validChest);
 
@@ -351,7 +355,7 @@ public class ContainerTransformer implements IClassTransformer {
      * @param clazz Class to alter
      */
     public static void transformBaseContainer(ClassNode clazz) {
-        ASMHelper.generateBooleanMethodConst(clazz, STANDARD_INVENTORY_METHOD, false);
+        ASMHelper.generateBooleanMethodConst(clazz, SHOW_BUTTONS_METHOD, false);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, false);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
         ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, false);

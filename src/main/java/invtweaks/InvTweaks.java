@@ -742,7 +742,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         boolean isValidChest = isValidChest(container);
 
-        if(isValidChest || (isStandardInventory(container) && !isGuiEnchantmentTable(guiContainer))) {
+        if(showButtons(container) && !isGuiEnchantmentTable(guiContainer)) {
             int w = 10, h = 10;
 
             // Re-layout when NEI changes states.

@@ -66,7 +66,7 @@ public class CompatibilityConfigLoader extends DefaultHandler {
                 info.largeChest = Boolean.parseBoolean(attributes.getValue("large_chest"));
             } else if("inventory".equals(qName)) {
                 info.validInventory = true;
-                info.standardInventory = !Boolean.parseBoolean(attributes.getValue("disable_buttons"));
+                info.showButtons = !Boolean.parseBoolean(attributes.getValue("disable_buttons"));
             }
 
             config.put(className, info);

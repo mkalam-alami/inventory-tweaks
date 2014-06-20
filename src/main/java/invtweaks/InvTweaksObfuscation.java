@@ -286,8 +286,8 @@ public class InvTweaksObfuscation {
         return false;
     }
 
-    public static boolean isStandardInventory(Container container) {
-        // This method gets replaced by the transformer with "return container.invtweaks$standardInventory()"
+    public static boolean showButtons(Container container) {
+        // This method gets replaced by the transformer with "return container.invtweaks$showButtons()"
         return false;
     }
 

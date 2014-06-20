@@ -4,7 +4,7 @@ import invtweaks.forge.asm.ContainerTransformer;
 
 @SuppressWarnings("UnusedDeclaration")
 public class ContainerInfo {
-    public boolean standardInventory = false;
+    public boolean showButtons = false;
     public boolean validInventory = false;
     public boolean validChest = false;
     public boolean largeChest = false;
@@ -17,34 +17,34 @@ public class ContainerInfo {
     }
 
     public ContainerInfo(boolean standard, boolean validInv, boolean validCh) {
-        standardInventory = standard;
+        showButtons = standard;
         validInventory = validInv;
         validChest = validCh;
     }
 
     public ContainerInfo(boolean standard, boolean validInv, boolean validCh, boolean largeCh) {
-        standardInventory = standard;
+        showButtons = standard;
         validInventory = validInv;
         validChest = validCh;
         largeChest = largeCh;
     }
 
     public ContainerInfo(boolean standard, boolean validInv, boolean validCh, MethodInfo slotMap) {
-        standardInventory = standard;
+        showButtons = standard;
         validInventory = validInv;
         validChest = validCh;
         slotMapMethod = slotMap;
     }
 
     public ContainerInfo(boolean standard, boolean validInv, boolean validCh, short rowS) {
-        standardInventory = standard;
+        showButtons = standard;
         validInventory = validInv;
         validChest = validCh;
         rowSize = rowS;
     }
 
     public ContainerInfo(boolean standard, boolean validInv, boolean validCh, boolean largeCh, short rowS) {
-        standardInventory = standard;
+        showButtons = standard;
         validInventory = validInv;
         validChest = validCh;
         largeChest = largeCh;
@@ -52,7 +52,7 @@ public class ContainerInfo {
     }
 
     public ContainerInfo(boolean standard, boolean validInv, boolean validCh, short rowS, MethodInfo slotMap) {
-        standardInventory = standard;
+        showButtons = standard;
         validInventory = validInv;
         validChest = validCh;
         rowSize = rowS;

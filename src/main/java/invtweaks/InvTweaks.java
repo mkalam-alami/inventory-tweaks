@@ -900,7 +900,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void handleShortcuts(GuiContainer guiScreen) {
 
         // Check open GUI
-        if(!(isValidChest(guiScreen.inventorySlots) || isStandardInventory(guiScreen.inventorySlots))) {
+        if(!(isValidChest(guiScreen.inventorySlots) || isValidInventory(guiScreen.inventorySlots))) {
             return;
         }
 

@@ -34,6 +34,7 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK = "Linvtweaks/api/container/ChestContainer$RowSizeCallback;";
     public static final String ANNOTATION_CHEST_CONTAINER_LARGE_CALLBACK = "Linvtweaks/api/container/ChestContainer$IsLargeCallback;";
     public static final String ANNOTATION_INVENTORY_CONTAINER = "Linvtweaks/api/container/InventoryContainer;";
+    public static final String ANNOTATION_IGNORE_CONTAINER = "Linvtweaks/api/container/IgnoreContainer;";
     public static final String ANNOTATION_CONTAINER_SECTION_CALLBACK = "Linvtweaks/api/container/ContainerSectionCallback;";
 
     private static Map<String, ContainerInfo> standardClasses = new HashMap<String, ContainerInfo>();
@@ -244,6 +245,13 @@ public class ContainerTransformer implements IClassTransformer {
                         }
 
                         apiInfo = new ContainerInfo(showOptions, true, false);
+                    } else if(ANNOTATION_IGNORE_CONTAINER.equals(annotation.desc)) {
+                        // Annotation to restore default properties.
+                        
+                        transformBaseContainer(cn);
+
+                        cn.accept(cw);
+                        return cw.toByteArray();
                     }
 
                     if(apiInfo != null) {

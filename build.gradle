@@ -115,6 +115,10 @@ task deobfJar(type: Jar) {
     dependsOn classes
 
     from sourceSets.main.output
+    
+    manifest {
+        attributes 'FMLCorePlugin': 'invtweaks.forge.asm.FMLPlugin', 'FMLCorePluginContainsFMLMod': 'true'
+    }
 
     appendix = 'deobf'
 }

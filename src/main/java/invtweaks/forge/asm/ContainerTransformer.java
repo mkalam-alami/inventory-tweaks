@@ -1,6 +1,5 @@
 package invtweaks.forge.asm;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import invtweaks.forge.asm.compatibility.CompatibilityConfigLoader;
@@ -247,7 +246,7 @@ public class ContainerTransformer implements IClassTransformer {
                         apiInfo = new ContainerInfo(showOptions, true, false);
                     } else if(ANNOTATION_IGNORE_CONTAINER.equals(annotation.desc)) {
                         // Annotation to restore default properties.
-                        
+
                         transformBaseContainer(cn);
 
                         cn.accept(cw);

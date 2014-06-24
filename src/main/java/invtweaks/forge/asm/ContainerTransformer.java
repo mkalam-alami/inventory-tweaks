@@ -66,18 +66,18 @@ public class ContainerTransformer implements IClassTransformer {
 
         // Chest-type
         standardClasses.put("net.minecraft.inventory.ContainerDispenser",
-                            new ContainerInfo(false, false, true, (short) 3,
+                            new ContainerInfo(true, false, true, (short) 3,
                                               getVanillaSlotMapInfo("containerChestDispenserSlots")));
-        standardClasses.put("net.minecraft.inventory.ContainerChest", new ContainerInfo(false, false, true,
+        standardClasses.put("net.minecraft.inventory.ContainerChest", new ContainerInfo(true, false, true,
                                                                                         getVanillaSlotMapInfo(
                                                                                                 "containerChestDispenserSlots")));
 
         // Mod compatibility
         // Equivalent Exchange 3
         compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerAlchemicalBag",
-                                 new ContainerInfo(false, false, true, true, (short) 13));
+                                 new ContainerInfo(true, false, true, true, (short) 13));
         compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerAlchemicalChest",
-                                 new ContainerInfo(false, false, true, true, (short) 13));
+                                 new ContainerInfo(true, false, true, true, (short) 13));
         compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerPortableCrafting",
                                  new ContainerInfo(true, true, false,
                                                    getCompatiblitySlotMapInfo("ee3PortableCraftingSlots")));
@@ -85,7 +85,7 @@ public class ContainerTransformer implements IClassTransformer {
         // Ender Storage
         // TODO Row size method. A bit less important because it's a config setting and 2 of 3 options give rowsize 9.
         compatibilityClasses.put("codechicken.enderstorage.storage.item.ContainerEnderItemStorage",
-                                 new ContainerInfo(false, false, true));
+                                 new ContainerInfo(true, false, true));
 
         // Galacticraft
         compatibilityClasses.put("micdoodle8.mods.galacticraft.core.inventory.GCCoreContainerPlayer",

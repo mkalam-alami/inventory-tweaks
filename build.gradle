@@ -79,9 +79,9 @@ if(git_version)  {
 group = "inventorytweaks" // No stupid URL conventions
 archivesBaseName = "InventoryTweaks"
 
-ext.mcversion = "1.7.2"
+ext.mcversion = "1.7.10"
 minecraft {
-    version = "1.7.2-10.12.1.1110"
+    version = "1.7.10-10.13.0.1152"
     at 'src/main/resources/invtweaks_at.cfg'
 
     replace "@VERSION@", project.internal_version

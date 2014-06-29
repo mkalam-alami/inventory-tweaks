@@ -126,6 +126,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     }
 
     public void setTooltip(String tooltip) {
+        tooltip = tooltip.replace("\\n", "\n");
         this.tooltip = tooltip;
         this.tooltipLines = tooltip.split("\n");
     }

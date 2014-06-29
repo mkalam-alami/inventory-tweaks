@@ -52,10 +52,12 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.registerKeyBinding(KEYBINDING_SORT);
     }
 
+    /*
     @SubscribeEvent
     public void notifyPickup(PlayerEvent.ItemPickupEvent e) {
         instance.setItemPickupPending(true);
     }
+    */
 
     @Override
     public void setServerAssistEnabled(boolean enabled) {

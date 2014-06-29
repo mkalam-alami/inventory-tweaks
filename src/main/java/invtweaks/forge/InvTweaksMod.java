@@ -21,7 +21,8 @@ import net.minecraft.item.ItemStack;
  */
 @Mod(modid = "inventorytweaks",
      dependencies = "required-after:FML@[7.2.0,);required-after:Forge@[10.12.1,)",
-        acceptableRemoteVersions="*")
+        acceptableRemoteVersions="*",
+        guiFactory="invtweaks.forge.ModGuiFactory")
 public class InvTweaksMod implements InvTweaksAPI {
     @Mod.Instance
     public static InvTweaksMod instance;

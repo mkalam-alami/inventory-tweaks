@@ -43,6 +43,10 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private boolean sortMappingEdition = false;
 
 
+    public InvTweaksGuiSettings(GuiScreen parentScreen) {
+        this(InvTweaks.getMinecraftInstance(), parentScreen, InvTweaks.getInstance().getConfigManager().getConfig());
+    }
+
     public InvTweaksGuiSettings(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
         super(mc, parentScreen, config);
 

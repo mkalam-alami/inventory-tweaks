@@ -369,7 +369,8 @@ public class ContainerTransformer implements IClassTransformer {
         ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);
         ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "unknownContainerSlots",
                                                    Type.getObjectType("java/util/Map"),
-                                                   Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+                                                   Type.getObjectType(SLOT_MAPS_VANILLA_CLASS),
+                                                   Type.getObjectType(CONTAINER_CLASS_INTERNAL));
     }
 
     public static void transformCreativeContainer(ClassNode clazz) {

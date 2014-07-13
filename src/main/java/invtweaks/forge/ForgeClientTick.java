@@ -15,7 +15,7 @@ public class ForgeClientTick {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent tick) {
-        if(tick.phase == TickEvent.Phase.END) {
+        if(tick.phase == TickEvent.Phase.START) {
             Minecraft mc = FMLClientHandler.instance().getClient();
             if(mc.theWorld != null) {
                 if(mc.currentScreen != null) {

@@ -122,10 +122,11 @@
                 <diamondOreBlock id="diamond_ore"/>
                 <emeraldOreBlock id="emerald_ore"/>
             </oreBlock>
-            <dirt id="dirt">
+            <dirts>
+                <dirt id="dirt" damage="0"/>
                 <grasslessDirt id="dirt" damage="1"/>
                 <podzol id="dirt" damage="2"/>
-            </dirt>
+            </dirts>
             <wood>
                 <oakWood id="log" damage="0"/>
                 <birchWood id="log" damage="1"/>
@@ -360,8 +361,10 @@
                     <stoneSlab id="stone_slab" damage="0"/>
                     <sandstoneSlab id="stone_slab" damage="1"/>
                     <cobblestoneSlab id="stone_slab" damage="3"/>
-                    <stonebrickSlab id="stone_slab" damage="4"/>
-                    <brickSlab id="stone_slab" damage="5"/>
+                    <brickSlab id="stone_slab" damage="4"/>
+                    <stoneBrickSlab id="stone_slab" damage="5"/>
+                    <netherBrickSlab id="stone_slab" damage="6"/>
+                    <quartzSlab id="stone_slab" damage="7"/>
                     <doubleSlab>
                         <woodenDoubleSlabs>
                             <woodenStoneDoubleSlab id="double_stone_slab" damage="2"/>
@@ -373,8 +376,13 @@
                         <stoneDoubleSlab id="double_stone_slab" damage="0"/>
                         <sandstoneDoubleSlab id="double_stone_slab" damage="1"/>
                         <cobblestoneDoubleSlab id="double_stone_slab" damage="3"/>
-                        <stonebrickDoubleSlab id="double_stone_slab" damage="4"/>
-                        <brickDoubleSlab id="double_stone_slab" damage="5"/>
+                        <brickDoubleSlab id="double_stone_slab" damage="4"/>
+                        <stoneBrickDoubleSlab id="double_stone_slab" damage="5"/>
+                        <netherBrickDoubleSlab id="double_stone_slab" damage="6"/>
+                        <quartzDoubleSlab id="double_stone_slab" damage="7"/>
+                        <smoothStoneDoubleSlab id="double_stone_slab" damage="8"/>
+                        <smoothSandstoneDoubleSlab id="double_stone_slab" damage="9"/>
+                        <quartzTileDoubleSlab id="double_stone_slab" damage="10"/>
                     </doubleSlab>
                 </slabs>
                 <oreBlock>

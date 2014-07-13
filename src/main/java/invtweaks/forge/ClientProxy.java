@@ -20,7 +20,10 @@ import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import org.lwjgl.input.Keyboard;
 
 public class ClientProxy extends CommonProxy {
@@ -48,6 +51,7 @@ public class ClientProxy extends CommonProxy {
         clientTick = new ForgeClientTick(instance);
 
         FMLCommonHandler.instance().bus().register(clientTick);
+        MinecraftForge.EVENT_BUS.register(this);
 
         ClientRegistry.registerKeyBinding(KEYBINDING_SORT);
     }
@@ -55,6 +59,16 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void notifyPickup(PlayerEvent.ItemPickupEvent e) {
         instance.setItemPickupPending(true);
+    }
+
+    @SubscribeEvent
+    public void onItemTooltip(ItemTooltipEvent e)
+    {
+        if(e.showAdvancedItemTooltips) {
+            String first_line = e.toolTip.get(0);
+            first_line += " [" + Item.itemRegistry.getNameForObject(e.itemStack.getItem()) + "]";
+            e.toolTip.set(0, first_line);
+        }
     }
 
     @Override

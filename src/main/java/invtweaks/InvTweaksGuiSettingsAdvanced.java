@@ -68,7 +68,6 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                                                                                           labelSortOnPickup),
                                                                                   StatCollector.translateToLocal(
                                                                                           "invtweaks.settings.advanced.sortonpickup.tooltip"));
-        sortOnPickupBtn.enabled = false;
         controlList.add(sortOnPickupBtn);
 
         moveToButtonCoords(i++, p);

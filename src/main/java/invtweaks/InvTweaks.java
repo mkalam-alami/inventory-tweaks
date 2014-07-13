@@ -84,6 +84,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private boolean textboxMode = false;
 
     private boolean itemPickupPending = false;
+    private int itemPickupTimeout = 0;
     private boolean isNEILoaded;
 
 
@@ -218,7 +219,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             for(int i = 0; i < InvTweaksConst.INVENTORY_HOTBAR_SIZE; i++) {
                 ItemStack currentHotbarStack = containerMgr.getItemStack(i + 27);
                 // Don't move already started stacks
-                if(currentHotbarStack != null && currentHotbarStack.animationsToGo == 5 && hotbarClone[i] == null) {
+                if(currentHotbarStack != null && currentHotbarStack.animationsToGo > 0 && hotbarClone[i] == null) {
                     currentSlot = i + 27;
                 }
             }
@@ -268,6 +269,10 @@ public class InvTweaks extends InvTweaksObfuscation {
                     }
                 }
 
+            } else {
+                if(--itemPickupTimeout == 0) {
+                    itemPickupPending = false;
+                }
             }
 
         } catch(Exception e) {
@@ -363,6 +368,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     public void setItemPickupPending(boolean itemPickupPending) {
         this.itemPickupPending = itemPickupPending;
+        itemPickupTimeout = 5;
     }
 
     public void setSortKeyEnabled(boolean enabled) {

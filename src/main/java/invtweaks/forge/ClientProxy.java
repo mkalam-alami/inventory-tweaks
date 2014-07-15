@@ -22,6 +22,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import org.lwjgl.input.Keyboard;
@@ -65,9 +66,7 @@ public class ClientProxy extends CommonProxy {
     public void onItemTooltip(ItemTooltipEvent e)
     {
         if(e.showAdvancedItemTooltips) {
-            String first_line = e.toolTip.get(0);
-            first_line += " [" + Item.itemRegistry.getNameForObject(e.itemStack.getItem()) + "]";
-            e.toolTip.set(0, first_line);
+            e.toolTip.add(1, EnumChatFormatting.GRAY + Item.itemRegistry.getNameForObject(e.itemStack.getItem()));
         }
     }
 

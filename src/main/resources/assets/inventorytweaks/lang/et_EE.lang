@@ -1,0 +1,7 @@
+invtweaks.loadconfig.enabled='%s' lubatud
+invtweaks.loadconfig.invalidkeywords=Sobimatud märksõnad leitud
+invtweaks.loadconfig.done=Konfiguratsiooni laetud.
+invtweaks.button.chest1.tooltip=Vaikimisi sorteerimine
+invtweaks.button.chest2.tooltip=Sorteeri veergudes
+invtweaks.button.chest3.tooltip=Sorteeri ridades
+

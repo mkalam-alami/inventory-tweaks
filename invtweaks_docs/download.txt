@@ -1,7 +1,12 @@
 .. image:: _static/img/dl.png
   :align: left
   
-`Inventory Tweaks 1.57 <http://build.technicpack.net/job/Inventory-Tweaks/116/artifact/build/libs/InventoryTweaks-1.57-116.jar>`_ (`API <http://build.technicpack.net/job/Inventory-Tweaks/116/artifact/build/libs/InventoryTweaks-api-1.57-116.jar>`_) for **Minecraft 1.7.2** (requires `Forge <http://files.minecraftforge.net>`_)
+`Inventory Tweaks 1.58 <http://build.technicpack.net/job/Inventory-Tweaks/147/artifact/build/libs/InventoryTweaks-1.58-147.jar>`_ (`API <http://build.technicpack.net/job/Inventory-Tweaks/147/artifact/build/libs/InventoryTweaks-api-1.58-147.jar>`_) for **Minecraft 1.7.2/1.7.10** (requires `Forge <http://files.minecraftforge.net>`_)
+
+.. image:: _static/img/dl.png
+  :align: left
+  
+`Inventory Tweaks 1.57 <http://build.technicpack.net/job/Inventory-Tweaks/116/artifact/build/libs/InventoryTweaks-1.57-116.jar>`_ (`API <http://build.technicpack.net/job/Inventory-Tweaks/116/artifact/build/libs/InventoryTweaks-api-1.57-116.jar>`_) for **Minecraft 1.7.2/1.7.10** (requires `Forge <http://files.minecraftforge.net>`_)
 
 .. image:: _static/img/dl.png
   :align: left

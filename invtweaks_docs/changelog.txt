@@ -1,8 +1,19 @@
-.. _changelog:
+﻿.. _changelog:
 
 Latest changes
 ==============
-`1.57 (1.7.2) <http://build.technicpack.net/job/Inventory-Tweaks/116/artifact/build/libs/InventoryTweaks-1.57-116.jar>`_
+`1.58 (1.7.2/1.7.10) <http://build.technicpack.net/job/Inventory-Tweaks/147/artifact/build/libs/InventoryTweaks-1.58-147.jar>`_
+ * Better handling of bad Forge Ore Dictionary entries for item tree.
+ * Silenced some debug output that appeared to be an error.
+ * Added keybinding config to default Minecraft keybinding options.
+ * Various enhancements to the API for other mods.
+ * Configuration screen can now be accessed from the mod list on the main menu screen.
+ * Sort-on-pickup should work in single-player again. (MP/Server support is more complicated)
+ * Shortcuts using shift should now work correctly.
+ * The F3+H display has an added line showing the string ID of items, like Mojang added to the 1.8 snapshots.
+ * Auotrefill and sort-on-pickup now immediately resync the inventory with the server.
+
+`1.57 (1.7.2/1.7.10) <http://build.technicpack.net/job/Inventory-Tweaks/116/artifact/build/libs/InventoryTweaks-1.57-116.jar>`_
  * Updated to MC 1.7.2 (With many internal changes to support the update)
  * Use ID names, instead on numerical IDs for blocks/items in config files.
  * Messages during the loading process will now display as chat messages the first time you load a game.

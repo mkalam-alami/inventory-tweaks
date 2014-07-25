@@ -80,3 +80,6 @@ invtweaks.help.shortcuts.backward=(Hacia atrás)
 invtweaks.keyboardfix.error=[12] Estoy teniendo problemas con el teclado
 invtweaks.keyboardfix.recover=Ya está solucionado, perdón por las molestias.
 invtweaks.modcompat.ci.error=[13] Error con la compatibilidad de 'Inventario conveniente'
+invtweaks.key.category=Opciones de inventario
+invtweaks.key.sort=Clasificación de inventario
+

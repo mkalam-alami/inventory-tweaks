@@ -80,3 +80,6 @@ invtweaks.help.shortcuts.backward=(Vissza)
 invtweaks.keyboardfix.error=[12] Hiba a billentyűzettel
 invtweaks.keyboardfix.recover=Rendben helyreállítottam a problémát, bocs miatta.
 invtweaks.modcompat.ci.error=[13] Hiba a 'Convenient Inventory'-val. FORDÍTOTTA: SASIKAA
+invtweaks.key.category=Leltár Dolgok
+invtweaks.key.sort=Leltár Rendezés
+

@@ -80,3 +80,6 @@ invtweaks.help.shortcuts.backward=(Bakåt)
 invtweaks.keyboardfix.error=[12] Jag har problem med tangentbordet
 invtweaks.keyboardfix.recover=Ok det är reparerat, ledsen för det.
 invtweaks.modcompat.ci.error=[13] Misslyckades med att hantera kompatibilitet med 'Convenient Inventory'
+invtweaks.key.category=Inventering Tweaks
+invtweaks.key.sort=Lager sortering
+

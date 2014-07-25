@@ -80,3 +80,6 @@ invtweaks.help.shortcuts.backward=(Atgal)
 invtweaks.keyboardfix.error=[12] Aš turiu problemų su klaviatūra
 invtweaks.keyboardfix.recover=Gerai, jis yra pataisomas, atsiprašau dėl to.
 invtweaks.modcompat.ci.error=[13] Nepavyko valdyti 'Patogus inventorius' suderinamumo
+invtweaks.key.category=Inventory Tweaks
+invtweaks.key.sort=Inventoriaus rūšiavimas
+

@@ -80,3 +80,6 @@ invtweaks.help.shortcuts.backward=(W tył)
 invtweaks.keyboardfix.error=Mam problemy z klawiaturą
 invtweaks.keyboardfix.recover=Dobra już jest naprawione, przepraszam.
 invtweaks.modcompat.ci.error=Nie udało się zaradzić niezgodności z modyfikacją "Convenient Inventory"
+invtweaks.key.category=Inventory Tweaks
+invtweaks.key.sort=Sortowanie Ekwipunku
+

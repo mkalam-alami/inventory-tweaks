@@ -80,3 +80,6 @@ invtweaks.help.shortcuts.backward=(Trás)
 invtweaks.keyboardfix.error=[12] Estou a ter problemas com o teclado
 invtweaks.keyboardfix.recover=Tudo voltou ao normal, desculpa-me por isso.
 invtweaks.modcompat.ci.error=[13] Falha ao gerir compatibilidade com "Convenient Inventory"
+invtweaks.key.category=Inventory Tweaks
+invtweaks.key.sort=Organização do Inventário
+

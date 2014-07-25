@@ -2,6 +2,7 @@ package invtweaks;
 
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.container.ContainerSection;
+import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.Item;
@@ -208,6 +209,9 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                                         }
                                     }
                                 }
+                                
+                                // Make sure the inventory resyncs
+                                InvTweaksMod.proxy.sortComplete();
                             } else {
                                 log.warn("Failed to move stack for autoreplace, despite of prior tests.");
                             }

@@ -5,6 +5,7 @@ import invtweaks.api.IItemTree;
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
+import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
@@ -268,6 +269,9 @@ public class InvTweaks extends InvTweaksObfuscation {
                         }
                     }
                 }
+
+                // Sync after pickup movements.
+                InvTweaksMod.proxy.sortComplete();
 
             } else {
                 if(--itemPickupTimeout == 0) {

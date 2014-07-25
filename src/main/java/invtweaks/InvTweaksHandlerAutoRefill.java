@@ -209,7 +209,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                                         }
                                     }
                                 }
-                                
+
                                 // Make sure the inventory resyncs
                                 InvTweaksMod.proxy.sortComplete();
                             } else {

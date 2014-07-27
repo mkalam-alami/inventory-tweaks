@@ -85,7 +85,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private int itemPickupTimeout = 0;
     private boolean isNEILoaded;
 
-    private PriorityQueue<TickScheduledTask> scheduledTasks = new PriorityQueue<TickScheduledTask>(new TickScheduledTask.TaskComparator());
+    private PriorityQueue<TickScheduledTask> scheduledTasks = new PriorityQueue<TickScheduledTask>(16, new TickScheduledTask.TaskComparator());
 
 
     /**

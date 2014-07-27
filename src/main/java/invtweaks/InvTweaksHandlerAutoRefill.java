@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Handles the auto-refilling of the hotbar.
@@ -69,7 +68,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
             // Find rules that match the slot
             for(IItemTreeItem item : items) {
-                if(!hasSubtypes || (item.getDamage() == wantedDamage)) {
+                if(!hasSubtypes || ((item.getDamage() == wantedDamage) || (item.getDamage() == InvTweaksConst.DAMAGE_WILDCARD))) {
                     // Since we search a matching item using rules,
                     // create a fake one that matches the exact item first
                     matchingRules.add(new InvTweaksConfigSortingRule(tree, "D" + (slot - 26), item.getName(),
@@ -146,7 +145,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
              * This allows to have a short feedback
 		     * that the stack/tool is empty/broken.
 		     */
-            new Thread(new Runnable() {
+            InvTweaks.getInstance().addScheduledTask(mc.theWorld.getTotalWorldTime()+1L, new Runnable() {
 
                 private InvTweaksContainerSectionManager containerMgr;
                 private int targetedSlot;
@@ -169,7 +168,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 }
 
                 public void run() {
-
+                    // Disabled because this is running next tick, not on a thread
+/*
                     // Wait for the server to confirm that the
                     // slot is now empty
                     int pollingTime = 0;
@@ -185,44 +185,40 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     }
                     if(pollingTime >= InvTweaksConst.POLLING_TIMEOUT) {
                         log.warn("Autoreplace timout");
-                    }
+                    }*/
 
-                    // In POLLING_DELAY ms, things might have changed
-                    try {
-                        ItemStack stack = containerMgr.getItemStack(i);
+                    // TODO: Look for better update detection now that this runs tick-based. It'll probably fail a bit if latency is > 50ms (1 tick)
+                    // Since last tick, things might have changed
+                    ItemStack stack = containerMgr.getItemStack(i);
 
-                        if(stack != null && StringUtils.equals(Item.itemRegistry.getNameForObject(stack.getItem()),
-                                                        expectedItemId) || this.refillBeforeBreak) {
-                            if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
-                                if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
-                                          .equals(InvTweaksConfig.VALUE_FALSE)) {
-                                    mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(
-                                            new ResourceLocation("mob.chicken.plop"), 1.0F));
-                                }
-                                // If item are swapped (like for mushroom soups),
-                                // put the item back in the inventory if it is in the hotbar
-                                if(containerMgr.getItemStack(i) != null && i >= 27) {
-                                    for(int j = 0; j < InvTweaksConst.INVENTORY_SIZE; j++) {
-                                        if(containerMgr.getItemStack(j) == null) {
-                                            containerMgr.move(i, j);
-                                            break;
-                                        }
+                    if(stack != null && StringUtils.equals(Item.itemRegistry.getNameForObject(stack.getItem()),
+                                                    expectedItemId) || this.refillBeforeBreak) {
+                        if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
+                            if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
+                                      .equals(InvTweaksConfig.VALUE_FALSE)) {
+                                mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(
+                                        new ResourceLocation("mob.chicken.plop"), 1.0F));
+                            }
+                            // If item are swapped (like for mushroom soups),
+                            // put the item back in the inventory if it is in the hotbar
+                            if(containerMgr.getItemStack(i) != null && i >= 27) {
+                                for(int j = 0; j < InvTweaksConst.INVENTORY_SIZE; j++) {
+                                    if(containerMgr.getItemStack(j) == null) {
+                                        containerMgr.move(i, j);
+                                        break;
                                     }
                                 }
-
-                                // Make sure the inventory resyncs
-                                InvTweaksMod.proxy.sortComplete();
-                            } else {
-                                log.warn("Failed to move stack for autoreplace, despite of prior tests.");
                             }
+
+                            // Make sure the inventory resyncs
+                            InvTweaksMod.proxy.sortComplete();
+                        } else {
+                            log.warn("Failed to move stack for autoreplace, despite of prior tests.");
                         }
-                    } catch(NullPointerException e) {
-                        // Nothing: Due to multithreading +
-                        // unsafe accesses, NPE may (very rarely) occur (?).
                     }
                 }
 
-            }.init(mc, replacementStackSlot, slot, refillBeforeBreak)).start();
+            }.init(mc, replacementStackSlot, slot, refillBeforeBreak));
 
         }
     }

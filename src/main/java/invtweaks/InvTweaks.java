@@ -28,10 +28,7 @@ import org.lwjgl.opengl.Display;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 
@@ -88,6 +85,8 @@ public class InvTweaks extends InvTweaksObfuscation {
     private int itemPickupTimeout = 0;
     private boolean isNEILoaded;
 
+    private PriorityQueue<TickScheduledTask> scheduledTasks = new PriorityQueue<TickScheduledTask>(new TickScheduledTask.TaskComparator());
+
 
     /**
      * Creates an instance of the mod, and loads the configuration from the files, creating them if necessary.
@@ -110,8 +109,19 @@ public class InvTweaks extends InvTweaksObfuscation {
         } else {
             log.error("Mod failed to initialize!");
         }
+    }
 
+    public void addScheduledTask(TickScheduledTask task) {
+        scheduledTasks.add(task);
+    }
 
+    public void addScheduledTask(long time, final Runnable task) {
+        scheduledTasks.add(new TickScheduledTask(time) {
+            @Override
+            void run() {
+                task.run();
+            }
+        });
     }
 
     /**
@@ -462,6 +472,11 @@ public class InvTweaks extends InvTweaksObfuscation {
         InvTweaksConfig config = cfgManager.getConfig();
         if(config == null) {
             return false;
+        }
+
+        while(!scheduledTasks.isEmpty() &&
+              (scheduledTasks.peek().getScheduledTickTime() <= mc.theWorld.getTotalWorldTime())) {
+            scheduledTasks.poll().run();
         }
 
         // Clone the hotbar to be able to monitor changes on it

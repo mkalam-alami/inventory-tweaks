@@ -7,6 +7,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import invtweaks.*;
 import invtweaks.api.IItemTreeListener;
@@ -145,5 +146,10 @@ public class ClientProxy extends CommonProxy {
             InvTweaks.logInGameErrorStatic("invtweaks.sort.chest.error", e);
             e.printStackTrace();
         }
+    }
+
+    @SubscribeEvent
+    public void onConnectionToServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
+        setServerHasInvTweaks(false);
     }
 }

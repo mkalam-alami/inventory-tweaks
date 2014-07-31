@@ -640,7 +640,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 }
             } else {
                 // Item
-                int itemMaxDamage = currentStack.getItem().getMaxDamage();
+                int itemMaxDamage = currentStack.getMaxDamage();
                 int autoRefillThreshhold = config.getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD);
                 if(canToolBeReplaced(currentStackDamage, itemMaxDamage, autoRefillThreshhold) && config
                         .getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)

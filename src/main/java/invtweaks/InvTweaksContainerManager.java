@@ -441,8 +441,9 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
     private int indexToSlot(ContainerSection section, int index) {
         if(index == DROP_SLOT) {
             return DROP_SLOT;
-        }
-        if(hasSection(section)) {
+        } else if(index < 0) {
+            return -1;
+        } else if(hasSection(section)) {
             Slot slot = slotRefs.get(section).get(index);
             if(slot != null) {
                 return InvTweaksObfuscation.getSlotNumber(slot);

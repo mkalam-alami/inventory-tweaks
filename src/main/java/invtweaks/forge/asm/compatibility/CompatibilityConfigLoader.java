@@ -64,6 +64,7 @@ public class CompatibilityConfigLoader extends DefaultHandler {
                 }
 
                 info.largeChest = Boolean.parseBoolean(attributes.getValue("large_chest"));
+                info.showButtons = !Boolean.parseBoolean(attributes.getValue("disable_buttons"));
             } else if("inventory".equals(qName)) {
                 info.validInventory = true;
                 info.showButtons = !Boolean.parseBoolean(attributes.getValue("disable_buttons"));

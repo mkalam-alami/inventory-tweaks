@@ -161,10 +161,6 @@ public class InvTweaks extends InvTweaksObfuscation {
                 // Right-click is always true on initial open of GUI.
                 // Ignore it to prevent erroneous trigger of shortcuts.
                 mouseWasDown = true;
-                log.info(guiScreen.getClass().getName());
-                if(guiScreen instanceof GuiContainer) {
-                    log.info(((GuiContainer) guiScreen).inventorySlots.getClass().getName());
-                }
             }
             if(guiScreen instanceof GuiContainer) {
                 handleShortcuts((GuiContainer) guiScreen);

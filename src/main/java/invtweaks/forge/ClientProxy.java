@@ -1,14 +1,5 @@
 package invtweaks.forge;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
-import cpw.mods.fml.relauncher.Side;
 import invtweaks.*;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.SortingMethod;
@@ -21,20 +12,25 @@ import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 
 public class ClientProxy extends CommonProxy {
     public static final KeyBinding KEYBINDING_SORT = new KeyBinding("invtweaks.key.sort", Keyboard.KEY_R, "invtweaks.key.category");
-
-    private InvTweaks instance;
-    private ForgeClientTick clientTick;
     public boolean serverSupportEnabled = false;
     public boolean serverSupportDetected = false;
+    private InvTweaks instance;
+    private ForgeClientTick clientTick;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -63,14 +59,6 @@ public class ClientProxy extends CommonProxy {
         instance.setItemPickupPending(true);
     }
 
-    @SubscribeEvent
-    public void onItemTooltip(ItemTooltipEvent e)
-    {
-        if(e.showAdvancedItemTooltips) {
-            e.toolTip.add(1, EnumChatFormatting.GRAY + Item.itemRegistry.getNameForObject(e.itemStack.getItem()));
-        }
-    }
-
     @Override
     public void setServerAssistEnabled(boolean enabled) {
         serverSupportEnabled = serverSupportDetected && enabled;
@@ -81,8 +69,8 @@ public class ClientProxy extends CommonProxy {
     public void setServerHasInvTweaks(boolean hasInvTweaks) {
         serverSupportDetected = hasInvTweaks;
         serverSupportEnabled = hasInvTweaks && !InvTweaks.getConfigManager().getConfig()
-                                                         .getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP)
-                                                         .equals(InvTweaksConfig.VALUE_FALSE);
+                .getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP)
+                .equals(InvTweaksConfig.VALUE_FALSE);
         //InvTweaks.log.info("Server has support: " + hasInvTweaks + " support enabled: " + serverSupportEnabled);
     }
 

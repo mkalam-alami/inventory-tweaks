@@ -37,6 +37,8 @@ public interface IItemTree {
 
     IItemTreeCategory getRootCategory();
 
+    void setRootCategory(IItemTreeCategory category);
+
     IItemTreeCategory getCategory(String keyword);
 
     boolean isItemUnknown(String id, int damage);
@@ -50,8 +52,6 @@ public interface IItemTree {
     boolean containsItem(String name);
 
     boolean containsCategory(String name);
-
-    void setRootCategory(IItemTreeCategory category);
 
     IItemTreeCategory addCategory(String parentCategory, String newCategory) throws NullPointerException;
 

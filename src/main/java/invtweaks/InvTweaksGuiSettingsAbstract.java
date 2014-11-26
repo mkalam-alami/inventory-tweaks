@@ -18,18 +18,15 @@ import java.util.List;
 public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
     protected static final Logger log = InvTweaks.log;
-
+    protected final static int ID_DONE = 200;
     protected static String ON;
     protected static String OFF;
     protected static String DISABLE_CI;
-
+    protected static String LABEL_DONE;
     protected Minecraft mc;
     protected InvTweaksObfuscation obf;
     protected InvTweaksConfig config;
     protected GuiScreen parentScreen;
-
-    protected static String LABEL_DONE;
-    protected final static int ID_DONE = 200;
 
     public InvTweaksGuiSettingsAbstract(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
 
@@ -61,7 +58,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     public void drawScreen(int i, int j, float f) {
         drawDefaultBackground();
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.title"),
-                           width / 2, 20, 0xffffff);
+                width / 2, 20, 0xffffff);
         super.drawScreen(i, j, f);
     }
 

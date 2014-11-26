@@ -11,13 +11,11 @@ import org.lwjgl.opengl.GL11;
  */
 public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
 
-    protected InvTweaksConfigManager cfgManager;
-
-    private boolean useCustomTexture;
-
     private static ResourceLocation resourceButtonCustom = new ResourceLocation("inventorytweaks",
-                                                                                "textures/gui/button10px.png");
+            "textures/gui/button10px.png");
     private static ResourceLocation resourceButtonDefault = new ResourceLocation("textures/gui/widgets.png");
+    protected InvTweaksConfigManager cfgManager;
+    private boolean useCustomTexture;
 
     public InvTweaksGuiIconButton(InvTweaksConfigManager cfgManager, int id, int x, int y, int w, int h,
                                   String displayString, String tooltip, boolean useCustomTexture) {
@@ -40,14 +38,14 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
         } else {
             minecraft.getTextureManager().bindTexture(resourceButtonDefault);
             drawTexturedModalRect(xPosition, yPosition, 1, 46 + k * 20 + 1, width / 2,
-                                  height / 2);
+                    height / 2);
             drawTexturedModalRect(xPosition, yPosition + height / 2, 1,
-                                  46 + k * 20 + 20 - height / 2 - 1, width / 2, height / 2);
+                    46 + k * 20 + 20 - height / 2 - 1, width / 2, height / 2);
             drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2 - 1,
-                                  46 + k * 20 + 1, width / 2, height / 2);
+                    46 + k * 20 + 1, width / 2, height / 2);
             drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2,
-                                  200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2,
-                                  width / 2, height / 2);
+                    200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2,
+                    width / 2, height / 2);
         }
 
     }

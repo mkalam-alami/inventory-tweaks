@@ -22,10 +22,7 @@ import java.util.Vector;
  * @author Jimeo Wan
  */
 public class InvTweaksConfig {
-    private static final Logger log = InvTweaks.log;
-
     public static final String PROP_VERSION = "version";
-
     // Sorting settings
     public static final String PROP_ENABLE_MIDDLE_CLICK = "enableMiddleClick";
     public static final String PROP_SHOW_CHEST_BUTTONS = "showChestButtons";
@@ -34,10 +31,8 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_AUTO_REFILL = "enableAutoRefill";
     public static final String PROP_AUTO_REFILL_BEFORE_BREAK = "autoRefillBeforeBreak";
     public static final String PROP_AUTO_REFILL_DAMAGE_THRESHHOLD = "autoRefillDamageThreshhold";
-
     @Deprecated
     public static final String PROP_KEY_SORT_INVENTORY = "keySortInventory";
-
     // Shortcuts
     public static final String PROP_ENABLE_SHORTCUTS = "enableShortcuts";
     public static final String PROP_SHORTCUT_PREFIX = "shortcutKey";
@@ -48,25 +43,21 @@ public class InvTweaksConfig {
     public static final String PROP_SHORTCUT_DROP = "shortcutKeyDrop";
     public static final String PROP_SHORTCUT_UP = "shortcutKeyToUpperSection";
     public static final String PROP_SHORTCUT_DOWN = "shortcutKeyToLowerSection";
-
     // Other
     public static final String PROP_ENABLE_SOUNDS = "enableSounds";
     public static final String PROP_OBSOLETE_ENABLE_SORTING_SOUND = "enableSortingSound";
     public static final String PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND = "enableAutoRefillSound";
     public static final String PROP_ENABLE_SERVER_ITEMSWAP = "enableServerItemSwap";
-
     public static final String VALUE_TRUE = "true";
     public static final String VALUE_FALSE = "false";
     public static final String VALUE_CI_COMPATIBILITY = "convenientInventoryCompatibility";
-
     public static final String LOCKED = "locked";
     public static final String FROZEN = "frozen";
     public static final String AUTOREFILL = "autorefill";
     public static final String AUTOREFILL_NOTHING = "nothing";
     public static final String DEBUG = "debug";
     public static final boolean DEFAULT_AUTO_REFILL_BEHAVIOUR = true;
-
-
+    private static final Logger log = InvTweaks.log;
     private File rulesFile;
     private File treeFile;
 
@@ -208,7 +199,7 @@ public class InvTweaksConfig {
             try {
                 FileOutputStream fos = new FileOutputStream(configPropsFile);
                 properties.store(fos,
-                                 "Inventory Tweaks Configuration\n" + "(Regarding shortcuts, all key names can be found at: http://www.lwjgl.org/javadoc/org/lwjgl/input/Keyboard.html)");
+                        "Inventory Tweaks Configuration\n" + "(Regarding shortcuts, all key names can be found at: http://www.lwjgl.org/javadoc/org/lwjgl/input/Keyboard.html)");
                 fos.flush();
                 fos.close();
                 storedConfigLastModified = InvTweaksConst.CONFIG_PROPS_FILE.lastModified();

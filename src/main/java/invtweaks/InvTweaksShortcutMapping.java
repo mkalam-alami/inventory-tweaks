@@ -27,7 +27,7 @@ public class InvTweaksShortcutMapping {
     }
 
     public InvTweaksShortcutMapping(String keyName) {
-        this(new String[] {keyName});
+        this(new String[]{keyName});
     }
 
     public InvTweaksShortcutMapping(String... keyNames) {

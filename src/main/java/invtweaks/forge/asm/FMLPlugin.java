@@ -1,6 +1,6 @@
 package invtweaks.forge.asm;
 
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ public class FMLPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {"invtweaks.forge.asm.ContainerTransformer"};
+        return new String[]{"invtweaks.forge.asm.ContainerTransformer"};
     }
 
     @Override

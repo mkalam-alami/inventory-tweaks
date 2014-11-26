@@ -2,8 +2,8 @@
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import cpw.mods.fml.common.network.IPacketHandler;
-import cpw.mods.fml.common.network.Player;
+import net.minecraftforge.fml.common.network.IPacketHandler;
+import net.minecraftforge.fml.common.network.Player;
 import invtweaks.InvTweaksConst;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;

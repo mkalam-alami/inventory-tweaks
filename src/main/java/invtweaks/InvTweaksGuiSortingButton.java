@@ -32,21 +32,21 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
         int textColor = getTextColor(i, j);
         if(displayString.equals("h")) {
             drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4,
-                     textColor);
+                    textColor);
             drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7,
-                     textColor);
+                    textColor);
         } else if(displayString.equals("v")) {
             drawRect(xPosition + 3, yPosition + 3, xPosition + 4, yPosition + height - 3,
-                     textColor);
+                    textColor);
             drawRect(xPosition + 6, yPosition + 3, xPosition + 7, yPosition + height - 3,
-                     textColor);
+                    textColor);
         } else {
             drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4,
-                     textColor);
+                    textColor);
             drawRect(xPosition + 5, yPosition + 4, xPosition + 6, yPosition + 5, textColor);
             drawRect(xPosition + 4, yPosition + 5, xPosition + 5, yPosition + 6, textColor);
             drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7,
-                     textColor);
+                    textColor);
         }
     }
 

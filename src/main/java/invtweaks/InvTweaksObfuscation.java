@@ -1,8 +1,5 @@
 package invtweaks;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -24,6 +21,9 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Mouse;
 
@@ -40,22 +40,14 @@ import java.util.Map;
 public class InvTweaksObfuscation {
 
     private static final Logger log = InvTweaks.log;
-
-    public Minecraft mc;
-
     private static Map<String, Field> fieldsMap = new HashMap<String, Field>();
+    public Minecraft mc;
 
     public InvTweaksObfuscation(Minecraft mc) {
         this.mc = mc;
     }
 
     // Minecraft members
-
-    public void addChatMessage(String message) {
-        if(mc.ingameGUI != null) {
-            mc.ingameGUI.getChatGUI().printChatMessage(new ChatComponentText(message));
-        }
-    }
 
     public static String getNamespacedID(String id) {
         if(id == null) {
@@ -66,26 +58,6 @@ public class InvTweaksObfuscation {
         return id;
     }
 
-    public EntityPlayer getThePlayer() {
-        return mc.thePlayer;
-    }
-
-    public PlayerControllerMP getPlayerController() {
-        return mc.playerController;
-    }
-
-    public GuiScreen getCurrentScreen() {
-        return mc.currentScreen;
-    }
-
-    public FontRenderer getFontRenderer() {
-        return mc.fontRenderer;
-    }
-
-    public void displayGuiScreen(GuiScreen parentScreen) {
-        mc.displayGuiScreen(parentScreen);
-    }
-
     public static int getDisplayWidth() {
         return FMLClientHandler.instance().getClient().displayWidth;
     }
@@ -94,93 +66,15 @@ public class InvTweaksObfuscation {
         return FMLClientHandler.instance().getClient().displayHeight;
     }
 
-    public GameSettings getGameSettings() {
-        return mc.gameSettings;
-    }
-
-    public int getKeyBindingForwardKeyCode() {
-        return getGameSettings().keyBindForward.keyCode;
-    }
-
-    public int getKeyBindingBackKeyCode() {
-        return getGameSettings().keyBindBack.keyCode;
-    }
-
-    // EntityPlayer members
-
-    public InventoryPlayer getInventoryPlayer() { // InventoryPlayer
-        return getThePlayer().inventory;
-    }
-
-    public ItemStack getCurrentEquippedItem() { // ItemStack
-        return getThePlayer().getCurrentEquippedItem();
-    }
-
-    public ContainerPlayer getPlayerContainer() {
-        return (ContainerPlayer) getThePlayer().inventoryContainer;
-    }
-
-    // InventoryPlayer members
-
-    public ItemStack[] getMainInventory() {
-        return getInventoryPlayer().mainInventory;
-    }
-
-    public void setMainInventory(ItemStack[] value) {
-        getInventoryPlayer().mainInventory = value;
-    }
-
-    public void setHasInventoryChanged(boolean value) {
-        getInventoryPlayer().inventoryChanged = value;
-    }
-
-    public void setHeldStack(ItemStack stack) {
-        getInventoryPlayer().setItemStack(stack); // setItemStack
-    }
-
-    public boolean hasInventoryChanged() {
-        return getInventoryPlayer().inventoryChanged;
-    }
-
-    public ItemStack getHeldStack() {
-        return getInventoryPlayer().getItemStack(); // getItemStack
-    }
-
-    public ItemStack getFocusedStack() {
-        return getInventoryPlayer().getCurrentItem(); // getCurrentItem
-    }
-
-    public int getFocusedSlot() {
-        return getInventoryPlayer().currentItem; // currentItem
-    }
-
-    // FontRenderer members
-
     public static boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
         return itemStack1.isItemEqual(itemStack2) && itemStack1.stackSize == itemStack2.stackSize;
     }
-
-    public boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1.isItemEqual(itemStack2) || (itemStack1.isItemStackDamageable() && itemStack1
-                .getItem() == itemStack2.getItem());
-    }
-
-    public boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) &&
-                itemStack1.isStackable() &&
-                (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) &&
-                ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
-    }
-
-    // Container members
 
     public static ItemStack getSlotStack(Container container, int i) {
         // Slot
         Slot slot = (Slot) (container.inventorySlots.get(i));
         return (slot == null) ? null : slot.getStack(); // getStack
     }
-
-    // Slot members
 
     @SuppressWarnings("unchecked")
     public static int getSlotNumber(Slot slot) {
@@ -255,21 +149,12 @@ public class InvTweaksObfuscation {
         return 0;
     }
 
-    public boolean hasTexture(ResourceLocation texture) {
-        try {
-            mc.getResourceManager().getResource(texture);
-        } catch(/*IOException*/Exception e) { //FIXME: Java is stupid, the exception annotations just aren't being generated correctly at the moment.
-            return false;
-        }
-        return true;
-    }
+    // EntityPlayer members
 
     // Static access
     public static String getCurrentLanguage() {
         return Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
     }
-
-    // Classes
 
     public static boolean isValidChest(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$validChest()"
@@ -280,6 +165,8 @@ public class InvTweaksObfuscation {
         // This method gets replaced by the transformer with "return container.invtweaks$largeChest()"
         return false;
     }
+
+    // InventoryPlayer members
 
     public static boolean isValidInventory(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$validInventory()"
@@ -316,6 +203,8 @@ public class InvTweaksObfuscation {
         return o != null && o instanceof GuiButton;
     }
 
+    // FontRenderer members
+
     public static boolean isGuiEditSign(Object o) {
         return o != null && o.getClass().equals(GuiEditSign.class);
     }
@@ -327,7 +216,116 @@ public class InvTweaksObfuscation {
     public static boolean isBasicSlot(Object o) { // Slot
         // TODO: SpecialSource, class ATs, cannot compile
         return o != null && (o.getClass()
-                              .equals(Slot.class)/* || o.getClass().equals(GuiContainerCreative.CreativeSlot.class)*/);
+                .equals(Slot.class)/* || o.getClass().equals(GuiContainerCreative.CreativeSlot.class)*/);
+    }
+
+    // Container members
+
+    public void addChatMessage(String message) {
+        if(mc.ingameGUI != null) {
+            mc.ingameGUI.getChatGUI().printChatMessage(new ChatComponentText(message));
+        }
+    }
+
+    // Slot members
+
+    public EntityPlayer getThePlayer() {
+        return mc.thePlayer;
+    }
+
+    public PlayerControllerMP getPlayerController() {
+        return mc.playerController;
+    }
+
+    public GuiScreen getCurrentScreen() {
+        return mc.currentScreen;
+    }
+
+    public FontRenderer getFontRenderer() {
+        return mc.fontRendererObj;
+    }
+
+    public void displayGuiScreen(GuiScreen parentScreen) {
+        mc.displayGuiScreen(parentScreen);
+    }
+
+    public GameSettings getGameSettings() {
+        return mc.gameSettings;
+    }
+
+    public int getKeyBindingForwardKeyCode() {
+        return getGameSettings().keyBindForward.keyCode;
+    }
+
+    public int getKeyBindingBackKeyCode() {
+        return getGameSettings().keyBindBack.keyCode;
+    }
+
+    public InventoryPlayer getInventoryPlayer() { // InventoryPlayer
+        return getThePlayer().inventory;
+    }
+
+    // Classes
+
+    public ItemStack getCurrentEquippedItem() { // ItemStack
+        return getThePlayer().getCurrentEquippedItem();
+    }
+
+    public ContainerPlayer getPlayerContainer() {
+        return (ContainerPlayer) getThePlayer().inventoryContainer;
+    }
+
+    public ItemStack[] getMainInventory() {
+        return getInventoryPlayer().mainInventory;
+    }
+
+    public void setMainInventory(ItemStack[] value) {
+        getInventoryPlayer().mainInventory = value;
+    }
+
+    public void setHasInventoryChanged(boolean value) {
+        getInventoryPlayer().inventoryChanged = value;
+    }
+
+    public boolean hasInventoryChanged() {
+        return getInventoryPlayer().inventoryChanged;
+    }
+
+    public ItemStack getHeldStack() {
+        return getInventoryPlayer().getItemStack(); // getItemStack
+    }
+
+    public void setHeldStack(ItemStack stack) {
+        getInventoryPlayer().setItemStack(stack); // setItemStack
+    }
+
+    public ItemStack getFocusedStack() {
+        return getInventoryPlayer().getCurrentItem(); // getCurrentItem
+    }
+
+    public int getFocusedSlot() {
+        return getInventoryPlayer().currentItem; // currentItem
+    }
+
+    public boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
+        return itemStack1.isItemEqual(itemStack2) || (itemStack1.isItemStackDamageable() && itemStack1
+                .getItem() == itemStack2.getItem());
+    }
+
+    public boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
+        return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) &&
+                itemStack1.isStackable() &&
+                (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) &&
+                ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
+    }
+
+    public boolean hasTexture(ResourceLocation texture) {
+        try {
+            mc.getResourceManager().getResource(texture);
+        } catch(/*IOException*/Exception e) { //FIXME: Java is stupid, the exception annotations just aren't being generated correctly at the moment.
+            return false;
+        }
+        return true;
     }
 
 }

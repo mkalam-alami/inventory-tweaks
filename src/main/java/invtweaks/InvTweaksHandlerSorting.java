@@ -24,21 +24,17 @@ import java.util.concurrent.TimeoutException;
  */
 public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
-    private static final Logger log = InvTweaks.log;
-
     public static final boolean STACK_NOT_EMPTIED = true;
     public static final boolean STACK_EMPTIED = false;
-
-    private static int[] DEFAULT_LOCK_PRIORITIES = null;
-    private static boolean[] DEFAULT_FROZEN_SLOTS = null;
-    private static final int MAX_CONTAINER_SIZE = 999;
-
     public static final int ALGORITHM_DEFAULT = 0;
     public static final int ALGORITHM_VERTICAL = 1;
     public static final int ALGORITHM_HORIZONTAL = 2;
     public static final int ALGORITHM_INVENTORY = 3;
     public static final int ALGORITHM_EVEN_STACKS = 4;
-
+    private static final Logger log = InvTweaks.log;
+    private static final int MAX_CONTAINER_SIZE = 999;
+    private static int[] DEFAULT_LOCK_PRIORITIES = null;
+    private static boolean[] DEFAULT_FROZEN_SLOTS = null;
     private InvTweaksContainerSectionManager containerMgr;
     private SortingMethod algorithm;
     private int size;
@@ -75,7 +71,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         this.containerMgr = new InvTweaksContainerSectionManager(mc, section);
         this.size = containerMgr.getSize();
         this.sortArmorParts = config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR)
-                                    .equals(InvTweaksConfig.VALUE_TRUE) && !isGuiInventoryCreative(
+                .equals(InvTweaksConfig.VALUE_TRUE) && !isGuiInventoryCreative(
                 getCurrentScreen()); // FIXME Armor parts disappear when sorting in creative mode while holding an item
 
         this.rules = config.getRules();
@@ -166,8 +162,9 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
                 // If the rule is strong enough to move the item and it matches the item, move it
                 if(hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
+                    // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                     List<IItemTreeItem> fromItems = tree
-                            .getItems(Item.itemRegistry.getNameForObject(from.getItem()), from.getItemDamage());
+                            .getItems(Item.itemRegistry.getNameForObject(from.getItem()).toString(), from.getItemDamage());
                     if(tree.matches(fromItems, rule.getKeyword())) {
 
                         // Test preffered slots
@@ -183,7 +180,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                     break;
                                 } else {
                                     from = containerMgr.getItemStack(moveResult);
-                                    fromItems = tree.getItems(Item.itemRegistry.getNameForObject(from.getItem()), from.getItemDamage());
+                                    // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+                                    fromItems = tree.getItems(Item.itemRegistry.getNameForObject(from.getItem()).toString(), from.getItemDamage());
                                     if(!tree.matches(fromItems, rule.getKeyword())) {
                                         break;
                                     } else {
@@ -218,8 +216,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 for(Slot craftingSlot : craftingSlots) {
                     if(craftingSlot.getHasStack()) {
                         globalContainer.move(ContainerSection.CRAFTING_IN,
-                                             globalContainer.getSlotIndex(getSlotNumber(craftingSlot)),
-                                             ContainerSection.INVENTORY, emptyIndex);
+                                globalContainer.getSlotIndex(getSlotNumber(craftingSlot)),
+                                ContainerSection.INVENTORY, emptyIndex);
                         emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
                         if(emptyIndex == -1) {
                             break;
@@ -300,7 +298,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                         }
                         if(slot.isItemValid(from) && move) {
                             globalContainer.move(ContainerSection.INVENTORY, i, ContainerSection.ARMOR,
-                                                 globalContainer.getSlotIndex(getSlotNumber(slot)));
+                                    globalContainer.getSlotIndex(getSlotNumber(slot)));
                         }
                     }
                 }
@@ -316,7 +314,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         for(int i = 0; i < size; i++) {
             ItemStack stack = containerMgr.getItemStack(i);
             if(stack != null) {
-                Pair<String, Integer> item = Pair.of(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getItemDamage());
+                // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+                Pair<String, Integer> item = Pair.of(Item.itemRegistry.getNameForObject(stack.getItem()).toString(), stack.getItemDamage());
                 int[] count = itemCounts.get(item);
                 if(count == null) {
                     int[] newCount = {stack.stackSize, 1};
@@ -336,14 +335,14 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
             //skip hacked itemstacks that are larger than their max size
             //no idea why they would be here, but may as well account for them anyway
-            if(numPerSlot <= new ItemStack((Item)Item.itemRegistry.getObject(item.getLeft()), 1, 0).getMaxStackSize()) {
+            if(numPerSlot <= new ItemStack((Item) Item.itemRegistry.getObject(item.getLeft()), 1, 0).getMaxStackSize()) {
                 //linkedlists to store which stacks have too many/few items
                 LinkedList<Integer> smallStacks = new LinkedList<Integer>();
                 LinkedList<Integer> largeStacks = new LinkedList<Integer>();
                 for(int i = 0; i < size; i++) {
                     ItemStack stack = containerMgr.getItemStack(i);
                     if(stack != null && Pair.of(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getItemDamage())
-                                              .equals(item)) {
+                            .equals(item)) {
                         int stackSize = stack.stackSize;
                         if(stackSize > numPerSlot) {
                             largeStacks.offer(i);
@@ -559,7 +558,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     }
 
     private int getItemOrder(ItemStack itemStack) {
-        List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(itemStack.getItem()), itemStack.getItemDamage());
+        // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+        List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(itemStack.getItem()).toString(), itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
@@ -706,7 +706,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                         .getMaxStackSize() != 1) ? stack.getItemDamage() : 0);
                 IItemTreeItem item = itemSearch.get(itemSearchKey);
                 if(item == null) {
-                    item = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getItemDamage()).get(0);
+                    // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+                    item = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()).toString(), stack.getItemDamage()).get(0);
                     itemSearch.put(itemSearchKey, item);
                     stats.put(item, 1);
                 } else {

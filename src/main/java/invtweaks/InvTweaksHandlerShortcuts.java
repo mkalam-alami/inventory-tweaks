@@ -21,32 +21,16 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private static final Logger log = InvTweaks.log;
 
     private static final int DROP_SLOT = -999;
-
-    private class ShortcutConfig {
-        public ShortcutSpecification.Action action = null;
-        public ShortcutSpecification.Scope scope = null;
-        public ContainerSection fromSection = null;
-        public int fromIndex = -1;
-        public ItemStack fromStack = null;
-        public ContainerSection toSection = null;
-        public int toIndex = -1;
-        public boolean forceEmptySlot = false;
-    }
-
     private InvTweaksConfig config;
-
     private InvTweaksContainerManager container;
-
     /**
      * Stores all pressed keys (only the one that are related to shortcuts)
      */
     private Map<Integer, Boolean> pressedKeys;
-
     /**
      * Stores the shortcuts mappings
      */
     private Map<InvTweaksShortcutType, List<InvTweaksShortcutMapping>> shortcuts;
-
 
     public InvTweaksHandlerShortcuts(Minecraft mc, InvTweaksConfig config) {
         super(mc);
@@ -88,7 +72,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         };
         for(int i : hotbarKeys) {
             registerShortcutMapping(InvTweaksShortcutType.MOVE_TO_SPECIFIC_HOTBAR_SLOT,
-                                    new InvTweaksShortcutMapping(i));
+                    new InvTweaksShortcutMapping(i));
         }
 
         // Register (L/R)SHIFT to allow to filter them
@@ -373,7 +357,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                                         while(slot.getHasStack() && toIndex != -1) {
                                             success = container
                                                     .move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection,
-                                                          toIndex);
+                                                            toIndex);
                                             newIndex = getNextTargetIndex(shortcut);
                                             toIndex = (success ||
                                                     (shortcut.action == ShortcutSpecification.Action.DROP) ||
@@ -382,7 +366,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                                     } else {
                                         // Move only once, since the crafting output might be refilled
                                         container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection,
-                                                       toIndex);
+                                                toIndex);
                                     }
                                     break;
 
@@ -390,7 +374,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
                                 case ONE_ITEM: {
                                     container.moveSome(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection,
-                                                       toIndex, 1);
+                                            toIndex, 1);
                                     break;
                                 }
 
@@ -504,6 +488,17 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             }
         }
         return null;
+    }
+
+    private class ShortcutConfig {
+        public ShortcutSpecification.Action action = null;
+        public ShortcutSpecification.Scope scope = null;
+        public ContainerSection fromSection = null;
+        public int fromIndex = -1;
+        public ItemStack fromStack = null;
+        public ContainerSection toSection = null;
+        public int toIndex = -1;
+        public boolean forceEmptySlot = false;
     }
 
 }

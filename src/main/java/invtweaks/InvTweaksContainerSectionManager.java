@@ -24,10 +24,6 @@ public class InvTweaksContainerSectionManager {
         this(new InvTweaksContainerManager(mc), section);
     }
 
-    public void setClickDelay(int delay) {
-        this.containerMgr.setClickDelay(delay);
-    }
-
     public InvTweaksContainerSectionManager(InvTweaksContainerManager manager, ContainerSection section)
             throws Exception {
         this.containerMgr = manager;
@@ -35,6 +31,10 @@ public class InvTweaksContainerSectionManager {
         if(!containerMgr.hasSection(section)) {
             throw new Exception("Section not available");
         }
+    }
+
+    public void setClickDelay(int delay) {
+        this.containerMgr.setClickDelay(delay);
     }
 
     public boolean move(int srcIndex, int destIndex) {

@@ -1,15 +1,15 @@
 package invtweaks.forge;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
  * ModLoader entry point to load and configure the mod.
@@ -20,15 +20,20 @@ import net.minecraft.item.ItemStack;
  *         Source code: <a href="https://github.com/kobata/inventory-tweaks">GitHub</a> License: MIT
  */
 @Mod(modid = "inventorytweaks",
-     dependencies = "required-after:FML@[7.2.0,);required-after:Forge@[10.12.1,)",
-        acceptableRemoteVersions="*",
-        guiFactory="invtweaks.forge.ModGuiFactory")
+        dependencies = "required-after:FML@[7.2.0,);required-after:Forge@[10.12.1,)",
+        acceptableRemoteVersions = "*",
+        guiFactory = "invtweaks.forge.ModGuiFactory")
 public class InvTweaksMod implements InvTweaksAPI {
     @Mod.Instance
     public static InvTweaksMod instance;
 
     @SidedProxy(clientSide = "invtweaks.forge.ClientProxy", serverSide = "invtweaks.forge.CommonProxy")
     public static CommonProxy proxy;
+
+    // Helper for ASM transform of GuiTextField to disable sorting on focus.
+    public static void setTextboxModeStatic(boolean enabled) {
+        instance.setTextboxMode(enabled);
+    }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
@@ -71,10 +76,7 @@ public class InvTweaksMod implements InvTweaksAPI {
     }
 
     @Override
-    public void sort(ContainerSection section, SortingMethod method) { proxy.sort(section, method); }
-
-    // Helper for ASM transform of GuiTextField to disable sorting on focus.
-    public static void setTextboxModeStatic(boolean enabled) {
-        instance.setTextboxMode(enabled);
+    public void sort(ContainerSection section, SortingMethod method) {
+        proxy.sort(section, method);
     }
 }

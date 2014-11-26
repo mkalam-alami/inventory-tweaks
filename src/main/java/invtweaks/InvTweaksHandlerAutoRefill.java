@@ -31,6 +31,14 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
         setConfig(config);
     }
 
+    private static void trySleep(int delay) {
+        try {
+            Thread.sleep(delay);
+        } catch(InterruptedException e) {
+            // Do nothing
+        }
+    }
+
     public void setConfig(InvTweaksConfig config) {
         this.config = config;
     }
@@ -43,14 +51,14 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
     public void autoRefillSlot(int slot, String wantedId, int wantedDamage) throws Exception {
 
         InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(mc,
-                                                                                          ContainerSection.INVENTORY);
+                ContainerSection.INVENTORY);
         ItemStack candidateStack, replacementStack = null;
         int replacementStackSlot = -1;
         boolean refillBeforeBreak = config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
-                                          .equals(InvTweaksConfig.VALUE_TRUE);
+                .equals(InvTweaksConfig.VALUE_TRUE);
         boolean hasSubtypes = false;
 
-        Item original = (Item)Item.itemRegistry.getObject(wantedId);
+        Item original = (Item) Item.itemRegistry.getObject(wantedId);
         if(original != null) {
             hasSubtypes = original.getHasSubtypes();
         }
@@ -72,8 +80,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     // Since we search a matching item using rules,
                     // create a fake one that matches the exact item first
                     matchingRules.add(new InvTweaksConfigSortingRule(tree, "D" + (slot - 26), item.getName(),
-                                                                     InvTweaksConst.INVENTORY_SIZE,
-                                                                     InvTweaksConst.INVENTORY_ROW_SIZE));
+                            InvTweaksConst.INVENTORY_SIZE,
+                            InvTweaksConst.INVENTORY_ROW_SIZE));
                 }
             }
             for(InvTweaksConfigSortingRule rule : rules) {
@@ -95,8 +103,9 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 for(int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                     candidateStack = container.getItemStack(i);
                     if(candidateStack != null) {
+                        // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                         List<IItemTreeItem> candidateItems = tree
-                                .getItems(Item.itemRegistry.getNameForObject(candidateStack.getItem()), candidateStack.getItemDamage());
+                                .getItems(Item.itemRegistry.getNameForObject(candidateStack.getItem()).toString(), candidateStack.getItemDamage());
                         if(tree.matches(candidateItems, rule.getKeyword())) {
                             // Choose tool of highest damage value
                             if(candidateStack.getMaxStackSize() == 1) {
@@ -144,7 +153,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
              * This allows to have a short feedback
 		     * that the stack/tool is empty/broken.
 		     */
-            InvTweaks.getInstance().addScheduledTask(mc.theWorld.getTotalWorldTime()+1L, new Runnable() {
+            InvTweaks.getInstance().addScheduledTask(mc.theWorld.getTotalWorldTime() + 1L, new Runnable() {
 
                 private InvTweaksContainerSectionManager containerMgr;
                 private int targetedSlot;
@@ -157,7 +166,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     this.targetedSlot = currentItem;
                     if(i != -1) {
                         this.i = i;
-                        this.expectedItemId = Item.itemRegistry.getNameForObject(containerMgr.getItemStack(i).getItem());
+                        // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+                        this.expectedItemId = Item.itemRegistry.getNameForObject(containerMgr.getItemStack(i).getItem()).toString();
                     } else {
                         this.i = containerMgr.getFirstEmptyIndex();
                         this.expectedItemId = null;
@@ -190,12 +200,13 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     // Since last tick, things might have changed
                     ItemStack stack = containerMgr.getItemStack(i);
 
-                    if(stack != null && StringUtils.equals(Item.itemRegistry.getNameForObject(stack.getItem()),
-                                                    expectedItemId) || this.refillBeforeBreak) {
+                    // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+                    if(stack != null && StringUtils.equals(Item.itemRegistry.getNameForObject(stack.getItem()).toString(),
+                            expectedItemId) || this.refillBeforeBreak) {
                         if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
                             if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
-                                      .equals(InvTweaksConfig.VALUE_FALSE)) {
-                                mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(
+                                    .equals(InvTweaksConfig.VALUE_FALSE)) {
+                                mc.getSoundHandler().playSound(PositionedSoundRecord.create(
                                         new ResourceLocation("mob.chicken.plop"), 1.0F));
                             }
                             // If item are swapped (like for mushroom soups),
@@ -219,14 +230,6 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
             }.init(mc, replacementStackSlot, slot, refillBeforeBreak));
 
-        }
-    }
-
-    private static void trySleep(int delay) {
-        try {
-            Thread.sleep(delay);
-        } catch(InterruptedException e) {
-            // Do nothing
         }
     }
 

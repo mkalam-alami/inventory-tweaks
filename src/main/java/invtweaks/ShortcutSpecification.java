@@ -1,25 +1,6 @@
 package invtweaks;
 
 public class ShortcutSpecification {
-    public enum Action {
-        MOVE,
-        DROP
-    }
-
-    public enum Target {
-        UP,
-        DOWN,
-        HOTBAR_SLOT,
-        UNSPECIFIED
-    }
-
-    public enum Scope {
-        EVERYTHING,
-        ALL_ITEMS,
-        ONE_STACK,
-        ONE_ITEM
-    }
-
     private Action action;
     private Target target;
     private Scope scope;
@@ -52,5 +33,24 @@ public class ShortcutSpecification {
 
     public void setScope(Scope scope) {
         this.scope = scope;
+    }
+
+    public enum Action {
+        MOVE,
+        DROP
+    }
+
+    public enum Target {
+        UP,
+        DOWN,
+        HOTBAR_SLOT,
+        UNSPECIFIED
+    }
+
+    public enum Scope {
+        EVERYTHING,
+        ALL_ITEMS,
+        ONE_STACK,
+        ONE_ITEM
     }
 }

@@ -1,6 +1,5 @@
 package invtweaks;
 
-import cpw.mods.fml.common.Loader;
 import invtweaks.api.IItemTree;
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.SortingMethod;
@@ -19,6 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fml.common.Loader;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.LWJGLException;
@@ -29,7 +29,6 @@ import org.lwjgl.opengl.Display;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 
 
@@ -86,7 +85,10 @@ public class InvTweaks extends InvTweaksObfuscation {
     private boolean isNEILoaded;
 
     private PriorityQueue<TickScheduledTask> scheduledTasks = new PriorityQueue<TickScheduledTask>(16, new TickScheduledTask.TaskComparator());
-
+    private List<String> queuedMessages = new ArrayList<String>();
+    private boolean wasNEIEnabled = false;
+    private Class neiClientConfig;
+    private Method neiHidden;
 
     /**
      * Creates an instance of the mod, and loads the configuration from the files, creating them if necessary.
@@ -108,6 +110,37 @@ public class InvTweaks extends InvTweaksObfuscation {
             log.info("Mod initialized");
         } else {
             log.error("Mod failed to initialize!");
+        }
+    }
+
+    public static void logInGameStatic(String message) {
+        InvTweaks.getInstance().logInGame(message);
+    }
+
+    public static void logInGameErrorStatic(String message, Exception e) {
+        InvTweaks.getInstance().logInGameError(message, e);
+    }
+
+    /**
+     * @return InvTweaks instance
+     */
+    public static InvTweaks getInstance() {
+        return instance;
+    }
+
+    public static Minecraft getMinecraftInstance() {
+        return instance.mc;
+    }
+
+    public static InvTweaksConfigManager getConfigManager() {
+        return instance.cfgManager;
+    }
+
+    public static boolean classExists(String className) {
+        try {
+            return Class.forName(className) != null;
+        } catch(ClassNotFoundException e) {
+            return false;
         }
     }
 
@@ -169,7 +202,8 @@ public class InvTweaks extends InvTweaksObfuscation {
             // Copy some info about current selected stack for auto-refill
             ItemStack currentStack = getFocusedStack();
 
-            storedStackId = (currentStack == null) ? null : Item.itemRegistry.getNameForObject(currentStack.getItem());
+            // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+            storedStackId = (currentStack == null) ? null : Item.itemRegistry.getNameForObject(currentStack.getItem()).toString();
             storedStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
             if(!wasInGUI) {
                 wasInGUI = true;
@@ -217,7 +251,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         try {
             InvTweaksContainerSectionManager containerMgr = new InvTweaksContainerSectionManager(mc,
-                                                                                                 ContainerSection.INVENTORY);
+                    ContainerSection.INVENTORY);
 
             // Find stack slot (look in hotbar only).
             // We're looking for a brand new stack in the hotbar
@@ -239,7 +273,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                 IItemTree tree = config.getTree();
                 ItemStack stack = containerMgr.getItemStack(currentSlot);
 
-                List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getItemDamage());
+                // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+                List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()).toString(), stack.getItemDamage());
                 for(InvTweaksConfigSortingRule rule : config.getRules()) {
                     if(tree.matches(items, rule.getKeyword())) {
                         for(int slot : rule.getPreferredSlots()) {
@@ -367,8 +402,9 @@ public class InvTweaks extends InvTweaksObfuscation {
                         return jEnchs.size() - iEnchs.size();
                     }
                 } else {
-                    return ObjectUtils.compare(Item.itemRegistry.getNameForObject(i.getItem()),
-                                               Item.itemRegistry.getNameForObject(j.getItem()));
+                    // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+                    return ObjectUtils.compare(Item.itemRegistry.getNameForObject(i.getItem()).toString(),
+                            Item.itemRegistry.getNameForObject(j.getItem()).toString());
                 }
             } else {
                 return orderI - orderJ;
@@ -393,8 +429,6 @@ public class InvTweaks extends InvTweaksObfuscation {
         logInGame(message, false);
     }
 
-    private List<String> queuedMessages = new ArrayList<String>();
-
     public void printQueuedMessages() {
         if(mc.ingameGUI != null && !queuedMessages.isEmpty()) {
             for(String s : queuedMessages) {
@@ -406,7 +440,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     public void logInGame(String message, boolean alreadyTranslated) {
         String formattedMsg = buildlogString(Level.INFO,
-                                             (alreadyTranslated) ? message : StatCollector.translateToLocal(message));
+                (alreadyTranslated) ? message : StatCollector.translateToLocal(message));
 
         if(mc.ingameGUI == null) {
             queuedMessages.add(formattedMsg);
@@ -428,37 +462,6 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
     }
 
-    public static void logInGameStatic(String message) {
-        InvTweaks.getInstance().logInGame(message);
-    }
-
-    public static void logInGameErrorStatic(String message, Exception e) {
-        InvTweaks.getInstance().logInGameError(message, e);
-    }
-
-    /**
-     * @return InvTweaks instance
-     */
-    public static InvTweaks getInstance() {
-        return instance;
-    }
-
-    public static Minecraft getMinecraftInstance() {
-        return instance.mc;
-    }
-
-    public static InvTweaksConfigManager getConfigManager() {
-        return instance.cfgManager;
-    }
-
-    public static boolean classExists(String className) {
-        try {
-            return Class.forName(className) != null;
-        } catch(ClassNotFoundException e) {
-            return false;
-        }
-    }
-
     private boolean onTick() {
         printQueuedMessages();
 
@@ -471,7 +474,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
 
         while(!scheduledTasks.isEmpty() &&
-              (scheduledTasks.peek().getScheduledTickTime() <= mc.theWorld.getTotalWorldTime())) {
+                (scheduledTasks.peek().getScheduledTickTime() <= mc.theWorld.getTotalWorldTime())) {
             scheduledTasks.poll().run();
         }
 
@@ -549,7 +552,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             if(newRuleset != null) {
                 logInGame(String.format(StatCollector.translateToLocal("invtweaks.loadconfig.enabled"), newRuleset),
-                          true);
+                        true);
                 // Hack to prevent 2nd way to switch configs from being enabled
                 sortingKeyPressedDate = Integer.MAX_VALUE;
             }
@@ -566,7 +569,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 // Log only if there is more than 1 ruleset
                 if(previousRuleset != null && newRuleset != null && !previousRuleset.equals(newRuleset)) {
                     logInGame(String.format(StatCollector.translateToLocal("invtweaks.loadconfig.enabled"), newRuleset),
-                              true);
+                            true);
                     handleSorting(currentScreen);
                 }
                 sortingKeyPressedDate = currentTime;
@@ -610,8 +613,9 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         ItemStack currentStack = getFocusedStack();
 
+        // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
         String currentStackId = (currentStack == null) ? null : Item.itemRegistry.getNameForObject(
-                currentStack.getItem());
+                currentStack.getItem()).toString();
         int currentStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
         InvTweaksConfig config = cfgManager.getConfig();
@@ -672,7 +676,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             // Check that middle click sorting is allowed
             if(config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK)
-                     .equals(InvTweaksConfig.VALUE_TRUE) && guiScreen instanceof GuiContainer) {
+                    .equals(InvTweaksConfig.VALUE_TRUE) && guiScreen instanceof GuiContainer) {
 
                 GuiContainer guiContainer = (GuiContainer) guiScreen;
                 Container container = guiContainer.inventorySlots;
@@ -704,7 +708,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                             }
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(), ContainerSection.CHEST,
-                                                            chestAlgorithm, getContainerRowSize(guiContainer)).sort();
+                                        chestAlgorithm, getContainerRowSize(guiContainer)).sort();
                             } catch(Exception e) {
                                 logInGameError("invtweaks.sort.chest.error", e);
                                 e.printStackTrace();
@@ -714,11 +718,11 @@ public class InvTweaks extends InvTweaksObfuscation {
                             chestAlgorithmClickTimestamp = timestamp;
 
                         } else if(ContainerSection.CRAFTING_IN.equals(target) || ContainerSection.CRAFTING_IN_PERSISTENT
-                                                                                                 .equals(target)) {
+                                .equals(target)) {
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(), target,
-                                                            SortingMethod.EVEN_STACKS,
-                                                            (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
+                                        SortingMethod.EVEN_STACKS,
+                                        (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
                             } catch(Exception e) {
                                 logInGameError("invtweaks.sort.crafting.error", e);
                                 e.printStackTrace();
@@ -731,12 +735,12 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                     } else if(isValidInventory(container)) {
                         if(ContainerSection.CRAFTING_IN.equals(target) || ContainerSection.CRAFTING_IN_PERSISTENT
-                                                                                          .equals(target)) {
+                                .equals(target)) {
                             // Crafting stacks evening
                             try {
                                 new InvTweaksHandlerSorting(mc, cfgManager.getConfig(), target,
-                                                            SortingMethod.EVEN_STACKS,
-                                                            (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
+                                        SortingMethod.EVEN_STACKS,
+                                        (containerMgr.getSize(target) == 9) ? 3 : 2).sort();
                             } catch(Exception e) {
                                 logInGameError("invtweaks.sort.crafting.error", e);
                                 e.printStackTrace();
@@ -752,8 +756,6 @@ public class InvTweaks extends InvTweaksObfuscation {
             chestAlgorithmButtonDown = false;
         }
     }
-
-    private boolean wasNEIEnabled = false;
 
     private void handleGUILayout(GuiContainer guiContainer) {
 
@@ -781,7 +783,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             for(Object o : controlList) {
                 if(isGuiButton(o)) {
                     GuiButton button = (GuiButton) o;
-                    if(button.id>=  InvTweaksConst.JIMEOWAN_ID && button.id < (InvTweaksConst.JIMEOWAN_ID + 4)) {
+                    if(button.id >= InvTweaksConst.JIMEOWAN_ID && button.id < (InvTweaksConst.JIMEOWAN_ID + 4)) {
                         if(relayout) {
                             toRemove.add(button);
                         } else {
@@ -803,11 +805,11 @@ public class InvTweaks extends InvTweaksObfuscation {
                 // Inventory button
                 if(!isValidChest) {
                     controlList.add(new InvTweaksGuiSettingsButton(cfgManager, InvTweaksConst.JIMEOWAN_ID,
-                                                                   guiContainer.guiLeft + guiContainer.xSize - 15,
-                                                                   guiContainer.guiTop + 5, w, h, "...",
-                                                                   StatCollector.translateToLocal(
-                                                                           "invtweaks.button.settings.tooltip"),
-                                                                   customTextureAvailable));
+                            guiContainer.guiLeft + guiContainer.xSize - 15,
+                            guiContainer.guiTop + 5, w, h, "...",
+                            StatCollector.translateToLocal(
+                                    "invtweaks.button.settings.tooltip"),
+                            customTextureAvailable));
                 }
 
                 // Chest buttons
@@ -829,10 +831,10 @@ public class InvTweaks extends InvTweaksObfuscation {
                     // Settings button
                     controlList
                             .add(new InvTweaksGuiSettingsButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 1,
-                                                                (isChestWayTooBig) ? y - 3 : y, w, h, "...",
-                                                                StatCollector.translateToLocal(
-                                                                        "invtweaks.button.settings.tooltip"),
-                                                                customTextureAvailable));
+                                    (isChestWayTooBig) ? y - 3 : y, w, h, "...",
+                                    StatCollector.translateToLocal(
+                                            "invtweaks.button.settings.tooltip"),
+                                    customTextureAvailable));
 
                     // Sorting buttons
                     if(!config.getProperty(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS).equals("false")) {
@@ -840,26 +842,26 @@ public class InvTweaks extends InvTweaksObfuscation {
                         int rowSize = getContainerRowSize(guiContainer);
 
                         GuiButton button = new InvTweaksGuiSortingButton(cfgManager, id++,
-                                                                         (isChestWayTooBig) ? x + 22 : x - 13,
-                                                                         (isChestWayTooBig) ? y + 12 : y, w, h, "h",
-                                                                         StatCollector.translateToLocal(
-                                                                                 "invtweaks.button.chest3.tooltip"),
-                                                                         SortingMethod.HORIZONTAL,
-                                                                         rowSize, customTextureAvailable);
+                                (isChestWayTooBig) ? x + 22 : x - 13,
+                                (isChestWayTooBig) ? y + 12 : y, w, h, "h",
+                                StatCollector.translateToLocal(
+                                        "invtweaks.button.chest3.tooltip"),
+                                SortingMethod.HORIZONTAL,
+                                rowSize, customTextureAvailable);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 25,
-                                                               (isChestWayTooBig) ? y + 25 : y, w, h, "v", StatCollector
+                                (isChestWayTooBig) ? y + 25 : y, w, h, "v", StatCollector
                                 .translateToLocal("invtweaks.button.chest2.tooltip"),
-                                                               SortingMethod.VERTICAL, rowSize,
-                                                               customTextureAvailable);
+                                SortingMethod.VERTICAL, rowSize,
+                                customTextureAvailable);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 37,
-                                                               (isChestWayTooBig) ? y + 38 : y, w, h, "s", StatCollector
+                                (isChestWayTooBig) ? y + 38 : y, w, h, "s", StatCollector
                                 .translateToLocal("invtweaks.button.chest1.tooltip"),
-                                                               SortingMethod.DEFAULT, rowSize,
-                                                               customTextureAvailable);
+                                SortingMethod.DEFAULT, rowSize,
+                                customTextureAvailable);
                         controlList.add(button);
 
                     }
@@ -888,9 +890,6 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
 
     }
-
-    private Class neiClientConfig;
-    private Method neiHidden;
 
     @SuppressWarnings("unchecked")
     private boolean isNotEnoughItemsEnabled() {
@@ -943,8 +942,9 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private int getItemOrder(ItemStack itemStack) {
-        List<IItemTreeItem> items = cfgManager.getConfig().getTree().getItems(Item.itemRegistry.getNameForObject(itemStack.getItem()),
-                                                                              itemStack.getItemDamage());
+        // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+        List<IItemTreeItem> items = cfgManager.getConfig().getTree().getItems(Item.itemRegistry.getNameForObject(itemStack.getItem()).toString(),
+                itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
@@ -1014,9 +1014,9 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private void playClick() {
         if(!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
-                      .equals(InvTweaksConfig.VALUE_FALSE)) {
+                .equals(InvTweaksConfig.VALUE_FALSE)) {
             mc.getSoundHandler()
-              .playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+                    .playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
         }
     }
 

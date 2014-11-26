@@ -1,7 +1,7 @@
 /*package invtweaks.forge;
 
-import cpw.mods.fml.common.network.IConnectionHandler;
-import cpw.mods.fml.common.network.Player;
+import net.minecraftforge.fml.common.network.IConnectionHandler;
+import net.minecraftforge.fml.common.network.Player;
 import invtweaks.InvTweaksConst;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;

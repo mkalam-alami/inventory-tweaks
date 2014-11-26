@@ -61,13 +61,13 @@ ext.git_dirty = getGitDirtyIndex() || getGitDirtyFiles()
 
 ext.build_number = System.getenv("BUILD_NUMBER")
 
-if(build_number)  {
+if(build_number) {
     version = invtweaks_version + "-" + build_number
 } else {
     version = invtweaks_version
 }
 
-if(git_version)  {
+if(git_version) {
     ext.internal_version = version + "-" + git_version
     if(git_dirty) {
         ext.internal_version += "-dirty"
@@ -79,9 +79,9 @@ if(git_version)  {
 group = "inventorytweaks" // No stupid URL conventions
 archivesBaseName = "InventoryTweaks"
 
-ext.mcversion = "1.7.10"
+ext.mcversion = "1.8"
 minecraft {
-    version = "1.7.10-10.13.0.1188"
+    version = "1.8-11.14.0.1239-1.8"
     at 'src/main/resources/invtweaks_at.cfg'
 
     replace "@VERSION@", project.internal_version
@@ -115,7 +115,7 @@ task deobfJar(type: Jar) {
     dependsOn classes
 
     from sourceSets.main.output
-    
+
     manifest {
         attributes 'FMLCorePlugin': 'invtweaks.forge.asm.FMLPlugin', 'FMLCorePluginContainsFMLMod': 'true'
     }
@@ -129,18 +129,18 @@ artifacts {
 }
 
 processResources
-{
-    inputs.property "version", internal_version
-    inputs.property "mcversion", mcversion
+        {
+            inputs.property "version", internal_version
+            inputs.property "mcversion", mcversion
 
-    from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.png'
-        exclude '**/*_at.cfg'
+            from(sourceSets.main.resources.srcDirs) {
+                exclude '**/*.png'
+                exclude '**/*_at.cfg'
 
-        expand version: internal_version, mcversion: mcversion
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        include '**/*.png'
-        include '**/*_at.cfg'
-    }
-}
+                expand version: internal_version, mcversion: mcversion
+            }
+            from(sourceSets.main.resources.srcDirs) {
+                include '**/*.png'
+                include '**/*_at.cfg'
+            }
+        }

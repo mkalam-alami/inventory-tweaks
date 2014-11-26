@@ -58,8 +58,8 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
         if(this.drawBackground) {
             super.drawButton(minecraft, i, j);
         } else {
-            this.drawString(minecraft.fontRenderer, this.displayString, this.xPosition,
-                            this.yPosition + (this.height - 8) / 2, 0x999999);
+            this.drawString(minecraft.fontRendererObj, this.displayString, this.xPosition,
+                    this.yPosition + (this.height - 8) / 2, 0x999999);
         }
 
         InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
@@ -95,14 +95,14 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
 
                 // Draw background
                 drawGradientRect(x - 3, y - 3, x + tooltipWidth + 3, y + LINE_HEIGHT * tooltipLines.length, 0xc0000000,
-                                 0xc0000000);
+                        0xc0000000);
 
                 // Draw lines
                 int lineCount = 0;
                 for(String line : tooltipLines) {
                     int j1 = y + (lineCount++) * LINE_HEIGHT;
                     int k = -1;
-                    fontRenderer.drawStringWithShadow(line, x, j1, k);
+                    fontRenderer.func_175063_a(line, x, j1, k);
                 }
             }
         }
@@ -125,14 +125,14 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
 
     }
 
+    public String getTooltip() {
+        return tooltip;
+    }
+
     public void setTooltip(String tooltip) {
         tooltip = tooltip.replace("\\n", "\n");
         this.tooltip = tooltip;
         this.tooltipLines = tooltip.split("\n");
-    }
-
-    public String getTooltip() {
-        return tooltip;
     }
 
 }

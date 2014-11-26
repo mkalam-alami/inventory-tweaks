@@ -1,6 +1,5 @@
 package invtweaks.network;
 
-import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
 import invtweaks.InvTweaksConst;
 import invtweaks.network.packets.ITPacket;
 import invtweaks.network.packets.ITPacketClick;
@@ -8,6 +7,7 @@ import invtweaks.network.packets.ITPacketLogin;
 import invtweaks.network.packets.ITPacketSortComplete;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import net.minecraftforge.fml.common.network.FMLIndexedMessageToMessageCodec;
 
 public class ITMessageToMessageCodec extends FMLIndexedMessageToMessageCodec<ITPacket> {
     public ITMessageToMessageCodec() {

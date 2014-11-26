@@ -1,12 +1,12 @@
 package invtweaks;
 
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import invtweaks.api.IItemTree;
 import invtweaks.api.IItemTreeCategory;
 import invtweaks.api.IItemTreeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Logger;
 
@@ -24,24 +24,22 @@ public class InvTweaksItemTree implements IItemTree {
     public static final String UNKNOWN_ITEM = "unknown";
 
     private static final Logger log = InvTweaks.log;
-
+    private static Vector<IItemTreeItem> defaultItems = null;
     /**
      * All categories, stored by name
      */
     private Map<String, IItemTreeCategory> categories = new HashMap<String, IItemTreeCategory>();
-
     /**
      * Items stored by ID. A same ID can hold several names.
      */
     private Map<String, Vector<IItemTreeItem>> itemsById = new HashMap<String, Vector<IItemTreeItem>>(500);
-    private static Vector<IItemTreeItem> defaultItems = null;
-
     /**
      * Items stored by name. A same name can match several IDs.
      */
     private Map<String, Vector<IItemTreeItem>> itemsByName = new HashMap<String, Vector<IItemTreeItem>>(500);
 
     private String rootCategory;
+    private List<OreDictInfo> oresRegistered = new ArrayList<OreDictInfo>();
 
     public InvTweaksItemTree() {
         reset();
@@ -52,7 +50,7 @@ public class InvTweaksItemTree implements IItemTree {
         if(defaultItems == null) {
             defaultItems = new Vector<IItemTreeItem>();
             defaultItems.add(new InvTweaksItemTreeItem(UNKNOWN_ITEM, null, InvTweaksConst.DAMAGE_WILDCARD,
-                                                       Integer.MAX_VALUE));
+                    Integer.MAX_VALUE));
         }
 
         // Reset tree
@@ -157,6 +155,12 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
+    public void setRootCategory(IItemTreeCategory category) {
+        rootCategory = category.getName();
+        categories.put(rootCategory, category);
+    }
+
+    @Override
     public IItemTreeCategory getCategory(String keyword) {
         return categories.get(keyword);
     }
@@ -190,9 +194,9 @@ public class InvTweaksItemTree implements IItemTree {
         // If there's no matching item, create new ones
         if(filteredItems.isEmpty()) {
             IItemTreeItem newItemId = new InvTweaksItemTreeItem(String.format("%s-%d", id, damage), id, damage,
-                                                                5000/*TODO: What to do here with non-int IDs + id * 16*/ + damage);
+                    5000/*TODO: What to do here with non-int IDs + id * 16*/ + damage);
             IItemTreeItem newItemDamage = new InvTweaksItemTreeItem(id, id,
-                                                                    InvTweaksConst.DAMAGE_WILDCARD, 5000/*TODO: What to do here with non-int IDs + id * 16*/);
+                    InvTweaksConst.DAMAGE_WILDCARD, 5000/*TODO: What to do here with non-int IDs + id * 16*/);
             addItem(getRootCategory().getName(), newItemId);
             addItem(getRootCategory().getName(), newItemDamage);
             filteredItems.add(newItemId);
@@ -227,12 +231,6 @@ public class InvTweaksItemTree implements IItemTree {
     @Override
     public boolean containsCategory(String name) {
         return categories.containsKey(name);
-    }
-
-    @Override
-    public void setRootCategory(IItemTreeCategory category) {
-        rootCategory = category.getName();
-        categories.put(rootCategory, category);
     }
 
     @Override
@@ -299,12 +297,40 @@ public class InvTweaksItemTree implements IItemTree {
         for(List<IItemTreeItem> itemList : category.getItems()) {
             for(IItemTreeItem item : itemList) {
                 log.info(logIdent + "  " + item + " " +
-                                 item.getId() + " " + item.getDamage());
+                        item.getId() + " " + item.getDamage());
             }
         }
 
     }
 
+    @Override
+    public void registerOre(String category, String name, String oreName, int order) {
+        for(ItemStack i : OreDictionary.getOres(oreName)) {
+            if(i != null) {
+                // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+                addItem(category,
+                        new InvTweaksItemTreeItem(name, Item.itemRegistry.getNameForObject(i.getItem()).toString(), i.getItemDamage(), order));
+            } else {
+                log.warn(String.format("An OreDictionary entry for %s is null", oreName));
+            }
+        }
+        oresRegistered.add(new OreDictInfo(category, name, oreName, order));
+    }
+
+    @SubscribeEvent
+    public void oreRegistered(OreDictionary.OreRegisterEvent ev) {
+        for(OreDictInfo ore : oresRegistered) {
+            if(ore.oreName.equals(ev.Name)) {
+                if(ev.Ore.getItem() != null) {
+                    // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+                    addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.itemRegistry.getNameForObject(ev.Ore.getItem()).toString(),
+                            ev.Ore.getItemDamage(), ore.order));
+                } else {
+                    log.warn(String.format("An OreDictionary entry for %s is null", ev.Name));
+                }
+            }
+        }
+    }
 
     private class OreDictInfo {
         String category;
@@ -317,35 +343,6 @@ public class InvTweaksItemTree implements IItemTree {
             this.name = name;
             this.oreName = oreName;
             this.order = order;
-        }
-    }
-
-    @Override
-    public void registerOre(String category, String name, String oreName, int order) {
-        for(ItemStack i : OreDictionary.getOres(oreName)) {
-            if(i != null) {
-                addItem(category,
-                        new InvTweaksItemTreeItem(name, Item.itemRegistry.getNameForObject(i.getItem()), i.getItemDamage(), order));
-            } else {
-                log.warn(String.format("An OreDictionary entry for %s is null", oreName));
-            }
-        }
-        oresRegistered.add(new OreDictInfo(category, name, oreName, order));
-    }
-
-    private List<OreDictInfo> oresRegistered = new ArrayList<OreDictInfo>();
-
-    @SubscribeEvent
-    public void oreRegistered(OreDictionary.OreRegisterEvent ev) {
-        for(OreDictInfo ore : oresRegistered) {
-            if(ore.oreName.equals(ev.Name)) {
-                if(ev.Ore.getItem() != null) {
-                    addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.itemRegistry.getNameForObject(ev.Ore.getItem()),
-                            ev.Ore.getItemDamage(), ore.order));
-                } else {
-                    log.warn(String.format("An OreDictionary entry for %s is null", ev.Name));
-                }
-            }
         }
     }
 }

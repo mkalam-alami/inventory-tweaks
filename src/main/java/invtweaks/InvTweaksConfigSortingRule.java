@@ -42,47 +42,6 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
     }
 
-    public InvTweaksConfigSortingRuleType getType() {
-        return type;
-    }
-
-    /**
-     * @return An array of preferred positions (from the most to the less preferred).
-     */
-    public int[] getPreferredSlots() {
-        return preferredPositions;
-    }
-
-    public String getKeyword() {
-        return keyword;
-    }
-
-    /**
-     * Raw constraint name, for debug purposes
-     */
-    public String getRawConstraint() {
-        return constraint;
-    }
-
-    /**
-     * @return rule priority (for rule sorting)
-     */
-    public int getPriority() {
-        return priority;
-    }
-
-    /**
-     * Compares rules priority : positive value means 'this' is of greater priority than o
-     */
-    public int compareTo(InvTweaksConfigSortingRule o) {
-        return getPriority() - o.getPriority();
-    }
-
-    public int[] getRulePreferredPositions(String constraint) {
-        // TODO Caching
-        return InvTweaksConfigSortingRule.getRulePreferredPositions(constraint, containerSize, containerRowSize);
-    }
-
     public static int[] getRulePreferredPositions(String constraint, int containerSize, int containerRowSize) {
 
         int[] result = null;
@@ -113,7 +72,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
                     // Swap coordinates for vertical ordering
                     if(vertical) {
-                        for(Point p : new Point[] {point1, point2}) {
+                        for(Point p : new Point[]{point1, point2}) {
                             int buffer = p.x;
                             p.x = p.y;
                             p.y = buffer;
@@ -125,7 +84,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
                         int x = point1.x;
                         while((point1.x < point2.x) ? x <= point2.x : x >= point2.x) {
                             result[resultIndex++] = (vertical) ? index(containerRowSize, x, y) : index(containerRowSize,
-                                                                                                       y, x);
+                                    y, x);
                             x += (point1.x < point2.x) ? 1 : -1;
                         }
                         y += (point1.y < point2.y) ? 1 : -1;
@@ -159,7 +118,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
             // Tile case
             if(column != -1 && row != -1) {
-                result = new int[] {index(containerRowSize, row, column)};
+                result = new int[]{index(containerRowSize, row, column)};
             }
             // Row case
             else if(row != -1) {
@@ -215,10 +174,6 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
     }
 
-    public String toString() {
-        return constraint + " " + keyword;
-    }
-
     private static int index(int rowSize, int row, int column) {
         return row * rowSize + column;
     }
@@ -233,6 +188,51 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
             left++;
             right--;
         }
+    }
+
+    public InvTweaksConfigSortingRuleType getType() {
+        return type;
+    }
+
+    /**
+     * @return An array of preferred positions (from the most to the less preferred).
+     */
+    public int[] getPreferredSlots() {
+        return preferredPositions;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    /**
+     * Raw constraint name, for debug purposes
+     */
+    public String getRawConstraint() {
+        return constraint;
+    }
+
+    /**
+     * @return rule priority (for rule sorting)
+     */
+    public int getPriority() {
+        return priority;
+    }
+
+    /**
+     * Compares rules priority : positive value means 'this' is of greater priority than o
+     */
+    public int compareTo(InvTweaksConfigSortingRule o) {
+        return getPriority() - o.getPriority();
+    }
+
+    public int[] getRulePreferredPositions(String constraint) {
+        // TODO Caching
+        return InvTweaksConfigSortingRule.getRulePreferredPositions(constraint, containerSize, containerRowSize);
+    }
+
+    public String toString() {
+        return constraint + " " + keyword;
     }
 
 

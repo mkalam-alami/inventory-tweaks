@@ -25,13 +25,13 @@ public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
 
         int x = width / 2;
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.bugsorting.pt1"), x,
-                           80, 0xBBBBBB);
+                80, 0xBBBBBB);
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.bugsorting.pt2"), x,
-                           95, 0xBBBBBB);
+                95, 0xBBBBBB);
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.bugsorting.pt3"), x,
-                           110, 0xBBBBBB);
+                110, 0xBBBBBB);
         drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.help.bugsorting.pt4"), x,
-                           150, 0xFFFF99);
+                150, 0xFFFF99);
     }
 
     @Override

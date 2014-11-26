@@ -1,7 +1,5 @@
 package invtweaks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
@@ -10,6 +8,8 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +77,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         if(size >= InvTweaksConst.INVENTORY_SIZE && !slotRefs.containsKey(ContainerSection.INVENTORY)) {
             slotRefs.put(ContainerSection.INVENTORY, slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size));
             slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR,
-                         slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size - HOTBAR_SIZE));
+                    slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size - HOTBAR_SIZE));
             slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size - HOTBAR_SIZE, size));
         }
     }
@@ -264,8 +264,8 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         if(slot != -1) {
             int data = (rightClick) ? 1 : 0;
             InvTweaksMod.proxy
-                        .slotClick(InvTweaks.getInstance().getPlayerController(), container.windowId, slot, data, 0,
-                                   InvTweaks.getInstance().getThePlayer());
+                    .slotClick(InvTweaks.getInstance().getPlayerController(), container.windowId, slot, data, 0,
+                            InvTweaks.getInstance().getThePlayer());
         }
 
         if(clickDelay > 0) {

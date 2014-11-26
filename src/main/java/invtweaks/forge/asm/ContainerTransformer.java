@@ -1,11 +1,11 @@
 package invtweaks.forge.asm;
 
-import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
-import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import invtweaks.forge.asm.compatibility.CompatibilityConfigLoader;
 import invtweaks.forge.asm.compatibility.ContainerInfo;
 import invtweaks.forge.asm.compatibility.MethodInfo;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
+import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -44,53 +44,181 @@ public class ContainerTransformer implements IClassTransformer {
     public ContainerTransformer() {
     }
 
+    /**
+     * Alter class to contain information contained by ContainerInfo
+     *
+     * @param clazz Class to alter
+     * @param info  Information used to alter class
+     */
+    public static void transformContainer(ClassNode clazz, ContainerInfo info) {
+        ASMHelper.generateBooleanMethodConst(clazz, SHOW_BUTTONS_METHOD, info.showButtons);
+        ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, info.validInventory);
+        ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, info.validChest);
+
+        if(info.largeChestMethod != null) {
+            if(info.largeChestMethod.isStatic) {
+                ASMHelper.generateForwardingToStaticMethod(clazz, LARGE_CHEST_METHOD, info.largeChestMethod.methodName,
+                        info.largeChestMethod.methodType.getReturnType(),
+                        info.largeChestMethod.methodClass,
+                        info.largeChestMethod.methodType.getArgumentTypes()[0]);
+            } else {
+                ASMHelper.generateSelfForwardingMethod(clazz, LARGE_CHEST_METHOD, info.largeChestMethod.methodName,
+                        info.largeChestMethod.methodType.getReturnType());
+            }
+        } else {
+            ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, info.largeChest);
+        }
+
+        if(info.rowSizeMethod != null) {
+            if(info.rowSizeMethod.isStatic) {
+                ASMHelper.generateForwardingToStaticMethod(clazz, ROW_SIZE_METHOD, info.rowSizeMethod.methodName,
+                        info.rowSizeMethod.methodType.getReturnType(),
+                        info.rowSizeMethod.methodClass,
+                        info.rowSizeMethod.methodType.getArgumentTypes()[0]);
+            } else {
+                ASMHelper.generateSelfForwardingMethod(clazz, ROW_SIZE_METHOD, info.rowSizeMethod.methodName,
+                        info.rowSizeMethod.methodType.getReturnType());
+            }
+        } else {
+            ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, info.rowSize);
+        }
+
+        if(info.slotMapMethod.isStatic) {
+            ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, info.slotMapMethod.methodName,
+                    info.slotMapMethod.methodType.getReturnType(),
+                    info.slotMapMethod.methodClass,
+                    info.slotMapMethod.methodType.getArgumentTypes()[0]);
+        } else {
+            ASMHelper.generateSelfForwardingMethod(clazz, SLOT_MAP_METHOD, info.slotMapMethod.methodName,
+                    info.slotMapMethod.methodType.getReturnType());
+        }
+    }
+
+    /**
+     * Alter class to contain default implementations of added methods.
+     *
+     * @param clazz Class to alter
+     */
+    public static void transformBaseContainer(ClassNode clazz) {
+        ASMHelper.generateBooleanMethodConst(clazz, SHOW_BUTTONS_METHOD, false);
+        ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, false);
+        ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
+        ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, false);
+        ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);
+        ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "unknownContainerSlots",
+                Type.getObjectType("java/util/Map"),
+                Type.getObjectType(SLOT_MAPS_VANILLA_CLASS),
+                Type.getObjectType(CONTAINER_CLASS_INTERNAL));
+    }
+
+    public static void transformCreativeContainer(ClassNode clazz) {
+        /* FIXME: Reqired methods cannot be compiled until SpecialSource update
+        ASMHelper.generateForwardingToStaticMethod(clazz, STANDARD_INVENTORY_METHOD, "containerCreativeIsInventory",
+                                                   Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+        ASMHelper.generateForwardingToStaticMethod(clazz, VALID_INVENTORY_METHOD, "containerCreativeIsInventory",
+                                                   Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+        ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
+        ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, false);
+        ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);
+        ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "containerCreativeSlots",
+                                                   Type.getObjectType("java/util/Map"),
+                                                   Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+         */
+    }
+
+    private static void transformTextField(ClassNode clazz) {
+        for(MethodNode method : (List<MethodNode>) clazz.methods) {
+            String unmappedName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(clazz.name, method.name, method.desc);
+            String unmappedDesc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(method.desc);
+
+            if("func_146195_b".equals(unmappedName) && "(Z)V".equals(unmappedDesc)) {
+                InsnList code = method.instructions;
+                AbstractInsnNode returnNode = null;
+                for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
+                    AbstractInsnNode insn = iterator.next();
+
+                    if(insn.getOpcode() == Opcodes.RETURN) {
+                        returnNode = insn;
+                        break;
+                    }
+                }
+
+                if(returnNode != null) {
+                    // Insert a call to helper method to disable sorting while a text field is focused
+                    code.insertBefore(returnNode, new VarInsnNode(Opcodes.ILOAD, 1));
+                    code.insertBefore(returnNode,
+                            new MethodInsnNode(Opcodes.INVOKESTATIC, "invtweaks/forge/InvTweaksMod",
+                                    "setTextboxModeStatic", "(Z)V"));
+
+                    FMLRelaunchLog.info("InvTweaks: successfully transformed setFocused/func_146195_b");
+                } else {
+                    FMLRelaunchLog.severe("InvTweaks: unable to find return in setFocused/func_146195_b");
+                }
+            }
+        }
+    }
+
+    public static MethodInfo getCompatiblitySlotMapInfo(String name) {
+        return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_MODCOMPAT_CLASS), name, true);
+    }
+
+    public static MethodInfo getVanillaSlotMapInfo(String name) {
+        return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_VANILLA_CLASS), name, true);
+    }
+
+    public static MethodInfo getSlotMapInfo(Type mClass, String name, boolean isStatic) {
+        return new MethodInfo(
+                Type.getMethodType(Type.getObjectType("java/util/Map"), Type.getObjectType(containerClassName)), mClass,
+                name, isStatic);
+    }
+
     // This needs to have access to the FML remapper so it needs to run when we know it's been set up correctly.
     private void lateInit() {
         // TODO: ContainerCreative handling
         // Standard non-chest type
         standardClasses.put("net.minecraft.inventory.ContainerPlayer",
-                            new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerPlayerSlots")));
+                new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerPlayerSlots")));
         standardClasses.put("net.minecraft.inventory.ContainerMerchant", new ContainerInfo(true, true, false));
         standardClasses.put("net.minecraft.inventory.ContainerRepair",
-                            new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerPlayerSlots")));
+                new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerPlayerSlots")));
         standardClasses.put("net.minecraft.inventory.ContainerHopper", new ContainerInfo(true, true, false));
         standardClasses.put("net.minecraft.inventory.ContainerBeacon", new ContainerInfo(true, true, false));
         standardClasses.put("net.minecraft.inventory.ContainerBrewingStand",
-                            new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerBrewingSlots")));
+                new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerBrewingSlots")));
         standardClasses.put("net.minecraft.inventory.ContainerWorkbench",
-                            new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerWorkbenchSlots")));
+                new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerWorkbenchSlots")));
         standardClasses.put("net.minecraft.inventory.ContainerEnchantment",
-                            new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerEnchantmentSlots")));
+                new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerEnchantmentSlots")));
         standardClasses.put("net.minecraft.inventory.ContainerFurnace",
-                            new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerFurnaceSlots")));
+                new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerFurnaceSlots")));
 
         // Chest-type
         standardClasses.put("net.minecraft.inventory.ContainerDispenser",
-                            new ContainerInfo(true, false, true, (short) 3,
-                                              getVanillaSlotMapInfo("containerChestDispenserSlots")));
+                new ContainerInfo(true, false, true, (short) 3,
+                        getVanillaSlotMapInfo("containerChestDispenserSlots")));
         standardClasses.put("net.minecraft.inventory.ContainerChest", new ContainerInfo(true, false, true,
-                                                                                        getVanillaSlotMapInfo(
-                                                                                                "containerChestDispenserSlots")));
+                getVanillaSlotMapInfo(
+                        "containerChestDispenserSlots")));
 
         // Mod compatibility
         // Equivalent Exchange 3
         compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerAlchemicalBag",
-                                 new ContainerInfo(true, false, true, true, (short) 13));
+                new ContainerInfo(true, false, true, true, (short) 13));
         compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerAlchemicalChest",
-                                 new ContainerInfo(true, false, true, true, (short) 13));
+                new ContainerInfo(true, false, true, true, (short) 13));
         compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerPortableCrafting",
-                                 new ContainerInfo(true, true, false,
-                                                   getCompatiblitySlotMapInfo("ee3PortableCraftingSlots")));
+                new ContainerInfo(true, true, false,
+                        getCompatiblitySlotMapInfo("ee3PortableCraftingSlots")));
 
         // Ender Storage
         // TODO Row size method. A bit less important because it's a config setting and 2 of 3 options give rowsize 9.
         compatibilityClasses.put("codechicken.enderstorage.storage.item.ContainerEnderItemStorage",
-                                 new ContainerInfo(true, false, true));
+                new ContainerInfo(true, false, true));
 
         // Galacticraft
         compatibilityClasses.put("micdoodle8.mods.galacticraft.core.inventory.GCCoreContainerPlayer",
-                                 new ContainerInfo(true, true, false,
-                                                   getCompatiblitySlotMapInfo("galacticraftPlayerSlots")));
+                new ContainerInfo(true, true, false,
+                        getCompatiblitySlotMapInfo("galacticraftPlayerSlots")));
 
 
         try {
@@ -220,7 +348,7 @@ public class ContainerTransformer implements IClassTransformer {
 
                         if(row_method != null) {
                             apiInfo.rowSizeMethod = new MethodInfo(Type.getMethodType(row_method.desc),
-                                                                   Type.getObjectType(cn.name), row_method.name);
+                                    Type.getObjectType(cn.name), row_method.name);
                         }
 
                         MethodNode large_method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_LARGE_CALLBACK);
@@ -259,7 +387,7 @@ public class ContainerTransformer implements IClassTransformer {
 
                         if(method != null) {
                             apiInfo.slotMapMethod = new MethodInfo(Type.getMethodType(method.desc),
-                                                                   Type.getObjectType(cn.name), method.name);
+                                    Type.getObjectType(cn.name), method.name);
                         }
 
                         transformContainer(cn, apiInfo);
@@ -304,134 +432,5 @@ public class ContainerTransformer implements IClassTransformer {
             }
         }
         return null;
-    }
-
-    /**
-     * Alter class to contain information contained by ContainerInfo
-     *
-     * @param clazz Class to alter
-     * @param info  Information used to alter class
-     */
-    public static void transformContainer(ClassNode clazz, ContainerInfo info) {
-        ASMHelper.generateBooleanMethodConst(clazz, SHOW_BUTTONS_METHOD, info.showButtons);
-        ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, info.validInventory);
-        ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, info.validChest);
-
-        if(info.largeChestMethod != null) {
-            if(info.largeChestMethod.isStatic) {
-                ASMHelper.generateForwardingToStaticMethod(clazz, LARGE_CHEST_METHOD, info.largeChestMethod.methodName,
-                        info.largeChestMethod.methodType.getReturnType(),
-                        info.largeChestMethod.methodClass,
-                        info.largeChestMethod.methodType.getArgumentTypes()[0]);
-            } else {
-                ASMHelper.generateSelfForwardingMethod(clazz, LARGE_CHEST_METHOD, info.largeChestMethod.methodName,
-                        info.largeChestMethod.methodType.getReturnType());
-            }
-        } else {
-            ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, info.largeChest);
-        }
-
-        if(info.rowSizeMethod != null) {
-            if(info.rowSizeMethod.isStatic) {
-                ASMHelper.generateForwardingToStaticMethod(clazz, ROW_SIZE_METHOD, info.rowSizeMethod.methodName,
-                                                           info.rowSizeMethod.methodType.getReturnType(),
-                                                           info.rowSizeMethod.methodClass,
-                                                           info.rowSizeMethod.methodType.getArgumentTypes()[0]);
-            } else {
-                ASMHelper.generateSelfForwardingMethod(clazz, ROW_SIZE_METHOD, info.rowSizeMethod.methodName,
-                                                       info.rowSizeMethod.methodType.getReturnType());
-            }
-        } else {
-            ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, info.rowSize);
-        }
-
-        if(info.slotMapMethod.isStatic) {
-            ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, info.slotMapMethod.methodName,
-                                                       info.slotMapMethod.methodType.getReturnType(),
-                                                       info.slotMapMethod.methodClass,
-                                                       info.slotMapMethod.methodType.getArgumentTypes()[0]);
-        } else {
-            ASMHelper.generateSelfForwardingMethod(clazz, SLOT_MAP_METHOD, info.slotMapMethod.methodName,
-                                                   info.slotMapMethod.methodType.getReturnType());
-        }
-    }
-
-    /**
-     * Alter class to contain default implementations of added methods.
-     *
-     * @param clazz Class to alter
-     */
-    public static void transformBaseContainer(ClassNode clazz) {
-        ASMHelper.generateBooleanMethodConst(clazz, SHOW_BUTTONS_METHOD, false);
-        ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, false);
-        ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
-        ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, false);
-        ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);
-        ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "unknownContainerSlots",
-                                                   Type.getObjectType("java/util/Map"),
-                                                   Type.getObjectType(SLOT_MAPS_VANILLA_CLASS),
-                                                   Type.getObjectType(CONTAINER_CLASS_INTERNAL));
-    }
-
-    public static void transformCreativeContainer(ClassNode clazz) {
-        /* FIXME: Reqired methods cannot be compiled until SpecialSource update
-        ASMHelper.generateForwardingToStaticMethod(clazz, STANDARD_INVENTORY_METHOD, "containerCreativeIsInventory",
-                                                   Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
-        ASMHelper.generateForwardingToStaticMethod(clazz, VALID_INVENTORY_METHOD, "containerCreativeIsInventory",
-                                                   Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
-        ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
-        ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, false);
-        ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);
-        ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "containerCreativeSlots",
-                                                   Type.getObjectType("java/util/Map"),
-                                                   Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
-         */
-    }
-
-    private static void transformTextField(ClassNode clazz) {
-        for(MethodNode method : (List<MethodNode>) clazz.methods) {
-            String unmappedName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(clazz.name, method.name, method.desc);
-            String unmappedDesc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(method.desc);
-
-            if("func_146195_b".equals(unmappedName) && "(Z)V".equals(unmappedDesc)) {
-                InsnList code = method.instructions;
-                AbstractInsnNode returnNode = null;
-                for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
-                    AbstractInsnNode insn = iterator.next();
-
-                    if(insn.getOpcode() == Opcodes.RETURN) {
-                        returnNode = insn;
-                        break;
-                    }
-                }
-
-                if(returnNode != null) {
-                    // Insert a call to helper method to disable sorting while a text field is focused
-                    code.insertBefore(returnNode, new VarInsnNode(Opcodes.ILOAD, 1));
-                    code.insertBefore(returnNode,
-                                      new MethodInsnNode(Opcodes.INVOKESTATIC, "invtweaks/forge/InvTweaksMod",
-                                                         "setTextboxModeStatic", "(Z)V"));
-
-                    FMLRelaunchLog.info("InvTweaks: successfully transformed setFocused/func_146195_b");
-                } else {
-                    FMLRelaunchLog.severe("InvTweaks: unable to find return in setFocused/func_146195_b");
-                }
-            }
-        }
-    }
-
-
-    public static MethodInfo getCompatiblitySlotMapInfo(String name) {
-        return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_MODCOMPAT_CLASS), name, true);
-    }
-
-    public static MethodInfo getVanillaSlotMapInfo(String name) {
-        return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_VANILLA_CLASS), name, true);
-    }
-
-    public static MethodInfo getSlotMapInfo(Type mClass, String name, boolean isStatic) {
-        return new MethodInfo(
-                Type.getMethodType(Type.getObjectType("java/util/Map"), Type.getObjectType(containerClassName)), mClass,
-                name, isStatic);
     }
 }

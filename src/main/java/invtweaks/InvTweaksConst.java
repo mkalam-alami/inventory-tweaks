@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 
 public class InvTweaksConst {
 
@@ -46,9 +45,9 @@ public class InvTweaksConst {
 
     public static final String INVTWEAKS_RESOURCE_DOMAIN = "inventorytweaks";
     public static final ResourceLocation DEFAULT_CONFIG_FILE = new ResourceLocation(INVTWEAKS_RESOURCE_DOMAIN,
-                                                                                    "DefaultConfig.dat");
+            "DefaultConfig.dat");
     public static final ResourceLocation DEFAULT_CONFIG_TREE_FILE = new ResourceLocation(INVTWEAKS_RESOURCE_DOMAIN,
-                                                                                         "ItemTree.xml");
+            "ItemTree.xml");
 
     public static final String HELP_URL = "http://inventory-tweaks.readthedocs.org";
 

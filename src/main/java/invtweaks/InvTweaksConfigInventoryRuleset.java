@@ -73,11 +73,11 @@ public class InvTweaksConfigInventoryRuleset {
                 if(words[1].equals(InvTweaksConfig.LOCKED)) {
                     int[] newLockedSlots = InvTweaksConfigSortingRule
                             .getRulePreferredPositions(words[0], InvTweaksConst.INVENTORY_SIZE,
-                                                       InvTweaksConst.INVENTORY_ROW_SIZE);
+                                    InvTweaksConst.INVENTORY_ROW_SIZE);
                     int lockPriority = InvTweaksConfigSortingRule.
-                                                                         getRuleType(words[0],
-                                                                                     InvTweaksConst.INVENTORY_ROW_SIZE)
-                                                                 .getLowestPriority() - 1;
+                            getRuleType(words[0],
+                                    InvTweaksConst.INVENTORY_ROW_SIZE)
+                            .getLowestPriority() - 1;
                     for(int i : newLockedSlots) {
                         lockPriorities[i] = lockPriority;
                     }
@@ -88,7 +88,7 @@ public class InvTweaksConfigInventoryRuleset {
                 else if(words[1].equals(InvTweaksConfig.FROZEN)) {
                     int[] newLockedSlots = InvTweaksConfigSortingRule
                             .getRulePreferredPositions(words[0], InvTweaksConst.INVENTORY_SIZE,
-                                                       InvTweaksConst.INVENTORY_ROW_SIZE);
+                                    InvTweaksConst.INVENTORY_ROW_SIZE);
                     for(int i : newLockedSlots) {
                         frozenSlots[i] = true;
                     }
@@ -120,8 +120,8 @@ public class InvTweaksConfigInventoryRuleset {
 
                     if(isValidKeyword) {
                         newRule = new InvTweaksConfigSortingRule(tree, words[0], keyword.toLowerCase(),
-                                                                 InvTweaksConst.INVENTORY_SIZE,
-                                                                 InvTweaksConst.INVENTORY_ROW_SIZE);
+                                InvTweaksConst.INVENTORY_SIZE,
+                                InvTweaksConst.INVENTORY_ROW_SIZE);
                         rules.add(newRule);
                         return null;
                     } else {

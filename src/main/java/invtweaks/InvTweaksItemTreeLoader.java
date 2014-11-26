@@ -26,15 +26,12 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     private final static String ATTR_RANGE_DMAX = "dmax";
     private final static String ATTR_OREDICT_NAME = "oreDictName"; // OreDictionary names
     private final static String ATTR_TREE_VERSION = "treeVersion";
-
+    private static final List<IItemTreeListener> onLoadListeners = new ArrayList<IItemTreeListener>();
     private static InvTweaksItemTree tree;
-
     private static String treeVersion;
     private static int itemOrder;
     private static LinkedList<String> categoryStack;
-
     private static boolean treeLoaded = false;
-    private static final List<IItemTreeListener> onLoadListeners = new ArrayList<IItemTreeListener>();
 
     private static void init() {
         treeVersion = null;
@@ -121,7 +118,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
                 int rangeDMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_DMAX));
                 for(int damage = rangeDMin; damage <= rangeDMax; damage++) {
                     tree.addItem(name, new InvTweaksItemTreeItem((name + id + "-" + damage).toLowerCase(), id, damage,
-                                                                 itemOrder++));
+                            itemOrder++));
                 }
             }
 
@@ -136,7 +133,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
                 damage = Integer.parseInt(attributes.getValue(ATTR_DAMAGE));
             }
             tree.addItem(categoryStack.getLast(),
-                         new InvTweaksItemTreeItem(name.toLowerCase(), id, damage, itemOrder++));
+                    new InvTweaksItemTreeItem(name.toLowerCase(), id, damage, itemOrder++));
         } else if(oreDictNameAttr != null) {
             tree.registerOre(categoryStack.getLast(), name.toLowerCase(), oreDictNameAttr, itemOrder++);
         }

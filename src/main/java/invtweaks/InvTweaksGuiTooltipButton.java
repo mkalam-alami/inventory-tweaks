@@ -102,7 +102,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
                 for(String line : tooltipLines) {
                     int j1 = y + (lineCount++) * LINE_HEIGHT;
                     int k = -1;
-                    fontRenderer.func_175063_a(line, x, j1, k);
+                    fontRenderer.drawStringWithShadow(line, x, j1, k);
                 }
             }
         }

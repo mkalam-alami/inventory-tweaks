@@ -624,7 +624,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             if(storedFocusedSlot != focusedSlot) { // Filter selection change
                 storedFocusedSlot = focusedSlot;
-            } else if((currentStack == null || currentStack.getItem() == Items.bowl && ObjectUtils.equals(storedStackId, "mushroom_stew"))
+            } else if(currentStack == null || (currentStack.getItem() == Items.bowl && ObjectUtils.equals(storedStackId, "mushroom_stew"))
 
                     // Handle eaten mushroom soup
                     && (getCurrentScreen() == null || // Filter open inventory or other window

@@ -31,13 +31,10 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_AUTO_REFILL = "enableAutoRefill";
     public static final String PROP_AUTO_REFILL_BEFORE_BREAK = "autoRefillBeforeBreak";
     public static final String PROP_AUTO_REFILL_DAMAGE_THRESHHOLD = "autoRefillDamageThreshhold";
-    @Deprecated
-    public static final String PROP_KEY_SORT_INVENTORY = "keySortInventory";
     // Shortcuts
     public static final String PROP_ENABLE_SHORTCUTS = "enableShortcuts";
     public static final String PROP_SHORTCUT_PREFIX = "shortcutKey";
     public static final String PROP_SHORTCUT_ONE_ITEM = "shortcutKeyOneItem";
-    public static final String PROP_OBSOLETE_SHORTCUT_ONE_STACK = "shortcutKeyOneStack";
     public static final String PROP_SHORTCUT_ALL_ITEMS = "shortcutKeyAllItems";
     public static final String PROP_SHORTCUT_EVERYTHING = "shortcutKeyEverything";
     public static final String PROP_SHORTCUT_DROP = "shortcutKeyDrop";
@@ -45,12 +42,10 @@ public class InvTweaksConfig {
     public static final String PROP_SHORTCUT_DOWN = "shortcutKeyToLowerSection";
     // Other
     public static final String PROP_ENABLE_SOUNDS = "enableSounds";
-    public static final String PROP_OBSOLETE_ENABLE_SORTING_SOUND = "enableSortingSound";
-    public static final String PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND = "enableAutoRefillSound";
     public static final String PROP_ENABLE_SERVER_ITEMSWAP = "enableServerItemSwap";
+    public static final String PROP_ENABLE_CONFIG_LOADED_MESSAGE = "enableConfigLoadedMesssage";
     public static final String VALUE_TRUE = "true";
     public static final String VALUE_FALSE = "false";
-    public static final String VALUE_CI_COMPATIBILITY = "convenientInventoryCompatibility";
     public static final String LOCKED = "locked";
     public static final String FROZEN = "frozen";
     public static final String AUTOREFILL = "autorefill";
@@ -238,9 +233,6 @@ public class InvTweaksConfig {
     public void setProperty(String key, String value) {
         properties.put(key, value);
         saveProperties();
-        if(key.equals(PROP_ENABLE_MIDDLE_CLICK)) {
-            resolveConvenientInventoryConflicts();
-        }
     }
 
     public InvTweaksItemTree getTree() {
@@ -335,96 +327,6 @@ public class InvTweaksConfig {
         }
     }
 
-    /**
-     * Check potential conflicts with Convenient Inventory (regarding the middle click shortcut), and solve them
-     * according to the CI version.
-     */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public void resolveConvenientInventoryConflicts() {
-
-        boolean convenientInventoryInstalled = false;
-        boolean defaultCISortingShortcutEnabled = false;
-
-        //// Analyze environment
-
-        try {
-            // Find CI class
-            Class convenientInventory = Class.forName("ConvenientInventory");
-            convenientInventoryInstalled = true;
-
-            // Latest versions of CI: disable CI sorting thanks to 
-            // the specific field provided for InvTweaks
-            Field middleClickField = null;
-            try {
-                middleClickField = convenientInventory.getDeclaredField("middleClickEnabled");
-            } catch(NoSuchFieldException e) {
-                // Do nothing
-            }
-            if(middleClickField != null) {
-                boolean middleClickSorting = getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK)
-                        .equals(InvTweaksConfig.VALUE_TRUE);
-                middleClickField.setAccessible(true);
-                middleClickField.setBoolean(null, !middleClickSorting);
-            }
-
-            // Older versions of CI: disable InvTweaks middle click
-            else {
-
-                // Force mod's initialization if necessary
-                // (some tweaks are needed here and below because nothing is publicly visible)
-                Field initializedField = convenientInventory.getDeclaredField("initialized");
-                initializedField.setAccessible(true);
-                Boolean initialized = (Boolean) initializedField.get(null);
-                if(!initialized) {
-                    Method initializeMethod = convenientInventory.getDeclaredMethod("initialize");
-                    initializeMethod.setAccessible(true);
-                    initializeMethod.invoke(null);
-                }
-
-                // Look for the default sorting shortcut (middle click) in CI settings.
-                Field actionMapField = convenientInventory.getDeclaredField("actionMap");
-                actionMapField.setAccessible(true);
-                List<Integer> actionMap[][] = (List[][]) actionMapField.get(null);
-                if(actionMap != null && actionMap[7] != null) { // 7 = SORT
-                    for(List<Integer> combo : actionMap[7]) {
-                        if(combo != null && combo.size() == 1 && combo.get(0) == 2) { // 2 = Middle click
-                            defaultCISortingShortcutEnabled = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-        } catch(ClassNotFoundException e) {
-            // Failed to find Convenient Inventory class, not a problem
-        } catch(LinkageError e) {
-            // We're just trying to see if it exists and works, an error loading the class isn't important for us.
-        } catch(Exception e) {
-            InvTweaks.logInGameErrorStatic("invtweaks.modcompat.ci.error", e);
-        }
-
-        //// Shortcuts
-
-        String shortcutsProp = getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
-        if(convenientInventoryInstalled && !shortcutsProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            setProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS, InvTweaksConfig.VALUE_CI_COMPATIBILITY);
-        } else if(!convenientInventoryInstalled && shortcutsProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            setProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS, InvTweaksConfig.VALUE_TRUE);
-        }
-
-        //// Middle click
-
-        // If CI's middle click is enabled, disable InvTweaks shortcut
-        String middleClickProp = getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
-        if(defaultCISortingShortcutEnabled && !middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, InvTweaksConfig.VALUE_CI_COMPATIBILITY);
-        }
-        // If the conflict is now resolved, re-enable the shortcut
-        else if(!defaultCISortingShortcutEnabled && middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, InvTweaksConfig.VALUE_TRUE);
-        }
-    }
-
     private void reset() {
         rulesets = new Vector<InvTweaksConfigInventoryRuleset>();
         currentRuleset = -1;
@@ -442,6 +344,7 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_SHORTCUTS, VALUE_TRUE);
         properties.put(PROP_ENABLE_AUTO_EQUIP_ARMOR, VALUE_FALSE);
         properties.put(PROP_ENABLE_SERVER_ITEMSWAP, VALUE_TRUE);
+        properties.put(PROP_ENABLE_CONFIG_LOADED_MESSAGE, VALUE_FALSE);
 
         properties.put(PROP_SHORTCUT_ALL_ITEMS, "LCONTROL+LSHIFT, RCONTROL+RSHIFT");
         properties.put(PROP_SHORTCUT_EVERYTHING, "SPACE");
@@ -462,28 +365,13 @@ public class InvTweaksConfig {
             FileInputStream fis = new FileInputStream(configPropsFile);
             newProperties.load(fis);
             fis.close();
-            resolveConvenientInventoryConflicts();
         }
         newProperties.sortKeys();
 
-        // XXX 1.35 Obsolete properties removal
-        newProperties.remove(PROP_OBSOLETE_ENABLE_SORTING_SOUND);
-        newProperties.remove(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND);
-        newProperties.remove(PROP_OBSOLETE_SHORTCUT_ONE_STACK);
-        newProperties.remove(PROP_KEY_SORT_INVENTORY);
-
-        // XXX 1.34 update: force shortcuts reset
         if(newProperties.get(PROP_VERSION) != null) {
-
             // Override default values
             for(Entry<Object, Object> entry : newProperties.entrySet()) {
                 properties.put(entry.getKey(), entry.getValue());
-            }
-
-            // Retro-compatibility: rename autoreplace
-            if(properties.contains("enableAutoreplaceSound")) {
-                properties.put(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND, properties.get("enableAutoreplaceSound"));
-                properties.remove("enableAutoreplaceSound");
             }
         }
     }

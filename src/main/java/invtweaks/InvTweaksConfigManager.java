@@ -39,7 +39,10 @@ public class InvTweaksConfigManager {
         try {
             if(config != null && config.refreshProperties()) {
                 shortcutsHandler = new InvTweaksHandlerShortcuts(mc, config);
-                InvTweaks.logInGameStatic("invtweaks.propsfile.loaded");
+
+                if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_CONFIG_LOADED_MESSAGE).equals(InvTweaksConfig.VALUE_TRUE)) {
+                    InvTweaks.logInGameStatic("invtweaks.propsfile.loaded");
+                }
             }
         } catch(IOException e) {
             InvTweaks.logInGameErrorStatic("invtweaks.loadconfig.refresh.error", e);

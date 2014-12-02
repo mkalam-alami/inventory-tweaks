@@ -33,7 +33,6 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
         LABEL_DONE = StatCollector.translateToLocal("invtweaks.settings.exit");
         ON = ": " + StatCollector.translateToLocal("invtweaks.settings.on");
         OFF = ": " + StatCollector.translateToLocal("invtweaks.settings.off");
-        DISABLE_CI = ": " + StatCollector.translateToLocal("invtweaks.settings.disableci");
 
         this.mc = mc;
         this.obf = new InvTweaksObfuscation(mc);
@@ -90,12 +89,8 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
     protected String computeBooleanButtonLabel(String property, String label) {
         String propertyValue = config.getProperty(property);
-        if(propertyValue.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            return label + DISABLE_CI;
-        } else {
-            Boolean enabled = Boolean.valueOf(propertyValue);
-            return label + ((enabled) ? ON : OFF);
-        }
+        Boolean enabled = Boolean.valueOf(propertyValue);
+        return label + ((enabled) ? ON : OFF);
     }
 
 }

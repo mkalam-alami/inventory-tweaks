@@ -88,14 +88,6 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                 StatCollector.translateToLocal(
                         "invtweaks.settings.shortcuts.tooltip"));
         controlList.add(shortcutsBtn);
-        if(shortcuts.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            // Convenient Inventory compatibility: shortcuts not available
-            // GuiButton
-            shortcutsBtn.enabled = false;
-            shortcutsBtn.setTooltip(shortcutsBtn.getTooltip() + "\n(" +
-                    StatCollector
-                            .translateToLocal("invtweaks.settings.disableci.tooltip") + ")");
-        }
 
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton beforeBreakBtn = new InvTweaksGuiTooltipButton(ID_BEFORE_BREAK, p.getX(), p.getY(),
@@ -132,13 +124,6 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
                 StatCollector.translateToLocal(
                         "invtweaks.settings.middleclick.tooltip"));
         controlList.add(middleClickBtn);
-        if(middleClick.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
-            // Convenient Inventory compatibility: middle click not available
-            // GuiButton
-            middleClickBtn.enabled = false;
-            middleClickBtn.setTooltip(middleClickBtn.getTooltip() + "\n(" +
-                    StatCollector.translateToLocal("invtweaks.settings.disableci.tooltip"));
-        }
 
         // Check if links to files are supported, if not disable the buttons
         if(!Desktop.isDesktopSupported()) {

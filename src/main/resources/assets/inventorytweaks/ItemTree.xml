@@ -23,7 +23,7 @@
 # Thanks to Larandar & Lunaqua for their contributions.
 -->
 <!-- Note: 'stuff' matches everything, even items that don't appear here -->
-<stuff treeVersion="1.7.0">
+<stuff treeVersion="1.8.0">
     <equipment>
         <weapon>
             <sword>
@@ -106,11 +106,28 @@
     <block>
         <naturalBlock>
             <stones>
-                <stone id="stone"/>
+                <stone>
+                    <rawStone>
+                        <smoothstone id="stone" damage="0"/>
+                        <granite id="stone" damage="1"/>
+                        <diorite id="stone" damage="3"/>
+                        <andesite id="stone" damage="5"/>
+                    </rawStone>
+                    <polishedStone>
+                        <polishedGranite id="stone" damage="2"/>
+                        <polishedDiorite id="stone" damage="4"/>
+                        <polishedAndesite id="stone" damage="6"/>
+                    </polishedStone>
+                </stone>
                 <cobblestone id="cobblestone"/>
                 <mossStone id="mossy_cobblestone"/>
                 <endStone id="end_stone"/>
                 <whiteStone id="end_stone"/>
+                <prismarine>
+                    <rawPrismarine id="prismarine" damage="0"/>
+                    <prismarineBricks id="prismarine" damage="1"/>
+                    <darkPrismarine id="prismarine" damage="2"/>
+                </prismarine>
             </stones>
             <oreBlock>
                 <coalOreBlock id="coal_ore"/>
@@ -124,6 +141,7 @@
             </oreBlock>
             <dirts>
                 <dirt id="dirt" damage="0"/>
+                <coarseDirt id="dirt" damage="1"/>
                 <grasslessDirt id="dirt" damage="1"/>
                 <podzol id="dirt" damage="2"/>
             </dirts>
@@ -145,6 +163,9 @@
                     <classicSandstone id="sandstone" damage="0"/>
                     <creeperSandstone id="sandstone" damage="1"/>
                     <smoothSandstone id="sandstone" damage="2"/>
+                    <redSandstone id="red_sandstone" damage="0"/>
+                    <chiseledRedSandstone id="red_sandstone" damage="1"/>
+                    <smoothRedSandstone id="red_sandstone" damage="2"/>
                 </sandstone>
             </sands>
             <gravel id="gravel"/>
@@ -159,7 +180,10 @@
             <cobweb id="web"/>
             <monsterSpawner id="mob_spawner"/>
             <bedrock id="bedrock"/>
-            <sponge id="sponge"/>
+            <sponge>
+                <drySponge id="sponge" damage="0"/>
+                <wetSponge id="sponge" damage="1"/>
+            </sponge>
             <grass id="grass"/>
             <mycelium id="mycelium"/>
             <mushroomGrass id="mycelium"/>
@@ -186,6 +210,7 @@
             </mushroomBlock>
             <dragonEgg id="dragon_egg"/>
             <hiddenSilverfish id="monster_egg"/>
+            <seaLantern id="sea_lantern"/>
         </naturalBlock>
         <wool>
             <whiteWool id="wool" damage="0"/>
@@ -210,10 +235,24 @@
         <manufacturedBlock>
             <ladder id="ladder"/>
             <fence>
-                <woodenFence id="fence"/>
+                <woodenFence>
+                    <oakFence id="fence"/>
+                    <spruceFence id="spruce_fence"/>
+                    <birchFence id="birch_fence"/>
+                    <jungleFence id="jungle_fence"/>
+                    <darkOakFence id="dark_oak_fence"/>
+                    <acaciaFence id="acacia_fence"/>
+                </woodenFence>
                 <netherFence id="nether_brick_fence"/>
                 <netherBrickFence id="nether_brick_fence"/>
-                <fenceGate id="fence_gate"/>
+                <fenceGate>
+                    <oakFenceGate id="fence_gate"/>
+                    <spruceFenceGate id="spruce_fence_gate"/>
+                    <birchFenceGate id="birch_fence_gate"/>
+                    <jungleFenceGate id="jungle_fence_gate"/>
+                    <darkOakFenceGate id="dark_oak_fence_gate"/>
+                    <acaciaFenceGate id="acacia_fence_gate"/>
+                </fenceGate>
             </fence>
             <carpet>
                 <whiteCarpet id="carpet" damage="0"/>
@@ -399,6 +438,11 @@
                 <stick id="stick"/>
                 <stickDict oreDictName="stickWood"/>
             </constructionBlock>
+            <banner>
+                <itemBanner id="banner"/>
+                <standingBanner id="standing_banner"/>
+                <wallBanner id="wall_banner"/>
+            </banner>
             <itemBlock>
                 <cauldronBlock id="cauldron"/>
                 <brewingStandBlock id="brewing_stand"/>
@@ -437,13 +481,19 @@
                 <woodenButton id="wooden_button"/>
             </buttons>
             <doors>
-                <doorWood id="wooden_door"/>
-                <woodenDoor id="wooden_door"/>
-                <doorIron id="iron_door"/>
+                <woodenDoor>
+                    <oakDoor id="wooden_door"/>
+                    <spruceDoor id="spruce_door"/>
+                    <birchDoor id="birch_door"/>
+                    <jungleDoor id="jungle_door"/>
+                    <acaciaDoor id="acacia_door"/>
+                    <darkOakDoor id="dark_oak_door"/>
+                </woodenDoor>
                 <ironDoor id="iron_door"/>
-                <trapdoor id="trapdoor"/>
-                <woodenDoorBlock id="wooden_door"/>
-                <ironDoorBlock id="wooden_door"/>
+                <trapdoor>
+                    <woodenTrapdoor id="trapdoor"/>
+                    <ironTrapdoor id="iron_trapdoor"/>
+                </trapdoor>
             </doors>
             <redstoneWire id="redstone_wire"/>
             <redstoneTorch id="unlit_redstone_torch"/>
@@ -461,6 +511,8 @@
             <redstoneComparator id="comparator"/>
             <redstoneComparator id="unpowered_comparator"/>
             <redstoneComparator id="powered_comparator"/>
+            <slimeBlock id="slime"/>
+            <barrier id="barrier"/>
         </mechanism>
     </block>
     <resources>
@@ -506,6 +558,7 @@
             <egg id="egg"/>
             <bone id="bone"/>
             <leather id="leather"/>
+            <rabbitHide id="rabbit_hide"/>
             <string id="string"/>
             <feather id="feather"/>
             <gunpowder id="gunpowder"/>
@@ -515,6 +568,9 @@
             <ghastTear id="ghast_tear"/>
             <goldNugget id="gold_nugget"/>
             <netherStar id="nether_star"/>
+            <prismarineCrystals id="prismarine_crystals"/>
+            <prismarineCrystal id="prismarine_crystals"/>
+            <prismarineShard id="prismarine_shard"/>
         </huntingResources>
         <farmingResources>
             <milk id="milk_bucket"/>
@@ -613,10 +669,6 @@
         </vehicle>
         <decoration>
             <bed id="bed"/>
-            <door>
-                <doorIron id="iron_door"/>
-                <doorWood id="wooden_door"/>
-            </door>
             <painting id="painting"/>
             <sign id="sign"/>
             <bookShelf id="bookshelf"/>
@@ -640,6 +692,7 @@
             </musicDisc>
             <flowerPotBlock id="flower_pot"/>
             <headBlock id="skull"/>
+            <armorStand id="armor_stand"/>
         </decoration>
         <food>
             <edibleFood>
@@ -651,6 +704,9 @@
                     <steak id="cooked_beef"/>
                     <cookedChicken id="cooked_chicken"/>
                     <bakedPotato id="baked_potato"/>
+                    <cookedMutton id="cooked_mutton"/>
+                    <cookedRabbit id="cooked_rabbit"/>
+                    <rabbitStew id="rabbit_stew"/>
                 </cookedFood>
                 <bread id="bread"/>
                 <pumpkinPie id="pumpkin_pie"/>
@@ -672,6 +728,8 @@
                     <rawBeef id="beef"/>
                     <rawChicken id="chicken"/>
                     <potato id="potato"/>
+                    <rawMutton id="mutton"/>
+                    <rawRabbit id="rabbit"/>
                 </rawFood>
             </edibleFood>
             <poisonedFood>
@@ -812,6 +870,11 @@
                         <potionInvisibility id="potion" damage="8238"/>
                         <potionInvisibilityEx id="potion" damage="8270"/>
                     </invisibilityPotion>
+                    <leapingPotion>
+                        <potionLeaping id="potion" damage="8203"/>
+                        <potionLeapingEx id="potion" damage="8267"/>
+                        <potionLeapingII id="potion" damage="8235"/>
+                    </leapingPotion>
                 </positivePotion>
                 <negativePotion>
                     <poisonPotion>
@@ -872,6 +935,11 @@
                         <splashPotionInvisibility id="potion" damage="16430"/>
                         <splashPotionInvisibilityEx id="potion" damage="16462"/>
                     </invisibilitySplashPotion>
+                    <leapingSplashPotion>
+                        <splashPotionLeaping id="potion" damage="16395"/>
+                        <splashPotionLeapingEx id="potion" damage="16459"/>
+                        <splashPotionLeapingII id="potion" damage="16427"/>
+                    </leapingSplashPotion>
                 </positiveSplashPotion>
                 <negativeSplashPotion>
                     <poisonSplashPotion>
@@ -911,6 +979,8 @@
             <blazePowder id="blaze_powder"/>
             <magmaCream id="magma_cream"/>
             <glisteringMelon id="speckled_melon"/>
+            <rabbitsFoot id="rabbit_foot"/>
+            <rabbitFoot id="rabbit_foot"/>
         </potionIngredient>
     </item>
 </stuff>

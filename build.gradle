@@ -15,6 +15,7 @@ buildscript {
     }
 }
 
+apply plugin: 'idea'
 apply plugin: 'forge'
 
 if(!invtweaks_version) {
@@ -129,19 +130,28 @@ artifacts {
     archives deobfJar
 }
 
-processResources
-        {
-            inputs.property "version", internal_version
-            inputs.property "mcversion", mcversion
+processResources {
+    inputs.property "version", internal_version
+    inputs.property "mcversion", mcversion
 
-            from(sourceSets.main.resources.srcDirs) {
-                exclude '**/*.png'
-                exclude '**/*_at.cfg'
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.png'
+        exclude '**/*_at.cfg'
 
-                expand version: internal_version, mcversion: mcversion
-            }
-            from(sourceSets.main.resources.srcDirs) {
-                include '**/*.png'
-                include '**/*_at.cfg'
-            }
-        }
+        expand version: internal_version, mcversion: mcversion
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*.png'
+        include '**/*_at.cfg'
+    }
+}
+
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+
+    project {
+        vcs = 'Git'
+    }
+}

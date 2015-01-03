@@ -1,3 +1,236 @@
 .. include:: langs.txt
 
-<Docs translation here!>
+Inventory Tweaks 공식 홈페이지
+=================================
+
+.. image:: _static/img/invtweaks.png
+
+Inventory Tweaks가 무엇인가요?
+-------------------------
+
+.. image:: _static/img/demo.jpg
+	:align: right
+
+이 마인크래프트 모드는 **아이템을 쉽게 관리하기 위한** 클라이언트 모드입니다. **싱글 플레이어와 멀티 플레이어**에서 잘 작동하며, 플레이어가 인벤토리를 정리할 시간에 몬스터 한 마리라도 더 잡게 하려고 만든 시간과 노동력을 해소해주는 그런 모드죠.
+
+* 도구와 아이템이 자동으로 정리됩니다.
+* 단축키나 한 번의 클릭으로 플레이어의 인벤토리나 창고의 아이템을 정렬해줍니다.
+* 추가적인 구성 파일을 이용하여 정렬 방식을 플레이어 마음대로 바꿀 수도 있습니다.
+
+다운로드
+--------
+
+.. include:: download.txt
+
+
+* `구버전 목록 <http://modding.kalam-alami.net/dl/old>`_
+* `변경 사항 <changelog.html>`_
+
+연락
+-------
+
+* `마인크래프트 포럼에서 도움말을 얻으세요! <whttp://www.minecraftforum.net/topic/1720872-/>`_
+* `GitHub에서 개발을 도와주세요! <https://github.com/Kobata/inventory-tweaks/wiki>`_ (네, 이 모드는 오픈소스입니다!)
+
+
+
+시작하기
+===============
+
+설치
+-----
+
+`마인크래프트 포지 <http://files.minecraftforge.net/>`_ 모드가 이미 설치되어 있으면, **mods** 폴더에다가 JAR 파일을 복사 붙여넣기 하면 아주 쉽게 설치가 끝납니다!
+
+기본적인 사용법
+---------
+
+마인크래프트로 게임을 즐기는 것만으로도 플레이어는 이 모드의 기능을 사용할 수 있습니다. 인벤토리 창에서 오른쪽 위에 "..." 버튼이 본 적 있으시죠? 그 버튼은 이 모드의 추가적인 설정 창을 띄우는 버튼입니다. 그 말은 이 버튼이 존재한다는 것은 모드가 정상적으로 깔렸다는 말이 되기도 하겠죠?
+
+인벤토리 정렬
+~~~~~~~~~~~~~~~~~
+
+인벤토리 창에서 언제든지 **마우스 휠 버튼**이나 **R** 키(기본적으로 설정되어 있음)를 누르면 한방에 아이템들이 정렬됩니다. 단축키를 변경하고 싶으시다고요? 모드 설정 창("..." 버튼)에서 변경하실 수 있습니다.
+
+팁 : 마우스 휠 버튼을 사용하는 곳이 **조합(제작)** 이라면 말이 달라집니다. 그러니까, 아이템의 수를 적절하게 조절하여 제작 재료 배치를 도와줍니다. 예시로, 플레이어가 막대기를 만들고 싶다고 할 때 이 기능을 사용하면 나무 판자가 자동으로 둘로 나눠 준다는거죠.
+
+창고 정렬
+~~~~~~~~~~~~~~
+
+플레이어가 창고를 열었을 때, 창 위쪽에 세 개의 버튼이 보일겁니다. 각각 다른 방식으로 정렬해 주는 버튼입니다. 그래도 플레이어는 마우스 휠 버튼을 클릭하여 창고 내의 아이템들을 정리할 수 있습니다. (여러 번 클릭하여 정렬 방식을 바꿀 수도 있습니다.)
+
+자동 채우기
+~~~~~~~~~~~
+
+플레이어가 아이템을 먹거나, 도구를 부러뜨리거나 블럭을 설치하는 등 아이템 스택을 다 사용했을 때, 이 모드가 자동으로 인벤토리 내의 아이템 중에서 비슷하거나 같은 아이템을 골라서 해당 슬롯에 교체해줍니다.
+
+.. 참고 ::
+
+   * "..." 버튼은 모드의 추가적인 설정을 바꿀 수 있는 창을 열어줍니다. 여기에서 설명한 기능 외에 다른 기능들(당근히 **인벤토리 단축키** 기능도요!)이 많이 있습니다. 한 번 둘러보시는 것을 추천드립니다!
+   * 즉, 꼭 인벤토리 정리를 위해 **R** 키를 누르지 않아도 된다는 거죠. 바꿀 수 있으니까요!
+
+
+규칙 설정하기
+==================
+
+이 모드의 강력한 기능 중 하나인 '사용자 지정 규칙'은 정렬 방식을 플레이어 마음대로 바꿀 수 있게 해줍니다. 예를 들어, 플레이어가 설정한 방식대로 정렬하여 플레이어에게 만족감을 선사할 수도 있고, 무조건 좋은 곡괭이만 주요 아이템 바(Hotbar)에 배치할 수도 있고, 그 외 다양하게 커스터마이징이 가능하다는 겁니다!
+
+시작
+-----------
+
+Everything is done by editing a configuration file, which is in your Minecraft folder, at *config/InvTweaksRules.txt*. You can also open it by opening your inventory in-game, clicking the *"..."* button, then choosing "*Open the sorting rules file...*".
+
+In this file, each line you type is a new constraint you add for sorting items. Basically each rule you will add (such as ``D LOCKED`` which is here by default) is a new line with the format: ``XX YYYYYY`` where ``XX`` is the *target*, and ``YYYYYYY`` is the *keyword*. For instance, if you add a new line that says ``D5 pickaxe``, then go back to Minecraft and sort your inventory, it will put the best pickaxe available in the ``D`` row (your hotbar), ``5th`` column. Awesome, right?
+
+.. note::
+
+  * There's no need to restart Minecraft when you edit your configuration. Just save, switch to Minecraft, sort!
+  * If you didn't guess it, ``A`` is the top row of your inventory, while ``D`` is the bottom (i.e. hotbar). ``1`` and ``9`` are respectively the left and right columns.
+
+설정 가능한 대상
+-----------------
+
+* **A particular slot**: ``D1 sword``
+* **A whole row**, to sort from left to right: ``D sword``
+* **A whole column**, to sort from bottom to top: ``1 sword``
+* **A rectangle**, defined by two slots: ``A5-C9 stuff``
+
+.. note::
+
+   Regarding rectangle targets, "A1-C3", "C3-A1", "A3-C1" and "C1-A3" don't behave exactly the same, choose the one that best suits your needs.
+
+대상 수정자 (Target Modifier)
+~~~~~~~~~~~~~~~~
+
+Add them at the end of the targets (example: ``Ar``) to apply their effect.
+
+* **Reverse modifier**, to sort from right to left or top to bottom: ``r``
+* **Vertical sorting**, for rectangle rules: ``v``
+
+사용 가능한 키워드
+------------------
+
+All item names are supported, and even a whole lot of category keywords, such as ``edibleFood``, ``blocks``, ``items``, ``equipment``... The whole list is stored in the file *config/InvTweaksTree.txt* ; an online version is `available here <https://github.com/Kobata/inventory-tweaks/blob/release/src/minecraft/invtweaks/DefaultTree.dat>`_. Also, don't worry about syntax, for instance ``woodenSword`` works as well as ``WOODSWORD`` or ``Wooden Sword``.
+
+Here are the special keywords you can use:
+
+* **Locked slots**: ``LOCKED``. This make items from your selection not move during sorting (e.g. ``D LOCKED``). However, the LOCKED keyword is overriden by rules with finer targets (``D LOCKED`` is overriden by ``D1 torch`` or ``1 swords``).
+* **Frozen slots**: ``FROZEN``. Items in frozen slots never move during sorting or auto-refill (e.g. ``D8 FROZEN``).
+* **Items by IDs**: If an item doesn't have a keyword (such as mod items), but you know its ID, you can still select it thanks to ID rules (e.g. ``D1 489``, or ``D1 489-5`` for a specific damage value).
+
+다중 구성 (Multiple Configurations)
+-----------------------
+
+It is possible to have several set of rules you can swap between. Start a new configuration block by adding a rule in a single word ending with a colon::
+
+   Mining:
+   D1 pickaxe
+   
+   Fighting:
+   D1 sword
+ 
+
+You can then swap between those configurations by either:
+
+* Holding **R** for 1 second
+* Pressing **1-9 + R**
+
+Here, **1 + R** would load the Mining config, **2 + R** the Fighting config, etc.
+
+
+예시
+-------
+
+Here is the config the mod author uses::
+
+	Default:
+
+	D1 pickaxe
+	D2 axe
+	D3 shovel
+	D4 sword
+	D5 edibleFood
+	D9 torch
+
+	A1-C5v stuff
+	A9-C6v blocks
+
+
+아이템 트리 사용자 지정
+======================
+
+시작
+-----------
+
+This file is where are stored the keywords you can use to create rules. It also specifies the item order in the categories. It can be modified as you want, giving you the opportunity to make custom keywords for your rules::
+
+   <myCategory>
+     <dirt id="dirt" />
+     <cake id="cake" />
+   </myCategory>
+
+Now, if you create a rule using the "*myCategory*" keyword, it will match only dirt and cake.
+
+.. note::
+
+  * Here, you don't need to remove "dirt" and "cake" from their default categories.
+  * It's recommended to add any custom category to the top of the item tree, just below the ``<stuff>`` tag.
+  * Within a category, the order of the items determines which item is preferred. For instance, if you make a ``D1 sword`` rules, iron swords will be picked first, since it appears first in the item tree. Feel free to tweak that!
+
+아이템 ID나 데미지로 설정
+-------------------------------
+
+Some items are not only defined by IDs, but also by specific "damage values"::
+
+   <sexyWools>
+     <magentaWool id="wool" damage="2" />
+     <pinkWool id="wool" damage="6" />
+     <purpleWool id="wool" damage="10" />
+   </sexyWools>
+
+Categories defined by Forge ore Dictionary Names
+-------------------------------
+
+You can also define categories by entering an ore dictionary name. Useful for mods::
+
+   <camelOre>
+     <camelOreBlock oreDictName="oreCamel"/>
+     <camelOreIngot oreDictName="ingotCamel"/>
+   </camelOre>
+
+
+구성 호환성 정보 추가
+======================
+Additional compatibility info can be added to the file 'config/InvTweaksCompatibility.xml'.
+**This file does not exist by default, create it if you need to use it.**
+This will not work with all mods, as it is only capable of the most basic info required.
+Ask mod authors for API compatibility if their containers do not behave correctly.
+The format for entries is fairly simple::
+
+   <root>
+      <chest class="mod.container.MyChestContainer" row_size="9" large_chest="false"/> <!-- Chests to show the sorting modes buttons on -->
+      <inventory class="mod.container.MyInventoryContainer" disable_buttons="false"/> <!-- Other inventories to show just the options button on -->
+   </root>
+
+F.A.Q. - 질문과 응답
+======
+
+이 모드에 문제가 생기거나, 하고싶은 대로 커스터마이즈할 수 없거나 할 때 `Github Issue Tracker <http://github.com/Kobata/inventory-tweaks/issues>`_ 혹은 `Minecraft 포럼 글 <http://www.minecraftforum.net/topic/1720872-/>`_에서 **영어로** 질문을 올려주시면 답변해 드립니다. 그 질문과 답변을 다른 유저가 볼 때에는 도움이 될 수도 있죠!
+
+* **특정 모드의 아이템들이 제가 원하는 대로 정렬이 되지 않아요!**
+
+현재로써는 두 개의 방법이 있습니다. 첫 번째 방법으론 아이템 ID를 규칙에 적용하는 방법입니다. (예시 : ``D1 somemod:someItem`` 혹은 ``D1 somemod:someItem-5`` (아이템 데미지가 필요한 경우)).
+
+두 번째 방법은, config 폴더의 *InvTweaksTree.txt* 파일에 직접 아이템을 추가하여 정렬시키는 방법입니다. 각각의 아이템에는 정해진 ID가 있습니다. `Not Enough Items <http://www.minecraftforum.net/topic/909223-/>`_같은 모드를 이용하여 아이템의 ID를 알아낼 수 있습니다.
+  
+* **모드의 최신 버전이 제 InvTweaksTree.txt 파일을 깨트려요!**
+
+걱정 마세요! config 폴더 안에 백업 파일이 존재할 것입니다. Inventory Tweaks는 버전을 업데이트할 때마다 이 파일도 같이 업데이트합니다. 최신 버전의 마인크래프트의 아이템들도 지원해야 하니까요.
+  
+* **구성 파일이 나타나지 않아요!**
+
+아마 OS나 플랫폼이 Java를 100%까진 지원하지 않거나 지원하지 못하게 유저가 망가뜨렸을 수 있습니다. 예를 들어, 압축된 파일을 풀 때 잘못된 방법으로 풀렸거나 할 때죠. : *DefaultConfig.dat* 파일은 **{MinecraftDir}/config/InvTweaksConfig.txt** 로 이동해야 하고, *DefaultTree.dat* 파일은 **{MinecraftDir}/config/InvTweaksTree.txt** 로 이동해야 합니다.
+
+* **"..." 버튼의 아이콘이 제가 쓰는 텍스쳐팩에서 이상하게 보여요!**
+
+기본적으로, 이 모드는 작은 버튼 모양을 표시하기 위해 텍스쳐팩 내의 *assets/minecraft/textures/gui/widgets.png* 파일을 참고합니다. 때에 따라서는 더 좋게 보이기도 하겠지만, 그렇지 않다면 텍스쳐팩의 **assets/inventorytweaks/textures/gui/button10px.png** 파일을 교체해보시는 것도 좋은 방법입니다. `파일의 양식입니다. <_static/img/button10px.png>`_.

@@ -10,6 +10,11 @@
       <img src="_static/img/flag/fr.png" />
       Français
     </a>
+    &nbsp;
+    <a href="index_kr.html">
+      <img src="_static/img/flag/kr.png" />
+      한국어
+    </a>
   </div>
   
   <!-- Fork on Github link -->

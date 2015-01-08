@@ -425,7 +425,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         !(shortcut.fromSection == shortcut.toSection && fromIndex == toIndex)) {
                     success = container.move(shortcut.fromSection, fromIndex, shortcut.toSection, toIndex);
                     newIndex = getNextTargetIndex(shortcut);
-                    toIndex = (success || (shortcut.action == ShortcutSpecification.Action.DROP) || newIndex != toIndex) ? newIndex : -1; // Needed when we can't put items in the target slot
+                    toIndex = (success && ((shortcut.action == ShortcutSpecification.Action.DROP) || newIndex != toIndex)) ? newIndex : -1; // Needed when we can't put items in the target slot
                 }
             }
             if(toIndex == -1) {

@@ -29,7 +29,7 @@ Download
 Contact
 -------
 
-* `Get support on Minecraft Forums <whttp://www.minecraftforum.net/topic/1720872-/>`_
+* `Get support on Minecraft Forums <http://www.minecraftforum.net/topic/1720872-/>`_
 * `Join the project on Github <https://github.com/Kobata/inventory-tweaks/wiki>`_ (yep, it's Open Source!)
 
 

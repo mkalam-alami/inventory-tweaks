@@ -307,12 +307,12 @@ public class InvTweaksObfuscation {
         return getInventoryPlayer().currentItem; // currentItem
     }
 
-    public boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
+    public static boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
         return itemStack1.isItemEqual(itemStack2) || (itemStack1.isItemStackDamageable() && itemStack1
                 .getItem() == itemStack2.getItem());
     }
 
-    public boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
+    public static boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
         return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) &&
                 itemStack1.isStackable() &&
                 (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) &&

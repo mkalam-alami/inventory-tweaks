@@ -345,20 +345,21 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         }
                     }
                     case MOVE: {
-                        int toIndex = getNextTargetIndex(shortcut);
+                        int toIndex = -1;
                         boolean success;
                         int newIndex;
 
-                        if(toIndex != -1) {
-                            switch(shortcut.scope) {
-                                case ONE_STACK: {
-                                    Slot slot = container.getSlot(shortcut.fromSection, shortcut.fromIndex);
+                        switch(shortcut.scope) {
+                            case ONE_STACK: {
+                                Slot slot = container.getSlot(shortcut.fromSection, shortcut.fromIndex);
+                                if(slot.getHasStack()) {
+                                    toIndex = getNextTargetIndex(shortcut, slot.getStack());
                                     if(shortcut.fromSection != ContainerSection.CRAFTING_OUT && shortcut.toSection != ContainerSection.ENCHANTMENT) {
                                         while(slot.getHasStack() && toIndex != -1) {
                                             success = container
                                                     .move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection,
                                                             toIndex);
-                                            newIndex = getNextTargetIndex(shortcut);
+                                            newIndex = getNextTargetIndex(shortcut, slot.getStack());
                                             toIndex = (success ||
                                                     (shortcut.action == ShortcutSpecification.Action.DROP) ||
                                                     newIndex != toIndex) ? newIndex : -1; // Needed when we can't put items in the target slot
@@ -368,33 +369,37 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                                         container.move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection,
                                                 toIndex);
                                     }
-                                    break;
-
                                 }
+                                break;
 
-                                case ONE_ITEM: {
+                            }
+
+                            case ONE_ITEM: {
+                                Slot slot = container.getSlot(shortcut.fromSection, shortcut.fromIndex);
+                                if(slot.getHasStack()) {
+                                    toIndex = getNextTargetIndex(shortcut, slot.getStack());
                                     container.moveSome(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection,
                                             toIndex, 1);
-                                    break;
                                 }
+                                break;
+                            }
 
-                                case ALL_ITEMS: {
+                            case ALL_ITEMS: {
+                                moveAll(shortcut, shortcut.fromStack);
+                                if(shortcut.fromSection == ContainerSection.INVENTORY_NOT_HOTBAR && shortcut.toSection == ContainerSection.CHEST) {
+                                    shortcut.fromSection = ContainerSection.INVENTORY_HOTBAR;
                                     moveAll(shortcut, shortcut.fromStack);
-                                    if(shortcut.fromSection == ContainerSection.INVENTORY_NOT_HOTBAR && shortcut.toSection == ContainerSection.CHEST) {
-                                        shortcut.fromSection = ContainerSection.INVENTORY_HOTBAR;
-                                        moveAll(shortcut, shortcut.fromStack);
-                                    }
-                                    break;
                                 }
+                                break;
+                            }
 
-                                case EVERYTHING: {
+                            case EVERYTHING: {
+                                moveAll(shortcut, null);
+                                if(shortcut.fromSection == ContainerSection.INVENTORY_HOTBAR && shortcut.toSection == ContainerSection.CHEST) {
+                                    shortcut.fromSection = ContainerSection.INVENTORY_HOTBAR;
                                     moveAll(shortcut, null);
-                                    if(shortcut.fromSection == ContainerSection.INVENTORY_HOTBAR && shortcut.toSection == ContainerSection.CHEST) {
-                                        shortcut.fromSection = ContainerSection.INVENTORY_HOTBAR;
-                                        moveAll(shortcut, null);
-                                    }
-                                    break;
                                 }
+                                break;
                             }
                         }
                     }
@@ -416,16 +421,30 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     }
 
     private void moveAll(ShortcutConfig shortcut, ItemStack stackToMatch) throws TimeoutException {
-        int toIndex = getNextTargetIndex(shortcut), newIndex;
+        int toIndex = -1;
+        int newIndex;
+
         boolean success;
+
         for(Slot slot : container.getSlots(shortcut.fromSection)) {
             if(slot.getHasStack() && (stackToMatch == null || areSameItemType(stackToMatch, slot.getStack()))) {
                 int fromIndex = container.getSlotIndex(getSlotNumber(slot));
+                toIndex = getNextTargetIndex(shortcut, slot.getStack());
+
+                // Move while current slot has item, and there is a valid target that is not the same slot we're trying
+                // to move from.
                 while(slot.getHasStack() && toIndex != -1 &&
                         !(shortcut.fromSection == shortcut.toSection && fromIndex == toIndex)) {
                     success = container.move(shortcut.fromSection, fromIndex, shortcut.toSection, toIndex);
-                    newIndex = getNextTargetIndex(shortcut);
-                    toIndex = (success && ((shortcut.action == ShortcutSpecification.Action.DROP) || newIndex != toIndex)) ? newIndex : -1; // Needed when we can't put items in the target slot
+                    newIndex = getNextTargetIndex(shortcut, slot.getStack());
+
+                    // Continue if movement succeeded, there is another slot to try, or we're dropping items.
+                    // In reverse: fail if movement failed, AND there are no other slots AND we're not dropping.
+                    if(success || (newIndex != toIndex) || (shortcut.action == ShortcutSpecification.Action.DROP)) {
+                        toIndex = newIndex;
+                    } else {
+                        toIndex = -1;
+                    }
                 }
             }
             if(toIndex == -1) {
@@ -434,7 +453,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         }
     }
 
-    private int getNextTargetIndex(ShortcutConfig shortcut) {
+    private int getNextTargetIndex(ShortcutConfig shortcut, ItemStack current) {
 
         if(shortcut.action == ShortcutSpecification.Action.DROP) {
             return DROP_SLOT;
@@ -448,7 +467,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
             for(Slot slot : container.getSlots(shortcut.toSection)) {
                 if(slot.getHasStack()) {
                     ItemStack stack = slot.getStack();
-                    if(!stack.hasTagCompound() && stack.isItemEqual(shortcut.fromStack) && stack.stackSize < stack
+                    if(InvTweaksObfuscation.areItemsStackable(current, stack) && stack.stackSize < stack
                             .getMaxStackSize()) {
                         result = i;
                         break;

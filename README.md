@@ -1,6 +1,6 @@
 <img src="http://inventory-tweaks.readthedocs.org/en/latest/_images/invtweaks.png" />
 
-*InvTweaks now runs on MCP! The build process has changed, check [the wiki](https://github.com/Kobata/inventory-tweaks/wiki/Getting-started) :)*
+*InvTweaks now runs on ForgeGradle! The build process has changed, check [the wiki](https://github.com/Kobata/inventory-tweaks/wiki/Getting-started) :)*
 
 ## What's this project about
 

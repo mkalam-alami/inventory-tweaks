@@ -31,6 +31,7 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_AUTO_REFILL = "enableAutoRefill";
     public static final String PROP_AUTO_REFILL_BEFORE_BREAK = "autoRefillBeforeBreak";
     public static final String PROP_AUTO_REFILL_DAMAGE_THRESHHOLD = "autoRefillDamageThreshhold";
+    public static final String PROP_INVERT_TOOL_DAMAGE = "invertToolDamageSorting";
     // Shortcuts
     public static final String PROP_ENABLE_SHORTCUTS = "enableShortcuts";
     public static final String PROP_SHORTCUT_PREFIX = "shortcutKey";
@@ -345,6 +346,7 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_AUTO_EQUIP_ARMOR, VALUE_FALSE);
         properties.put(PROP_ENABLE_SERVER_ITEMSWAP, VALUE_TRUE);
         properties.put(PROP_ENABLE_CONFIG_LOADED_MESSAGE, VALUE_FALSE);
+        properties.put(PROP_INVERT_TOOL_DAMAGE, VALUE_TRUE);
 
         properties.put(PROP_SHORTCUT_ALL_ITEMS, "LCONTROL+LSHIFT, RCONTROL+RSHIFT");
         properties.put(PROP_SHORTCUT_EVERYTHING, "SPACE");

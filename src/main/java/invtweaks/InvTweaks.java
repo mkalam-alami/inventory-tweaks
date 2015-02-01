@@ -384,7 +384,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                         if(iEnchMaxId == jEnchMaxId) {
                             if(iEnchMaxLvl == jEnchMaxLvl) {
                                 if(i.getItemDamage() != j.getItemDamage()) {
-                                    if(i.isItemStackDamageable()) {
+                                    if(i.isItemStackDamageable() && !getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_INVERT_TOOL_DAMAGE).equals(InvTweaksConfig.VALUE_TRUE)) {
                                         return j.getItemDamage() - i.getItemDamage();
                                     } else {
                                         return i.getItemDamage() - j.getItemDamage();

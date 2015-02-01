@@ -17,6 +17,7 @@ buildscript {
 
 apply plugin: 'idea'
 apply plugin: 'forge'
+apply plugin: 'curseforge'
 
 if(!invtweaks_version) {
     invtweaks_version = "UNKNOWN"
@@ -57,6 +58,25 @@ def getGitDirtyFiles = { ->
     }
 }
 
+def getGitChangelog = { ->
+    try {
+        def stdout = new ByteArrayOutputStream()
+        def gitHash = System.getenv("GIT_COMMIT")
+        def gitPrevHash = System.getenv("GIT_PREVIOUS_COMMIT")
+        if(gitHash && gitPrevHash) {
+            exec {
+                commandLine 'git', 'log', '--pretty=tformat:%s - %aN', '' + gitPrevHash + '...' + gitHash
+                standardOutput = stdout
+            }
+            return stdout.toString().trim()
+        } else {
+            return "";
+        }
+    } catch(ignored) {
+        return "";
+    }
+}
+
 ext.git_version = getGitCommitHash()
 ext.git_dirty = getGitDirtyIndex() || getGitDirtyFiles()
 
@@ -82,8 +102,8 @@ archivesBaseName = "InventoryTweaks"
 
 ext.mcversion = "1.8"
 minecraft {
-    version = "1.8-11.14.0.1278-1.8"
-    mappings = 'snapshot_20141128'
+    version = "1.8-11.14.0.1296"
+    mappings = 'snapshot_20150201'
     at 'src/main/resources/invtweaks_at.cfg'
 
     replace "@VERSION@", project.internal_version
@@ -130,6 +150,27 @@ artifacts {
     archives deobfJar
 }
 
+ext.curseKey = System.getenv("CURSE_API_KEY")
+if(invtweaks_version.endsWith("-dev")) {
+    ext.curseType = 'alpha'
+} else {
+    ext.curseType = 'release'
+}
+if(curseKey) {
+    curse {
+        dependsOn apiJar
+
+        displayName = 'Inventory Tweaks ' + version
+        releaseType = curseType
+        projectId = '223094'
+        apiKey = curseKey
+        changelog = getGitChangelog()
+        gameVersions.add(mcversion)
+
+        additionalArtifact apiJar
+    }
+}
+
 processResources {
     inputs.property "version", internal_version
     inputs.property "mcversion", mcversion
@@ -145,6 +186,7 @@ processResources {
         include '**/*_at.cfg'
     }
 }
+
 
 idea {
     module {

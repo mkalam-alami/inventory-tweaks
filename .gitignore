@@ -10,6 +10,8 @@ launcher/
 *.zip
 *.jar
 
+!gradle-wrapper.jar
+
 # Tmp files
 *~
 *#
@@ -21,20 +23,6 @@ launcher/
 .pydevproject
 .idea/
 *.iml
-
-# MCP Files
-docs/
-conf/
-eclipse/
-jars/
-logs/
-runtime/
-temp/
-reobf/
-CHANGELOG
-LICENSE.txt
-*.bat
-*.sh
 
 # Misc
 *.rej

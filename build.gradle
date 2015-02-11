@@ -154,6 +154,9 @@ ext.curseKey = System.getenv("CURSE_API_KEY")
 if(invtweaks_version.endsWith("-dev")) {
     ext.curseType = 'alpha'
     ext.curseVersion = version
+} else if(invtweaks_version.endsWith("-beta")) {
+    ext.curseType = 'beta'
+    ext.curseVersion = version
 } else {
     ext.curseType = 'release'
     ext.curseVersion = invtweaks_version

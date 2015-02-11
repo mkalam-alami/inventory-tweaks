@@ -102,8 +102,8 @@ archivesBaseName = "InventoryTweaks"
 
 ext.mcversion = "1.8"
 minecraft {
-    version = "1.8-11.14.0.1296"
-    mappings = 'snapshot_20150201'
+    version = "1.8-11.14.1.1309"
+    mappings = 'stable_16'
     at 'src/main/resources/invtweaks_at.cfg'
 
     replace "@VERSION@", project.internal_version

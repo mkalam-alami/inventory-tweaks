@@ -1,6 +1,6 @@
 invtweaks.loadconfig.enabled='%s' activé
 invtweaks.loadconfig.refresh.error=[1] Impossible de recharger la configuration
-invtweaks.loadconfig.invalidkeywords=Invalid keywords found
+invtweaks.loadconfig.invalidkeywords=Mots-clés invalides détectés
 invtweaks.loadconfig.filemissing=manquant, chargement du fichier par défaut.
 invtweaks.loadconfig.done=Configuration rechargée.
 invtweaks.propsfile.loaded=Paramètres du mod chargés
@@ -51,7 +51,7 @@ invtweaks.settings.pvpwarning.pt2=d'armure automatiques sont souvent vus comme d
 invtweaks.settings.exit=Fermer
 invtweaks.settings.advanced.sortonpickup=Ranger l'objet ramassé
 invtweaks.settings.advanced.sortonpickup.soloonly=Solo uniq.
-invtweaks.settings.advanced.sortonpickup.tooltip=Évite de remplir la hotbar avec tout ce que vous ramassez
+invtweaks.settings.advanced.sortonpickup.tooltip=Évite de remplir la hotbar avec\ntout ce que vous ramassez
 invtweaks.settings.advanced.sortonpickup.tooltip.soloonly=Seulement en mode solo
 invtweaks.settings.advanced.autoequip=Equip. armure auto.
 invtweaks.settings.advanced.autoequip.tooltip=Equipe la meilleure armure disponible\npendant le tri
@@ -80,4 +80,6 @@ invtweaks.help.shortcuts.backward=(En arrière)
 invtweaks.keyboardfix.error=[12] Il y a un souci avec le clavier...
 invtweaks.keyboardfix.recover=Oh c'est réparé, mille excuses.
 invtweaks.modcompat.ci.error=[13] Impossible de gérer la compatibilité avec 'Convenient Inventory'
+invtweaks.key.category=Inventory Tweaks
+invtweaks.key.sort=Tri de l'inventaire
 

@@ -80,4 +80,6 @@ invtweaks.help.shortcuts.backward=(後ろ)
 invtweaks.keyboardfix.error=[12] キーボードにトラブルがあります
 invtweaks.keyboardfix.recover=Ok 修復されました ごめんなさい
 invtweaks.modcompat.ci.error=[13] 「Convenient Inventory」 との互換性の確保に失敗しました
+invtweaks.key.category=Inventory Tweaks
+invtweaks.key.sort=インベントリのソート
 

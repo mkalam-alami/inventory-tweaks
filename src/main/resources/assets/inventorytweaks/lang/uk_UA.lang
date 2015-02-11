@@ -80,4 +80,6 @@ invtweaks.help.shortcuts.backward=(попер.)
 invtweaks.keyboardfix.error=[12] В мене проблеми з клавіатурою
 invtweaks.keyboardfix.recover=Відновлено. Вибачте за незручності.
 invtweaks.modcompat.ci.error=[13] Не вдалось визначити сумісність з Convenient Inventory
+invtweaks.key.category=Налаштування інвентарю
+invtweaks.key.sort=Впорядкування інвертарю
 

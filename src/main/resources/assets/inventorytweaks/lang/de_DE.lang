@@ -80,4 +80,6 @@ invtweaks.help.shortcuts.backward=(Vorheriges)
 invtweaks.keyboardfix.error=[12] Ich habe Probleme mit der Tastatur
 invtweaks.keyboardfix.recover=OK, es ist repariert, Entschuldigung.
 invtweaks.modcompat.ci.error=[13] Konnte Kompatibilität mit 'Convenient Inventory' nicht verwalten
+invtweaks.key.category=Inventar Optimierungen
+invtweaks.key.sort=Inventar Sortierung
 

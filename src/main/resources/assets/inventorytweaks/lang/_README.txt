@@ -1,7 +1,7 @@
-|==============================================================|
-| INVENTORY TWEAKS Mod - By Jimeo Wan (jimeo.wan at gmail.com) |
-| Translations readme                                          |
-|==============================================================|
+|=================================================================|
+| INVENTORY TWEAKS Mod - https://inventory-tweaks.readthedocs.org |
+| Translations readme                                             |
+|=================================================================|
 
 * Want to contibute?
 

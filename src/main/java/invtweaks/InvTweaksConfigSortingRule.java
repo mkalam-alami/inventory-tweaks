@@ -220,6 +220,13 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     }
 
     /**
+     * @return Container size (TODO: Map rules to target section)
+     */
+    public int getContainerSize() {
+        return containerSize;
+    }
+
+    /**
      * Compares rules priority : positive value means 'this' is of greater priority than o
      */
     public int compareTo(InvTweaksConfigSortingRule o) {

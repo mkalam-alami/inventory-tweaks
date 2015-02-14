@@ -100,6 +100,23 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 this.keywordOrder[i] = -1;
             }
         }
+
+        // Initialize rule priority for currently matching items
+        for(InvTweaksConfigSortingRule rule : rules) {
+            if(rule.getContainerSize() == size) {
+                int priority = rule.getPriority();
+                for(int slot : rule.getPreferredSlots()) {
+                    ItemStack stack = containerMgr.getItemStack(slot);
+                    if(stack != null) {
+                        List<IItemTreeItem> items = tree
+                                .getItems(Item.itemRegistry.getNameForObject(stack.getItem()).toString(), stack.getItemDamage());
+                        if(rulePriority[slot] < priority && tree.matches(items, rule.getKeyword())) {
+                            rulePriority[slot] = priority;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void sort() {
@@ -161,13 +178,13 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 ItemStack from = containerMgr.getItemStack(i);
 
                 // If the rule is strong enough to move the item and it matches the item, move it
-                if(hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
+                if(hasToBeMoved(i, rulePriority) && lockPriorities[i] < rulePriority) {
                     // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                     List<IItemTreeItem> fromItems = tree
                             .getItems(Item.itemRegistry.getNameForObject(from.getItem()).toString(), from.getItemDamage());
                     if(tree.matches(fromItems, rule.getKeyword())) {
 
-                        // Test preffered slots
+                        // Test preferred slots
                         int[] preferredSlots = rule.getPreferredSlots();
                         int stackToMove = i;
                         for(int j = 0; j < preferredSlots.length; j++) {
@@ -182,11 +199,17 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                     from = containerMgr.getItemStack(moveResult);
                                     // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                                     fromItems = tree.getItems(Item.itemRegistry.getNameForObject(from.getItem()).toString(), from.getItemDamage());
-                                    if(!tree.matches(fromItems, rule.getKeyword())) {
-                                        break;
+                                    if(tree.matches(fromItems, rule.getKeyword())) {
+                                        if(i >= moveResult) {
+                                            // Current or already-processed slot.
+                                            stackToMove = moveResult;
+                                            //j = -1; // POSSIBLE INFINITE LOOP. But having this missing may cause sorting to take a few tries to stabilize in specific situations.
+                                        } else {
+                                            // The item will be processed later
+                                            break;
+                                        }
                                     } else {
-                                        stackToMove = moveResult;
-                                        j++;
+                                        break;
                                     }
                                 }
                             }
@@ -200,7 +223,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         log.info("Locking stacks.");
 
         for(int i = 0; i < size; i++) {
-            if(hasToBeMoved(i) && lockPriorities[i] > 0) {
+            if(hasToBeMoved(i, 1) && lockPriorities[i] > 0) {
                 markAsMoved(i, 1);
             }
         }
@@ -392,7 +415,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
         ArrayList<Integer> remaining = new ArrayList<Integer>(), nextRemaining = new ArrayList<Integer>();
         for(int i = 0; i < size; i++) {
-            if(hasToBeMoved(i)) {
+            if(hasToBeMoved(i, 1)) {
                 remaining.add(i);
                 nextRemaining.add(i);
             }
@@ -401,7 +424,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         int iterations = 0;
         while(remaining.size() > 0 && iterations++ < 50) {
             for(int i : remaining) {
-                if(hasToBeMoved(i)) {
+                if(hasToBeMoved(i, 1)) {
                     for(int j = 0; j < size; j++) {
                         if(move(i, j, 1) != -1) {
                             nextRemaining.remove((Integer) j);
@@ -547,8 +570,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         rulePriority[i] = -1;
     }
 
-    private boolean hasToBeMoved(int slot) {
-        return containerMgr.getItemStack(slot) != null && rulePriority[slot] == -1;
+    private boolean hasToBeMoved(int slot, int priority) {
+        return containerMgr.getItemStack(slot) != null && rulePriority[slot] <= priority;
     }
 
     private boolean isOrderedBefore(int i, int j) {

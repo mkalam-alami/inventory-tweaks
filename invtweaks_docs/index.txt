@@ -110,7 +110,7 @@ Add them at the end of the targets (example: ``Ar``) to apply their effect.
 Available keywords
 ------------------
 
-All item names are supported, and even a whole lot of category keywords, such as ``edibleFood``, ``blocks``, ``items``, ``equipment``... The whole list is stored in the file *config/InvTweaksTree.txt* ; an online version is `available here <https://github.com/Kobata/inventory-tweaks/blob/release/src/minecraft/invtweaks/DefaultTree.dat>`_. Also, don't worry about syntax, for instance ``woodenSword`` works as well as ``WOODSWORD`` or ``Wooden Sword``.
+All item names are supported, and even a whole lot of category keywords, such as ``edibleFood``, ``blocks``, ``items``, ``equipment``... The whole list is stored in the file *config/InvTweaksTree.txt* ; an online version is `available here <https://github.com/Kobata/inventory-tweaks/blob/release/src/main/resources/assets/inventorytweaks/ItemTree.xml>`_. Also, don't worry about syntax, for instance ``woodenSword`` works as well as ``WOODSWORD`` or ``Wooden Sword``.
 
 Here are the special keywords you can use:
 

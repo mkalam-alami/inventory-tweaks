@@ -20,7 +20,7 @@ public class InvTweaksConst {
     public static final String INVTWEAKS_CHANNEL = "InventoryTweaks";
 
     // Network Protocol version
-    public static final byte PROTOCOL_VERSION = 1;
+    public static final byte PROTOCOL_VERSION = 2;
     public static final byte PACKET_LOGIN = 0x00;
     public static final byte PACKET_CLICK = 0x01;
     public static final byte PACKET_SORTCOMPLETE = 0x02;

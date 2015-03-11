@@ -19,7 +19,10 @@ public class ClickMessageHandler extends SimpleChannelInboundHandler<ITPacketCli
             NetHandlerPlayServer serverHandler = (NetHandlerPlayServer) handler;
             EntityPlayerMP player = serverHandler.playerEntity;
 
-            player.openContainer.slotClick(msg.slot, msg.data, msg.action, player);
+            if(player.openContainer.windowId == msg.window) {
+                player.openContainer.slotClick(msg.slot, msg.data, msg.action, player);
+            }
+            // TODO: Might want to set a flag to ignore all packets until next sortcomplete even if client window changes.
         }
     }
 }

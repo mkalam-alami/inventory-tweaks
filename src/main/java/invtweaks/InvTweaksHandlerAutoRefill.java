@@ -196,6 +196,10 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                         log.warn("Autoreplace timout");
                     }*/
 
+                    if(i < 0 || targetedSlot < 0) {
+                        return;
+                    }
+
                     // TODO: Look for better update detection now that this runs tick-based. It'll probably fail a bit if latency is > 50ms (1 tick)
                     // Since last tick, things might have changed
                     ItemStack stack = containerMgr.getItemStack(i);

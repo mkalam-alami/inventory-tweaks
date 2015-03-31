@@ -620,11 +620,11 @@ public class InvTweaks extends InvTweaksObfuscation {
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
         InvTweaksConfig config = cfgManager.getConfig();
 
-        if(!ObjectUtils.equals(currentStackId, storedStackId) || currentStackDamage != storedStackDamage) {
+        if(!Objects.equals(currentStackId, storedStackId) || currentStackDamage != storedStackDamage) {
 
             if(storedFocusedSlot != focusedSlot) { // Filter selection change
                 storedFocusedSlot = focusedSlot;
-            } else if(currentStack == null || (currentStack.getItem() == Items.bowl && ObjectUtils.equals(storedStackId, "mushroom_stew"))
+            } else if(currentStack == null || (currentStack.getItem() == Items.bowl && Objects.equals(storedStackId, "mushroom_stew"))
 
                     // Handle eaten mushroom soup
                     && (getCurrentScreen() == null || // Filter open inventory or other window

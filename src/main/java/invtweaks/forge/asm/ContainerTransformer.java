@@ -148,7 +148,7 @@ public class ContainerTransformer implements IClassTransformer {
                     code.insertBefore(returnNode, new VarInsnNode(Opcodes.ILOAD, 1));
                     code.insertBefore(returnNode,
                             new MethodInsnNode(Opcodes.INVOKESTATIC, "invtweaks/forge/InvTweaksMod",
-                                    "setTextboxModeStatic", "(Z)V"));
+                                    "setTextboxModeStatic", "(Z)V", false));
 
                     FMLRelaunchLog.info("InvTweaks: successfully transformed setFocused/func_146195_b");
                 } else {

@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Handles the auto-refilling of the hotbar.
@@ -134,7 +135,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
             for(int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                 candidateStack = container.getItemStack(i);
                 if(candidateStack != null &&
-                        ObjectUtils.equals(Item.itemRegistry.getNameForObject(candidateStack.getItem()), wantedId) &&
+                        Objects.equals(Item.itemRegistry.getNameForObject(candidateStack.getItem()), wantedId) &&
                         candidateStack.getItemDamage() == wantedDamage) {
                     replacementStack = candidateStack;
                     replacementStackSlot = i;

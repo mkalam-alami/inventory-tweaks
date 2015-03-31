@@ -2,6 +2,13 @@
 
 Latest changes
 ==============
+`1.59 (1.8) <http://build.technicpack.net/job/Inventory-Tweaks/176/artifact/build/libs/InventoryTweaks-1.59-176.jar>`_
+ * Auto-refill is more consistent.
+ * Compatibility XML file can now disable display of buttons.
+ * Shortcuts try harder to merge stacks instead of filling up empty space.
+ * Tool damage ordering can be reversed by configuration file.
+ * Sorting rules should be less likely to cause strange behavior. (KNOWN ISSUE: Chests still frequently act strange in horizontal/vertical sort mode)
+
 `1.58 (1.7.2/1.7.10) <http://build.technicpack.net/job/Inventory-Tweaks/147/artifact/build/libs/InventoryTweaks-1.58-147.jar>`_
  * Better handling of bad Forge Ore Dictionary entries for item tree.
  * Silenced some debug output that appeared to be an error.

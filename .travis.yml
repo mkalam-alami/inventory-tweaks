@@ -4,3 +4,4 @@ jdk:
 install: ./gradlew setupCI
 script: ./gradlew build
 after_success: ./gradlew curse
+sudo: false

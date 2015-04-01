@@ -81,6 +81,9 @@ ext.git_version = getGitCommitHash()
 ext.git_dirty = getGitDirtyIndex() || getGitDirtyFiles()
 
 ext.build_number = System.getenv("BUILD_NUMBER")
+if(!build_number) {
+    ext.build_number = System.getenv("TRAVIS_BUILD_NUMBER")
+}
 
 if(build_number) {
     version = invtweaks_version + "-" + build_number
@@ -191,7 +194,6 @@ processResources {
         include '**/*_at.cfg'
     }
 }
-
 
 idea {
     module {

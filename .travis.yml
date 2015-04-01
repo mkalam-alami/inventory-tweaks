@@ -1,5 +1,6 @@
 language: java
 jdk:
   - oraclejdk8
-install: gradle setupCI
-after_success: gradle curse
+install: ./gradlew setupCI
+script: ./gradlew build
+after_success: ./gradlew curse

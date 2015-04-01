@@ -2,6 +2,5 @@ language: java
 jdk:
   - oraclejdk8
 install: ./gradlew setupCI
-script: ./gradlew build
-after_success: ./gradlew curse
+script: ./gradlew build curse
 sudo: false

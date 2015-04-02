@@ -28,7 +28,6 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String SLOT_MAP_METHOD = "invtweaks$slotMap";
     public static final String CONTAINER_CLASS_INTERNAL = "net/minecraft/inventory/Container";
     public static final String SLOT_MAPS_VANILLA_CLASS = "invtweaks/containers/VanillaSlotMaps";
-    public static final String SLOT_MAPS_MODCOMPAT_CLASS = "invtweaks/containers/CompatibilitySlotMaps";
     public static final String ANNOTATION_CHEST_CONTAINER = "Linvtweaks/api/container/ChestContainer;";
     public static final String ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK = "Linvtweaks/api/container/ChestContainer$RowSizeCallback;";
     public static final String ANNOTATION_CHEST_CONTAINER_LARGE_CALLBACK = "Linvtweaks/api/container/ChestContainer$IsLargeCallback;";
@@ -156,10 +155,6 @@ public class ContainerTransformer implements IClassTransformer {
         }
     }
 
-    public static MethodInfo getCompatiblitySlotMapInfo(String name) {
-        return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_MODCOMPAT_CLASS), name, true);
-    }
-
     public static MethodInfo getVanillaSlotMapInfo(String name) {
         return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_VANILLA_CLASS), name, true);
     }
@@ -172,7 +167,6 @@ public class ContainerTransformer implements IClassTransformer {
 
     // This needs to have access to the FML remapper so it needs to run when we know it's been set up correctly.
     private void lateInit() {
-        // TODO: ContainerCreative handling
         // Standard non-chest type
         standardClasses.put("net.minecraft.inventory.ContainerPlayer",
                 new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerPlayerSlots")));
@@ -197,27 +191,6 @@ public class ContainerTransformer implements IClassTransformer {
         standardClasses.put("net.minecraft.inventory.ContainerChest", new ContainerInfo(true, false, true,
                 getVanillaSlotMapInfo(
                         "containerChestDispenserSlots")));
-
-        // Mod compatibility
-        // Equivalent Exchange 3
-        compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerAlchemicalBag",
-                new ContainerInfo(true, false, true, true, (short) 13));
-        compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerAlchemicalChest",
-                new ContainerInfo(true, false, true, true, (short) 13));
-        compatibilityClasses.put("com.pahimar.ee3.inventory.ContainerPortableCrafting",
-                new ContainerInfo(true, true, false,
-                        getCompatiblitySlotMapInfo("ee3PortableCraftingSlots")));
-
-        // Ender Storage
-        // TODO Row size method. A bit less important because it's a config setting and 2 of 3 options give rowsize 9.
-        compatibilityClasses.put("codechicken.enderstorage.storage.item.ContainerEnderItemStorage",
-                new ContainerInfo(true, false, true));
-
-        // Galacticraft
-        compatibilityClasses.put("micdoodle8.mods.galacticraft.core.inventory.GCCoreContainerPlayer",
-                new ContainerInfo(true, true, false,
-                        getCompatiblitySlotMapInfo("galacticraftPlayerSlots")));
-
 
         try {
             configClasses = CompatibilityConfigLoader.load("config/InvTweaksCompatibility.xml");

@@ -36,7 +36,6 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String ANNOTATION_CONTAINER_SECTION_CALLBACK = "Linvtweaks/api/container/ContainerSectionCallback;";
 
     private static Map<String, ContainerInfo> standardClasses = new HashMap<String, ContainerInfo>();
-    private static Map<String, ContainerInfo> compatibilityClasses = new HashMap<String, ContainerInfo>();
     private static Map<String, ContainerInfo> configClasses = new HashMap<String, ContainerInfo>();
     private static String containerClassName;
 
@@ -225,17 +224,13 @@ public class ContainerTransformer implements IClassTransformer {
         cr.accept(cn, 0);
 
         if("net.minecraft.inventory.Container".equals(transformedName)) {
-            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
-
             transformBaseContainer(cn);
 
             cn.accept(cw);
             return cw.toByteArray();
         }
 
-        if("net.minecraft.client.gui.inventory.ContainerCreative".equals(transformedName)) {
-            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
-
+        if("net.minecraft.client.gui.inventory.GuiContainerCreative$ContainerCreative".equals(transformedName)) {
             transformCreativeContainer(cn);
 
             cn.accept(cw);
@@ -245,8 +240,6 @@ public class ContainerTransformer implements IClassTransformer {
         // Transform classes with explicitly specified information
         ContainerInfo info = standardClasses.get(transformedName);
         if(info != null) {
-            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
-
             transformContainer(cn, info);
 
             cn.accept(cw);
@@ -254,8 +247,6 @@ public class ContainerTransformer implements IClassTransformer {
         }
 
         if("invtweaks.InvTweaksObfuscation".equals(transformedName)) {
-            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
-
             Type containertype = Type.getObjectType(containerClassName);
             for(MethodNode method : (List<MethodNode>) cn.methods) {
                 if("isValidChest".equals(method.name)) {
@@ -280,8 +271,6 @@ public class ContainerTransformer implements IClassTransformer {
 
         info = configClasses.get(transformedName);
         if(info != null) {
-            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
-
             transformContainer(cn, info);
 
             cn.accept(cw);
@@ -368,16 +357,6 @@ public class ContainerTransformer implements IClassTransformer {
                     }
                 }
             }
-        }
-
-        info = compatibilityClasses.get(transformedName);
-        if(info != null) {
-            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
-
-            transformContainer(cn, info);
-
-            cn.accept(cw);
-            return cw.toByteArray();
         }
 
         if("net.minecraft.client.gui.GuiTextField".equals(transformedName)) {

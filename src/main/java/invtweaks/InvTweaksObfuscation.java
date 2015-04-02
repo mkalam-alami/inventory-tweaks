@@ -78,11 +78,10 @@ public class InvTweaksObfuscation {
 
     @SuppressWarnings("unchecked")
     public static int getSlotNumber(Slot slot) {
-        /* FIXME: Cannot compile until SpecialSource update
         try {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots
             if(slot instanceof GuiContainerCreative.CreativeSlot) {
-                Slot underlyingSlot = ((SlotCreativeInventory)slot).theSlot;
+                Slot underlyingSlot = ((GuiContainerCreative.CreativeSlot)slot).slot;
                 if(underlyingSlot != null) {
                     return underlyingSlot.slotNumber;
                 } else {
@@ -92,7 +91,6 @@ public class InvTweaksObfuscation {
         } catch(Exception e) {
             log.warn("Failed to access creative slot number");
         }
-        */
         return slot.slotNumber;
     }
 

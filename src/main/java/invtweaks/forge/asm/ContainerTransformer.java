@@ -112,8 +112,7 @@ public class ContainerTransformer implements IClassTransformer {
     }
 
     public static void transformCreativeContainer(ClassNode clazz) {
-        /* FIXME: Reqired methods cannot be compiled until SpecialSource update
-        ASMHelper.generateForwardingToStaticMethod(clazz, STANDARD_INVENTORY_METHOD, "containerCreativeIsInventory",
+        ASMHelper.generateForwardingToStaticMethod(clazz, SHOW_BUTTONS_METHOD, "containerCreativeIsInventory",
                                                    Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
         ASMHelper.generateForwardingToStaticMethod(clazz, VALID_INVENTORY_METHOD, "containerCreativeIsInventory",
                                                    Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
@@ -123,7 +122,6 @@ public class ContainerTransformer implements IClassTransformer {
         ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "containerCreativeSlots",
                                                    Type.getObjectType("java/util/Map"),
                                                    Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
-         */
     }
 
     private static void transformTextField(ClassNode clazz) {

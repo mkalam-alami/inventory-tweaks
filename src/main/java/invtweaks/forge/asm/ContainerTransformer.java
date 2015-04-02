@@ -230,12 +230,12 @@ public class ContainerTransformer implements IClassTransformer {
             return cw.toByteArray();
         }
 
-        if("net.minecraft.client.gui.inventory.GuiContainerCreative$ContainerCreative".equals(transformedName)) {
+        /*if("net.minecraft.client.gui.inventory.GuiContainerCreative$ContainerCreative".equals(transformedName)) {
             transformCreativeContainer(cn);
 
             cn.accept(cw);
             return cw.toByteArray();
-        }
+        }*/
 
         // Transform classes with explicitly specified information
         ContainerInfo info = standardClasses.get(transformedName);

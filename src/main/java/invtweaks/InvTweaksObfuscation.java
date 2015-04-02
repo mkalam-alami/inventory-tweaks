@@ -27,6 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Mouse;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
@@ -212,9 +213,8 @@ public class InvTweaksObfuscation {
     }
 
     public static boolean isBasicSlot(Object o) { // Slot
-        // TODO: SpecialSource, class ATs, cannot compile
         return o != null && (o.getClass()
-                .equals(Slot.class)/* || o.getClass().equals(GuiContainerCreative.CreativeSlot.class)*/);
+                .equals(Slot.class) || o.getClass().equals(GuiContainerCreative.CreativeSlot.class));
     }
 
     // Container members
@@ -320,7 +320,7 @@ public class InvTweaksObfuscation {
     public boolean hasTexture(ResourceLocation texture) {
         try {
             mc.getResourceManager().getResource(texture);
-        } catch(/*IOException*/Exception e) { //FIXME: Java is stupid, the exception annotations just aren't being generated correctly at the moment.
+        } catch(IOException e) {
             return false;
         }
         return true;

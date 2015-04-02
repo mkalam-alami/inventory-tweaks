@@ -6,9 +6,7 @@ import invtweaks.api.InvTweaksAPI;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.network.ITMessageToMessageCodec;
-import invtweaks.network.handlers.ClickMessageHandler;
-import invtweaks.network.handlers.LoginMessageHandler;
-import invtweaks.network.handlers.SortingCompleteMessageHandler;
+import invtweaks.network.ITPacketHandler;
 import invtweaks.network.packets.ITPacketLogin;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,8 +34,7 @@ public class CommonProxy implements InvTweaksAPI {
     public void init(FMLInitializationEvent e) {
         invtweaksChannel = NetworkRegistry.INSTANCE
                 .newChannel(InvTweaksConst.INVTWEAKS_CHANNEL, new ITMessageToMessageCodec(),
-                        new ClickMessageHandler(), new LoginMessageHandler(),
-                        new SortingCompleteMessageHandler());
+                        new ITPacketHandler());
 
 
         FMLCommonHandler.instance().bus().register(this);

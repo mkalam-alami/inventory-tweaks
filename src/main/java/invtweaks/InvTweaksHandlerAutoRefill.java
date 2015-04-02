@@ -154,7 +154,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
              * This allows to have a short feedback
 		     * that the stack/tool is empty/broken.
 		     */
-            InvTweaks.getInstance().addScheduledTask(mc.theWorld.getTotalWorldTime() + 1L, new Runnable() {
+            InvTweaks.getInstance().addScheduledTask(InvTweaksMod.proxy.getCurrentTick() + 1L, new Runnable() {
 
                 private InvTweaksContainerSectionManager containerMgr;
                 private int targetedSlot;
@@ -178,25 +178,6 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 }
 
                 public void run() {
-                    // Disabled because this is running next tick, not on a thread
-/*
-                    // Wait for the server to confirm that the
-                    // slot is now empty
-                    int pollingTime = 0;
-                    setHasInventoryChanged(false);
-                    while(getThePlayer() != null && !hasInventoryChanged() && pollingTime < InvTweaksConst.POLLING_TIMEOUT) {
-                        trySleep(InvTweaksConst.POLLING_DELAY);
-                    }
-                    if(getThePlayer() == null) {
-                        return; // Game closed
-                    }
-                    if(pollingTime < InvTweaksConst.AUTO_REFILL_DELAY) {
-                        trySleep(InvTweaksConst.AUTO_REFILL_DELAY - pollingTime);
-                    }
-                    if(pollingTime >= InvTweaksConst.POLLING_TIMEOUT) {
-                        log.warn("Autoreplace timout");
-                    }*/
-
                     if(i < 0 || targetedSlot < 0) {
                         return;
                     }

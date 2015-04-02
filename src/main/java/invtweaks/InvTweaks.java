@@ -85,7 +85,6 @@ public class InvTweaks extends InvTweaksObfuscation {
     private int itemPickupTimeout = 0;
     private boolean isNEILoaded;
 
-    private PriorityBlockingQueue<TickScheduledTask> scheduledTasks = new PriorityBlockingQueue<TickScheduledTask>(16, new TickScheduledTask.TaskComparator());
     private List<String> queuedMessages = new ArrayList<String>();
     private boolean wasNEIEnabled = false;
     private Class neiClientConfig;
@@ -146,16 +145,11 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     public void addScheduledTask(TickScheduledTask task) {
-        scheduledTasks.add(task);
+        InvTweaksMod.proxy.addScheduledTask(task);
     }
 
     public void addScheduledTask(long time, final Runnable task) {
-        scheduledTasks.add(new TickScheduledTask(time) {
-            @Override
-            void run() {
-                task.run();
-            }
-        });
+        InvTweaksMod.proxy.addScheduledTask(time, task);
     }
 
     /**
@@ -474,10 +468,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             return false;
         }
 
-        while(!scheduledTasks.isEmpty() &&
-                (scheduledTasks.peek().getScheduledTickTime() <= mc.theWorld.getTotalWorldTime())) {
-            scheduledTasks.poll().run();
-        }
+        InvTweaksMod.proxy.runScheduledTasks(mc.theWorld.getTotalWorldTime());
 
         // Clone the hotbar to be able to monitor changes on it
         if(itemPickupPending) {

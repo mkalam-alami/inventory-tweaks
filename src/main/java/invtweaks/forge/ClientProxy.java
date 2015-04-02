@@ -136,6 +136,11 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
+    @Override
+    public long getCurrentTick() {
+        return Minecraft.getMinecraft().theWorld.getTotalWorldTime();
+    }
+
     @SubscribeEvent
     public void onConnectionToServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         setServerHasInvTweaks(false);

@@ -29,6 +29,7 @@ import org.lwjgl.opengl.Display;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.logging.Level;
 
 
@@ -84,7 +85,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private int itemPickupTimeout = 0;
     private boolean isNEILoaded;
 
-    private PriorityQueue<TickScheduledTask> scheduledTasks = new PriorityQueue<TickScheduledTask>(16, new TickScheduledTask.TaskComparator());
+    private PriorityBlockingQueue<TickScheduledTask> scheduledTasks = new PriorityBlockingQueue<TickScheduledTask>(16, new TickScheduledTask.TaskComparator());
     private List<String> queuedMessages = new ArrayList<String>();
     private boolean wasNEIEnabled = false;
     private Class neiClientConfig;

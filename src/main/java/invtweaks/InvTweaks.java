@@ -182,7 +182,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             if(isTimeForPolling()) {
                 unlockKeysIfNecessary();
             }
-            if(guiScreen instanceof GuiContainer) {
+            if(isGuiContainer(guiScreen)) {
                 handleGUILayout((GuiContainer) guiScreen);
             }
             if(!wasInGUI) {
@@ -190,7 +190,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 // Ignore it to prevent erroneous trigger of shortcuts.
                 mouseWasDown = true;
             }
-            if(guiScreen instanceof GuiContainer) {
+            if(isGuiContainer(guiScreen)) {
                 handleShortcuts((GuiContainer) guiScreen);
             }
 
@@ -219,7 +219,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             // Check current GUI
             GuiScreen guiScreen = getCurrentScreen();
-            if(guiScreen == null || (guiScreen instanceof GuiContainer && (isValidChest(
+            if(guiScreen == null || (isGuiContainer(guiScreen) && (isValidChest(
                     ((GuiContainer) guiScreen).inventorySlots) || isValidInventory(
                     ((GuiContainer) guiScreen).inventorySlots)))) {
                 // Sorting!
@@ -668,7 +668,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
             // Check that middle click sorting is allowed
             if(config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK)
-                    .equals(InvTweaksConfig.VALUE_TRUE) && guiScreen instanceof GuiContainer) {
+                    .equals(InvTweaksConfig.VALUE_TRUE) && isGuiContainer(guiScreen)) {
 
                 GuiContainer guiContainer = (GuiContainer) guiScreen;
                 Container container = guiContainer.inventorySlots;

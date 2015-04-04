@@ -45,7 +45,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
     @SideOnly(Side.CLIENT)
     public InvTweaksContainerManager(Minecraft mc) {
         GuiScreen currentScreen = mc.currentScreen;
-        if(currentScreen instanceof GuiContainer) {
+        if(InvTweaksObfuscation.isGuiContainer(currentScreen)) {
             guiContainer = (GuiContainer) currentScreen;
             container = guiContainer.inventorySlots;
         } else {

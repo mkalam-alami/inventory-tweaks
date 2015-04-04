@@ -124,7 +124,7 @@ public class ClientProxy extends CommonProxy {
         // TODO: This seems like something useful enough to be a util method somewhere.
         Minecraft mc = FMLClientHandler.instance().getClient();
         Container currentContainer = mc.thePlayer.inventoryContainer;
-        if(mc.currentScreen instanceof GuiContainer) {
+        if(InvTweaksObfuscation.isGuiContainer(mc.currentScreen)) {
             currentContainer = ((GuiContainer) mc.currentScreen).inventorySlots;
         }
 

@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Random;
 
 public interface IItemTree {
-    public void registerOre(String category, String name, String oreName, int order);
+    void registerOre(String category, String name, String oreName, int order);
 
     boolean matches(List<IItemTreeItem> items, String keyword);
 

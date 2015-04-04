@@ -43,7 +43,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
 
     public InvTweaksGuiSettings(GuiScreen parentScreen) {
-        this(InvTweaks.getMinecraftInstance(), parentScreen, InvTweaks.getInstance().getConfigManager().getConfig());
+        this(InvTweaks.getMinecraftInstance(), parentScreen, InvTweaks.getConfigManager().getConfig());
     }
 
     public InvTweaksGuiSettings(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
@@ -128,7 +128,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         // Check if links to files are supported, if not disable the buttons
         if(!Desktop.isDesktopSupported()) {
             for(Object o : controlList) {
-                if(obf.isGuiButton(o)) {
+                if(InvTweaksObfuscation.isGuiButton(o)) {
                     GuiButton guiButton = (GuiButton) o;
                     // GuiButton
                     // GuiButton

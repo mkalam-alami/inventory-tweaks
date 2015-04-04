@@ -129,7 +129,7 @@ public class ClientProxy extends CommonProxy {
         }
 
         try {
-            new InvTweaksHandlerSorting(mc, instance.getConfigManager().getConfig(), section, method, InvTweaksObfuscation.getSpecialChestRowSize(currentContainer)).sort();
+            new InvTweaksHandlerSorting(mc, InvTweaks.getConfigManager().getConfig(), section, method, InvTweaksObfuscation.getSpecialChestRowSize(currentContainer)).sort();
         } catch(Exception e) {
             InvTweaks.logInGameErrorStatic("invtweaks.sort.chest.error", e);
             e.printStackTrace();

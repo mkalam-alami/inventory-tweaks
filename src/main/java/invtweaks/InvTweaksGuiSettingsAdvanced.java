@@ -105,7 +105,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         // Check if links to files are supported, if not disable the buttons
         if(!Desktop.isDesktopSupported()) {
             for(Object o : controlList) {
-                if(obf.isGuiButton(o)) {
+                if(InvTweaksObfuscation.isGuiButton(o)) {
                     GuiButton button = (GuiButton) o;
                     // GuiButton
                     if(button.id == ID_EDITSHORTCUTS) {

@@ -179,7 +179,7 @@ public class ContainerTransformer implements IClassTransformer {
         standardClasses.put("net.minecraft.inventory.ContainerWorkbench",
                 new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerWorkbenchSlots")));
         standardClasses.put("net.minecraft.inventory.ContainerEnchantment",
-                new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerEnchantmentSlots")));
+                new ContainerInfo(false, true, false, getVanillaSlotMapInfo("containerEnchantmentSlots")));
         standardClasses.put("net.minecraft.inventory.ContainerFurnace",
                 new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerFurnaceSlots")));
 
@@ -230,6 +230,7 @@ public class ContainerTransformer implements IClassTransformer {
             return cw.toByteArray();
         }
 
+        // TODO: Creative mode handling is really buggy for some reason.
         /*if("net.minecraft.client.gui.inventory.GuiContainerCreative$ContainerCreative".equals(transformedName)) {
             transformCreativeContainer(cn);
 
@@ -360,8 +361,6 @@ public class ContainerTransformer implements IClassTransformer {
         }
 
         if("net.minecraft.client.gui.GuiTextField".equals(transformedName)) {
-            FMLRelaunchLog.info("InvTweaks: %s", transformedName);
-
             transformTextField(cn);
 
             cn.accept(cw);

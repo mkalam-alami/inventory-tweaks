@@ -757,7 +757,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         boolean isValidChest = isValidChest(container);
 
-        if(showButtons(container) && !isGuiEnchantmentTable(guiContainer)) {
+        if(showButtons(container)) {
             int w = 10, h = 10;
 
             // Re-layout when NEI changes states.
@@ -940,7 +940,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
-    private int getContainerRowSize(GuiContainer guiContainer) {
+    private static int getContainerRowSize(GuiContainer guiContainer) {
         return getSpecialChestRowSize(guiContainer.inventorySlots);
     }
 

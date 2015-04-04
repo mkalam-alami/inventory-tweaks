@@ -190,10 +190,6 @@ public class InvTweaksObfuscation {
         return o != null && o.getClass().equals(GuiContainerCreative.class);
     }
 
-    public static boolean isGuiEnchantmentTable(Object o) { // GuiEnchantmentTable
-        return o != null && o.getClass().equals(GuiEnchantment.class);
-    }
-
     public static boolean isGuiInventory(Object o) { // GuiInventory
         return o != null && o.getClass().equals(GuiInventory.class);
     }

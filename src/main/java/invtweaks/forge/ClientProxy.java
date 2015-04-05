@@ -4,6 +4,7 @@ import invtweaks.*;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
+import invtweaks.network.ITPacketHandlerClient;
 import invtweaks.network.packets.ITPacketClick;
 import invtweaks.network.packets.ITPacketSortComplete;
 import net.minecraft.client.Minecraft;
@@ -13,6 +14,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -24,6 +26,8 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
+
+import java.util.concurrent.PriorityBlockingQueue;
 
 public class ClientProxy extends CommonProxy {
     public static final KeyBinding KEYBINDING_SORT = new KeyBinding("invtweaks.key.sort", Keyboard.KEY_R, "invtweaks.key.category");
@@ -42,6 +46,8 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent e) {
         super.init(e);
+
+        invtweaksChannel.get(Side.CLIENT).pipeline().addAfter("ITMessageToMessageCodec#0", "InvTweaks Handler Client", new ITPacketHandlerClient());
 
         Minecraft mc = FMLClientHandler.instance().getClient();
         // Instantiate mod core
@@ -137,8 +143,8 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public long getCurrentTick() {
-        return Minecraft.getMinecraft().theWorld.getTotalWorldTime();
+    public void addClientScheduledTask(Runnable task) {
+        Minecraft.getMinecraft().addScheduledTask(task);
     }
 
     @SubscribeEvent

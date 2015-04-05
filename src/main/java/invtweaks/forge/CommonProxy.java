@@ -1,13 +1,12 @@
 package invtweaks.forge;
 
 import invtweaks.InvTweaksConst;
-import invtweaks.TickScheduledTask;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.network.ITMessageToMessageCodec;
-import invtweaks.network.ITPacketHandler;
+import invtweaks.network.ITPacketHandlerServer;
 import invtweaks.network.packets.ITPacketLogin;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,21 +25,17 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.EnumMap;
-import java.util.concurrent.PriorityBlockingQueue;
 
 public class CommonProxy implements InvTweaksAPI {
     protected static EnumMap<Side, FMLEmbeddedChannel> invtweaksChannel;
-    private PriorityBlockingQueue<TickScheduledTask> scheduledTasks = new PriorityBlockingQueue<TickScheduledTask>(16,
-            (TickScheduledTask o1, TickScheduledTask o2) -> Long.compare(o1.getScheduledTickTime(), o2.getScheduledTickTime()));
 
     public void preInit(FMLPreInitializationEvent e) {
     }
 
     public void init(FMLInitializationEvent e) {
         invtweaksChannel = NetworkRegistry.INSTANCE
-                .newChannel(InvTweaksConst.INVTWEAKS_CHANNEL, new ITMessageToMessageCodec(),
-                        new ITPacketHandler());
-
+                .newChannel(InvTweaksConst.INVTWEAKS_CHANNEL, new ITMessageToMessageCodec());
+        invtweaksChannel.get(Side.SERVER).pipeline().addAfter("ITMessageToMessageCodec#0", "InvTweaks Handler Server", new ITPacketHandlerServer());
 
         FMLCommonHandler.instance().bus().register(this);
     }
@@ -110,31 +105,10 @@ public class CommonProxy implements InvTweaksAPI {
         channel.writeOutbound(new ITPacketLogin());
     }
 
-    public void addScheduledTask(TickScheduledTask task) {
-        scheduledTasks.add(task);
+    public void addServerScheduledTask(Runnable task) {
+        MinecraftServer.getServer().addScheduledTask(task);
     }
 
-    public void addScheduledTask(long time, final Runnable task) {
-        addScheduledTask(new TickScheduledTask(time) {
-            @Override
-            public void run() {
-                task.run();
-            }
-        });
-    }
-
-    public void runScheduledTasks(long currentTick) {
-        while(!scheduledTasks.isEmpty() &&
-                (scheduledTasks.peek().getScheduledTickTime() <= currentTick)) {
-            scheduledTasks.poll().run();
-        }
-    }
-
-    public long getCurrentTick() {
-        MinecraftServer server = MinecraftServer.getServer();
-        if(server != null) {
-            return server.getTickCounter();
-        }
-        return 0;
+    public void addClientScheduledTask(Runnable task) {
     }
 }

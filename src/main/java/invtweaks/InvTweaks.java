@@ -144,12 +144,8 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
     }
 
-    public void addScheduledTask(TickScheduledTask task) {
-        InvTweaksMod.proxy.addScheduledTask(task);
-    }
-
-    public void addScheduledTask(long time, final Runnable task) {
-        InvTweaksMod.proxy.addScheduledTask(time, task);
+    public void addScheduledTask(Runnable task) {
+        InvTweaksMod.proxy.addClientScheduledTask(task);
     }
 
     /**
@@ -467,8 +463,6 @@ public class InvTweaks extends InvTweaksObfuscation {
         if(config == null) {
             return false;
         }
-
-        InvTweaksMod.proxy.runScheduledTasks(mc.theWorld.getTotalWorldTime());
 
         // Clone the hotbar to be able to monitor changes on it
         if(itemPickupPending) {

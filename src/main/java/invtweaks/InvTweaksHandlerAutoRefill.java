@@ -154,7 +154,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
              * This allows to have a short feedback
 		     * that the stack/tool is empty/broken.
 		     */
-            InvTweaks.getInstance().addScheduledTask(InvTweaksMod.proxy.getCurrentTick() + 1L, new Runnable() {
+            InvTweaks.getInstance().addScheduledTask(new Runnable() {
 
                 private InvTweaksContainerSectionManager containerMgr;
                 private int targetedSlot;

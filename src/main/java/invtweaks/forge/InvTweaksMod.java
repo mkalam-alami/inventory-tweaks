@@ -27,7 +27,7 @@ public class InvTweaksMod implements InvTweaksAPI {
     @Mod.Instance
     public static InvTweaksMod instance;
 
-    @SidedProxy(clientSide = "invtweaks.forge.ClientProxy", serverSide = "invtweaks.forge.ServerProxy")
+    @SidedProxy(clientSide = "invtweaks.forge.ClientProxy", serverSide = "invtweaks.forge.CommonProxy")
     public static CommonProxy proxy;
 
     // Helper for ASM transform of GuiTextField to disable sorting on focus.

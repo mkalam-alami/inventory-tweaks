@@ -231,12 +231,12 @@ public class ContainerTransformer implements IClassTransformer {
         }
 
         // TODO: Creative mode handling is really buggy for some reason.
-        /*if("net.minecraft.client.gui.inventory.GuiContainerCreative$ContainerCreative".equals(transformedName)) {
+        if("net.minecraft.client.gui.inventory.GuiContainerCreative$ContainerCreative".equals(transformedName)) {
             transformCreativeContainer(cn);
 
             cn.accept(cw);
             return cw.toByteArray();
-        }*/
+        }
 
         // Transform classes with explicitly specified information
         ContainerInfo info = standardClasses.get(transformedName);

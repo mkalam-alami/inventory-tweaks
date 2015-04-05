@@ -4,3 +4,6 @@ jdk:
 install: ./gradlew setupCI
 script: ./gradlew build curse
 sudo: false
+notifications:
+  irc:
+    - "irc.esper.net#inventorytweaks"

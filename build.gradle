@@ -171,6 +171,9 @@ if(invtweaks_version.endsWith("-dev")) {
     ext.curseType = 'release'
     ext.curseVersion = invtweaks_version
 }
+
+curse.onlyIf { curseKey }
+
 if(curseKey) {
     curse {
         dependsOn apiJar
@@ -183,14 +186,6 @@ if(curseKey) {
         gameVersions.add(mcversion)
 
         additionalArtifact apiJar
-    }
-}
-
-task upload() {
-    if(curseKey) {
-        dependsOn curse
-    } else {
-        dependsOn reobf
     }
 }
 

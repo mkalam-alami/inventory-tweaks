@@ -189,6 +189,8 @@ if(curseKey) {
 task upload() {
     if(curseKey) {
         dependsOn curse
+    } else {
+        dependsOn reobf
     }
 }
 

@@ -186,6 +186,12 @@ if(curseKey) {
     }
 }
 
+task upload() {
+    if(curseKey) {
+        dependsOn curse
+    }
+}
+
 processResources {
     inputs.property "version", internal_version
     inputs.property "mcversion", mcversion

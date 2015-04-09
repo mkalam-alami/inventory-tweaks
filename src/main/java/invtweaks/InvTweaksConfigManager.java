@@ -146,7 +146,9 @@ public class InvTweaksConfigManager {
             config.load();
             shortcutsHandler.loadShortcuts();
 
-            InvTweaks.logInGameStatic("invtweaks.loadconfig.done");
+            if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_CONFIG_LOADED_MESSAGE).equals(InvTweaksConfig.VALUE_TRUE)) {
+                InvTweaks.logInGameStatic("invtweaks.loadconfig.done");
+            }
             showConfigErrors(config);
         } catch(FileNotFoundException e) {
             error = "Config file not found";

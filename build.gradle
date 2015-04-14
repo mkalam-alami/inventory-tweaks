@@ -186,6 +186,7 @@ if(curseKey) {
         gameVersions.add(mcversion)
 
         additionalArtifact apiJar
+        additionalArtifact deobfJar
     }
 }
 

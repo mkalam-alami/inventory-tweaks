@@ -28,7 +28,6 @@ public class DirectContainerManager implements IContainerManager {
 
     // TODO: Throw errors when the container isn't available anymore
 
-    private GuiContainer guiContainer;
     private Container container;
     private Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
     private int clickDelay = 0;
@@ -46,8 +45,7 @@ public class DirectContainerManager implements IContainerManager {
     public DirectContainerManager(Minecraft mc) {
         GuiScreen currentScreen = mc.currentScreen;
         if(InvTweaksObfuscation.isGuiContainer(currentScreen)) {
-            guiContainer = (GuiContainer) currentScreen;
-            container = guiContainer.inventorySlots;
+            container = ((GuiContainer) currentScreen).inventorySlots;
         } else {
             container = mc.thePlayer.inventoryContainer;
         }
@@ -58,8 +56,7 @@ public class DirectContainerManager implements IContainerManager {
 
     // TODO: Remove dependency on Minecraft class
     // TODO: Refactor the mouse-coverage stuff that needs the GuiContainer into a different class.
-    public DirectContainerManager(Container cont, GuiContainer gui) {
-        guiContainer = gui;
+    public DirectContainerManager(Container cont) {
         container = cont;
         initSlots();
     }
@@ -342,15 +339,6 @@ public class DirectContainerManager implements IContainerManager {
 
     /**
      * @param slotNumber
-     * @return -1 if not found
-     */
-    @Override
-    public int getSlotIndex(int slotNumber) {
-        return getSlotIndex(slotNumber, false);
-    }
-
-    /**
-     * @param slotNumber
      * @param preferInventory Set to true if you prefer to have the index according to the whole inventory, instead of a
      *                        more specific section (hotbar/not hotbar)
      * @return Full index of slot in the container
@@ -401,8 +389,7 @@ public class DirectContainerManager implements IContainerManager {
      * @return An ItemStack or null.
      */
     @Override
-    public ItemStack getItemStack(ContainerSection section, int index)
-            throws NullPointerException, IndexOutOfBoundsException {
+    public ItemStack getItemStack(ContainerSection section, int index) {
         int slot = indexToSlot(section, index);
         if(slot >= 0 && slot < container.inventorySlots.size()) {
             return InvTweaksObfuscation.getSlotStack(container, slot);

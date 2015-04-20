@@ -107,7 +107,9 @@ public interface IContainerManager {
      * @param slotNumber
      * @return -1 if not found
      */
-    int getSlotIndex(int slotNumber);
+    default int getSlotIndex(int slotNumber) {
+        return getSlotIndex(slotNumber, false);
+    }
 
     /**
      * @param slotNumber
@@ -132,8 +134,7 @@ public interface IContainerManager {
      * @param index
      * @return An ItemStack or null.
      */
-    ItemStack getItemStack(ContainerSection section, int index)
-            throws NullPointerException, IndexOutOfBoundsException;
+    ItemStack getItemStack(ContainerSection section, int index);
 
     Container getContainer();
 

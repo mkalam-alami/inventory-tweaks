@@ -51,7 +51,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
      */
     public void autoRefillSlot(int slot, String wantedId, int wantedDamage) throws Exception {
 
-        ContainerSectionManager container = new ContainerSectionManager(mc,
+        ContainerSectionManager container = new ContainerSectionManager(
                 ContainerSection.INVENTORY);
         ItemStack candidateStack, replacementStack = null;
         int replacementStackSlot = -1;
@@ -163,7 +163,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 private boolean refillBeforeBreak;
 
                 public Runnable init(Minecraft mc, int i, int currentItem, boolean refillBeforeBreak) throws Exception {
-                    this.containerMgr = new ContainerSectionManager(mc, ContainerSection.INVENTORY);
+                    this.containerMgr = new ContainerSectionManager(ContainerSection.INVENTORY);
                     this.targetedSlot = currentItem;
                     if(i != -1) {
                         this.i = i;

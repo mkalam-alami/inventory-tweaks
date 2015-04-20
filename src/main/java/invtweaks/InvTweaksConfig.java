@@ -45,6 +45,7 @@ public class InvTweaksConfig {
     public static final String PROP_ENABLE_SOUNDS = "enableSounds";
     public static final String PROP_ENABLE_SERVER_ITEMSWAP = "enableServerItemSwap";
     public static final String PROP_ENABLE_CONFIG_LOADED_MESSAGE = "enableConfigLoadedMesssage";
+    public static final String PROP_ENABLE_CONTAINER_MIRRORING = "enableContainerMirroring";
     public static final String VALUE_TRUE = "true";
     public static final String VALUE_FALSE = "false";
     public static final String LOCKED = "locked";

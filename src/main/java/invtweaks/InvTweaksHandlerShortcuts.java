@@ -171,7 +171,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
         ShortcutConfig shortcutConfig = new ShortcutConfig();
 
-        container = new DirectContainerManager(mc);
+        container = InvTweaks.getCurrentContainerManager();
         Slot slot = InvTweaksObfuscation.getSlotAtMousePosition((GuiContainer) getCurrentScreen());
         // If a valid and not empty slot is clicked
         if(shortcut != null && slot != null && (slot.getHasStack() || getHeldStack() != null)) {

@@ -7,6 +7,7 @@ import invtweaks.api.container.ContainerSection;
 import invtweaks.container.IContainerManager;
 import invtweaks.container.DirectContainerManager;
 import invtweaks.container.ContainerSectionManager;
+import invtweaks.container.MirroredContainerManager;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -243,7 +244,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
 
         try {
-            ContainerSectionManager containerMgr = new ContainerSectionManager(mc,
+            ContainerSectionManager containerMgr = new ContainerSectionManager(
                     ContainerSection.INVENTORY);
 
             // Find stack slot (look in hotbar only).
@@ -405,9 +406,21 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
     }
 
-    public void setItemPickupPending(boolean itemPickupPending) {
-        this.itemPickupPending = itemPickupPending;
+    public void setItemPickupPending(boolean value) {
+        itemPickupPending = value;
         itemPickupTimeout = 5;
+    }
+
+    public static IContainerManager getContainerManager(Container container) {
+        if(getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_CONTAINER_MIRRORING).equals(InvTweaksConfig.VALUE_TRUE)) {
+            return new MirroredContainerManager(container);
+        } else {
+            return new DirectContainerManager(container);
+        }
+    }
+
+    public static IContainerManager getCurrentContainerManager() {
+        return getContainerManager(InvTweaksObfuscation.getCurrentContainer());
     }
 
     public void setSortKeyEnabled(boolean enabled) {
@@ -672,7 +685,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 if(!chestAlgorithmButtonDown) {
                     chestAlgorithmButtonDown = true;
 
-                    IContainerManager containerMgr = new DirectContainerManager(mc);
+                    IContainerManager containerMgr = getContainerManager(container);
                     Slot slotAtMousePosition = InvTweaksObfuscation
                             .getSlotAtMousePosition((GuiContainer) getCurrentScreen());
                     ContainerSection target = null;

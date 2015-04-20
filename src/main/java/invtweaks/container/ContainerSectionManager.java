@@ -1,5 +1,6 @@
 package invtweaks.container;
 
+import invtweaks.InvTweaks;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
@@ -20,8 +21,8 @@ public class ContainerSectionManager {
     private IContainerManager containerMgr;
     private ContainerSection section;
 
-    public ContainerSectionManager(Minecraft mc, ContainerSection section) throws Exception {
-        this(new DirectContainerManager(mc), section);
+    public ContainerSectionManager(ContainerSection section) throws Exception {
+        this(InvTweaks.getCurrentContainerManager(), section);
     }
 
     public ContainerSectionManager(IContainerManager manager, ContainerSection section)

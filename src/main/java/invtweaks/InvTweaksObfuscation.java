@@ -235,6 +235,16 @@ public class InvTweaksObfuscation {
         return mc.currentScreen;
     }
 
+    public static Container getCurrentContainer() {
+        Minecraft mc = FMLClientHandler.instance().getClient();
+        Container currentContainer = mc.thePlayer.inventoryContainer;
+        if(InvTweaksObfuscation.isGuiContainer(mc.currentScreen)) {
+            currentContainer = ((GuiContainer) mc.currentScreen).inventorySlots;
+        }
+
+        return currentContainer;
+    }
+
     public FontRenderer getFontRenderer() {
         return mc.fontRendererObj;
     }

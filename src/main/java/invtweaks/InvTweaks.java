@@ -306,7 +306,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 }
 
                 // Sync after pickup movements.
-                InvTweaksMod.proxy.sortComplete();
+                containerMgr.applyChanges();
 
             } else {
                 if(--itemPickupTimeout == 0) {

@@ -110,4 +110,7 @@ public class ContainerSectionManager {
         return containerMgr.getContainer();
     }
 
+    public void applyChanges() {
+        containerMgr.applyChanges();
+    }
 }

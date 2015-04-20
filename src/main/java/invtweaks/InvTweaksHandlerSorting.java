@@ -160,7 +160,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             }
         }
 
-        InvTweaksMod.proxy.sortComplete();
+        globalContainer.applyChanges();
     }
 
     private void sortWithRules() {

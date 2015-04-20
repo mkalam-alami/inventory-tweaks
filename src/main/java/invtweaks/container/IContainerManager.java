@@ -139,4 +139,6 @@ public interface IContainerManager {
     Container getContainer();
 
     void setClickDelay(int delay);
+
+    void applyChanges();
 }

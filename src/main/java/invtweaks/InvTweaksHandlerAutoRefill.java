@@ -207,7 +207,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                             }
 
                             // Make sure the inventory resyncs
-                            InvTweaksMod.proxy.sortComplete();
+                            containerMgr.applyChanges();
                         } else {
                             log.warn("Failed to move stack for autoreplace, despite of prior tests.");
                         }

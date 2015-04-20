@@ -4,6 +4,7 @@ import invtweaks.InvTweaks;
 import invtweaks.InvTweaksConst;
 import invtweaks.InvTweaksObfuscation;
 import invtweaks.api.container.ContainerSection;
+import invtweaks.forge.InvTweaksMod;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -206,6 +207,11 @@ public class MirroredContainerManager implements IContainerManager {
         clickDelay = delay;
     }
 
+    @Override
+    public void applyChanges() {
+        // TODO: Figure out what is needed to match container with virtual inventory.
+        InvTweaksMod.proxy.sortComplete();
+    }
     /**
      * Converts section/index values to slot ID.
      *

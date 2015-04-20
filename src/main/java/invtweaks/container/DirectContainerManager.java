@@ -445,4 +445,8 @@ public class DirectContainerManager implements IContainerManager {
         this.clickDelay = delay;
     }
 
+    @Override
+    public void applyChanges() {
+        InvTweaksMod.proxy.sortComplete();
+    }
 }

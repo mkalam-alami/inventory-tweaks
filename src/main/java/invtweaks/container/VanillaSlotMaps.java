@@ -1,4 +1,4 @@
-package invtweaks.containers;
+package invtweaks.container;
 
 import invtweaks.InvTweaksConst;
 import invtweaks.api.container.ContainerSection;

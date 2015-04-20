@@ -112,7 +112,7 @@ archivesBaseName = "InventoryTweaks"
 
 ext.mcversion = "1.8"
 minecraft {
-    version = "1.8-11.14.1.1336"
+    version = "1.8-11.14.1.1375"
     mappings = 'stable_16'
     at 'src/main/resources/invtweaks_at.cfg'
 

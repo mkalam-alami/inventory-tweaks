@@ -378,6 +378,8 @@ public class InvTweaksConfig {
                 properties.put(entry.getKey(), entry.getValue());
             }
         }
+
+        properties.put(PROP_VERSION, InvTweaksConst.MOD_VERSION.split(" ")[0]);
     }
 
     /**

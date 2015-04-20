@@ -1,5 +1,8 @@
-package invtweaks;
+package invtweaks.container;
 
+import invtweaks.InvTweaks;
+import invtweaks.InvTweaksConst;
+import invtweaks.InvTweaksObfuscation;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;

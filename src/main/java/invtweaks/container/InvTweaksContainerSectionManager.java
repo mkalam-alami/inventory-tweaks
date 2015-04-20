@@ -1,4 +1,4 @@
-package invtweaks;
+package invtweaks.container;
 
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;

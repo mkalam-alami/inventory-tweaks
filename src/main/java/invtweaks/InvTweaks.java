@@ -4,6 +4,8 @@ import invtweaks.api.IItemTree;
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
+import invtweaks.container.InvTweaksContainerManager;
+import invtweaks.container.InvTweaksContainerSectionManager;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -29,7 +31,6 @@ import org.lwjgl.opengl.Display;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.PriorityBlockingQueue;
 import java.util.logging.Level;
 
 

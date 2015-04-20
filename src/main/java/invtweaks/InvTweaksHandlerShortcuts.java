@@ -1,6 +1,7 @@
 package invtweaks;
 
 import invtweaks.api.container.ContainerSection;
+import invtweaks.container.InvTweaksContainerManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;

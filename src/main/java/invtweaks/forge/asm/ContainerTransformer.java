@@ -27,7 +27,7 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String ROW_SIZE_METHOD = "invtweaks$rowSize";
     public static final String SLOT_MAP_METHOD = "invtweaks$slotMap";
     public static final String CONTAINER_CLASS_INTERNAL = "net/minecraft/inventory/Container";
-    public static final String SLOT_MAPS_VANILLA_CLASS = "invtweaks/containers/VanillaSlotMaps";
+    public static final String SLOT_MAPS_VANILLA_CLASS = "invtweaks/container/VanillaSlotMaps";
     public static final String ANNOTATION_CHEST_CONTAINER = "Linvtweaks/api/container/ChestContainer;";
     public static final String ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK = "Linvtweaks/api/container/ChestContainer$RowSizeCallback;";
     public static final String ANNOTATION_CHEST_CONTAINER_LARGE_CALLBACK = "Linvtweaks/api/container/ChestContainer$IsLargeCallback;";

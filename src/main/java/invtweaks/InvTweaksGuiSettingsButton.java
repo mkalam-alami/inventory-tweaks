@@ -1,6 +1,7 @@
 package invtweaks;
 
 import invtweaks.api.container.ContainerSection;
+import invtweaks.container.InvTweaksContainerSectionManager;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 

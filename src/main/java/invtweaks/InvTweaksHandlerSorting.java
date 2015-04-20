@@ -3,6 +3,8 @@ package invtweaks;
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
+import invtweaks.container.InvTweaksContainerManager;
+import invtweaks.container.InvTweaksContainerSectionManager;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Slot;

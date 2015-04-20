@@ -2,13 +2,13 @@ package invtweaks;
 
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.container.ContainerSection;
+import invtweaks.container.InvTweaksContainerSectionManager;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 

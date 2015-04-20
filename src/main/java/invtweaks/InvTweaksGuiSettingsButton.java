@@ -1,7 +1,7 @@
 package invtweaks;
 
 import invtweaks.api.container.ContainerSection;
-import invtweaks.container.InvTweaksContainerSectionManager;
+import invtweaks.container.ContainerSectionManager;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
@@ -42,10 +42,10 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
 
         if(super.mousePressed(minecraft, i, j)) {
             // Put hold item down if necessary
-            InvTweaksContainerSectionManager containerMgr;
+            ContainerSectionManager containerMgr;
 
             try {
-                containerMgr = new InvTweaksContainerSectionManager(minecraft, ContainerSection.INVENTORY);
+                containerMgr = new ContainerSectionManager(minecraft, ContainerSection.INVENTORY);
                 if(obf.getHeldStack() != null) {
                     try {
                         // Put hold item down

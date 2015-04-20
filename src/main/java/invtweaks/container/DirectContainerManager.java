@@ -24,12 +24,9 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Jimeo Wan
  */
-public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
+public class DirectContainerManager implements IContainerManager {
 
     // TODO: Throw errors when the container isn't available anymore
-
-    public static final int DROP_SLOT = -999;
-    public static final int HOTBAR_SIZE = 9;
 
     private GuiContainer guiContainer;
     private Container container;
@@ -46,7 +43,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      */
     @SuppressWarnings({"unchecked"})
     @SideOnly(Side.CLIENT)
-    public InvTweaksContainerManager(Minecraft mc) {
+    public DirectContainerManager(Minecraft mc) {
         GuiScreen currentScreen = mc.currentScreen;
         if(InvTweaksObfuscation.isGuiContainer(currentScreen)) {
             guiContainer = (GuiContainer) currentScreen;
@@ -61,7 +58,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
 
     // TODO: Remove dependency on Minecraft class
     // TODO: Refactor the mouse-coverage stuff that needs the GuiContainer into a different class.
-    public InvTweaksContainerManager(Container cont, GuiContainer gui) {
+    public DirectContainerManager(Container cont, GuiContainer gui) {
         guiContainer = gui;
         container = cont;
         initSlots();
@@ -98,6 +95,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      * @throws TimeoutException
      */
     // TODO: Server helper directly implementing this as a swap without the need for intermediate slots.
+    @Override
     public boolean move(ContainerSection srcSection, int srcIndex, ContainerSection destSection, int destIndex) {
         ItemStack srcStack = getItemStack(srcSection, srcIndex);
         ItemStack destStack = getItemStack(destSection, destIndex);
@@ -196,6 +194,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      * @throws TimeoutException
      */
     // TODO: Server helper directly implementing this.
+    @Override
     public boolean moveSome(ContainerSection srcSection, int srcIndex, ContainerSection destSection, int destIndex,
                             int amount) {
 
@@ -224,22 +223,13 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
 
     }
 
-    // TODO: Server helper directly implementing this.
-    public boolean drop(ContainerSection srcSection, int srcIndex) {
-        return move(srcSection, srcIndex, null, DROP_SLOT);
-    }
-
-    // TODO: Server helper directly implementing this.
-    public boolean dropSome(ContainerSection srcSection, int srcIndex, int amount) {
-        return moveSome(srcSection, srcIndex, null, DROP_SLOT, amount);
-    }
-
     /**
      * If an item is in hand (= attached to the cursor), puts it down.
      *
      * @return true unless the item could not be put down
      * @throws Exception
      */
+    @Override
     public boolean putHoldItemDown(ContainerSection destSection, int destIndex) {
         ItemStack heldStack = InvTweaks.getInstance().getHeldStack();
         if(heldStack != null) {
@@ -252,14 +242,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         return true;
     }
 
-    public void leftClick(ContainerSection section, int index) {
-        click(section, index, false);
-    }
-
-    public void rightClick(ContainerSection section, int index) {
-        click(section, index, true);
-    }
-
+    @Override
     public void click(ContainerSection section, int index, boolean rightClick) {
         //System.out.println("Click " + section + ":" + index);
         // Click! (we finally call the Minecraft code)
@@ -281,10 +264,12 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         }
     }
 
+    @Override
     public boolean hasSection(ContainerSection section) {
         return slotRefs.containsKey(section);
     }
 
+    @Override
     public List<Slot> getSlots(ContainerSection section) {
         return slotRefs.get(section);
     }
@@ -292,6 +277,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
     /**
      * @return The size of the whole container
      */
+    @Override
     public int getSize() {
         int result = 0;
         for(List<Slot> slots : slotRefs.values()) {
@@ -306,6 +292,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      * @param section
      * @return The size, or 0 if there is no such section.
      */
+    @Override
     public int getSize(ContainerSection section) {
         if(hasSection(section)) {
             return slotRefs.get(section).size();
@@ -318,6 +305,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      * @param section
      * @return -1 if no slot is free
      */
+    @Override
     public int getFirstEmptyIndex(ContainerSection section) {
         int i = 0;
         for(Slot slot : slotRefs.get(section)) {
@@ -333,6 +321,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      * @param slot
      * @return true if the specified slot exists and is empty, false otherwise.
      */
+    @Override
     public boolean isSlotEmpty(ContainerSection section, int slot) {
         if(hasSection(section)) {
             return getItemStack(section, slot) == null;
@@ -341,6 +330,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         }
     }
 
+    @Override
     public Slot getSlot(ContainerSection section, int index) {
         List<Slot> slots = slotRefs.get(section);
         if(slots != null) {
@@ -354,6 +344,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      * @param slotNumber
      * @return -1 if not found
      */
+    @Override
     public int getSlotIndex(int slotNumber) {
         return getSlotIndex(slotNumber, false);
     }
@@ -364,6 +355,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      *                        more specific section (hotbar/not hotbar)
      * @return Full index of slot in the container
      */
+    @Override
     public int getSlotIndex(int slotNumber, boolean preferInventory) {
         // TODO Caching with getSlotSection
         for(ContainerSection section : slotRefs.keySet()) {
@@ -386,6 +378,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      * @param slotNumber
      * @return null if the slot number is invalid.
      */
+    @Override
     public ContainerSection getSlotSection(int slotNumber) {
         // TODO Caching with getSlotIndex
         for(ContainerSection section : slotRefs.keySet()) {
@@ -407,6 +400,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      * @param index
      * @return An ItemStack or null.
      */
+    @Override
     public ItemStack getItemStack(ContainerSection section, int index)
             throws NullPointerException, IndexOutOfBoundsException {
         int slot = indexToSlot(section, index);
@@ -417,6 +411,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         }
     }
 
+    @Override
     public Container getContainer() {
         return container;
     }
@@ -458,6 +453,7 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         }
     }
 
+    @Override
     public void setClickDelay(int delay) {
         this.clickDelay = delay;
     }

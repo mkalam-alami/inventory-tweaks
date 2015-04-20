@@ -1,7 +1,8 @@
 package invtweaks;
 
 import invtweaks.api.container.ContainerSection;
-import invtweaks.container.InvTweaksContainerManager;
+import invtweaks.container.IContainerManager;
+import invtweaks.container.DirectContainerManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
@@ -23,7 +24,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
     private static final int DROP_SLOT = -999;
     private InvTweaksConfig config;
-    private InvTweaksContainerManager container;
+    private IContainerManager container;
     /**
      * Stores all pressed keys (only the one that are related to shortcuts)
      */
@@ -170,7 +171,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
         ShortcutConfig shortcutConfig = new ShortcutConfig();
 
-        container = new InvTweaksContainerManager(mc);
+        container = new DirectContainerManager(mc);
         Slot slot = InvTweaksObfuscation.getSlotAtMousePosition((GuiContainer) getCurrentScreen());
         // If a valid and not empty slot is clicked
         if(shortcut != null && slot != null && (slot.getHasStack() || getHeldStack() != null)) {

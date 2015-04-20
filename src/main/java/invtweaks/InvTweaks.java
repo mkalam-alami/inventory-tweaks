@@ -4,8 +4,9 @@ import invtweaks.api.IItemTree;
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
-import invtweaks.container.InvTweaksContainerManager;
-import invtweaks.container.InvTweaksContainerSectionManager;
+import invtweaks.container.IContainerManager;
+import invtweaks.container.DirectContainerManager;
+import invtweaks.container.ContainerSectionManager;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -242,7 +243,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
 
         try {
-            InvTweaksContainerSectionManager containerMgr = new InvTweaksContainerSectionManager(mc,
+            ContainerSectionManager containerMgr = new ContainerSectionManager(mc,
                     ContainerSection.INVENTORY);
 
             // Find stack slot (look in hotbar only).
@@ -671,7 +672,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 if(!chestAlgorithmButtonDown) {
                     chestAlgorithmButtonDown = true;
 
-                    InvTweaksContainerManager containerMgr = new InvTweaksContainerManager(mc);
+                    IContainerManager containerMgr = new DirectContainerManager(mc);
                     Slot slotAtMousePosition = InvTweaksObfuscation
                             .getSlotAtMousePosition((GuiContainer) getCurrentScreen());
                     ContainerSection target = null;

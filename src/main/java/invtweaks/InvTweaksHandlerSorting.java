@@ -3,8 +3,9 @@ package invtweaks;
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
-import invtweaks.container.InvTweaksContainerManager;
-import invtweaks.container.InvTweaksContainerSectionManager;
+import invtweaks.container.IContainerManager;
+import invtweaks.container.DirectContainerManager;
+import invtweaks.container.ContainerSectionManager;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Slot;
@@ -37,7 +38,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private static final int MAX_CONTAINER_SIZE = 999;
     private static int[] DEFAULT_LOCK_PRIORITIES = null;
     private static boolean[] DEFAULT_FROZEN_SLOTS = null;
-    private InvTweaksContainerSectionManager containerMgr;
+    private ContainerSectionManager containerMgr;
     private SortingMethod algorithm;
     private int size;
     private boolean sortArmorParts;
@@ -70,7 +71,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
         // Init attributes
 
-        this.containerMgr = new InvTweaksContainerSectionManager(mc, section);
+        this.containerMgr = new ContainerSectionManager(mc, section);
         this.size = containerMgr.getSize();
         this.sortArmorParts = config.getProperty(InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR)
                 .equals(InvTweaksConfig.VALUE_TRUE) && !isGuiInventoryCreative(
@@ -123,7 +124,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     public void sort() {
         long timer = System.nanoTime();
-        InvTweaksContainerManager globalContainer = new InvTweaksContainerManager(mc);
+        IContainerManager globalContainer = new DirectContainerManager(mc);
 
         // Put hold item down
         if(getHeldStack() != null) {
@@ -231,7 +232,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    private void sortInventory(InvTweaksContainerManager globalContainer) {
+    private void sortInventory(IContainerManager globalContainer) {
         //// Move items out of the crafting slots
         log.info("Handling crafting slots.");
         if(globalContainer.hasSection(ContainerSection.CRAFTING_IN)) {
@@ -255,7 +256,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         sortMergeArmor(globalContainer);
     }
 
-    private void sortMergeArmor(InvTweaksContainerManager globalContainer) {
+    private void sortMergeArmor(IContainerManager globalContainer) {
         //// Merge stacks to fill the ones in locked slots
         //// + Move armor parts to the armor slots
         log.info("Merging stacks.");
@@ -293,7 +294,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    private void moveArmor(InvTweaksContainerManager globalContainer, int i, ItemStack from, Item fromItem) {
+    private void moveArmor(IContainerManager globalContainer, int i, ItemStack from, Item fromItem) {
         if(sortArmorParts) {
             if(isItemArmor(fromItem)) {
                 // ItemArmor

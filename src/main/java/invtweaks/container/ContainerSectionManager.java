@@ -15,16 +15,16 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Jimeo Wan
  */
-public class InvTweaksContainerSectionManager {
+public class ContainerSectionManager {
 
-    private InvTweaksContainerManager containerMgr;
+    private IContainerManager containerMgr;
     private ContainerSection section;
 
-    public InvTweaksContainerSectionManager(Minecraft mc, ContainerSection section) throws Exception {
-        this(new InvTweaksContainerManager(mc), section);
+    public ContainerSectionManager(Minecraft mc, ContainerSection section) throws Exception {
+        this(new DirectContainerManager(mc), section);
     }
 
-    public InvTweaksContainerSectionManager(InvTweaksContainerManager manager, ContainerSection section)
+    public ContainerSectionManager(IContainerManager manager, ContainerSection section)
             throws Exception {
         this.containerMgr = manager;
         this.section = section;

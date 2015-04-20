@@ -2,7 +2,7 @@ package invtweaks;
 
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.container.ContainerSection;
-import invtweaks.container.InvTweaksContainerSectionManager;
+import invtweaks.container.ContainerSectionManager;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -51,7 +51,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
      */
     public void autoRefillSlot(int slot, String wantedId, int wantedDamage) throws Exception {
 
-        InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(mc,
+        ContainerSectionManager container = new ContainerSectionManager(mc,
                 ContainerSection.INVENTORY);
         ItemStack candidateStack, replacementStack = null;
         int replacementStackSlot = -1;
@@ -156,14 +156,14 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 		     */
             InvTweaks.getInstance().addScheduledTask(new Runnable() {
 
-                private InvTweaksContainerSectionManager containerMgr;
+                private ContainerSectionManager containerMgr;
                 private int targetedSlot;
                 private int i;
                 private String expectedItemId;
                 private boolean refillBeforeBreak;
 
                 public Runnable init(Minecraft mc, int i, int currentItem, boolean refillBeforeBreak) throws Exception {
-                    this.containerMgr = new InvTweaksContainerSectionManager(mc, ContainerSection.INVENTORY);
+                    this.containerMgr = new ContainerSectionManager(mc, ContainerSection.INVENTORY);
                     this.targetedSlot = currentItem;
                     if(i != -1) {
                         this.i = i;

@@ -176,7 +176,7 @@ curse.onlyIf { curseKey }
 
 if(curseKey) {
     curse {
-        dependsOn apiJar
+        dependsOn apiJar, deobfJar
 
         displayName = 'Inventory Tweaks ' + curseVersion
         releaseType = curseType
